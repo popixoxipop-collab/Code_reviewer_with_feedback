@@ -1,0 +1,2 @@
+{"timestamp": "2026-07-01T06:13:43.655444+00:00", "category": "domain_irrelevance", "pattern_id": "not_needed_here", "regex": "필요\\s*없|딱히.*필요", "verdict": "genuine_justification", "note": "Auth.jsx: '장르 데이터가 필요 없다고 생각'", "source_finding": "cognition-isolation:Auth.jsx"}
+{"timestamp": "2026-07-01T06:13:43.684756+00:00", "category": "domain_irrelevance", "pattern_id": "not_needed_here", "regex": "필요\\s*없|딱히.*필요", "verdict": "genuine_justification", "note": "Header.jsx: '장르 데이터가 딱히 필요 없다고 판단'", "source_finding": "cognition-isolation:Header.jsx"}

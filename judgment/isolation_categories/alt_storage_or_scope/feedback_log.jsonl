@@ -1,0 +1,1 @@
+{"timestamp": "2026-07-01T06:13:43.829976+00:00", "category": "alt_storage_or_scope", "pattern_id": "already_global_store", "regex": "저장소|localStorage", "verdict": "genuine_justification", "note": "authToken.js: 'localStorage 자체가 이미 전역 저장소 역할'", "source_finding": "cognition-isolation:authToken.js"}

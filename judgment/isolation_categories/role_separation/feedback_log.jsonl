@@ -1,0 +1,2 @@
+{"timestamp": "2026-07-01T06:13:43.713680+00:00", "category": "role_separation", "pattern_id": "delegated_to_child", "regex": "위임|컴포넌트.*충분", "verdict": "genuine_justification", "note": "BookDetail.jsx: 'GenreBadge 컴포넌트 하나로 충분'", "source_finding": "cognition-isolation:BookDetail.jsx"}
+{"timestamp": "2026-07-01T06:13:43.742597+00:00", "category": "role_separation", "pattern_id": "delegated_to_child", "regex": "위임|컴포넌트.*충분", "verdict": "genuine_justification", "note": "BookList.jsx: 'GenreSelect한테 위임하는 게 나을 것 같아서'", "source_finding": "cognition-isolation:BookList.jsx"}

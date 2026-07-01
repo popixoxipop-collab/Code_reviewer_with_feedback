@@ -43,6 +43,7 @@ Repository
 | [`examples/shadowbroker/`](./examples/shadowbroker/) | 전체 | 세 번째 실제 공개 repo(Shadowbroker, Python+TS 726파일 monorepo) — tier_b 방법론 첫 실증 |
 | [`pipeline/evidence_bridge.py`](./pipeline/evidence_bridge.py) | 전체 | D안(B안+C안 결합) — C안 finding을 B안 형식 Repository Evidence + 질문으로 자동 변환 |
 | [`examples/lms/d_plan/`](./examples/lms/d_plan/) | 전체 | D안을 LMS에 실행한 결과 + Codex로 독립 생성한 답변 7건 전체 검증([`codex_verification_full.md`](./examples/lms/d_plan/codex_verification_full.md)), A~E안 비교 및 6-axis 채점표 |
+| [`judgment/isolation_hook.py`](./judgment/isolation_hook.py) + [`isolation_classifier.py`](./judgment/isolation_classifier.py) | 판단 | cognition-isolation 판정용 재귀 hook — "정규식 하나"가 아니라 "카테고리(동의어 alternation)" 단위로 타당한 설계 근거를 축적·확정([`검증 결과`](./examples/lms/d_plan/isolation_hook_verification.md)) |
 
 ## 실행 방법
 
@@ -346,6 +347,18 @@ python3 pipeline/compare_methodologies.py
   - WHY: 1건(Bookshelf.jsx)만으로는 "재현율 문제인지 우연인지" 판단 근거가 약했음. 나머지 6건(cognition-isolation)까지 전부 Codex 독립 생성으로 검증한 결과 **7건 전부 reflection_present=False**였지만 원인이 다름: 1건은 진짜 재현율 실패(양질의 오류인정+개선안이 패턴 불일치로 누락), 6건은 "가상 학생"이 전부 GenreContext 미사용에 대한 타당한 설계 근거를 제시해 애초에 reflection이 필요한 상황이 아니었을 가능성이 높음
   - COST: 이 결과가 시사하는 우선순위 전환을 아직 실행하지 않음 — Reflection 패턴 재현율 개선보다 D19의 `cognition-isolation` 규칙 자체(다중 concern 코드베이스 과탐지)를 먼저 재검토해야 할 수 있다는 결론만 기록하고 코드 변경은 안 함
   - EXIT: `cognition-isolation` 규칙에 "합리적 근거 제시 시 자동 하향" 재귀 hook을 추가하는 안(idiom_hook/tier_b_hook과 동일 패턴)이 다음 후보 — 다만 이번엔 코드 신호가 아니라 자연어 답변 품질로 판단해야 해서 설계가 다름
+- **D39** ([`judgment/isolation_hook.py`](./judgment/isolation_hook.py)) — cognition-isolation용 재귀 hook은 "정규식 하나=패턴 하나"가 아니라 "카테고리 하나=동의어 alternation"으로 설계
+  - WHY: idiom_hook처럼 정규식 하나로 패턴을 잡으면 reflection_hook이 이미 실증한 재현율 붕괴가 그대로 재발함(D37 — Codex의 좋은 답변도 정규식 문구 불일치로 놓침). 자연어 정당화는 표현이 매번 달라 4개 카테고리(role_separation/perf_optimization/alt_storage_or_scope/domain_irrelevance)를 미리 정의하고 카테고리당 넓은 alternation 패턴을 축적하는 쪽으로 설계
+  - COST: 카테고리 경계를 사람이 미리 정해야 함 — 코드처럼 유한한 문법이 아니라서 새로운 정당화 유형이 나오면 카테고리 자체를 추가해야 함
+  - EXIT: 카테고리 부족 시 "미분류" 비율로 감지 가능, 그때 카테고리 추가 또는 LLM 자유분류+매핑으로 전환
+- **D40** ([`judgment/isolation_classifier.py`](./judgment/isolation_classifier.py)) — 4개 카테고리 중 confirmed 패턴이 하나라도 매치되면 justified=True
+  - WHY: 명백한 실수 정정(reflection)과 달리 "타당한 설계 근거"는 여러 이유 중 하나만 맞아도 충분 — idiom_filter의 "confirmed 패턴 1개 매치=하향"과 같은 OR 논리
+  - COST: 한 답변이 여러 카테고리에 동시 매치될 때(Header.jsx 실측: perf_optimization+domain_irrelevance) 어느 게 "진짜 이유"인지 구분 못함
+  - EXIT: 카테고리별 강도(가중치)가 필요해지면 matched_categories 개수/조합으로 세분화
+- **D41** (`judgment/isolation_categories/*/patterns.json`) — role_separation/perf_optimization/domain_irrelevance의 promotion_threshold를 3→2로 낮춤
+  - WHY: 실측 — LMS 6개 답변 중 3개 카테고리가 정확히 confirmations=2에서 멈춰 threshold=3 미달. idiom_hook의 threshold=3은 "같은 리뷰어가 같은 정규식을 3번 확인"하는 맥락인데, 여기는 "서로 다른 파일의 서로 다른 학생이 독립적으로 같은 카테고리에 수렴"하는 맥락이라 신뢰 조건이 다름 — 독립 출처 2곳의 수렴 자체가 이미 유의미한 신호로 판단
+  - COST: 이 조정이 "6건의 우연한 분포(2개씩 짝지어짐)에 맞춰 정당화됐다"는 의심에서 자유롭지 않음 — 더 큰 표본에서 threshold=2가 여전히 적절한지 미검증. `alt_storage_or_scope`는 관측 1건뿐이라 threshold를 낮춰도 승격 안 됨(의도된 보수성 유지 확인됨)
+  - EXIT: 다른 repo에서 재검증해 오탐(잘못 justified=True 판정)이 나오면 threshold를 다시 3으로 올리거나 카테고리별로 다르게 세분화
 
 ## 다음 단계 (미해결)
 
@@ -364,7 +377,7 @@ python3 pipeline/compare_methodologies.py
 13. **신규(Shadowbroker 실측)**: 726개 파일 규모 monorepo에서 `cognition-isolation` findings가 90건 이상 쏟아짐 — D19가 가정한 "entry point 1개, root 1개" 구조가 아니라 frontend/backend/스크립트가 독립된 여러 진입점을 가진 monorepo라 `find_routed_peers`가 사실상 무력화됨(진입점 다중화 미대응)
 14. ~~판단 블록 3축을 LLM-as-Judge 수준으로 정량화(EVALUATION.md의 "열위(인정)" 항목)~~ — D27~D30(`judgment/subrubric.py`)으로 규칙기반 서브루브릭 구현·Study-Match-/LMS 재검증 완료. ~~서브축 construct 대표성의 외부 검증~~ — D35로 웹서치 기반 문헌 근거(SATD 탐지, CVSS/FindBugs confidence-severity 분리, 고전 검사이론 변별도 지수, Haladyna item-writing guideline, item exposure control) 확보, `location_signal`→`rationale_signal()` 교체·`risk` 공식 게이팅 구조로 변경 완료. **단, "이 문헌들이 이 도메인(레포 리뷰)에 그대로 전이되는가"는 논문 자체의 실증이지 이 시스템에서 실증된 게 아님 — 사람이 직접 채점한 것과 비교하는 검증은 여전히 안 함**. `exposure_client`의 "server" 문자열 휴리스틱 등 나머지 도메인 특화 서브축은 이번 라운드에서 손대지 않음(대체할 문헌을 못 찾음, `SUBRUBRIC_DRAFT.md`에 정직하게 기록). LLM-as-Judge 자체(자연어 논증 평가)로의 전환도 여전히 안 함, 규칙기반의 정량화 버전일 뿐
 15. ~~Reflection 판정이 너무 쉽게 확정됨(POC_TEST.md 문제4)~~ — D32~D34로 완료. AND-4(너무 엄격, B안 모범 예시도 탈락) → "self_error_recognition 필수 + 나머지 2/3"으로 재보정, B안 모범 예시=True/피상적 답변=False/자기오류인식 없는 프로브=False 3건 전부 실측 확인. **단, 4개 서브신호 각각의 confirmed 패턴은 아직 예시 1건씩만 시드됨**(다양한 실제 답변으로 더 채워야 재현율이 오름)
-16. **신규(D38 실측, 우선순위 최상위 후보)**: LMS의 `cognition-isolation` finding 6건 전부 Codex 가상 학생이 GenreContext 미사용에 대해 나름 타당한 설계 근거를 제시함 — 이건 Reflection 판정 문제가 아니라 D19의 고립 판정 규칙 자체가 다중 concern 코드베이스에서 여전히 과탐지 중이라는 6번째 독립 증거일 수 있음. 다음 스프린트는 Reflection 패턴 확충보다 **cognition-isolation에 idiom_hook류 재귀 억제 훅을 붙이는 것**을 먼저 검토해야 할 수 있음(단, 코드 신호가 아니라 자연어 답변 근거로 판단해야 해서 idiom_hook을 그대로 재사용은 못 하고 새 설계 필요)
+16. ~~D38 발견에 대응해 cognition-isolation용 재귀 hook 신설~~ — D39~D41로 완료. `isolation_hook.py`/`isolation_classifier.py`가 4개 카테고리(role_separation/perf_optimization/alt_storage_or_scope/domain_irrelevance)로 6개 실제 Codex 답변 중 5건을 "타당한 근거"로 정확히 분류, 근거 부족한 1건(authToken.js)은 성급히 확정 안 함. **단, 이 6건은 카테고리 패턴을 도출한 바로 그 데이터라 held-out 검증이 아니다** — 다른 repo의 새 답변으로 재검증해야 진짜 일반화 여부를 알 수 있음. `score_findings.py`에도 아직 연결 안 함(학생 답변 입력 자체가 정적 스캔 파이프라인엔 없음)
 
 ## 발표용 라이브 데모 실행 순서 (검증됨)
 
