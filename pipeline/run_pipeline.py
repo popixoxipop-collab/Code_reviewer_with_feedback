@@ -3,6 +3,9 @@ import os
 import subprocess
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from ledger import append_entry, build_entry  # noqa: E402
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 COGNITION = os.path.join(ROOT, "cognition", "two_tier_scan.py")
@@ -120,10 +123,12 @@ def main():
     for idx, injection in enumerate(injections, start=1):
         apply_injection(injection)
         result = run_judgment(scan_path, target_src)
+        after_snap = snapshot(result["findings"])
         label = injection.get("label", f"주입 {idx}: {injection['type']}")
         stage_rows.append((label, diff_rows(prev_snap, result)))
-        prev_snap = snapshot(result["findings"])
-        print(f"[{label}] 완료", file=sys.stderr)
+        append_entry(build_entry(target_src, injection, prev_snap, after_snap))
+        prev_snap = after_snap
+        print(f"[{label}] 완료 (ledger.jsonl에 기록됨)", file=sys.stderr)
 
     md = render_markdown(target_src, stage_rows)
     print(md)

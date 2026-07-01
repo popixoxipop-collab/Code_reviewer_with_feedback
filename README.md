@@ -35,6 +35,8 @@ Repository
 | [`feedback/generate_questions.py`](./feedback/generate_questions.py) | 피드백 | 판단 블록 출력을 받아 Anthropic tool-use로 7단계 질문을 실제 LLM 호출로 자동 생성(스키마 강제, 필드 누락 시 예외) |
 | [`examples/study_match/`](./examples/study_match/) | 전체 | 실제 공개 repo(Study-Match-)에 3블록 전부를 돌린 실행 결과, 관용 패턴 필터 데모 포함 |
 | [`pipeline/run_pipeline.py`](./pipeline/run_pipeline.py) | 전체 | 인지→판단 실행 + `injections.json`에 명시된 재귀 hook(idiom/tier_b)을 순차 주입하며 단계마다 before/after 비교표 자동 생성 |
+| [`pipeline/ledger.py`](./pipeline/ledger.py) + `ledger.jsonl` | 전체 | 매 주입을 append-only로 영구 기록 — "지금까지 시도한 방법론들 비교해서 보여줘"에 답하는 데이터 소스 |
+| [`pipeline/compare_methodologies.py`](./pipeline/compare_methodologies.py) | 전체 | ledger.jsonl을 즉시 집계해 방법론간 비교표를 렌더링(재실행 없이 언제든 조회 가능) |
 | [`examples/lms/`](./examples/lms/) | 전체 | 두 번째 실제 공개 repo(jxxnixx/LMS, JS/TS 51파일)에 파이프라인 전체를 돌린 실행 결과 |
 
 ## 실행 방법
@@ -133,6 +135,27 @@ python3 pipeline/run_pipeline.py LMS/src pipeline/examples/lms_injections.json
 여러 개인 코드베이스에서는 부분적으로만 맞다. 관용패턴 hook과 별개로 "고립 판정용" 억제 메커니즘이
 아직 없음(다음 단계 9번).
 
+## 방법론간 비교표 — 축적된 원장을 즉시 조회 (D23~D25)
+
+`run_pipeline.py`는 실행할 때마다 결과를 `pipeline/ledger.jsonl`에 append하고, 언제든
+`compare_methodologies.py`로 지금까지 시도한 모든 방법론(idiom_hook 패턴별/tier_b_hook 트리거별)을
+집계해서 볼 수 있다 — 재실행 없이 즉시 조회된다.
+
+```bash
+python3 pipeline/compare_methodologies.py
+```
+
+실제 축적된 결과(Study-Match- + LMS 두 repo, 각 1개 패턴씩 확정):
+
+| 방법론 | 키 | 적용 repo 수 | 총 주입 횟수 | 변경된 finding 누적 | 최근 예시 |
+|---|---|---|---|---|---|
+| idiom | `react-context-global-state` | 1 | 2 | 1 | `Study-Match-`: `architecture-diffusion:App.tsx` 상→하 |
+| idiom | `react-query-custom-hook` | 1 | 2 | 1 | `LMS`: `architecture-diffusion:useBooksQueries.ts` 상→하 |
+
+**실행 중 발견한 버그(D25)**: 같은 repo를 실행 위치에 따라 다른 상대경로(`Study-Match-/src` vs
+`repo_candidates/Study-Match-/src`)로 기록해 "적용 repo 수"가 1이어야 할 게 2로 잘못 집계됨 →
+`normalize_repo()`로 마지막 디렉터리명 기준 정규화해 수정, 재검증 완료.
+
 ## 알려진 한계 (숨기지 않고 기록)
 
 - ~~fan-in 이중계산~~ — **D12로 수정**: edge를 (src,dst) 집합으로 dedupe 후 집계, `firebase.ts` 실측 fan-in이 8→7로 정정됨
@@ -223,6 +246,18 @@ python3 pipeline/run_pipeline.py LMS/src pipeline/examples/lms_injections.json
   - WHY: jxxnixx/LMS 실측 — `dangerouslySetInnerHTML`은 실제로 진짜 위험이라 자동으로 "다 오탐 처리"했다면 판단 블록 신뢰도 자체가 오염됐을 것
   - COST: 완전 무인 실행이 안 됨 — 사람이 먼저 코드를 읽고 `injections.json`을 채워야 함
   - EXIT: 자동 추론이 필요해지면 LLM 판단 단계를 추가하되, 생성된 각 injection에 `note`를 강제해 감사 가능성 유지
+- **D23** ([`pipeline/ledger.py`](./pipeline/ledger.py)) — 파이프라인 실행 결과를 append-only 원장(`ledger.jsonl`)에 영구 저장
+  - WHY: "지금까지 시도한 방법론들을 비교해서 보여달라"는 질문에 답할 축적된 데이터가 실측 확인 결과 없었음 — 매 주입을 한 줄씩 append하면 나중에 언제든 집계 가능
+  - COST: 같은 methodology를 여러 번 실행하면 로그가 무한정 늘어남, retention 정책 없음
+  - EXIT: 파일이 너무 커지면 SQLite로 교체(인터페이스는 `append_entry`/`load_entries` 그대로 유지)
+- **D24** ([`pipeline/compare_methodologies.py`](./pipeline/compare_methodologies.py)) — 비교표는 캐시 없이 ledger.jsonl을 매번 재집계해서 생성
+  - WHY: 원장 자체가 이미 append-only 진실 소스라 재계산 비용이 무시할 만큼 작음 — 집계 로직과 저장 로직 분리
+  - COST: 원장이 아주 커지면(수만 줄) 매번 전체를 읽어 느려질 수 있음
+  - EXIT: 느려지면 groupby 결과를 캐시 파일로 저장하고 원장 변경 시에만 재계산
+- **D25** ([`pipeline/ledger.py`](./pipeline/ledger.py)) — repo 식별자를 원본 경로가 아니라 정규화된 이름(`normalize_repo`)으로 집계
+  - WHY: 실측 발견 — 같은 저장소를 실행 위치에 따라 다른 상대경로로 기록해 "적용 repo 수" 집계가 부풀려짐(1이어야 할 게 2로)
+  - COST: 서로 다른 두 repo가 우연히 같은 마지막 디렉터리명을 쓰면 하나로 합쳐질 위험(드묾)
+  - EXIT: 정확한 식별이 필요해지면 `git remote get-url origin`을 저장하는 방식으로 교체
 
 ## 다음 단계 (미해결)
 
@@ -236,6 +271,7 @@ python3 pipeline/run_pipeline.py LMS/src pipeline/examples/lms_injections.json
 8. **신규**: Java/C/C++ import(`import`/`#include`) 파싱은 코드로는 존재하나 실제 Java/C/C++ repo로 검증된 적 없음(Python만 실증됨)
 9. **신규(jxxnixx/LMS 실측)**: D19로 고립 오탐을 30→6건 줄였지만, 남은 6건 중 개념적으로 허브와 무관한 파일(`authToken.js` 등)은 여전히 노이즈 — 관용패턴 hook과 별개로 "고립 판정용" 억제 메커니즘이 없음
 10. **신규**: `pipeline/run_pipeline.py`는 `injections.json`을 사람이 채워야 함(D22) — LLM이 코드를 읽고 injection 후보를 자동 생성하되 `note`는 강제하는 반자동화가 다음 단계
+11. **신규**: `ledger.jsonl`이 repo 3개(Study-Match-/RunPod_Deploy_Agent/LMS) 수준에서만 검증됨 — tier_b 방법론(idiom 아닌)으로 실제 축적된 사례가 아직 없음(진짜 오탐이 나온 적이 없어서), 대량 축적 시 성능/가독성 미검증
 
 ## 발표용 라이브 데모 실행 순서 (검증됨)
 
