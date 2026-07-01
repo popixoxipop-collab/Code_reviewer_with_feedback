@@ -141,3 +141,43 @@ D35로 문헌 근거 재검토·일부 서브축 교체까지 완료.**
    "이 문헌들이 실제로 이 도메인(레포 리뷰)에 그대로 전이되는지"는 논문 자체의 실증이지
    이 시스템에서 실증된 게 아님** — 사람 채점과의 직접 비교(원래 다음 단계 항목)는 아직
    남아있음
+5. ~~서브축을 고정 가중치가 아니라 재귀적으로 신뢰도를 조정 가능하게~~ — D53
+   (`judgment/subrubric_hook.py`)로 완료. idiom_hook과 동일한 candidate→threshold→조정
+   구조를 "패턴"이 아니라 "서브축 가중치"에 적용. 가중치 기본값(1.0)에서는 정규화가
+   항등함수라 D27~D35 출력과 100% 하위호환(Study-Match- 재실행으로 확인). 아래 "재현
+   가능한 데모"에 실제 가중치 조정이 버킷을 바꾸는 것까지 실측했다.
+
+## 재현 가능한 데모 — 서브축 가중치 재귀 조정 (D53)
+
+`design_intent.mitigation_present`는 문헌 근거가 가장 약한 서브축이라고 D35에서 이미
+표시해뒀다. 이 서브축에 "misaligned" 피드백을 3회(threshold) 기록하면 무슨 일이 일어나는지
+그대로 재현 가능하다.
+
+```bash
+python3 judgment/subrubric_hook.py feedback design_intent mitigation_present misaligned \
+  "architecture-diffusion 계열엔 mitigation 개념 자체가 성립 안 하는데 중립값 1이 노이즈로 얹힘" \
+  "architecture-diffusion:App.tsx"
+python3 judgment/subrubric_hook.py feedback design_intent mitigation_present misaligned \
+  "동일 사례 재확인" "architecture-diffusion:App.tsx"
+python3 judgment/subrubric_hook.py feedback design_intent mitigation_present misaligned \
+  "repeated-pattern 계열도 동일 문제" "repeated-pattern:onSnapshot"
+python3 judgment/subrubric_hook.py update design_intent   # → mitigation_present: trusted(1.0)→discounted(0.3)
+
+python3 judgment/score_findings.py <scan.json> <repo_root>   # 재실행
+```
+
+**실측 결과** (Study-Match- 4 findings, design_intent total 기준):
+
+| Finding | 가중치 적용 전(1.0) | 적용 후(0.3) | 변화 |
+| --- | --- | --- | --- |
+| `cognition-isolation:Competitions.tsx` | 5(중) | 5(중) | — (mitigation_present가 중립값 1이라 영향 작음) |
+| `architecture-diffusion:App.tsx` | 5(중) | 5(중) | — |
+| `tier-b-risk:firebase.ts` | 7(중) | 6(중) | **하락** — mitigation_present가 3(강한 긍정 신호)이었는데 할인됨 |
+| `repeated-pattern:onSnapshot` | 8(중) | **9(상)** | **상승, 버킷 경계 넘음** — 정규화 분모가 줄면서 나머지 서브축의 상대 비중이 커짐 |
+
+**교훈**: 서브축 하나를 할인하는 게 "그 축만 조용히 빠지는" 게 아니다. 정규화(`_normalize`)가
+가중치 합계 기준 상대값이라, 할인된 서브축의 원래 값(neutral=1 vs 강한 신호=3)에 따라
+남은 findings이 서로 다른 방향으로 움직인다. 데모 상태는 재현 후 초기화했다
+(`judgment/subrubric_weights/design_intent/weights.json`을 `{"promotion_threshold": 3,
+"sub_axes": {}}`로 복원, `feedback_log.jsonl` 삭제) — 커밋된 상태는 전부 가중치 1.0
+기본값이다.

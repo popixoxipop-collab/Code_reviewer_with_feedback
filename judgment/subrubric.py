@@ -4,6 +4,13 @@ import sys
 
 sys.path.insert(0, os.path.dirname(__file__))
 from idiom_filter import resolve_lang, load_patterns, _find_file_content  # noqa: E402
+from subrubric_hook import weight_for  # noqa: E402
+
+# D53 (subrubric_hook.py에 전체 WHY/COST/EXIT): 서브축 값을 그냥 더하지 않고
+#   subrubric_hook.weight_for(axis, sub_axis)로 가중치를 곱한 뒤, 그 axis의 실제
+#   가능한 최대치로 정규화해 0~12 스케일을 유지한다(_weighted_sum/_normalize).
+#   가중치가 전부 기본값(1.0)이면 이 정규화는 항등함수라 D27~D35 시절 출력과 100%
+#   동일하다 — 재귀 피드백이 쌓이기 전까지는 아무 동작 변화가 없다는 뜻(하위호환 보장).
 
 # D35: 4서브축 분해를 문헌 근거로 재검토 — POC_TEST.md(D31 문서)가 "이 4개가 정말 해당
 #   construct를 대표하는 분해인지 외부 검증이 없다"고 지적한 데 대한 응답. 웹서치로 확인한
@@ -101,6 +108,23 @@ def _clamp(x):
     return max(0, min(3, x))
 
 
+def _weighted_sum(axis, sub):
+    """sub(서브축→0~3 원점수)에 subrubric_hook의 현재 가중치를 곱해 (가중합, 가중가능최대치)를 반환."""
+    total, max_total = 0.0, 0.0
+    for key, value in sub.items():
+        w = weight_for(axis, key)
+        total += value * w
+        max_total += 3 * w
+    return total, max_total
+
+
+def _normalize(total, max_total):
+    """가중합을 원래 0~12 스케일로 되돌린다 — 가중치가 전부 1.0이면 항등함수(D53)."""
+    if max_total <= 0:
+        return 0
+    return round(total / max_total * 12)
+
+
 def idiom_evidence(pattern_key, file):
     """pattern_key가 있으면 해당 언어 idiom 저장소에서 (status, confirmations)를 조회한다.
 
@@ -141,7 +165,8 @@ def score_design_intent(*, repetition, idiom_status, rationale, mitigation_prese
         "rationale_signal": {"rationale": 3, "none": 1, "debt": 0}[rationale],
         "mitigation_present": 1 if mitigation_present is None else (3 if mitigation_present else 0),
     }
-    return sum(sub.values()), sub
+    total, max_total = _weighted_sum("design_intent", sub)
+    return _normalize(total, max_total), sub
 
 
 def score_question_value(*, tradeoff_signal, repo_specificity, idiom_downgrade_votes, ladder_richness):
@@ -171,7 +196,8 @@ def score_question_value(*, tradeoff_signal, repo_specificity, idiom_downgrade_v
         "idiom_contamination_reverse": _clamp(3 - idiom_downgrade_votes),
         "ladder_richness": _clamp(ladder_richness),
     }
-    return sum(sub.values()), sub
+    total, max_total = _weighted_sum("question_value", sub)
+    return _normalize(total, max_total), sub
 
 
 def score_risk(*, trigger_confirmed, exposure_client, scenario_specific, spread_count):
@@ -198,16 +224,20 @@ def score_risk(*, trigger_confirmed, exposure_client, scenario_specific, spread_
         "scenario_specificity": 3 if scenario_specific else 0,
         "spread_scope": _clamp(spread_count),
     }
-    severity_total = sum(severity_sub.values())  # 0~9
-    confidence = 1 if trigger_confirmed is None else (3 if trigger_confirmed else 0)
-    sub = {"trigger_confidence": confidence, **severity_sub}
-    if confidence == 0:
+    confidence_raw = 1 if trigger_confirmed is None else (3 if trigger_confirmed else 0)
+    sub = {"trigger_confidence": confidence_raw, **severity_sub}
+
+    # D53: 게이팅 판단(오탐 확정 시 "하" 상한)은 가중치와 무관하게 원본 신뢰도로 결정한다 —
+    #   "이 서브축이 통계적으로 덜 믿을만하다"(가중치)와 "이 finding은 오탐이다"(신뢰도
+    #   판정 자체)는 서로 다른 질문이라 가중치를 게이트 조건에 섞으면 안 된다. 덧셈에는
+    #   가중치를 적용하되(_weighted_sum), 게이트는 confidence_raw로만 연다/닫는다.
+    total, max_total = _weighted_sum("risk", sub)
+    normalized = _normalize(total, max_total)
+    if confidence_raw == 0:
         # CVSS/FindBugs 원칙: 신뢰도가 낮으면(오탐으로 판정) 심각도가 아무리 높아도
         # "하" 구간(THRESHOLDS["중"] 미만)으로 제한한다 — 심각도와 신뢰도를 곱하듯 게이팅
-        total = min(severity_total, THRESHOLDS["중"] - 1)
-    else:
-        total = severity_total + confidence
-    return total, sub
+        normalized = min(normalized, THRESHOLDS["중"] - 1)
+    return normalized, sub
 
 
 def apply_subrubric(finding, design_intent_evidence, question_value_evidence, risk_evidence):
@@ -220,8 +250,10 @@ def apply_subrubric(finding, design_intent_evidence, question_value_evidence, ri
     finding["question_value"] = bucket(qv_total)
     finding["risk"] = bucket(rk_total)
     finding["subrubric"] = {
-        "design_intent": {"sub": di_sub, "total": di_total},
-        "question_value": {"sub": qv_sub, "total": qv_total},
-        "risk": {"sub": rk_sub, "total": rk_total},
+        # D53: weights를 함께 노출 — 지금 어떤 서브축이 discounted 상태인지 사람이
+        # subrubric_hook.py 상태 파일을 따로 안 열어봐도 finding 하나만 보고 알 수 있게 함
+        "design_intent": {"sub": di_sub, "weights": {k: weight_for("design_intent", k) for k in di_sub}, "total": di_total},
+        "question_value": {"sub": qv_sub, "weights": {k: weight_for("question_value", k) for k in qv_sub}, "total": qv_total},
+        "risk": {"sub": rk_sub, "weights": {k: weight_for("risk", k) for k in rk_sub}, "total": rk_total},
     }
     return finding
