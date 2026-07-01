@@ -5,41 +5,157 @@
       "id": "cognition-isolation:Competitions.tsx",
       "file": "Competitions.tsx",
       "finding": "Competitions.tsx — 허브 모듈(firebase.ts)로 가는 edge 없음. fan_in=1만 보면 정상으로 보임",
-      "design_intent": "불명(의도적 스코프 축소 vs 미완성 방치 구분 불가)",
+      "priority": "최우선",
+      "design_intent": "하",
       "question_value": "상",
       "risk": "하",
-      "priority": "최우선"
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 0,
+            "idiom_conformance_reverse": 3,
+            "location_signal": 0,
+            "mitigation_present": 1
+          },
+          "total": 4
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 1
+          },
+          "total": 10
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 1,
+            "exposure_scope": 1,
+            "scenario_specificity": 0,
+            "spread_scope": 0
+          },
+          "total": 2
+        }
+      }
     },
     {
       "id": "architecture-diffusion:App.tsx",
       "file": "App.tsx",
       "pattern_key": "react-context-global-state",
       "finding": "App.tsx — 허브 다음으로 fan_in=7, 여러 컴포넌트가 공유",
-      "design_intent": "높음(다만 프레임워크 관용 패턴일 수 있음 — idiom_filter가 확정 여부 판정)",
+      "priority": "질문 대상 → 관용 패턴 필터 적용됨(우선순위 낮음)",
+      "design_intent": "중",
       "question_value": "하",
       "risk": "하",
-      "priority": "질문 대상 → 관용 패턴 필터 적용됨(우선순위 낮음)",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 0,
+            "location_signal": 3,
+            "mitigation_present": 1
+          },
+          "total": 7
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 0,
+            "ladder_richness": 3
+          },
+          "total": 9
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 1,
+            "exposure_scope": 1,
+            "scenario_specificity": 0,
+            "spread_scope": 0
+          },
+          "total": 2
+        }
+      },
       "idiom_filtered": true,
       "idiom_lang": "javascript",
-      "idiom_note": "[javascript] 관용 패턴으로 판단(pattern=react-context-global-state, confirmations=3) — 질문가치 상→하"
+      "idiom_note": "[javascript] 관용 패턴으로 판단(pattern=react-context-global-state, confirmations=9) — 질문가치 상→하"
     },
     {
       "id": "tier-b-risk:firebase.ts",
       "file": "firebase.ts",
       "finding": "firebase.ts — 인증정보(uid/email 등)가 JSON.stringify되어 throw된 Error에 담김",
-      "design_intent": "중(에러 컨텍스트를 남기려는 의도는 있어 보임)",
-      "question_value": "중",
+      "priority": "Important(🔴)",
+      "design_intent": "중",
+      "question_value": "상",
       "risk": "상",
-      "priority": "Important(🔴)"
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 0,
+            "idiom_conformance_reverse": 3,
+            "location_signal": 0,
+            "mitigation_present": 3
+          },
+          "total": 6
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 1
+          },
+          "total": 10
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 3,
+            "exposure_scope": 3,
+            "scenario_specificity": 3,
+            "spread_scope": 0
+          },
+          "total": 9
+        }
+      }
     },
     {
       "id": "repeated-pattern:onSnapshot",
       "file": null,
       "finding": "'onSnapshot' 반복 등장 파일: {'StudyGroups.tsx': 2, 'Dashboard.tsx': 3, 'ChatRoom.tsx': 2, 'IdeaBoard.tsx': 2}",
-      "design_intent": "하(리팩토링 누락 가능성)",
+      "priority": "질문 대상",
+      "design_intent": "중",
       "question_value": "상",
-      "risk": "하(유지보수성)",
-      "priority": "질문 대상"
+      "risk": "하",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "location_signal": 0,
+            "mitigation_present": 1
+          },
+          "total": 7
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 3
+          },
+          "total": 12
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 1,
+            "exposure_scope": 1,
+            "scenario_specificity": 0,
+            "spread_scope": 0
+          },
+          "total": 2
+        }
+      }
     }
   ]
 }

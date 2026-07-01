@@ -27,6 +27,7 @@ Repository
 |---|---|---|
 | [`cognition/two_tier_scan.py`](./cognition/two_tier_scan.py) | 인지 | Tier A(구조 스캔, 저비용) + Tier B(위험 키워드 트리거 시에만 발동하는 내용 스캔) |
 | [`judgment/score_findings.py`](./judgment/score_findings.py) | 판단 | 인지 블록 출력을 받아 설계의도/질문가치/위험도 3축으로 규칙 기반 채점, 우선순위 산출 |
+| [`judgment/subrubric.py`](./judgment/subrubric.py) | 판단 | 3축을 각 4개 서브축(0~12점)으로 세분화해 근거 기반 채점 후 상/중/하로 재매핑(하위호환). 설계 배경: [`SUBRUBRIC_DRAFT.md`](./judgment/SUBRUBRIC_DRAFT.md) |
 | [`judgment/idiom_filter.py`](./judgment/idiom_filter.py) | 판단 | finding의 `pattern_key`가 confirmed 관용 패턴과 일치하면 질문가치를 낮춤 (언어별 저장소 참조) |
 | [`judgment/idiom_hook.py`](./judgment/idiom_hook.py) | 판단 | 관용 패턴 재귀 업데이트 훅 — 피드백 로그 적재(`feedback`) + threshold 도달 시 candidate→confirmed 승격(`update`) |
 | [`judgment/idioms/<lang>/`](./judgment/idioms/) | 판단 | 언어별(javascript/python/java/c/cpp/swift) 관용 패턴 상태(`idiom_patterns.json`)와 피드백 로그(`idiom_feedback_log.jsonl`) |
@@ -278,6 +279,22 @@ python3 pipeline/compare_methodologies.py
   - WHY: 매치 텍스트("email")가 너무 일반적 키워드라 억제하면 다른 파일의 진짜 위험까지 같이 가려질 위험이 큼 — 이 트리거 자체가 "3개 키워드 co-occurrence, 근접성 무시" 설계라 대형 파일에서 정밀도가 떨어지는 구조적 문제
   - COST: 당장 이 오탐은 그대로 노출됨(Important로 잘못 분류된 채)
   - EXIT: `matched_text` 주변 N줄 이내에 3개 키워드가 모두 있는지 근접성 검사를 추가하는 코드 수정이 근본 해법(hook 억제로 땜질하면 안 되는 사례)
+- **D27** ([`judgment/subrubric.py`](./judgment/subrubric.py)) — 판단 블록 3축(설계의도/질문가치/위험도)에 서브루브릭 4항목씩 도입
+  - WHY: EVALUATION.md가 스스로 인정한 "LLM-as-Judge 정량화 열위"를 메우는 지점 — 규칙기반은 유지하되(D3) 판정 근거를 한 줄 문자열에서 감사 가능한 4항목 breakdown으로 세분화. 서브축은 기존 인지 블록 출력 필드(fan_in/pattern_key/matched_text/trigger)만 재사용해 새 스캔 로직 추가 없이 구현
+  - COST: finding당 채점 항목이 3개→12개로 늘어 evidence 조립 코드가 finding 종류별로 늘어남(공용 함수 하나로 못 뭉침). 컷오프(9/5)가 실측 데이터 없이 임의값
+  - EXIT: 과하면 축당 서브항목 2개로 축소. `THRESHOLDS`만 바꾸면 판단 블록 전체 재보정 가능
+- **D28** ([`judgment/subrubric.py`](./judgment/subrubric.py)) — 서브축 총점(0~12) → 기존 상/중/하 문자열로 재매핑해 하위호환 유지
+  - WHY: `idiom_filter.py`의 `DOWNGRADE_MAP`이 정확히 "상"/"중"/"하" 키만 인식 — 서브루브릭 도입이 기존 판단 블록 소비자를 깨면 안 됨
+  - COST: 9/5 컷오프가 임의적, 서브축 breakdown이라는 풍부한 정보를 최종적으로는 3단계로 다시 뭉갬
+  - EXIT: 컷오프를 `THRESHOLDS` 상수로 분리해뒀으니 데이터가 쌓인 뒤 자동 재보정 가능. breakdown 자체는 `finding["subrubric"]`에 그대로 남아있어 필요하면 3단계 대신 원점수를 직접 소비 가능
+- **D29** ([`judgment/score_findings.py`](./judgment/score_findings.py)) — risk 축의 `spread_count`는 Tier B(진짜 보안/신뢰성 위험) finding에서만 0이 아닌 값을 쓰고, cognition-isolation/architecture-diffusion/repeated-pattern은 항상 0으로 고정
+  - WHY: 초기 구현에서 diffusion/repeated-pattern에 fan_in·반복 파일 수를 그대로 risk spread_count로 재사용했더니 architecture-diffusion:App.tsx의 risk가 기존 "하"에서 "중"으로 부풀려지는 회귀가 실측(Study-Match- 재실행)으로 발견됨 — "많이 참조된다/반복된다"는 구조적 특성이지 보안 위험의 확산이 아님을 구분해야 했음
+  - COST: cognition-isolation/diffusion/repeated-pattern의 risk 서브축 4개 중 spread_scope 1개는 항상 0으로 고정되어 사실상 3개 서브축만 유효 활용됨
+  - EXIT: 구조적 확산과 위험 확산을 같은 축에서 다르게 가중치를 주고 싶어지면 risk 축을 5서브축으로 늘리고 별도 항목(structural_spread) 추가
+- **D30** (전체 검증) — Study-Match-(4 findings) + jxxnixx/LMS(8 findings, `run_pipeline.py` 전체 재실행)로 회귀 확인
+  - WHY: risk 축은 사용자 대면 가장 민감한 판정이라 기존 값과 100% 일치하는지가 최소 안전선 — 실제로 전 findings에서 risk만은 기존 상/중/하와 정확히 일치함을 확인(D29로 spread_count를 risk-only로 제한한 결과)
+  - COST: question_value 축은 4건 중 1건(`tier-b-risk:firebase.ts`, 중→상)이 재계산으로 바뀜 — 서브축 근거(mitigation_present/scenario_specific 등)가 원래의 단일 추정값보다 두꺼워졌기 때문이며, 되돌릴 수 없는 의도된 변화. design_intent 축은 전 findings에서 자유서술 텍스트→정량값으로 형식 자체가 바뀜(비교 대상 아님)
+  - EXIT: question_value 재계산값이 실제 팀 판단과 어긋난다고 판명되면 `score_question_value`의 개별 evidence(tradeoff_signal 등)만 조정 — 축 구조 자체를 되돌릴 필요 없음
 
 ## 다음 단계 (미해결)
 
@@ -294,6 +311,7 @@ python3 pipeline/compare_methodologies.py
 11. ~~ledger.jsonl에 tier_b 방법론 실제 축적 사례가 없음~~ — Shadowbroker(`test_api_settings.py` 시크릿 오탐)로 완료. 대량 축적(수백 건) 시 성능/가독성은 여전히 미검증
 12. **신규(Shadowbroker 실측)**: `auth_info_leak_via_thrown_error` 트리거가 근접성 검사 없이 "3개 키워드가 파일 어딘가에 다 있으면" 발동해 대형 파일(1500줄+)에서 오탐 발생(D26) — 코드 수정(근접 N줄 검사) 필요, hook 억제로는 부적합한 사례
 13. **신규(Shadowbroker 실측)**: 726개 파일 규모 monorepo에서 `cognition-isolation` findings가 90건 이상 쏟아짐 — D19가 가정한 "entry point 1개, root 1개" 구조가 아니라 frontend/backend/스크립트가 독립된 여러 진입점을 가진 monorepo라 `find_routed_peers`가 사실상 무력화됨(진입점 다중화 미대응)
+14. ~~판단 블록 3축을 LLM-as-Judge 수준으로 정량화(EVALUATION.md의 "열위(인정)" 항목)~~ — D27~D30(`judgment/subrubric.py`)으로 규칙기반 서브루브릭 구현·Study-Match-/LMS 재검증 완료. **단, 서브축 evidence 매핑(예: `location_signal`의 파일명 힌트, `exposure_client`의 "server" 문자열 휴리스틱)은 전부 이번 세션에서 새로 설계한 것이라 팀의 실제 판단 기준과 얼마나 일치하는지 사람 검증이 아직 없음** — LLM-as-Judge 자체(자연어 논증 평가)로의 전환도 여전히 안 함, 규칙기반의 정량화 버전일 뿐
 
 ## 발표용 라이브 데모 실행 순서 (검증됨)
 

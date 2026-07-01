@@ -46,7 +46,7 @@
 ## 설계 결정
 
 ```
-# D23: 판단 블록 3축(설계의도/질문가치/위험도)에 서브루브릭 4항목씩 도입
+# D27: 판단 블록 3축(설계의도/질문가치/위험도)에 서브루브릭 4항목씩 도입
 #   WHY: 현재 규칙기반 상/중/하는 판정 근거가 한 줄 설명뿐이라 감사 불가 —
 #        EVALUATION.md가 스스로 인정한 "LLM-as-Judge 정량화 열위"를 메우는 지점.
 #        서브축은 기존 인지 블록 출력 필드(fan_in/pattern_key/matched_text/trigger)만
@@ -57,7 +57,7 @@
 #        LLM 호출 없이도 규칙기반 그대로 서브축 값만 로그로 남기는 감사 트레일
 #        용도로 축소 운용 가능
 
-# D24: 서브축 총점(0~12) → 기존 상/중/하 문자열로 재매핑해 하위호환 유지
+# D28: 서브축 총점(0~12) → 기존 상/중/하 문자열로 재매핑해 하위호환 유지
 #   WHY: idiom_hook.py/priority 로직이 이미 "상/중/하" 문자열에 의존 —
 #        서브루브릭 도입이 기존 판단 블록 소비자 코드를 깨면 안 됨
 #   COST: 9/5 컷오프가 임의적 — 데이터 쌓이기 전까진 근거 없는 임계값
@@ -67,10 +67,16 @@
 
 ## 상태
 
-**초안 — 아직 `score_findings.py`에 코드로 구현되지 않음.** 이 문서는 서브루브릭
-구조에 대한 팀 합의를 먼저 굳히기 위한 문서이며, 합의 후 다음 단계는:
+**구현 완료 — `judgment/subrubric.py`(D29/D30) + `judgment/score_findings.py`에 연결됨.**
 
-1. `score()` 함수의 각 `findings.append(...)` 블록에 서브축 점수 계산 로직 추가
-2. `SCORE_THRESHOLDS` 상수 분리 (D24)
-3. 최소 1개 실제 repo(Study-Match- 또는 jxxnixx/LMS)로 재실행해 기존 상/중/하 출력과
-   회귀 비교
+1. ~~`score()` 함수의 각 `findings.append(...)` 블록에 서브축 점수 계산 로직 추가~~ — 완료
+2. ~~`SCORE_THRESHOLDS` 상수 분리~~ — `subrubric.py`의 `THRESHOLDS`로 분리 완료(D28)
+3. ~~최소 1개 실제 repo로 재실행해 기존 상/중/하 출력과 회귀 비교~~ — Study-Match-(4 findings)
+   + jxxnixx/LMS(8 findings, `run_pipeline.py` 전체) 재실행 완료, 크래시 없음. **위험도 축은
+   전 findings에서 기존 값과 100% 일치**(risk가 사용자 대면 가장 민감한 축이라 우선 보존).
+   질문가치 축은 4건 중 1건(`tier-b-risk:firebase.ts`, 중→상)이 재계산으로 값이 바뀜 —
+   근거: `mitigation_present`/`scenario_specific` 등 4개 서브축이 전부 높게 나와 원래 단일
+   추정값(중)보다 근거가 두꺼워졌기 때문. 설계의도 축은 전 findings에서 자유서술 텍스트
+   → 상/중/하 정량값으로 형식이 바뀜(의도된 변화, 값 자체의 정오 비교 대상 아님). 상세
+   비교는 [`examples/study_match/judgment_output.json`](../examples/study_match/judgment_output.json)
+   git 히스토리 참고

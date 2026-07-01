@@ -6,6 +6,7 @@ import sys
 sys.path.insert(0, os.path.dirname(__file__))
 from idiom_filter import apply_idiom_filter  # noqa: E402
 from tier_b_suppression_filter import apply_tier_b_suppression  # noqa: E402
+from subrubric import apply_subrubric, idiom_evidence  # noqa: E402
 
 # D13: 반복 패턴 탐지 대상 확장자를 인지 블록(cognition/two_tier_scan.py)의 SRC_EXTS와 동일하게 유지
 #   WHY: 인지 블록만 다국어로 확장하고 판단 블록이 JS/TS만 스캔하면 다시 불일치가 생김
@@ -26,10 +27,17 @@ SKIP_DIRS = {"node_modules", ".git", "dist", "build", "__pycache__", ".venv", "v
 #
 # D3-COST 해소: "관용 패턴 vs 진짜 설계 결정" 구분은 idiom_filter.py + idiom_hook.py로 분리 구현
 #   (useAuth Context 같은 프레임워크 관례가 질문가치를 과대평가받던 문제, 아래 find_architecture_diffusion_point 참고)
+#
+# D3-COST 추가 해소(D29): "상/중/하가 근거 없이 한 줄 문자열로 확정된다"는 COST는
+#   subrubric.py의 4서브축×3축 채점으로 해소 — 여전히 규칙 기반(ML/LLM 아님)이라 D3의
+#   "투명하고 디버깅 가능"이라는 이유는 그대로 유지됨. 상세: SUBRUBRIC_DRAFT.md(D27/D28)
 
 ENTRY_POINT_HINTS = ("main.", "index.")
 REPEATED_PATTERN_MIN_FILES = 2
 REPEATED_PATTERN_MIN_HITS = 2
+
+# D29 계속: 파일명에 이런 힌트가 있으면 "의도적으로 분리했다"는 위치 신호로 채점(design_intent axis)
+LOCATION_INTENT_HINTS = ("test", "mock", "example", "legacy", "deprecated")
 
 
 # D16: hub 동점 시 fan-out(자신이 얼마나 많이 import하는지)이 낮은 쪽으로 tie-break
@@ -144,55 +152,146 @@ def score(scan_result, repo_root):
 
     hub = find_hub(fan_in, edges)
     if hub:
-        for f in find_isolated_from_hub(edges, fan_in, hub):
-            findings.append({
+        # D29: risk_evidence.spread_count는 "동일 위험 패턴이 몇 파일에 반복되는가"만 의미한다.
+        #   cognition-isolation/architecture-diffusion/repeated-pattern은 보안·신뢰성 위험이
+        #   아니라 구조적 특성이므로 여기서는 항상 0으로 고정한다(design_intent의
+        #   repetition_consistency 서브축이 "구조적 반복"은 이미 별도로 반영함 — risk 축까지
+        #   fan_in을 재사용하면 "많이 참조되는 파일=위험"이라는 잘못된 의미가 섞인다).
+        isolated_files = find_isolated_from_hub(edges, fan_in, hub)
+        for f in isolated_files:
+            finding = {
                 "id": f"cognition-isolation:{f}",
                 "file": f,
                 "finding": f"{f} — 허브 모듈({hub})로 가는 edge 없음. fan_in={fan_in.get(f)}만 보면 정상으로 보임",
-                "design_intent": "불명(의도적 스코프 축소 vs 미완성 방치 구분 불가)",
-                "question_value": "상",
-                "risk": "하",
                 "priority": "최우선",
-            })
+            }
+            apply_subrubric(
+                finding,
+                design_intent_evidence=dict(
+                    repetition=len(isolated_files) - 1,
+                    idiom_status="none",
+                    location_signal=any(h in f.lower() for h in LOCATION_INTENT_HINTS),
+                    mitigation_present=None,
+                ),
+                question_value_evidence=dict(
+                    tradeoff_signal=True,
+                    repo_specificity=True,
+                    idiom_downgrade_votes=0,
+                    ladder_richness=fan_in.get(f, 0),
+                ),
+                risk_evidence=dict(
+                    trigger_confirmed=None,
+                    exposure_client=None,
+                    scenario_specific=False,
+                    spread_count=0,
+                ),
+            )
+            findings.append(finding)
 
         diffusion = find_architecture_diffusion_point(fan_in, hub, repo_root)
         if diffusion:
-            findings.append({
+            idiom_status, idiom_confirmations = idiom_evidence(diffusion["pattern_key"], diffusion["file"])
+            finding = {
                 "id": f"architecture-diffusion:{diffusion['file']}",
                 "file": diffusion["file"],
                 "pattern_key": diffusion["pattern_key"],
                 "finding": f"{diffusion['file']} — 허브 다음으로 fan_in={diffusion['fan_in']}, 여러 컴포넌트가 공유",
-                "design_intent": "높음(다만 프레임워크 관용 패턴일 수 있음 — idiom_filter가 확정 여부 판정)",
-                "question_value": "상",
-                "risk": "하",
                 "priority": "질문 대상",
-            })
+            }
+            apply_subrubric(
+                finding,
+                design_intent_evidence=dict(
+                    repetition=diffusion["fan_in"],
+                    idiom_status=idiom_status,
+                    location_signal=True,
+                    mitigation_present=None,
+                ),
+                question_value_evidence=dict(
+                    tradeoff_signal=True,
+                    repo_specificity=True,
+                    idiom_downgrade_votes=idiom_confirmations,
+                    ladder_richness=diffusion["fan_in"],
+                ),
+                risk_evidence=dict(
+                    trigger_confirmed=None,
+                    exposure_client=None,
+                    scenario_specific=False,
+                    spread_count=0,
+                ),
+            )
+            findings.append(finding)
 
     # D14: Tier B raw 히트에서 confirmed 오탐((trigger,matched_text) 단위)을 먼저 걷어낸 뒤 채점
     tier_b_flagged = apply_tier_b_suppression(tier_b["flagged_files"])
+
+    # D29: Tier B는 판단 축(위험도)의 spread_count가 실제로 의미 있는 유일한 finding
+    #   군이다 — 같은 트리거가 몇 개 파일에서 반복되는지가 "위험의 확산 범위"이기 때문.
+    trigger_file_counts = {}
+    for hits in tier_b_flagged.values():
+        for h in hits:
+            trigger_file_counts[h["trigger"]] = trigger_file_counts.get(h["trigger"], 0) + 1
+
     for f, hits in tier_b_flagged.items():
         triggers = {h["trigger"] for h in hits}
         if "auth_info_leak_via_thrown_error" in triggers:
-            findings.append({
+            finding = {
                 "id": f"tier-b-risk:{f}",
                 "file": f,
                 "finding": f"{f} — 인증정보(uid/email 등)가 JSON.stringify되어 throw된 Error에 담김",
-                "design_intent": "중(에러 컨텍스트를 남기려는 의도는 있어 보임)",
-                "question_value": "중",
-                "risk": "상",
                 "priority": "Important(🔴)",
-            })
+            }
+            apply_subrubric(
+                finding,
+                design_intent_evidence=dict(
+                    repetition=trigger_file_counts["auth_info_leak_via_thrown_error"] - 1,
+                    idiom_status="none",
+                    location_signal=any(h in f.lower() for h in ("error", "handler")),
+                    mitigation_present=True,  # throw로 에러 컨텍스트를 남기려는 의도 자체는 존재
+                ),
+                question_value_evidence=dict(
+                    tradeoff_signal=True,
+                    repo_specificity=True,
+                    idiom_downgrade_votes=0,
+                    ladder_richness=len(hits),
+                ),
+                risk_evidence=dict(
+                    trigger_confirmed=True,  # 오탐 억제 필터 통과 + auth/stringify/throw 3조건 AND 매치라 신뢰도 높음
+                    exposure_client="server" not in f.lower(),
+                    scenario_specific=True,
+                    spread_count=trigger_file_counts["auth_info_leak_via_thrown_error"] - 1,
+                ),
+            )
+            findings.append(finding)
         if "hardcoded_secret_pattern" in triggers:
             matched = next(h["matched_text"] for h in hits if h["trigger"] == "hardcoded_secret_pattern")
-            findings.append({
+            finding = {
                 "id": f"tier-b-risk:{f}:secret",
                 "file": f,
                 "finding": f"{f} — 시크릿 패턴 매치(오탐 가능성 있음, 육안 확인 필요) matched_text={matched!r}",
-                "design_intent": "확인 필요",
-                "question_value": "하",
-                "risk": "확인 전까지 중",
                 "priority": "검토 대상(자동 신뢰 금지)",
-            })
+            }
+            apply_subrubric(
+                finding,
+                design_intent_evidence=dict(
+                    repetition=0,
+                    idiom_status="none",
+                    location_signal=False,
+                    mitigation_present=None,  # 하드코딩 시크릿에 "의도된 완화책"이란 개념 자체가 성립 안 함
+                ),
+                question_value_evidence=dict(
+                    tradeoff_signal=False,  # 시크릿 하드코딩엔 정당화 가능한 대안이 없음 — 질문해도 트레이드오프 논의로 안 이어짐
+                    repo_specificity=True,
+                    idiom_downgrade_votes=0,
+                    ladder_richness=1,
+                ),
+                risk_evidence=dict(
+                    trigger_confirmed=None,  # D12-secret 이후에도 정규식 매치 자체는 오탐 이력이 있어 확정 불가
+                    exposure_client=None,
+                    scenario_specific=matched.lower().startswith(("sk-", "akia")),
+                    spread_count=trigger_file_counts["hardcoded_secret_pattern"] - 1,
+                ),
+            )
+            findings.append(finding)
         # D20: eval_or_dangerous_html 트리거를 finding으로 승격하는 규칙이 누락돼 있었음
         #   WHY: jxxnixx/LMS 실측 — 인지 블록은 Bookshelf.jsx의 dangerouslySetInnerHTML을 정확히
         #        잡았는데 판단 블록에 이 트리거를 finding화하는 규칙 자체가 없어서 조용히 버려짐
@@ -203,28 +302,66 @@ def score(scan_result, repo_root):
         #        트리거 이름→finding 템플릿을 딕셔너리로 묶어 한 곳에서 관리하는 리팩터링)
         if "eval_or_dangerous_html" in triggers:
             matched = next(h["matched_text"] for h in hits if h["trigger"] == "eval_or_dangerous_html")
-            findings.append({
+            finding = {
                 "id": f"tier-b-risk:{f}:dangerous-html",
                 "file": f,
                 "finding": f"{f} — 위험한 동적 실행/HTML 삽입 패턴 matched_text={matched!r} (XSS 등 위험 가능, 입력 출처 확인 필요)",
-                "design_intent": "확인 필요",
-                "question_value": "중",
-                "risk": "상",
                 "priority": "Important(🔴)",
-            })
+            }
+            apply_subrubric(
+                finding,
+                design_intent_evidence=dict(
+                    repetition=trigger_file_counts["eval_or_dangerous_html"] - 1,
+                    idiom_status="none",
+                    location_signal=False,
+                    mitigation_present=False,  # 정규식 매치 시점에 sanitize 흔적이 안 보임(부정 신호로 취급)
+                ),
+                question_value_evidence=dict(
+                    tradeoff_signal=True,  # 항상 sanitize 라이브러리/JSX 텍스트 렌더링 같은 대안이 존재
+                    repo_specificity=True,
+                    idiom_downgrade_votes=0,
+                    ladder_richness=2,
+                ),
+                risk_evidence=dict(
+                    trigger_confirmed=True,  # D17로 메서드 호출(.eval()) 오탐은 이미 정규식에서 배제됨
+                    exposure_client=True,  # eval/dangerouslySetInnerHTML은 정의상 실행·렌더 컨텍스트에 직접 노출
+                    scenario_specific=True,
+                    spread_count=trigger_file_counts["eval_or_dangerous_html"] - 1,
+                ),
+            )
+            findings.append(finding)
 
     for pattern, min_files in {"onSnapshot": REPEATED_PATTERN_MIN_FILES}.items():
         repeated = find_repeated_pattern_files(repo_root, pattern, REPEATED_PATTERN_MIN_HITS)
         if len(repeated) >= min_files:
-            findings.append({
+            finding = {
                 "id": f"repeated-pattern:{pattern}",
                 "file": None,
                 "finding": f"'{pattern}' 반복 등장 파일: {repeated}",
-                "design_intent": "하(리팩토링 누락 가능성)",
-                "question_value": "상",
-                "risk": "하(유지보수성)",
                 "priority": "질문 대상",
-            })
+            }
+            apply_subrubric(
+                finding,
+                design_intent_evidence=dict(
+                    repetition=len(repeated),
+                    idiom_status="none",
+                    location_signal=False,
+                    mitigation_present=None,
+                ),
+                question_value_evidence=dict(
+                    tradeoff_signal=True,  # 공용 훅으로 추출한다는 대안이 항상 존재
+                    repo_specificity=True,
+                    idiom_downgrade_votes=0,
+                    ladder_richness=len(repeated),
+                ),
+                risk_evidence=dict(
+                    trigger_confirmed=None,
+                    exposure_client=None,
+                    scenario_specific=False,
+                    spread_count=0,  # 유지보수성 이슈이지 보안/신뢰성 위험의 확산이 아님
+                ),
+            )
+            findings.append(finding)
 
     findings = apply_idiom_filter(findings, repo_root=repo_root)
     return {"hub": hub, "findings": findings}
