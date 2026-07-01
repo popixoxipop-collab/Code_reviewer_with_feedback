@@ -1,5 +1,22 @@
 # 방법론 비교 및 3블록 역할 수행 평가 (발표용)
 
+## 0. 출발점: 기존 skill 루브릭 채점 알고리즘 분석 → 공통 부족점 도출
+
+이 3블록 설계는 무에서 시작하지 않았다. 이미 보유 중인 skill 3개의 채점/리뷰 로직을 먼저 분석했고,
+그 분석에서 도출한 공통 부족점이 아래 비교표의 채택 근거가 되었다(상세는 [`RESEARCH.md`](./RESEARCH.md#0-출발점-기존-skill-루브릭-채점-알고리즘-분석--공통-부족점-도출) §0 참고).
+
+| Skill | 채점/리뷰 방식 |
+|---|---|
+| **paper-orchestra(codex-review) 6-axis 루브릭** | scientific_depth·technical_execution·logical_flow·writing_clarity·evidence_presentation·academic_style 6개 축 가중평균, 2-rater 병렬채점 |
+| **Claude Code Review** | 다중 에이전트가 diff를 병렬 스캔 → 심각도(🔴/🟡/🟣) 태그 |
+| **CodeRabbit** | codegraph + 40개 linter/보안스캐너 통합 → PR 요약·다이어그램 생성 |
+
+**분석해서 도출한 공통 부족점 4가지**: ①인지-판단 미분리 ②신호를 그대로 신뢰(관용 패턴 취약) ③검증이
+정적 1회성(대화형 재확인 루프 없음) ④비용 조절 장치 부재. 아래 표는 이 4가지 갭을 기준으로 우리
+방법론의 우월성을 항목별로 정직하게 판정한다.
+
+---
+
 # D10: 이 내용을 RESEARCH.md에 append하지 않고 별도 파일로 분리
 #   WHY: RESEARCH.md는 이미 완결된 리서치 결론 문서 — 계속 append하면 발표 직전에 필요한
 #        부분만 빠르게 찾기 어려워짐. 발표 준비 자료는 독립 파일이어야 재사용/수정이 쉬움
