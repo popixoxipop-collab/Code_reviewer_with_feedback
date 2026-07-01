@@ -405,6 +405,10 @@ python3 pipeline/compare_methodologies.py
   - WHY: D32/D33에서 이 4개 패턴을 처음 시드할 때, 서로 다른 4개의 실제 사례가 아니라 **같은 캐노니컬 예시 문장 하나를 "round 1/2/3"으로 3번 반복 제출**해서 확정시켰다는 걸 로그 원문(note 필드)에서 직접 확인. D41에서 정립한 "서로 다른 독립 출처가 필요하다"는 원칙이 reflection_hook의 최초 4개 패턴 자체에는 소급 적용된 적이 없었음. 사용자에게 "지금 강등 vs 예외로 남김" 중 선택지를 제시했고, "지금 강등(권장)"으로 결정 — 원칙 일관성을 재현율 실적보다 우선
   - COST: **reflection_hook의 confirmed 패턴이 현재 0개**다 — `self_error_recognition`이 D34에서 REQUIRED로 지정한 유일한 필수 서브신호인데 confirmed 패턴이 없으므로 `reflection_present`는 새로운 독립 출처 2~3개가 쌓이기 전까지 항상 False다. 이전에 보고한 "재현율 0/7"(D37/D38)이라는 표현조차 이제 보면 애초에 confirmed 패턴이 있었다는 전제 자체가 부정확했다 — 진짜 상태는 "재현율 측정 불가(트래커가 아직 아무것도 확정 안 함)"에 더 가까움
   - EXIT: 서로 다른 4개 이상의 실제(가짜/시뮬레이션이라도 서로 독립적인) 답변으로 각 서브신호를 다시 3회 이상 독립 확인해야 reflection_hook이 다시 작동을 시작함. `escalation_hook.py`(D50)가 바로 이 재축적 경로 — 앞으로 escalation이 성공할 때마다 정직하게 새 confirmations가 쌓인다
+- **D53** (전역 `~/.claude/agents/codex-judge.md` 신설 — 이 repo 밖 설정 파일) — codex-rescue가 judge/verdict 역할 요청을 거부해서 별도 forwarding 에이전트를 만듦
+  - WHY: escalation_hook.py(D50)의 judge 단계를 실제 Codex로 돌리려 했으나 `codex:codex-rescue`가 "저는 순수 rescue-forwarder라 역할 재할당 요청은 처리 안 합니다"라고 2번 재시도에도 동일하게 거부(자기 자신에 대한 역할 지정 시도로 오해). codex-rescue 정의 파일을 직접 고치는 대신(플러그인 마켓플레이스 파일이라 업데이트 시 덮어써질 위험) 같은 `codex-companion.mjs task` forwarding 메커니즘을 쓰되 "이 프롬프트는 Codex에게 전달할 payload"라는 프레이밍을 명시한 별도 에이전트(`codex-judge`)를 `~/.claude/agents/`에 신설
+  - COST: 새 에이전트 파일은 세션 시작 시 한 번 로드되는 레지스트리라 **이번 세션에는 반영 안 됨** — 실시간 검증을 위해 같은 메커니즘(`node codex-companion.mjs task ...`)을 이번 세션에서는 Bash로 직접 호출해 우회. 실제로 Codex가 정상 판정함을 확인(VERDICT: true, PATTERN_HINT: concrete_improvement) — 문제가 Codex 자체가 아니라 codex-rescue 래퍼의 해석 층이었음이 실증됨. `pipeline/escalation_hook.py`로 이 진짜 verdict를 hook에 반영 → concrete_improvement의 `sanitize_pattern`이 confirmations=1 유지(같은 출처라 dedup이 정상 작동, 인위적 승격 없음)까지 확인
+  - EXIT: 다음 세션부터 `subagent_type: "codex-judge"`로 정상 호출 가능할 것으로 예상 — 새 세션에서 재확인 필요. codex-rescue 플러그인이 업데이트돼 임의 역할 프롬프트를 투명하게 전달하게 되면 이 별도 에이전트는 폐기하고 합침
 
 ## 다음 단계 (미해결)
 
