@@ -324,6 +324,10 @@ python3 pipeline/compare_methodologies.py
   - WHY: ROAF-B 정의(자기오류인식→이유설명→새판단→개선안)를 그대로 코드화 — 하나라도 없으면 "아직 Knowledge 수준"
   - COST: 실측 결과 **B안 문서 자체가 제시한 모범 Reflection 예시**("아 맞네요. 제가 브라우저를 너무 신뢰했습니다. 운영환경이라면 백엔드에서 제한해야 합니다")조차 3/4만 매치되고 reason_explanation(명시적 "그래서/왜냐하면" 연결어)이 없어 최종 False로 판정됨 — 단일 발화 기준 AND-4가 지나치게 엄격할 수 있음을 시사
   - EXIT: 너무 엄격하면 OR-3(4개 중 3개 이상)으로 완화하거나, 여러 턴을 합쳐서 검사하도록 `evaluate_reflection`에 다중 턴 입력 지원 추가(POC_TEST.md 문제5의 Aggregation과 같은 방향)
+- **D34** ([`feedback/reflection_signal.py`](./feedback/reflection_signal.py)) — AND-4를 "self_error_recognition 필수 + 나머지 3개 중 2개 이상"으로 완화
+  - WHY: D33 EXIT에서 제안한 순수 OR-3(4개 중 아무 3개)을 그대로 시도하기 전에 실측 프로브("그래서 백엔드에서 제한해야 합니다." — 자기오류인식 없이 이유·새판단·개선안 3개만 있는 문장)를 먼저 넣어봤더니 optional_matches=3으로 순수 OR-3 기준을 통과해버렸다 — 애초에 틀렸다는 인정이 없으면 "원래부터 맞았던 답변"도 reflection으로 오판하게 됨. self_error_recognition은 Reflection의 정의(자기 수정) 자체를 성립시키는 조건이라 OR로 완화하면 안 되고 항상 필수로 둬야 한다는 걸 실측으로 확인
+  - COST: self_error_recognition confirmed 패턴이 아직 1개("너무 신뢰했")뿐이라 다른 오류인식 표현("아차", "잘못 봤네요" 등)을 쓰면 여전히 과소탐지됨 — 재현율은 낮은 채로 정밀도만 높인 상태
+  - EXIT: 실제 학생 답변이 쌓이면 `MIN_OPTIONAL_MATCHES` 상수만 조정하거나 `REQUIRED_SUB_SIGNALS`에 다른 서브신호 추가로 재보정 가능
 
 ## 다음 단계 (미해결)
 
@@ -341,7 +345,7 @@ python3 pipeline/compare_methodologies.py
 12. **신규(Shadowbroker 실측)**: `auth_info_leak_via_thrown_error` 트리거가 근접성 검사 없이 "3개 키워드가 파일 어딘가에 다 있으면" 발동해 대형 파일(1500줄+)에서 오탐 발생(D26) — 코드 수정(근접 N줄 검사) 필요, hook 억제로는 부적합한 사례
 13. **신규(Shadowbroker 실측)**: 726개 파일 규모 monorepo에서 `cognition-isolation` findings가 90건 이상 쏟아짐 — D19가 가정한 "entry point 1개, root 1개" 구조가 아니라 frontend/backend/스크립트가 독립된 여러 진입점을 가진 monorepo라 `find_routed_peers`가 사실상 무력화됨(진입점 다중화 미대응)
 14. ~~판단 블록 3축을 LLM-as-Judge 수준으로 정량화(EVALUATION.md의 "열위(인정)" 항목)~~ — D27~D30(`judgment/subrubric.py`)으로 규칙기반 서브루브릭 구현·Study-Match-/LMS 재검증 완료. **단, 서브축 evidence 매핑(예: `location_signal`의 파일명 힌트, `exposure_client`의 "server" 문자열 휴리스틱)은 전부 이번 세션에서 새로 설계한 것이라 팀의 실제 판단 기준과 얼마나 일치하는지 사람 검증이 아직 없음** — LLM-as-Judge 자체(자연어 논증 평가)로의 전환도 여전히 안 함, 규칙기반의 정량화 버전일 뿐
-15. ~~Reflection 판정이 너무 쉽게 확정됨(POC_TEST.md 문제4)~~ — D32/D33(`feedback/reflection_hook.py`, `reflection_signal.py`)로 idiom_hook과 동일한 재귀 확인 가드 구현 완료. **단, AND-4 기준이 실측(B안 자체 모범 예시조차 3/4 통과)으로 지나치게 엄격함이 드러남** — 실제 학생 답변 데이터로 OR-3 완화 여부를 재검토해야 하고, 4개 서브신호 각각의 confirmed 패턴은 아직 예시 1건씩만 시드됨(다양한 실제 답변으로 더 채워야 함)
+15. ~~Reflection 판정이 너무 쉽게 확정됨(POC_TEST.md 문제4)~~ — D32~D34로 완료. AND-4(너무 엄격, B안 모범 예시도 탈락) → "self_error_recognition 필수 + 나머지 2/3"으로 재보정, B안 모범 예시=True/피상적 답변=False/자기오류인식 없는 프로브=False 3건 전부 실측 확인. **단, 4개 서브신호 각각의 confirmed 패턴은 아직 예시 1건씩만 시드됨**(다양한 실제 답변으로 더 채워야 재현율이 오름)
 
 ## 발표용 라이브 데모 실행 순서 (검증됨)
 

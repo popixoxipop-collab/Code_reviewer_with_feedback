@@ -5,15 +5,20 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from reflection_hook import SUB_SIGNALS, load_patterns  # noqa: E402
 
-# D33: reflection_present는 4개 서브신호가 전부 confirmed 패턴으로 매치돼야 True (AND 조건)
-#   WHY: POC_TEST.md 문제6(Ownership vs Knowledge)의 핵심 도구 — "답을 조금 고쳤다"가 아니라
-#        자기오류인식+이유설명+새판단+개선안 4단계가 다 있어야 진짜 Reflection이라는 ROAF-B
-#        정의를 그대로 코드화. 4개 중 하나라도 없으면 "아직 Knowledge 수준"으로 간주
-#   COST: 매우 보수적 — 실측 결과 팀이 직접 작성한 "모범 Reflection 예시" 문장 하나조차
-#         AND 조건을 다 통과하지 못했다(아래 실행 로그 참고). 단일 발화 평가에는 너무 엄격할
-#         수 있고, 여러 턴에 걸친 근거를 모아야 할 가능성을 시사함(Aggregation 필요, 문제5)
-#   EXIT: 단일 발화 기준이 너무 엄격하다고 판명되면 4개 중 3개 이상(OR-3)으로 완화하거나,
-#         여러 턴의 텍스트를 합쳐서 검사하도록 evaluate_reflection에 turns: list[str] 지원 추가
+# D34: AND-4를 REQUIRED-1 + OR-3으로 완화 (self_error_recognition만 필수)
+#   WHY: D33의 AND-4 실측 결과 B안 자체 모범 예시조차 탈락해 너무 엄격했음. 단순 OR-3(4개
+#        중 아무 3개)으로 완화하면 자기오류인식 없이 "이유+새판단+개선안"만 있는 원래부터
+#        맞는 답변(정답을 처음부터 알고 있었던 경우)까지 reflection으로 오판할 위험이 실측
+#        프로브(아래 "그래서 백엔드에서 제한해야 합니다." 케이스)로 확인됨 — self_error_
+#        recognition이 빠지면 "자기 수정"이라는 Reflection의 정의 자체가 성립 안 하므로
+#        이것만은 OR로 완화하면 안 되고 항상 필수로 남겨야 한다
+#   COST: self_error_recognition confirmed 패턴이 아직 1개뿐이라 다양한 오류인식 표현
+#        ("아차", "잘못 봤네요", "정정하겠습니다" 등)을 못 잡으면 여전히 과소탐지 위험 있음
+#   EXIT: 실제 학생 답변 데이터가 쌓이면 REQUIRED 서브신호를 더 늘리거나(예:
+#        concrete_improvement도 필수) MIN_OPTIONAL_MATCHES 상수만 조정하면 재보정 가능
+REQUIRED_SUB_SIGNALS = ("self_error_recognition",)
+OPTIONAL_SUB_SIGNALS = tuple(s for s in SUB_SIGNALS if s not in REQUIRED_SUB_SIGNALS)
+MIN_OPTIONAL_MATCHES = 2  # OPTIONAL 3개(reason/judgment/improvement) 중 최소 2개
 
 
 def detect_sub_signal(text, sub_signal):
@@ -28,17 +33,28 @@ def detect_sub_signal(text, sub_signal):
 
 
 def evaluate_reflection(text):
-    """4개 서브신호가 전부 confirmed 패턴으로 매치돼야 reflection_present=True."""
+    """self_error_recognition은 필수, 나머지 3개 중 MIN_OPTIONAL_MATCHES개 이상이면 True(D34).
+
+    순수 OR-3(4개 중 아무 3개)은 자기오류인식 없이도 통과 가능해 "원래부터 맞았던 답변"을
+    reflection으로 오판할 위험이 실측으로 확인돼(아래 probe) 채택하지 않았다.
+    """
     results = {}
     for sub in SUB_SIGNALS:
         matched, pattern_id = detect_sub_signal(text, sub)
         results[sub] = {"matched": matched, "pattern_id": pattern_id}
-    reflection_present = all(r["matched"] for r in results.values())
+
+    required_ok = all(results[s]["matched"] for s in REQUIRED_SUB_SIGNALS)
+    optional_matches = sum(1 for s in OPTIONAL_SUB_SIGNALS if results[s]["matched"])
+    reflection_present = required_ok and optional_matches >= MIN_OPTIONAL_MATCHES
+
     matched_count = sum(1 for r in results.values() if r["matched"])
     return {
         "reflection_present": reflection_present,
         "matched_count": matched_count,
         "total_sub_signals": len(SUB_SIGNALS),
+        "required_ok": required_ok,
+        "optional_matches": optional_matches,
+        "min_optional_required": MIN_OPTIONAL_MATCHES,
         "sub_signals": results,
     }
 
