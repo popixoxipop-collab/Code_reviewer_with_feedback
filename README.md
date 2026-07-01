@@ -42,6 +42,7 @@ Repository
 | [`examples/lms/`](./examples/lms/) | 전체 | 두 번째 실제 공개 repo(jxxnixx/LMS, JS/TS 51파일)에 파이프라인 전체를 돌린 실행 결과 |
 | [`examples/shadowbroker/`](./examples/shadowbroker/) | 전체 | 세 번째 실제 공개 repo(Shadowbroker, Python+TS 726파일 monorepo) — tier_b 방법론 첫 실증 |
 | [`pipeline/evidence_bridge.py`](./pipeline/evidence_bridge.py) | 전체 | D안(B안+C안 결합) — C안 finding을 B안 형식 Repository Evidence + 질문으로 자동 변환 |
+| [`pipeline/followup_generator.py`](./pipeline/followup_generator.py) | 전체 | D안 적응형 Follow-up — 팀 §3 전략표를 isolation_classifier/reflection_signal 분류로 구현, Bookshelf.jsx 2턴 완주로 검증(D48) |
 | [`examples/lms/d_plan/`](./examples/lms/d_plan/) | 전체 | D안을 LMS에 실행한 결과 + Codex로 독립 생성한 답변 7건 전체 검증([`codex_verification_full.md`](./examples/lms/d_plan/codex_verification_full.md)), A~E안 비교 및 6-axis 채점표 |
 | [`judgment/isolation_hook.py`](./judgment/isolation_hook.py) + [`isolation_classifier.py`](./judgment/isolation_classifier.py) | 판단 | cognition-isolation 판정용 재귀 hook — "정규식 하나"가 아니라 "카테고리(동의어 alternation)" 단위로 타당한 설계 근거를 축적·확정([`검증 결과`](./examples/lms/d_plan/isolation_hook_verification.md)) |
 
@@ -383,6 +384,10 @@ python3 pipeline/compare_methodologies.py
   - WHY: 사용자가 18개 세로축(목적~최종 산출물)을 지정하며 A~E안 표를 요청 — 원본 문서를 다시 열어(2086~2105행) A안/B안 값을 그대로 옮기고, C/D/E안은 이번 세션 실측 데이터로만 채워 새 주장을 지어내지 않음. "Repository 분석"처럼 답이 뻔한 행도 실측 근거(정적분석 vs 답변 텍스트만 봄)를 달아 근거 없이 ○/✗만 찍지 않음
   - COST: C/D/E안은 대화가 없어 "질문 생성/Follow-up/질문 깊이/Counterfactual/교육 활용성" 5개 행에서 전부 "없음/해당없음/낮음"으로 채워짐 — 표만 보면 열위로 보일 수 있으나, "설명 가능성/재현성"에서는 반대로 A/B안을 앞선다는 트레이드오프를 표 아래 문단에 명시해 균형을 맞춤
   - EXIT: 실제 대화형 검증(D42/D46 EXIT)이 이뤄지면 "질문 생성/Follow-up/질문 깊이" 행이 D안부터 갱신 가능
+- **D48** ([`pipeline/followup_generator.py`](./pipeline/followup_generator.py)) — D안에 적응형 Follow-up 질문 생성을 실제로 구현, D47 표의 "미구현" 셀을 진짜로 채움
+  - WHY: 사용자가 팀 Notion 비교표(질문 생성/Follow-up 질문 칸, 모든 팀원이 실제 값을 채워 넣음)를 보여주며 "우리 진행 방식을 저기에 맞춰야지, 구현을 잘못했다"고 명확히 정정 — D안이 단발 질문만 내고 Follow-up을 "없음/미구현"으로 방치하는 건 팀 표준에 맞지 않음. 팀 자체 문서(`코드이해도_평가_질문및채점기준.md` §3 "적응형 후속 질문 전략" 표: 모호/추상적→구체화, 대안 미언급→대안탐색, 근거 얕음→변형질문, 오개념감지→소크라테스식 반례, 충분히 깊음→다음 축)를 그대로 규칙 트리로 옮기고, "1차 답변 상태" 판정은 새 LLM 호출 없이 기존 `isolation_classifier`/`reflection_signal`을 재사용. Bookshelf.jsx(tier-b-risk) 사례에서 Codex로 실제 2턴까지 완주해 검증 — 1턴("안일하게 생각했다"에서 멈춤)보다 2턴("script 삽입→쿠키탈취→외부전송"까지 구체화)이 실제로 더 깊었음을 실측 확인. cognition-isolation 3개 사례(Auth/Header/authToken)도 카테고리 매치 개수에 따라 서로 다른 후속 질문으로 정확히 분기되는 것 확인
+  - COST: A/B안처럼 "매번 새로 생성되는 LLM 적응형 질문"이 아니라 팀 §3 표의 5개 방향 중 하나를 **미리 정의된 규칙(신호 분류 결과)으로 선택**하는 구조 — 문구는 고정 템플릿이고 분기만 적응형. "생성형 적응형"이 아니라 "규칙 기반 적응형"이라는 한계를 문서에 명시
+  - EXIT: API가 생기면 같은 분기 로직(5개 방향) 위에서 각 분기의 질문 문구만 Codex/Claude가 매번 새로 생성하도록 교체 가능 — `_risk_type_followup`/`_isolation_followup`의 return 문자열만 LLM 호출로 대체하면 됨, 분기 트리 자체는 재사용
 
 ## 다음 단계 (미해결)
 
