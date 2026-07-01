@@ -31,6 +31,7 @@ Repository
 | [`judgment/idiom_hook.py`](./judgment/idiom_hook.py) | 판단 | 관용 패턴 재귀 업데이트 훅 — 피드백 로그 적재(`feedback`) + threshold 도달 시 candidate→confirmed 승격(`update`) |
 | [`judgment/idioms/<lang>/`](./judgment/idioms/) | 판단 | 언어별(javascript/python/java/c/cpp/swift) 관용 패턴 상태(`idiom_patterns.json`)와 피드백 로그(`idiom_feedback_log.jsonl`) |
 | [`feedback/depth_ladder_template.md`](./feedback/depth_ladder_template.md) | 피드백 | What→How→Why→Alternative→Trade-off→Constraint→Reflection 7단계 강제 템플릿 |
+| [`feedback/generate_questions.py`](./feedback/generate_questions.py) | 피드백 | 판단 블록 출력을 받아 Anthropic tool-use로 7단계 질문을 실제 LLM 호출로 자동 생성(스키마 강제, 필드 누락 시 예외) |
 | [`examples/study_match/`](./examples/study_match/) | 전체 | 실제 공개 repo(Study-Match-)에 3블록 전부를 돌린 실행 결과, 관용 패턴 필터 데모 포함 |
 
 ## 실행 방법
@@ -42,9 +43,13 @@ python3 cognition/two_tier_scan.py <repo>/src > scan_output.json
 # 2) 판단 블록 — 인지 블록 출력을 받아 우선순위 채점
 python3 judgment/score_findings.py scan_output.json <repo>/src > judgment_output.json
 
-# 3) 피드백 블록 — judgment_output.json의 각 finding에
-#    feedback/depth_ladder_template.md의 7단계를 채워 질문 생성 (현재는 수기 적용,
-#    examples/study_match/findings.md가 실제 채운 예시)
+# 3) 피드백 블록 — judgment_output.json의 각 finding에 7단계 질문을 실제 LLM 호출로 자동 생성
+pip install -r requirements.txt
+export ANTHROPIC_API_KEY=<your-key>
+python3 feedback/generate_questions.py judgment_output.json          # 전체 finding, JSON 출력
+python3 feedback/generate_questions.py judgment_output.json 2 --md   # 상위 2건만, 마크다운 출력
+
+# (fallback) API 키 없이 수기로 채우고 싶으면 feedback/depth_ladder_template.md의 체크리스트 사용
 ```
 
 ### 관용 패턴 재귀 업데이트 훅 (언어별)
@@ -93,6 +98,7 @@ python3 judgment/idiom_hook.py update-all
 - **관용 패턴 감지 정규식의 취약성**: `createContext(` 단순 매치는 TypeScript 제네릭(`createContext<AuthContextType>(`)을 실측에서 한 번 놓쳤다. `createContext\s*(<[^>]*>)?\s*\(`로 수정했지만, 이런 구문 변형은 언어/문법마다 계속 나올 수 있음
 - **언어 판별이 확장자 기반**: `.h`처럼 C/C++ 양쪽에서 쓰이는 확장자는 오분류 가능(현재 `.h`→C로 고정). 정확한 판별은 빌드시스템/AST 기반이어야 함
 - **javascript 외 언어의 관용 패턴 저장소는 전부 빈 상태(미검증)**: python/java/c/cpp/swift는 구조(디렉토리·threshold)만 있고 실제 피드백으로 채워진 패턴이 하나도 없음
+- **`feedback/generate_questions.py`는 제어 흐름만 검증됨, 실제 LLM 출력 품질은 미검증**: 스키마 강제(7단계 필드 누락 시 예외)·API 키 없을 때 실패 방식·마크다운 렌더링은 스텁 클라이언트로 확인했지만, 실제 Anthropic API를 호출해 생성된 질문의 품질(판별력, Depth Ladder 취지 부합 여부)은 이 세션에서 검증하지 않았음(API 키/과금 필요)
 
 ## 설계 결정 로그
 
@@ -125,12 +131,16 @@ python3 judgment/idiom_hook.py update-all
   - WHY: 관용 패턴은 언어/프레임워크에 강하게 종속됨(JS Context vs Java static Singleton vs C 전역 변수) — 하나로 합치면 한 언어에서 학습한 패턴이 다른 언어의 진짜 위험 신호까지 걸러버릴 수 있음
   - COST: 언어 수만큼 상태 파일/로그가 늘어나 관리 포인트 증가, 확장자 기반 언어 판별의 오분류 가능성(`.h`)
   - EXIT: 새 언어는 `idiom_filter.py`의 `LANG_EXT_MAP`에 확장자 매핑만 추가하면 됨
+- **D11** ([`feedback/generate_questions.py`](./feedback/generate_questions.py)) — 피드백 블록 7단계 질문 생성을 Anthropic tool-use로 자동화
+  - WHY: 수기 생성 시 즉흥 편차 문제(D1)가 코드 레벨에서 완전히 해소 안 됨 — tool-use 스키마로 7단계 필드를 강제하면 누락 시 예외로 즉시 드러남
+  - COST: API 키/네트워크 의존성 생김, 호출당 비용 발생, 오프라인 실행 불가. 이 세션에서는 스텁 클라이언트로 제어 흐름만 검증했고 실제 API 호출 품질은 미검증
+  - EXIT: `ANTHROPIC_API_KEY` 없으면 즉시 중단(조용히 실패 안 함). API 없이 쓰려면 `feedback/depth_ladder_template.md` 수기 체크리스트로 되돌아가면 됨(코드 삭제 불필요)
 
 ## 다음 단계 (미해결)
 
 1. ~~판단 블록에 "프레임워크 관용 패턴 목록" 대조 필터 추가~~ — D5~D7로 완료(javascript만 실증, 나머지 언어는 빈 상태)
 2. Tier B 트리거 오탐/이중계산 로그를 쌓아 hook 재귀 업데이트로 자동 보정
-3. 피드백 블록의 7단계 질문 생성을 수기가 아니라 LLM 호출로 자동화 (현재는 템플릿만 강제, 채우는 건 수동)
+3. ~~피드백 블록의 7단계 질문 생성을 수기가 아니라 LLM 호출로 자동화~~ — D11로 코드 구현 완료. **단, 실제 API 호출로 생성 품질을 검증하는 것은 아직 남아있음**(API 키로 최소 1회 실행 후 findings.md와 비교 필요)
 4. 다른 언어/규모의 repo(Python, 대형 monorepo)로 재검증
 5. python/java/c/cpp/swift 관용 패턴 저장소에 실제 시드 데이터 채우기(현재 전부 `patterns: []`)
 6. 언어 판별을 확장자 기반에서 AST/툴체인 기반으로 교체 검토(`.h` 오분류 해소)
