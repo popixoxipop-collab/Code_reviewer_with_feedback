@@ -23,6 +23,17 @@ import re
 #   COST: 완벽하지 않음 — C++ 스타일 헤더인데 이 토큰들을 하나도 안 쓰면 여전히 c로 오판정.
 #        repo_root 없이 파일명만으론 여전히 기존처럼 c로 고정(하위호환)
 #   EXIT: 이 휴리스틱도 부족하면 실제 컴파일러/AST 판별(예: clang -x c++ 파싱 성공 여부)로 교체
+#
+# D31: idiom_filter가 question_value를 덮어쓸 때 subrubric 감사 트레일도 함께 갱신
+#   WHY: 실측 발견 — subrubric.py가 계산한 원점수(예: total=9 → "상")와 idiom_filter가
+#        최종적으로 덮어쓴 값("하")이 서로 다른 채로 finding에 함께 남아있었음. 팀의 B안
+#        POC 문서가 지적한 "Signals After Filter가 Downgrade Log와 안 맞는다"는 문제와
+#        정확히 같은 클래스의 결함 — 감사 트레일(subrubric)과 최종 판정이 불일치하면
+#        "왜 이 등급인가"를 설명할 수 없어 Evidence 기반 설계 취지가 무너짐
+#   COST: idiom_filter가 subrubric.py의 내부 스키마(sub/total 키)를 알아야 해서 두 모듈
+#        간 결합이 약간 늘어남
+#   EXIT: subrubric.py가 스키마를 바꾸면 이 덮어쓰기 블록도 같이 바꿔야 함 — 스키마를
+#        공용 상수/타입으로 뽑으면 결합도를 낮출 수 있음
 
 CPP_HINT_RE = re.compile(r"\bclass\s+\w+|\bnamespace\s+\w+|\btemplate\s*<|std::|\bpublic:|\bprivate:")
 
@@ -111,4 +122,10 @@ def apply_idiom_filter(findings, repo_root=None):
             )
             if "priority" in finding:
                 finding["priority"] = f"{finding['priority']} → 관용 패턴 필터 적용됨(우선순위 낮음)"
+            # D31: subrubric 감사 트레일이 최종 판정과 어긋나지 않도록 override 기록을 남긴다
+            #   (원래 서브축 점수는 지우지 않는다 — "왜 원래 상이었는지"도 감사 대상이므로)
+            if "subrubric" in finding and "question_value" in finding["subrubric"]:
+                finding["subrubric"]["question_value"]["overridden_by"] = "idiom_filter"
+                finding["subrubric"]["question_value"]["overridden_reason"] = finding["idiom_note"]
+                finding["subrubric"]["question_value"]["final_bucket"] = finding["question_value"]
     return findings

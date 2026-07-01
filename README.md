@@ -295,6 +295,10 @@ python3 pipeline/compare_methodologies.py
   - WHY: risk 축은 사용자 대면 가장 민감한 판정이라 기존 값과 100% 일치하는지가 최소 안전선 — 실제로 전 findings에서 risk만은 기존 상/중/하와 정확히 일치함을 확인(D29로 spread_count를 risk-only로 제한한 결과)
   - COST: question_value 축은 4건 중 1건(`tier-b-risk:firebase.ts`, 중→상)이 재계산으로 바뀜 — 서브축 근거(mitigation_present/scenario_specific 등)가 원래의 단일 추정값보다 두꺼워졌기 때문이며, 되돌릴 수 없는 의도된 변화. design_intent 축은 전 findings에서 자유서술 텍스트→정량값으로 형식 자체가 바뀜(비교 대상 아님)
   - EXIT: question_value 재계산값이 실제 팀 판단과 어긋난다고 판명되면 `score_question_value`의 개별 evidence(tradeoff_signal 등)만 조정 — 축 구조 자체를 되돌릴 필요 없음
+- **D31** ([`judgment/idiom_filter.py`](./judgment/idiom_filter.py)) — idiom_filter가 question_value를 덮어쓸 때 subrubric 감사 트레일도 함께 갱신
+  - WHY: 실측 발견 — `architecture-diffusion:App.tsx`에서 subrubric 원점수(total=9→"상")와 idiom_filter가 최종적으로 덮어쓴 값("하")이 finding 안에 불일치 상태로 공존했음. POC_TEST.md에서 재구성한 B안 자체 비평의 "Signals After Filter가 Downgrade Log와 안 맞는다"는 지적과 정확히 같은 클래스의 결함
+  - COST: idiom_filter가 subrubric.py 내부 스키마(`sub`/`total` 키)를 알아야 해서 두 모듈 결합이 약간 늘어남
+  - EXIT: subrubric.py가 스키마를 바꾸면 이 덮어쓰기 블록도 같이 바꿔야 함 — 공용 타입으로 뽑으면 결합도 낮출 수 있음
 
 ## 다음 단계 (미해결)
 
