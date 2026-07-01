@@ -1,0 +1,120 @@
+{
+  "repo": "repo_candidates/Study-Match-/src",
+  "total_source_files": 10,
+  "tier_a_structural": {
+    "fan_in": {
+      "App.tsx": 6,
+      "main.tsx": 0,
+      "firebase.ts": 8,
+      "StudyGroups.tsx": 1,
+      "Dashboard.tsx": 1,
+      "AuthScreen.tsx": 1,
+      "ChatRoom.tsx": 1,
+      "Layout.tsx": 1,
+      "Competitions.tsx": 1,
+      "IdeaBoard.tsx": 1
+    },
+    "zero_fan_in_files": [
+      "main.tsx"
+    ],
+    "edges": [
+      [
+        "App.tsx",
+        "firebase.ts"
+      ],
+      [
+        "App.tsx",
+        "AuthScreen.tsx"
+      ],
+      [
+        "App.tsx",
+        "Dashboard.tsx"
+      ],
+      [
+        "App.tsx",
+        "IdeaBoard.tsx"
+      ],
+      [
+        "App.tsx",
+        "StudyGroups.tsx"
+      ],
+      [
+        "App.tsx",
+        "ChatRoom.tsx"
+      ],
+      [
+        "App.tsx",
+        "Competitions.tsx"
+      ],
+      [
+        "App.tsx",
+        "Layout.tsx"
+      ],
+      [
+        "StudyGroups.tsx",
+        "App.tsx"
+      ],
+      [
+        "StudyGroups.tsx",
+        "firebase.ts"
+      ],
+      [
+        "Dashboard.tsx",
+        "App.tsx"
+      ],
+      [
+        "Dashboard.tsx",
+        "firebase.ts"
+      ],
+      [
+        "AuthScreen.tsx",
+        "firebase.ts"
+      ],
+      [
+        "AuthScreen.tsx",
+        "App.tsx"
+      ],
+      [
+        "AuthScreen.tsx",
+        "firebase.ts"
+      ],
+      [
+        "ChatRoom.tsx",
+        "App.tsx"
+      ],
+      [
+        "ChatRoom.tsx",
+        "firebase.ts"
+      ],
+      [
+        "Layout.tsx",
+        "App.tsx"
+      ],
+      [
+        "Layout.tsx",
+        "firebase.ts"
+      ],
+      [
+        "IdeaBoard.tsx",
+        "App.tsx"
+      ],
+      [
+        "IdeaBoard.tsx",
+        "firebase.ts"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {
+      "firebase.ts": [
+        "auth_info_leak_via_thrown_error"
+      ],
+      "Competitions.tsx": [
+        "hardcoded_secret_pattern"
+      ]
+    },
+    "deep_read_count": 2,
+    "total_files": 10,
+    "cost_saved_ratio": 0.8
+  }
+}
