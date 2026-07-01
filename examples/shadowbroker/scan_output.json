@@ -1,0 +1,7439 @@
+{
+  "repo": "Shadowbroker",
+  "total_source_files": 726,
+  "tier_a_structural": {
+    "fan_in": {
+      "start-backend.js": 0,
+      "vitest.config.js": 0,
+      "tailwind.config.ts": 0,
+      "next.config.peer-b.ts": 0,
+      "next.config.ts": 0,
+      "report-bundle-size.js": 0,
+      "middleware.ts": 2,
+      "types.d.ts": 0,
+      "infonetEconomyClient.ts": 1,
+      "gateCompatTelemetry.ts": 1,
+      "meshSchema.ts": 7,
+      "controlPlaneStatusClient.ts": 2,
+      "meshGateLocalRuntime.ts": 0,
+      "contactTrustSummary.ts": 1,
+      "gateAccessProof.ts": 3,
+      "gateCatalogSnapshot.ts": 0,
+      "wormholeClient.ts": 4,
+      "meshDmRatchet.ts": 0,
+      "meshDeadDrop.ts": 2,
+      "wormholeIdentityClient.ts": 8,
+      "gateMessageSnapshot.ts": 2,
+      "wormholeCompatibility.ts": 2,
+      "gateMetadataTiming.ts": 0,
+      "meshProtocol.ts": 8,
+      "meshDmConsent.ts": 2,
+      "contactTrustTypes.ts": 1,
+      "meshDmClient.ts": 0,
+      "meshSas.ts": 1,
+      "meshGateWorkerVault.ts": 1,
+      "meshMerkle.ts": 2,
+      "gateEnvelope.ts": 2,
+      "meshGateWorkerClient.ts": 0,
+      "meshGate.worker.ts": 0,
+      "meshDmWorkerVault.ts": 1,
+      "gatePreviewSnapshot.ts": 0,
+      "meshMailbox.ts": 3,
+      "gateSessionStream.ts": 1,
+      "meshKeyStore.ts": 3,
+      "wormholeDmBootstrapClient.ts": 0,
+      "meshIdentity.ts": 13,
+      "requestSenderSealPolicy.ts": 0,
+      "requestSenderRecovery.ts": 1,
+      "meshDm.worker.ts": 0,
+      "meshPrivacyHints.ts": 0,
+      "meshDmWorkerClient.ts": 3,
+      "privacy_core.d.ts": 0,
+      "privacy_core_bg.wasm.d.ts": 0,
+      "privacy_core.js": 0,
+      "inline0.js": 1,
+      "shodan.ts": 3,
+      "api.ts": 43,
+      "dashboard.ts": 28,
+      "unusualWhales.ts": 1,
+      "aiIntel.ts": 3,
+      "LocateBar.tsx": 1,
+      "layout.tsx": 0,
+      "SentinelInfoModal.tsx": 1,
+      "page.tsx": 0,
+      "route.ts": 2,
+      "solarTerminator.ts": 2,
+      "aircraftClassification.ts": 2,
+      "alertSpread.test.ts": 0,
+      "positioning.ts": 4,
+      "alertSpread.ts": 3,
+      "WorldviewLeftPanel.tsx": 1,
+      "SarAoiEditorModal.tsx": 1,
+      "MiniMap.tsx": 0,
+      "WatchlistWidget.tsx": 1,
+      "StartupWarmupModal.tsx": 1,
+      "NewsFeed.tsx": 1,
+      "TopRightControls.tsx": 1,
+      "MaplibreViewer.tsx": 0,
+      "PredictionsPanel.tsx": 0,
+      "HlsVideo.tsx": 1,
+      "MapLegend.tsx": 1,
+      "FilterPanel.tsx": 1,
+      "AIIntelPanel.tsx": 1,
+      "WikiImage.tsx": 4,
+      "RadioInterceptPanel.tsx": 0,
+      "SarModeChooserModal.tsx": 1,
+      "MeshChat.tsx": 1,
+      "ScaleBar.tsx": 1,
+      "AlertToast.tsx": 1,
+      "DesktopBridgeBootstrap.tsx": 1,
+      "MarketsPanel.tsx": 1,
+      "WorldviewRightPanel.tsx": 0,
+      "FindLocateBar.tsx": 1,
+      "AdvancedFilterModal.tsx": 1,
+      "ChangelogModal.tsx": 1,
+      "OnboardingModal.tsx": 1,
+      "SettingsPanel.tsx": 1,
+      "ExternalImage.tsx": 3,
+      "TimelineScrubber.tsx": 0,
+      "KeyboardShortcutsOverlay.tsx": 1,
+      "TimelinePanel.tsx": 1,
+      "GlobalTicker.tsx": 1,
+      "ShodanPanel.tsx": 1,
+      "MeshTerminal.tsx": 1,
+      "ErrorBoundary.tsx": 1,
+      "ConfirmDialog.tsx": 2,
+      "KiwiSdrConsentDialog.tsx": 1,
+      "MessagesView.tsx": 2,
+      "index.tsx": 0,
+      "HashchainEvents.tsx": 1,
+      "InfonetShell.tsx": 1,
+      "ProfileView.tsx": 1,
+      "MarketView.tsx": 1,
+      "GateShutdownView.tsx": 1,
+      "LiveActivityLog.tsx": 1,
+      "AIQueryView.tsx": 1,
+      "PetitionsView.tsx": 1,
+      "GateView.tsx": 1,
+      "ResolutionView.tsx": 1,
+      "WorkView.tsx": 0,
+      "NetworkStats.tsx": 1,
+      "UpgradeView.tsx": 1,
+      "BallotView.tsx": 0,
+      "WeatherWidget.tsx": 1,
+      "TerminalDashboard.tsx": 1,
+      "BootstrapView.tsx": 1,
+      "ExchangeView.tsx": 0,
+      "IdentityHUD.tsx": 0,
+      "TrendingPosts.tsx": 1,
+      "FunctionKeyView.tsx": 1,
+      "AIIntelPinDetail.tsx": 1,
+      "mapConstants.ts": 2,
+      "FishingDestinationRoute.tsx": 1,
+      "geoJSONBuilders.test.ts": 0,
+      "pinIcons.ts": 1,
+      "staticMapLayers.worker.ts": 0,
+      "MapMarkers.tsx": 0,
+      "geoJSONBuilders.ts": 1,
+      "dynamicMapLayers.worker.ts": 0,
+      "MeasurementLayers.tsx": 1,
+      "SigintPanels.tsx": 1,
+      "mapStyles.ts": 1,
+      "useViewportBounds.ts": 1,
+      "useStaticMapLayersWorker.ts": 1,
+      "useInterpolation.ts": 1,
+      "useClusterLabels.ts": 1,
+      "useDynamicMapLayersWorker.ts": 1,
+      "useImperativeSource.ts": 1,
+      "OverlayIcons.ts": 1,
+      "SatelliteIcons.ts": 2,
+      "AircraftIcons.ts": 1,
+      "storage.ts": 0,
+      "utils.ts": 3,
+      "types.ts": 30,
+      "RepBadge.tsx": 1,
+      "useMeshChatController.ts": 1,
+      "CctvFullscreenModal.tsx": 1,
+      "SigintPopup.tsx": 1,
+      "RegionDossierPanel.tsx": 1,
+      "CorrelationPopup.tsx": 1,
+      "SatellitePopup.tsx": 1,
+      "ShipPopup.tsx": 1,
+      "WastewaterPopup.tsx": 1,
+      "MilitaryBasePopup.tsx": 1,
+      "gateAccessProof.test.ts": 0,
+      "requestSenderSealRecoveryWindow.test.ts": 0,
+      "gateCompatDecryptUx.test.tsx": 0,
+      "meshContactStorage.test.ts": 0,
+      "meshSigningKeyHardening.test.ts": 0,
+      "requestSenderSealPolicy.test.ts": 0,
+      "gateMessageSnapshot.test.ts": 0,
+      "messagesViewFirstContact.test.tsx": 0,
+      "meshGateWorkerClient.test.ts": 0,
+      "meshCanonical.test.ts": 0,
+      "meshIdentitySeparation.test.ts": 0,
+      "meshChatBehavior.test.ts": 0,
+      "dmPollScheduler.test.ts": 0,
+      "gateEnvelope.test.ts": 0,
+      "wormholeIdentityClientProfiles.test.ts": 0,
+      "dmCompatSunsetPolicy.test.ts": 0,
+      "requestSenderRecovery.test.ts": 0,
+      "meshDmClientLookup.test.ts": 0,
+      "meshDmTransportLock.test.ts": 0,
+      "meshGateWorkerVault.test.ts": 0,
+      "gateEnvelopeHashBinding.test.ts": 0,
+      "gateSessionStream.test.ts": 0,
+      "gateCatalogSnapshot.test.ts": 0,
+      "dmSelftestClient.test.ts": 0,
+      "meshChatDecomposition.test.ts": 0,
+      "meshMerkle.test.ts": 0,
+      "meshDeadDrop.test.ts": 0,
+      "gatePreviewSnapshot.test.ts": 0,
+      "topRightControlsTerminalLauncher.test.tsx": 0,
+      "meshDmConsent.test.ts": 0,
+      "meshDmWorkerVault.test.ts": 0,
+      "gateMetadataTiming.test.ts": 0,
+      "gateCompatTelemetry.test.ts": 0,
+      "wormholeCompatibility.test.ts": 0,
+      "meshTerminalPolicy.test.ts": 0,
+      "mailboxClaimPrivacy.test.ts": 0,
+      "meshPrivacyHints.test.ts": 0,
+      "meshChatHygiene.test.ts": 0,
+      "pageDecomposition.test.ts": 0,
+      "pageBehavior.test.ts": 0,
+      "proxyAdminKeyInjection.test.ts": 0,
+      "companionStatusFailure.test.ts": 0,
+      "backendEndpoint.test.ts": 0,
+      "desktopBridgeBootstrapPreference.test.ts": 0,
+      "desktopBridgeAuditReport.test.ts": 0,
+      "nativeControlRouterCapability.test.ts": 0,
+      "controlPlaneNativeBoundary.test.ts": 0,
+      "updateRuntime.test.ts": 0,
+      "localControlTransportCapability.test.ts": 0,
+      "desktopCompanion.test.ts": 0,
+      "adminSessionBoundary.test.ts": 0,
+      "desktopControlRouting.test.ts": 0,
+      "desktopControlContractHelpers.test.ts": 0,
+      "nativeProtectedSettings.test.ts": 0,
+      "desktopRuntimeShimEnforcement.test.ts": 0,
+      "runtimeBridgeSessionProfile.test.ts": 0,
+      "privacyBrowserStorage.test.ts": 0,
+      "aircraftClassification.test.ts": 0,
+      "identityBoundSensitiveStorage.test.ts": 0,
+      "viewportPrivacy.test.ts": 0,
+      "solarTerminator.test.ts": 0,
+      "positioning.test.ts": 0,
+      "maplibreDecomposition.test.ts": 0,
+      "maplibreBehavior.test.ts": 0,
+      "cspProductionHardening.test.ts": 0,
+      "cspNoncePlumbing.test.ts": 0,
+      "useFeedHealth.ts": 1,
+      "useSignAndAppend.ts": 5,
+      "useTimeMachine.ts": 0,
+      "useGateSSE.ts": 0,
+      "useRegionDossier.ts": 1,
+      "useAlertToasts.ts": 2,
+      "useReverseGeocode.ts": 1,
+      "useDataPolling.ts": 4,
+      "useAgentActions.ts": 1,
+      "useWatchlist.ts": 2,
+      "useKeyboardShortcuts.ts": 1,
+      "useDataStore.ts": 19,
+      "desktopCompanion.ts": 0,
+      "uwClient.ts": 1,
+      "meshTerminalPolicy.ts": 0,
+      "wormholeTeardown.ts": 2,
+      "viewportPrivacy.ts": 0,
+      "trackedData.ts": 2,
+      "localControlTransport.ts": 8,
+      "aiIntelClient.ts": 0,
+      "backendEndpoint.ts": 2,
+      "desktopControlContract.ts": 1,
+      "ThemeContext.tsx": 3,
+      "constants.ts": 4,
+      "nativeProtectedSettings.ts": 1,
+      "desktopRuntimeShim.ts": 2,
+      "adminSession.ts": 2,
+      "desktopBridge.ts": 4,
+      "meshTerminalLauncher.ts": 1,
+      "cctvProxy.ts": 2,
+      "airlineCodes.ts": 1,
+      "updateRuntime.ts": 0,
+      "identityBoundSensitiveStorage.ts": 0,
+      "sentinelHub.ts": 1,
+      "dmPollScheduler.ts": 3,
+      "shodanClient.ts": 2,
+      "meshChatPolicies.ts": 2,
+      "desktopControlRouting.ts": 2,
+      "controlPlane.ts": 13,
+      "privacyBrowserStorage.ts": 2,
+      "adminSessionStore.ts": 1,
+      "auth.py": 42,
+      "wormhole_server.py": 0,
+      "node_state.py": 3,
+      "gate_sse.py": 1,
+      "main.py": 63,
+      "ais_proxy.js": 0,
+      "limiter.py": 17,
+      "mesh_public.py": 6,
+      "cctv.py": 0,
+      "sar.py": 0,
+      "mesh_peer_sync.py": 1,
+      "health.py": 0,
+      "tools.py": 0,
+      "__init__.py": 0,
+      "mesh_dm.py": 1,
+      "infonet.py": 3,
+      "admin.py": 0,
+      "sigint.py": 4,
+      "ai_intel.py": 8,
+      "radio.py": 0,
+      "mesh_operator.py": 0,
+      "mesh_oracle.py": 2,
+      "wormhole.py": 1,
+      "data.py": 0,
+      "test_geocode_api.py": 0,
+      "test_openclaw_query_helpers.py": 0,
+      "conftest.py": 0,
+      "test_2b_data_access.py": 0,
+      "test_p0_security.py": 0,
+      "test_nuforc_enrichment.py": 0,
+      "test_api_smoke.py": 0,
+      "test_release_helper.py": 0,
+      "test_openclaw_hmac_body_binding.py": 0,
+      "test_2c_exception_visibility.py": 0,
+      "test_fetch_health.py": 0,
+      "test_3b_backend_split.py": 0,
+      "test_gdelt_updater_hardening.py": 0,
+      "test_3c_router_extraction.py": 0,
+      "test_openclaw_route_security.py": 0,
+      "test_cctv_pipeline.py": 0,
+      "test_trains_fetcher.py": 0,
+      "test_store.py": 0,
+      "test_api_settings.py": 0,
+      "test_military_bases.py": 0,
+      "test_meshtastic_topics.py": 0,
+      "test_fetchers_geo.py": 0,
+      "test_3d_peer_sync_canonicalization.py": 0,
+      "test_schemas.py": 0,
+      "test_news_keywords.py": 0,
+      "test_icao_military.py": 0,
+      "test_sigint_cctv_accuracy.py": 0,
+      "test_network_utils.py": 0,
+      "test_1b_admin_hardening.py": 0,
+      "test_5c_auth_log_redaction.py": 0,
+      "test_5e_meshtastic_transport.py": 0,
+      "test_geo_fetchers.py": 0,
+      "test_2a_reliability.py": 0,
+      "test_openclaw_channel_honesty.py": 0,
+      "test_s11b_router_trust_surface.py": 0,
+      "test_private_dispatcher.py": 0,
+      "test_s8b_auth_policy_table.py": 0,
+      "test_node_settings.py": 0,
+      "test_mesh_merkle.py": 0,
+      "test_private_metadata_exposure.py": 0,
+      "test_mesh_public_meshtastic_boundary.py": 0,
+      "test_signed_write_transport_matrix.py": 0,
+      "test_s16c_truth_and_reply_to_integrity.py": 0,
+      "test_dm_alias_grace_acceptance.py": 0,
+      "test_gate_legacy_migration.py": 0,
+      "test_secure_storage_passphrase.py": 0,
+      "test_5d_replay_persistence.py": 0,
+      "test_adversarial_regression_harness.py": 0,
+      "test_phase3_metadata_hardening.py": 0,
+      "test_mesh_env_security_audit.py": 0,
+      "test_signed_write_decorator.py": 0,
+      "test_mesh_dm_witness_fix.py": 0,
+      "test_mesh_wormhole_root_manifest.py": 0,
+      "test_gate_signature_compat_and_router_policy.py": 0,
+      "test_phase3_solo_gate_mode.py": 0,
+      "test_privacy_prewarm.py": 0,
+      "test_mesh_peer_store.py": 0,
+      "test_mesh_dm_security.py": 0,
+      "test_gate_segmented_storage.py": 0,
+      "test_phase6_protocol_context.py": 0,
+      "test_phase5_release_profiles.py": 0,
+      "test_ledger_policy_split.py": 0,
+      "test_mesh_hashchain_sequence.py": 0,
+      "test_nonce_capacity_isolation.py": 0,
+      "test_s14b_public_sync_gate_filter.py": 0,
+      "test_s8a_rns_cover_traffic.py": 0,
+      "test_signed_event_revocation_ttl.py": 0,
+      "test_dm_alias_rotation_binding.py": 0,
+      "test_s7b_dm_sessionless_alias_recovery.py": 0,
+      "test_phase2_dm_alias_keys.py": 0,
+      "test_mesh_dm_request_sender_blinding.py": 0,
+      "test_gate_rns_envelope_distribution.py": 0,
+      "test_s11b_dm_trust_state.py": 0,
+      "test_mesh_wormhole_endpoint_boundary.py": 0,
+      "test_mesh_dm_request_sender_blinding_route.py": 0,
+      "test_s13d_legacy_envelope_fallback.py": 0,
+      "test_secure_storage_rotation.py": 0,
+      "test_mesh_bootstrap_manifest.py": 0,
+      "test_mesh_reputation_link.py": 0,
+      "test_mesh_protocol_hygiene.py": 0,
+      "test_runtime_smoke_lane.py": 0,
+      "test_mesh_gate_secret_containment.py": 0,
+      "test_s10b_cover_dm_shape.py": 0,
+      "test_dm_poll_batch_limit.py": 0,
+      "test_mesh_wormhole_root_transparency.py": 0,
+      "test_private_adversarial_regression.py": 0,
+      "test_privacy_claims.py": 0,
+      "test_mesh_ibf.py": 0,
+      "test_s12a_root_distribution_http.py": 0,
+      "test_mesh_dm_consent_privacy.py": 0,
+      "test_privacy_core_ffi_invariants.py": 0,
+      "test_mesh_invariants.py": 0,
+      "test_mesh_relay_policy.py": 0,
+      "test_s9b_gate_store_hydration.py": 0,
+      "test_prekey_lookup_correlation.py": 0,
+      "test_gate_session_stream.py": 0,
+      "test_mesh_locator.py": 0,
+      "test_mesh_wormhole_persona.py": 0,
+      "test_mesh_secure_storage.py": 0,
+      "test_mesh_gate_confidentiality.py": 0,
+      "test_mesh_wormhole_hardening.py": 0,
+      "test_dm_ciphertext_padding.py": 0,
+      "test_dm_selftest.py": 0,
+      "test_s15b_cover_ct_alignment.py": 0,
+      "test_s13c_gate_envelope_policy.py": 0,
+      "test_wormhole_envelope_binding.py": 0,
+      "test_mesh_infonet_sync_support.py": 0,
+      "test_signed_event_integrity_guard.py": 0,
+      "test_sprint0_diagnostics.py": 0,
+      "test_fault_injection.py": 0,
+      "test_s12b_transport_truth.py": 0,
+      "test_gate_mls_durable_state.py": 0,
+      "test_mesh_endpoint_integrity.py": 0,
+      "test_mesh_canonical.py": 0,
+      "test_mesh_gate_catalog.py": 0,
+      "test_meshtastic_mqtt_settings.py": 0,
+      "test_gate_secret_rotation_guard.py": 0,
+      "test_s7a_dm_middleware_tier.py": 0,
+      "test_private_dispatcher_reason_guard.py": 0,
+      "test_compatibility_containment.py": 0,
+      "test_mesh_anonymous_mode.py": 0,
+      "review_surface_contracts.py": 2,
+      "test_s16d_dm_invite_bootstrap.py": 0,
+      "test_privacy_core_export_audit.py": 0,
+      "test_private_release_outbox.py": 0,
+      "test_dm_alias_rotation_reason_guard.py": 0,
+      "test_phase4_replay_domains.py": 0,
+      "test_mesh_rns_private_dm.py": 0,
+      "test_gate_write_cutover.py": 0,
+      "test_gate_envelope_authenticity.py": 0,
+      "test_gate_state_resync.py": 0,
+      "test_mesh_dm_mls.py": 0,
+      "test_mesh_rns_concurrency.py": 0,
+      "test_alias_history_bounds.py": 0,
+      "test_phase3_tofu_hardening.py": 0,
+      "test_privacy_core_attestation.py": 0,
+      "test_mesh_crypto.py": 0,
+      "test_mesh_node_bootstrap_runtime.py": 0,
+      "test_s16e_dm_contact_upsert_authority.py": 0,
+      "test_privacy_core_startup_policy.py": 0,
+      "test_mesh_gate_mls.py": 0,
+      "test_lookup_handle_rotation.py": 0,
+      "test_mesh_privacy_hardening.py": 0,
+      "test_s16a_dm_count_coarsening.py": 0,
+      "test_s14a_sas_repin_guard.py": 0,
+      "test_local_custody.py": 0,
+      "test_mesh_sensitive_no_store.py": 0,
+      "test_privacy_core_cross_node.py": 0,
+      "test_mesh_infonet_ingest.py": 0,
+      "test_phase0_audit_diagnostics.py": 0,
+      "test_s13b_gate_identity_surface.py": 0,
+      "test_dm_strong_path_tier.py": 0,
+      "test_phase7_gate_epoch_rotation.py": 0,
+      "test_dm_mls_restored_session_failclose.py": 0,
+      "test_wormhole_supervisor_hardening.py": 0,
+      "test_phase3_tor_proof_hardening.py": 0,
+      "test_dm_mls_durable_state.py": 0,
+      "test_mls_vectors.py": 0,
+      "test_private_transport_manager.py": 0,
+      "rotate_secure_storage_secret.py": 0,
+      "repair_wormhole_secure_storage.py": 0,
+      "diagnostics.py": 0,
+      "bootstrap_manifest_helper.py": 0,
+      "convert_power_plants.py": 0,
+      "release_helper.py": 0,
+      "openclaw_channel.py": 4,
+      "unusual_whales_connector.py": 3,
+      "ais_stream.py": 4,
+      "geocode_validate.py": 1,
+      "sigint_bridge.py": 11,
+      "satnogs_fetcher.py": 1,
+      "config.py": 140,
+      "openclaw_watchdog.py": 2,
+      "node_settings.py": 6,
+      "privacy_core_attestation.py": 4,
+      "cctv_pipeline.py": 2,
+      "region_dossier.py": 2,
+      "tinygs_fetcher.py": 1,
+      "privacy_core_client.py": 10,
+      "transport_lane_isolation.py": 3,
+      "ai_pin_store.py": 4,
+      "thermal_sentinel.py": 2,
+      "meshtastic_mqtt_settings.py": 7,
+      "constants.py": 4,
+      "geocode.py": 2,
+      "api_settings.py": 3,
+      "carrier_tracker.py": 2,
+      "telemetry.py": 4,
+      "ai_intel_store.py": 1,
+      "updater.py": 2,
+      "kiwisdr_fetcher.py": 1,
+      "liveuamap_scraper.py": 1,
+      "openclaw_bridge.py": 3,
+      "feed_ingester.py": 3,
+      "fetch_health.py": 3,
+      "schemas.py": 4,
+      "oracle_service.py": 3,
+      "radio_intercept.py": 3,
+      "wormhole_settings.py": 12,
+      "privacy_claims.py": 7,
+      "shodan_connector.py": 2,
+      "geopolitics.py": 1,
+      "sentinel_search.py": 4,
+      "release_profiles.py": 8,
+      "correlation_engine.py": 1,
+      "analysis_zone_store.py": 3,
+      "stix_exporter.py": 0,
+      "env_check.py": 8,
+      "wormhole_status.py": 7,
+      "data_fetcher.py": 8,
+      "tor_hidden_service.py": 3,
+      "psk_reporter_fetcher.py": 1,
+      "wormhole_supervisor.py": 16,
+      "slo.py": 2,
+      "news_feed_config.py": 4,
+      "logging_setup.py": 0,
+      "network_utils.py": 25,
+      "mesh_wormhole_ratchet.py": 4,
+      "mesh_private_outbox.py": 4,
+      "mesh_reputation.py": 19,
+      "mesh_wormhole_prekey.py": 11,
+      "mesh_bootstrap_manifest.py": 5,
+      "mesh_secure_storage.py": 21,
+      "mesh_dm_selftest.py": 2,
+      "mesh_private_release_worker.py": 2,
+      "mesh_ibf.py": 2,
+      "mesh_infonet_sync_support.py": 4,
+      "mesh_metadata_exposure.py": 5,
+      "meshtastic_topics.py": 3,
+      "mesh_merkle.py": 2,
+      "mesh_signed_events.py": 7,
+      "mesh_wormhole_seal.py": 3,
+      "mesh_wormhole_sender_token.py": 4,
+      "mesh_private_transport_manager.py": 5,
+      "mesh_privacy_logging.py": 4,
+      "mesh_gate_legacy_migration.py": 0,
+      "mesh_privacy_prewarm.py": 2,
+      "mesh_wormhole_root_manifest.py": 6,
+      "mesh_wormhole_dead_drop.py": 8,
+      "mesh_wormhole_contacts.py": 12,
+      "mesh_gate_repair.py": 1,
+      "mesh_wormhole_root_transparency.py": 4,
+      "mesh_local_custody.py": 9,
+      "mesh_private_dispatcher.py": 4,
+      "mesh_dm_mls.py": 6,
+      "mesh_peer_store.py": 8,
+      "mesh_crypto.py": 32,
+      "mesh_wormhole_persona.py": 15,
+      "mesh_compatibility.py": 10,
+      "mesh_hashchain.py": 21,
+      "mesh_rns.py": 12,
+      "mesh_dm_relay.py": 5,
+      "mesh_privacy_policy.py": 14,
+      "mesh_wormhole_identity.py": 12,
+      "mesh_metrics.py": 11,
+      "mesh_rollout_flags.py": 9,
+      "mesh_router.py": 20,
+      "mesh_gate_mls.py": 11,
+      "mesh_protocol.py": 31,
+      "mesh_schema.py": 12,
+      "mesh_relay_policy.py": 2,
+      "geo.py": 2,
+      "fimi.py": 1,
+      "wastewater.py": 1,
+      "prediction_markets.py": 3,
+      "flights.py": 2,
+      "earth_observation.py": 4,
+      "crowdthreat.py": 1,
+      "trains.py": 1,
+      "plane_alert.py": 2,
+      "satellites.py": 2,
+      "infrastructure.py": 2,
+      "military.py": 2,
+      "ukraine_alerts.py": 1,
+      "_store.py": 37,
+      "financial.py": 1,
+      "aircraft_database.py": 3,
+      "retry.py": 14,
+      "sar_products.py": 1,
+      "meshtastic_map.py": 1,
+      "plan_vessel_alert.py": 1,
+      "unusual_whales.py": 1,
+      "nuforc_enrichment.py": 2,
+      "emissions.py": 2,
+      "route_database.py": 3,
+      "sar_catalog.py": 1,
+      "news.py": 2,
+      "yacht_alert.py": 1,
+      "time_validity.py": 6,
+      "events.py": 1,
+      "_chain_cutover.py": 0,
+      "schema.py": 11,
+      "identity_rotation.py": 3,
+      "sacrifice.py": 3,
+      "locking.py": 2,
+      "ratification.py": 1,
+      "state.py": 6,
+      "shutdown.py": 2,
+      "suspend.py": 3,
+      "appeal.py": 1,
+      "ramp.py": 1,
+      "one_vote_dedup.py": 1,
+      "filter_funnel.py": 1,
+      "argon2id.py": 1,
+      "eligibility.py": 1,
+      "stealth_address.py": 1,
+      "ringct.py": 1,
+      "shielded_balance.py": 1,
+      "dex.py": 1,
+      "contracts.py": 5,
+      "batched_settlement.py": 1,
+      "challenge_response.py": 1,
+      "receipt.py": 2,
+      "nullifier.py": 2,
+      "governance_decay.py": 1,
+      "common_rep.py": 1,
+      "oracle_rep.py": 5,
+      "weekly_vote_budget.py": 1,
+      "temporal.py": 2,
+      "clustering.py": 2,
+      "correlation_score.py": 2,
+      "vcs.py": 4,
+      "farming.py": 2,
+      "progressive_penalty.py": 2,
+      "test_8_one_vote_dedup.py": 0,
+      "test_8_bootstrap_resolution.py": 0,
+      "test_1_legacy_files_unchanged.py": 0,
+      "test_6_sacrifice.py": 0,
+      "test_3_temporal_burst.py": 0,
+      "test_2_common_rep.py": 0,
+      "test_4_oracle_adapter.py": 0,
+      "test_8_eligibility.py": 0,
+      "test_2_oracle_rep_mint_rules.py": 0,
+      "test_3_vcs.py": 0,
+      "test_8_argon2id_canonical.py": 0,
+      "test_6_ratification.py": 0,
+      "test_polish_progressive_penalty.py": 0,
+      "_gate_factory.py": 4,
+      "test_2_identity_rotation.py": 0,
+      "test_privacy_scaffolding.py": 0,
+      "test_4_resolution.py": 0,
+      "test_chain_cutover.py": 0,
+      "test_1_config_schema_bounds.py": 0,
+      "test_8_filter_funnel_and_ramp.py": 0,
+      "test_2_reputation_adapter.py": 0,
+      "test_1_schema_event_types.py": 0,
+      "test_6_shutdown.py": 0,
+      "test_5_data_unavailable.py": 0,
+      "test_2_time_validity.py": 0,
+      "test_3_clustering.py": 0,
+      "test_3_farming.py": 0,
+      "test_2_governance_decay.py": 0,
+      "test_7_upgrade_hash.py": 0,
+      "test_5_stalemate_burn.py": 0,
+      "_chain_factory.py": 31,
+      "test_infonet_router.py": 0,
+      "test_4_snapshot.py": 0,
+      "test_3_progressive_penalty.py": 0,
+      "test_4_evidence.py": 0,
+      "test_4_lifecycle.py": 0,
+      "test_6_locking.py": 0,
+      "test_10_partition.py": 0,
+      "test_5_dispute_bounded_reversal.py": 0,
+      "test_3_common_rep_anti_gaming.py": 0,
+      "test_7_dsl_executor.py": 0,
+      "test_1_immutable_principles.py": 0,
+      "test_7_petition_lifecycle.py": 0,
+      "test_1_adapters.py": 0,
+      "test_3_weekly_vote_budget.py": 0,
+      "hashchain_adapter.py": 1,
+      "reputation_adapter.py": 3,
+      "gate_adapter.py": 2,
+      "signed_write_adapter.py": 1,
+      "oracle_adapter.py": 3,
+      "data_unavailable.py": 2,
+      "stalemate_burn.py": 5,
+      "dispute.py": 2,
+      "lifecycle.py": 1,
+      "resolution.py": 2,
+      "evidence.py": 6,
+      "snapshot.py": 3,
+      "dsl_executor.py": 3,
+      "petition.py": 1,
+      "upgrade_hash.py": 1,
+      "challenge.py": 2,
+      "epoch_checkpoint.py": 1,
+      "provisional.py": 1,
+      "two_tier_state.py": 3,
+      "sar_products_client.py": 1,
+      "sar_normalize.py": 5,
+      "sar_catalog_client.py": 1,
+      "sar_aoi.py": 7,
+      "sar_config.py": 6,
+      "sar_signing.py": 1,
+      "nativeControlAudit.ts": 1,
+      "nativeControlRouter.ts": 2,
+      "runtimeBridge.ts": 1,
+      "index.ts": 0,
+      "wormholeHandlers.ts": 1,
+      "updateHandlers.ts": 1,
+      "settingsHandlers.ts": 1,
+      "sb_alerts.py": 0,
+      "sb_signatures.py": 4,
+      "sb_briefing.py": 0,
+      "sb_monitor.py": 0,
+      "sb_query.py": 1,
+      "refresh_privacy_core_pin.py": 0
+    },
+    "zero_fan_in_files": [
+      "start-backend.js",
+      "vitest.config.js",
+      "tailwind.config.ts",
+      "next.config.peer-b.ts",
+      "next.config.ts",
+      "report-bundle-size.js",
+      "types.d.ts",
+      "meshGateLocalRuntime.ts",
+      "gateCatalogSnapshot.ts",
+      "meshDmRatchet.ts",
+      "gateMetadataTiming.ts",
+      "meshDmClient.ts",
+      "meshGateWorkerClient.ts",
+      "meshGate.worker.ts",
+      "gatePreviewSnapshot.ts",
+      "wormholeDmBootstrapClient.ts",
+      "requestSenderSealPolicy.ts",
+      "meshDm.worker.ts",
+      "meshPrivacyHints.ts",
+      "privacy_core.d.ts",
+      "privacy_core_bg.wasm.d.ts",
+      "privacy_core.js",
+      "layout.tsx",
+      "page.tsx",
+      "alertSpread.test.ts",
+      "MiniMap.tsx",
+      "MaplibreViewer.tsx",
+      "PredictionsPanel.tsx",
+      "RadioInterceptPanel.tsx",
+      "WorldviewRightPanel.tsx",
+      "TimelineScrubber.tsx",
+      "index.tsx",
+      "WorkView.tsx",
+      "BallotView.tsx",
+      "ExchangeView.tsx",
+      "IdentityHUD.tsx",
+      "geoJSONBuilders.test.ts",
+      "staticMapLayers.worker.ts",
+      "MapMarkers.tsx",
+      "dynamicMapLayers.worker.ts",
+      "index.tsx",
+      "storage.ts",
+      "gateAccessProof.test.ts",
+      "requestSenderSealRecoveryWindow.test.ts",
+      "gateCompatDecryptUx.test.tsx",
+      "meshContactStorage.test.ts",
+      "meshSigningKeyHardening.test.ts",
+      "requestSenderSealPolicy.test.ts",
+      "gateMessageSnapshot.test.ts",
+      "messagesViewFirstContact.test.tsx",
+      "meshGateWorkerClient.test.ts",
+      "meshCanonical.test.ts",
+      "meshIdentitySeparation.test.ts",
+      "meshChatBehavior.test.ts",
+      "dmPollScheduler.test.ts",
+      "gateEnvelope.test.ts",
+      "wormholeIdentityClientProfiles.test.ts",
+      "dmCompatSunsetPolicy.test.ts",
+      "requestSenderRecovery.test.ts",
+      "meshDmClientLookup.test.ts",
+      "meshDmTransportLock.test.ts",
+      "meshGateWorkerVault.test.ts",
+      "gateEnvelopeHashBinding.test.ts",
+      "gateSessionStream.test.ts",
+      "gateCatalogSnapshot.test.ts",
+      "dmSelftestClient.test.ts",
+      "meshChatDecomposition.test.ts",
+      "meshMerkle.test.ts",
+      "meshDeadDrop.test.ts",
+      "gatePreviewSnapshot.test.ts",
+      "topRightControlsTerminalLauncher.test.tsx",
+      "meshDmConsent.test.ts",
+      "meshDmWorkerVault.test.ts",
+      "gateMetadataTiming.test.ts",
+      "gateCompatTelemetry.test.ts",
+      "wormholeCompatibility.test.ts",
+      "meshTerminalPolicy.test.ts",
+      "mailboxClaimPrivacy.test.ts",
+      "meshPrivacyHints.test.ts",
+      "meshChatHygiene.test.ts",
+      "pageDecomposition.test.ts",
+      "pageBehavior.test.ts",
+      "proxyAdminKeyInjection.test.ts",
+      "companionStatusFailure.test.ts",
+      "backendEndpoint.test.ts",
+      "desktopBridgeBootstrapPreference.test.ts",
+      "desktopBridgeAuditReport.test.ts",
+      "nativeControlRouterCapability.test.ts",
+      "controlPlaneNativeBoundary.test.ts",
+      "updateRuntime.test.ts",
+      "localControlTransportCapability.test.ts",
+      "desktopCompanion.test.ts",
+      "adminSessionBoundary.test.ts",
+      "desktopControlRouting.test.ts",
+      "desktopControlContractHelpers.test.ts",
+      "nativeProtectedSettings.test.ts",
+      "desktopRuntimeShimEnforcement.test.ts",
+      "runtimeBridgeSessionProfile.test.ts",
+      "privacyBrowserStorage.test.ts",
+      "aircraftClassification.test.ts",
+      "identityBoundSensitiveStorage.test.ts",
+      "viewportPrivacy.test.ts",
+      "solarTerminator.test.ts",
+      "positioning.test.ts",
+      "maplibreDecomposition.test.ts",
+      "geoJSONBuilders.test.ts",
+      "maplibreBehavior.test.ts",
+      "cspProductionHardening.test.ts",
+      "cspNoncePlumbing.test.ts",
+      "useTimeMachine.ts",
+      "useGateSSE.ts",
+      "desktopCompanion.ts",
+      "meshTerminalPolicy.ts",
+      "viewportPrivacy.ts",
+      "aiIntelClient.ts",
+      "updateRuntime.ts",
+      "identityBoundSensitiveStorage.ts",
+      "wormhole_server.py",
+      "ais_proxy.js",
+      "cctv.py",
+      "sar.py",
+      "health.py",
+      "tools.py",
+      "__init__.py",
+      "admin.py",
+      "radio.py",
+      "mesh_operator.py",
+      "data.py",
+      "test_geocode_api.py",
+      "test_openclaw_query_helpers.py",
+      "conftest.py",
+      "test_2b_data_access.py",
+      "test_p0_security.py",
+      "test_nuforc_enrichment.py",
+      "test_api_smoke.py",
+      "test_release_helper.py",
+      "test_openclaw_hmac_body_binding.py",
+      "test_2c_exception_visibility.py",
+      "test_fetch_health.py",
+      "test_3b_backend_split.py",
+      "test_gdelt_updater_hardening.py",
+      "test_3c_router_extraction.py",
+      "__init__.py",
+      "test_openclaw_route_security.py",
+      "test_cctv_pipeline.py",
+      "test_trains_fetcher.py",
+      "test_store.py",
+      "test_api_settings.py",
+      "test_military_bases.py",
+      "test_meshtastic_topics.py",
+      "test_fetchers_geo.py",
+      "test_3d_peer_sync_canonicalization.py",
+      "test_schemas.py",
+      "test_news_keywords.py",
+      "test_icao_military.py",
+      "test_sigint_cctv_accuracy.py",
+      "test_network_utils.py",
+      "test_1b_admin_hardening.py",
+      "test_5c_auth_log_redaction.py",
+      "test_5e_meshtastic_transport.py",
+      "test_geo_fetchers.py",
+      "test_2a_reliability.py",
+      "test_openclaw_channel_honesty.py",
+      "test_s11b_router_trust_surface.py",
+      "test_private_dispatcher.py",
+      "test_s8b_auth_policy_table.py",
+      "test_node_settings.py",
+      "test_mesh_merkle.py",
+      "test_private_metadata_exposure.py",
+      "test_mesh_public_meshtastic_boundary.py",
+      "test_signed_write_transport_matrix.py",
+      "test_s16c_truth_and_reply_to_integrity.py",
+      "test_dm_alias_grace_acceptance.py",
+      "test_gate_legacy_migration.py",
+      "test_secure_storage_passphrase.py",
+      "test_5d_replay_persistence.py",
+      "test_adversarial_regression_harness.py",
+      "test_phase3_metadata_hardening.py",
+      "test_mesh_env_security_audit.py",
+      "test_signed_write_decorator.py",
+      "test_mesh_dm_witness_fix.py",
+      "test_mesh_wormhole_root_manifest.py",
+      "test_gate_signature_compat_and_router_policy.py",
+      "test_phase3_solo_gate_mode.py",
+      "test_privacy_prewarm.py",
+      "test_mesh_peer_store.py",
+      "test_mesh_dm_security.py",
+      "test_gate_segmented_storage.py",
+      "test_phase6_protocol_context.py",
+      "test_phase5_release_profiles.py",
+      "test_ledger_policy_split.py",
+      "test_mesh_hashchain_sequence.py",
+      "test_nonce_capacity_isolation.py",
+      "test_s14b_public_sync_gate_filter.py",
+      "test_s8a_rns_cover_traffic.py",
+      "test_signed_event_revocation_ttl.py",
+      "test_dm_alias_rotation_binding.py",
+      "test_s7b_dm_sessionless_alias_recovery.py",
+      "test_phase2_dm_alias_keys.py",
+      "test_mesh_dm_request_sender_blinding.py",
+      "test_gate_rns_envelope_distribution.py",
+      "test_s11b_dm_trust_state.py",
+      "test_mesh_wormhole_endpoint_boundary.py",
+      "test_mesh_dm_request_sender_blinding_route.py",
+      "test_s13d_legacy_envelope_fallback.py",
+      "test_secure_storage_rotation.py",
+      "test_mesh_bootstrap_manifest.py",
+      "test_mesh_reputation_link.py",
+      "test_mesh_protocol_hygiene.py",
+      "test_runtime_smoke_lane.py",
+      "test_mesh_gate_secret_containment.py",
+      "test_s10b_cover_dm_shape.py",
+      "test_dm_poll_batch_limit.py",
+      "test_mesh_wormhole_root_transparency.py",
+      "test_private_adversarial_regression.py",
+      "test_privacy_claims.py",
+      "test_mesh_ibf.py",
+      "test_s12a_root_distribution_http.py",
+      "__init__.py",
+      "test_mesh_dm_consent_privacy.py",
+      "test_privacy_core_ffi_invariants.py",
+      "test_mesh_invariants.py",
+      "test_mesh_relay_policy.py",
+      "test_s9b_gate_store_hydration.py",
+      "test_prekey_lookup_correlation.py",
+      "test_gate_session_stream.py",
+      "test_mesh_locator.py",
+      "test_mesh_wormhole_persona.py",
+      "test_mesh_secure_storage.py",
+      "test_mesh_gate_confidentiality.py",
+      "test_mesh_wormhole_hardening.py",
+      "test_dm_ciphertext_padding.py",
+      "test_dm_selftest.py",
+      "test_s15b_cover_ct_alignment.py",
+      "test_s13c_gate_envelope_policy.py",
+      "test_wormhole_envelope_binding.py",
+      "test_mesh_infonet_sync_support.py",
+      "test_signed_event_integrity_guard.py",
+      "test_sprint0_diagnostics.py",
+      "test_fault_injection.py",
+      "test_s12b_transport_truth.py",
+      "test_gate_mls_durable_state.py",
+      "test_mesh_endpoint_integrity.py",
+      "test_mesh_canonical.py",
+      "test_mesh_gate_catalog.py",
+      "test_meshtastic_mqtt_settings.py",
+      "test_gate_secret_rotation_guard.py",
+      "test_s7a_dm_middleware_tier.py",
+      "test_private_dispatcher_reason_guard.py",
+      "test_compatibility_containment.py",
+      "test_mesh_anonymous_mode.py",
+      "test_s16d_dm_invite_bootstrap.py",
+      "test_meshtastic_topics.py",
+      "test_privacy_core_export_audit.py",
+      "test_private_release_outbox.py",
+      "test_dm_alias_rotation_reason_guard.py",
+      "test_phase4_replay_domains.py",
+      "test_mesh_rns_private_dm.py",
+      "test_gate_write_cutover.py",
+      "test_gate_envelope_authenticity.py",
+      "test_gate_state_resync.py",
+      "test_mesh_dm_mls.py",
+      "test_mesh_rns_concurrency.py",
+      "test_alias_history_bounds.py",
+      "test_phase3_tofu_hardening.py",
+      "test_privacy_core_attestation.py",
+      "test_mesh_crypto.py",
+      "test_mesh_node_bootstrap_runtime.py",
+      "test_s16e_dm_contact_upsert_authority.py",
+      "test_privacy_core_startup_policy.py",
+      "test_mesh_gate_mls.py",
+      "test_lookup_handle_rotation.py",
+      "test_mesh_privacy_hardening.py",
+      "test_s16a_dm_count_coarsening.py",
+      "test_s14a_sas_repin_guard.py",
+      "test_local_custody.py",
+      "test_mesh_sensitive_no_store.py",
+      "test_privacy_core_cross_node.py",
+      "test_mesh_infonet_ingest.py",
+      "test_phase0_audit_diagnostics.py",
+      "test_s13b_gate_identity_surface.py",
+      "test_dm_strong_path_tier.py",
+      "test_phase7_gate_epoch_rotation.py",
+      "test_dm_mls_restored_session_failclose.py",
+      "test_wormhole_supervisor_hardening.py",
+      "test_phase3_tor_proof_hardening.py",
+      "test_dm_mls_durable_state.py",
+      "test_mls_vectors.py",
+      "test_private_transport_manager.py",
+      "rotate_secure_storage_secret.py",
+      "repair_wormhole_secure_storage.py",
+      "diagnostics.py",
+      "bootstrap_manifest_helper.py",
+      "convert_power_plants.py",
+      "release_helper.py",
+      "__init__.py",
+      "stix_exporter.py",
+      "logging_setup.py",
+      "mesh_gate_legacy_migration.py",
+      "__init__.py",
+      "__init__.py",
+      "__init__.py",
+      "_chain_cutover.py",
+      "__init__.py",
+      "__init__.py",
+      "__init__.py",
+      "__init__.py",
+      "__init__.py",
+      "__init__.py",
+      "__init__.py",
+      "test_8_one_vote_dedup.py",
+      "conftest.py",
+      "test_8_bootstrap_resolution.py",
+      "test_1_legacy_files_unchanged.py",
+      "test_6_sacrifice.py",
+      "test_3_temporal_burst.py",
+      "test_2_common_rep.py",
+      "test_4_oracle_adapter.py",
+      "test_8_eligibility.py",
+      "test_2_oracle_rep_mint_rules.py",
+      "test_3_vcs.py",
+      "test_8_argon2id_canonical.py",
+      "test_6_ratification.py",
+      "test_polish_progressive_penalty.py",
+      "test_2_identity_rotation.py",
+      "test_privacy_scaffolding.py",
+      "test_4_resolution.py",
+      "__init__.py",
+      "test_chain_cutover.py",
+      "test_1_config_schema_bounds.py",
+      "test_8_filter_funnel_and_ramp.py",
+      "test_2_reputation_adapter.py",
+      "test_1_schema_event_types.py",
+      "test_6_shutdown.py",
+      "test_5_data_unavailable.py",
+      "test_2_time_validity.py",
+      "test_3_clustering.py",
+      "test_3_farming.py",
+      "test_2_governance_decay.py",
+      "test_7_upgrade_hash.py",
+      "test_5_stalemate_burn.py",
+      "test_infonet_router.py",
+      "test_4_snapshot.py",
+      "test_3_progressive_penalty.py",
+      "test_4_evidence.py",
+      "test_4_lifecycle.py",
+      "test_6_locking.py",
+      "test_10_partition.py",
+      "test_5_dispute_bounded_reversal.py",
+      "test_3_common_rep_anti_gaming.py",
+      "test_7_dsl_executor.py",
+      "test_1_immutable_principles.py",
+      "test_7_petition_lifecycle.py",
+      "test_1_adapters.py",
+      "test_3_weekly_vote_budget.py",
+      "__init__.py",
+      "__init__.py",
+      "__init__.py",
+      "__init__.py",
+      "__init__.py",
+      "index.ts",
+      "sb_alerts.py",
+      "sb_briefing.py",
+      "__init__.py",
+      "sb_monitor.py",
+      "refresh_privacy_core_pin.py"
+    ],
+    "edges": [
+      [
+        "AIIntelPanel.tsx",
+        "ConfirmDialog.tsx"
+      ],
+      [
+        "AIIntelPanel.tsx",
+        "aiIntel.ts"
+      ],
+      [
+        "AIIntelPanel.tsx",
+        "api.ts"
+      ],
+      [
+        "AIIntelPanel.tsx",
+        "backendEndpoint.ts"
+      ],
+      [
+        "AIIntelPinDetail.tsx",
+        "ConfirmDialog.tsx"
+      ],
+      [
+        "AIIntelPinDetail.tsx",
+        "api.ts"
+      ],
+      [
+        "AIQueryView.tsx",
+        "backendEndpoint.ts"
+      ],
+      [
+        "AlertToast.tsx",
+        "useAlertToasts.ts"
+      ],
+      [
+        "BootstrapView.tsx",
+        "meshIdentity.ts"
+      ],
+      [
+        "BootstrapView.tsx",
+        "useSignAndAppend.ts"
+      ],
+      [
+        "CctvFullscreenModal.tsx",
+        "HlsVideo.tsx"
+      ],
+      [
+        "CorrelationPopup.tsx",
+        "api.ts"
+      ],
+      [
+        "CorrelationPopup.tsx",
+        "dashboard.ts"
+      ],
+      [
+        "DesktopBridgeBootstrap.tsx",
+        "desktopBridge.ts"
+      ],
+      [
+        "ExchangeView.tsx",
+        "dashboard.ts"
+      ],
+      [
+        "ExchangeView.tsx",
+        "useDataStore.ts"
+      ],
+      [
+        "FilterPanel.tsx",
+        "AdvancedFilterModal.tsx"
+      ],
+      [
+        "FilterPanel.tsx",
+        "airlineCodes.ts"
+      ],
+      [
+        "FilterPanel.tsx",
+        "trackedData.ts"
+      ],
+      [
+        "FilterPanel.tsx",
+        "useDataStore.ts"
+      ],
+      [
+        "FindLocateBar.tsx",
+        "trackedData.ts"
+      ],
+      [
+        "FindLocateBar.tsx",
+        "useDataStore.ts"
+      ],
+      [
+        "FishingDestinationRoute.tsx",
+        "api.ts"
+      ],
+      [
+        "FunctionKeyView.tsx",
+        "infonetEconomyClient.ts"
+      ],
+      [
+        "GateShutdownView.tsx",
+        "useSignAndAppend.ts"
+      ],
+      [
+        "GateView.tsx",
+        "api.ts"
+      ],
+      [
+        "GateView.tsx",
+        "gateEnvelope.ts"
+      ],
+      [
+        "GateView.tsx",
+        "meshIdentity.ts"
+      ],
+      [
+        "GateView.tsx",
+        "meshSchema.ts"
+      ],
+      [
+        "GlobalTicker.tsx",
+        "useDataStore.ts"
+      ],
+      [
+        "InfonetShell.tsx",
+        "AIQueryView.tsx"
+      ],
+      [
+        "InfonetShell.tsx",
+        "BootstrapView.tsx"
+      ],
+      [
+        "InfonetShell.tsx",
+        "FunctionKeyView.tsx"
+      ],
+      [
+        "InfonetShell.tsx",
+        "GateShutdownView.tsx"
+      ],
+      [
+        "InfonetShell.tsx",
+        "GateView.tsx"
+      ],
+      [
+        "InfonetShell.tsx",
+        "HashchainEvents.tsx"
+      ],
+      [
+        "InfonetShell.tsx",
+        "MarketView.tsx"
+      ],
+      [
+        "InfonetShell.tsx",
+        "MessagesView.tsx"
+      ],
+      [
+        "InfonetShell.tsx",
+        "NetworkStats.tsx"
+      ],
+      [
+        "InfonetShell.tsx",
+        "PetitionsView.tsx"
+      ],
+      [
+        "InfonetShell.tsx",
+        "ProfileView.tsx"
+      ],
+      [
+        "InfonetShell.tsx",
+        "ResolutionView.tsx"
+      ],
+      [
+        "InfonetShell.tsx",
+        "TerminalDashboard.tsx"
+      ],
+      [
+        "InfonetShell.tsx",
+        "TrendingPosts.tsx"
+      ],
+      [
+        "InfonetShell.tsx",
+        "UpgradeView.tsx"
+      ],
+      [
+        "InfonetShell.tsx",
+        "WeatherWidget.tsx"
+      ],
+      [
+        "InfonetShell.tsx",
+        "meshIdentity.ts"
+      ],
+      [
+        "LiveActivityLog.tsx",
+        "dashboard.ts"
+      ],
+      [
+        "LiveActivityLog.tsx",
+        "useDataStore.ts"
+      ],
+      [
+        "LocateBar.tsx",
+        "api.ts"
+      ],
+      [
+        "LocateBar.tsx",
+        "constants.py"
+      ],
+      [
+        "LocateBar.tsx",
+        "constants.ts"
+      ],
+      [
+        "MapLegend.tsx",
+        "ExternalImage.tsx"
+      ],
+      [
+        "MapMarkers.tsx",
+        "alertSpread.ts"
+      ],
+      [
+        "MapMarkers.tsx",
+        "dashboard.ts"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "AIIntelPinDetail.tsx"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "CctvFullscreenModal.tsx"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "CorrelationPopup.tsx"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "FishingDestinationRoute.tsx"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "MeasurementLayers.tsx"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "MilitaryBasePopup.tsx"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "OverlayIcons.ts"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "RegionDossierPanel.tsx"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "SatelliteIcons.ts"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "SatellitePopup.tsx"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "ShipPopup.tsx"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "SigintPopup.tsx"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "ThemeContext.tsx"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "WastewaterPopup.tsx"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "WikiImage.tsx"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "aiIntel.ts"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "alertSpread.ts"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "api.ts"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "cctvProxy.ts"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "dashboard.ts"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "mapConstants.ts"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "mapStyles.ts"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "pinIcons.ts"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "solarTerminator.ts"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "useClusterLabels.ts"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "useDataStore.ts"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "useDynamicMapLayersWorker.ts"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "useImperativeSource.ts"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "useInterpolation.ts"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "useStaticMapLayersWorker.ts"
+      ],
+      [
+        "MaplibreViewer.tsx",
+        "useViewportBounds.ts"
+      ],
+      [
+        "MarketView.tsx",
+        "api.ts"
+      ],
+      [
+        "MarketView.tsx",
+        "dashboard.ts"
+      ],
+      [
+        "MarketView.tsx",
+        "useDataStore.ts"
+      ],
+      [
+        "MarketsPanel.tsx",
+        "dashboard.ts"
+      ],
+      [
+        "MarketsPanel.tsx",
+        "unusualWhales.ts"
+      ],
+      [
+        "MarketsPanel.tsx",
+        "uwClient.ts"
+      ],
+      [
+        "MeshTerminal.tsx",
+        "api.ts"
+      ],
+      [
+        "MeshTerminal.tsx",
+        "desktopBridge.ts"
+      ],
+      [
+        "MeshTerminal.tsx",
+        "dmPollScheduler.ts"
+      ],
+      [
+        "MeshTerminal.tsx",
+        "gateMessageSnapshot.ts"
+      ],
+      [
+        "MeshTerminal.tsx",
+        "meshDmWorkerClient.ts"
+      ],
+      [
+        "MeshTerminal.tsx",
+        "meshMerkle.ts"
+      ],
+      [
+        "MeshTerminal.tsx",
+        "meshProtocol.ts"
+      ],
+      [
+        "MeshTerminal.tsx",
+        "meshSchema.ts"
+      ],
+      [
+        "MeshTerminal.tsx",
+        "privacyBrowserStorage.ts"
+      ],
+      [
+        "MeshTerminal.tsx",
+        "wormholeClient.ts"
+      ],
+      [
+        "MeshTerminal.tsx",
+        "wormholeIdentityClient.ts"
+      ],
+      [
+        "MessagesView.tsx",
+        "api.ts"
+      ],
+      [
+        "MessagesView.tsx",
+        "dmPollScheduler.ts"
+      ],
+      [
+        "MilitaryBasePopup.tsx",
+        "WikiImage.tsx"
+      ],
+      [
+        "MilitaryBasePopup.tsx",
+        "dashboard.ts"
+      ],
+      [
+        "MiniMap.tsx",
+        "dashboard.ts"
+      ],
+      [
+        "MiniMap.tsx",
+        "useDataStore.ts"
+      ],
+      [
+        "NetworkStats.tsx",
+        "api.ts"
+      ],
+      [
+        "NetworkStats.tsx",
+        "controlPlaneStatusClient.ts"
+      ],
+      [
+        "NewsFeed.tsx",
+        "WikiImage.tsx"
+      ],
+      [
+        "NewsFeed.tsx",
+        "api.ts"
+      ],
+      [
+        "NewsFeed.tsx",
+        "dashboard.ts"
+      ],
+      [
+        "NewsFeed.tsx",
+        "shodan.ts"
+      ],
+      [
+        "NewsFeed.tsx",
+        "shodanClient.ts"
+      ],
+      [
+        "NewsFeed.tsx",
+        "useDataStore.ts"
+      ],
+      [
+        "PetitionsView.tsx",
+        "useSignAndAppend.ts"
+      ],
+      [
+        "PredictionsPanel.tsx",
+        "api.ts"
+      ],
+      [
+        "PredictionsPanel.tsx",
+        "meshIdentity.ts"
+      ],
+      [
+        "PredictionsPanel.tsx",
+        "meshSchema.ts"
+      ],
+      [
+        "PredictionsPanel.tsx",
+        "useDataStore.ts"
+      ],
+      [
+        "PredictionsPanel.tsx",
+        "wormholeIdentityClient.ts"
+      ],
+      [
+        "ProfileView.tsx",
+        "api.ts"
+      ],
+      [
+        "ProfileView.tsx",
+        "wormholeIdentityClient.ts"
+      ],
+      [
+        "RadioInterceptPanel.tsx",
+        "api.ts"
+      ],
+      [
+        "RadioInterceptPanel.tsx",
+        "dashboard.ts"
+      ],
+      [
+        "RegionDossierPanel.tsx",
+        "ExternalImage.tsx"
+      ],
+      [
+        "ResolutionView.tsx",
+        "useSignAndAppend.ts"
+      ],
+      [
+        "SarAoiEditorModal.tsx",
+        "api.ts"
+      ],
+      [
+        "SarAoiEditorModal.tsx",
+        "dashboard.ts"
+      ],
+      [
+        "SarModeChooserModal.tsx",
+        "api.ts"
+      ],
+      [
+        "SatellitePopup.tsx",
+        "WikiImage.tsx"
+      ],
+      [
+        "SatellitePopup.tsx",
+        "dashboard.ts"
+      ],
+      [
+        "SettingsPanel.tsx",
+        "adminSession.ts"
+      ],
+      [
+        "SettingsPanel.tsx",
+        "api.ts"
+      ],
+      [
+        "SettingsPanel.tsx",
+        "controlPlane.ts"
+      ],
+      [
+        "SettingsPanel.tsx",
+        "meshDmWorkerClient.ts"
+      ],
+      [
+        "SettingsPanel.tsx",
+        "nativeProtectedSettings.ts"
+      ],
+      [
+        "ShipPopup.tsx",
+        "dashboard.ts"
+      ],
+      [
+        "ShodanPanel.tsx",
+        "api.ts"
+      ],
+      [
+        "ShodanPanel.tsx",
+        "dashboard.ts"
+      ],
+      [
+        "ShodanPanel.tsx",
+        "shodanClient.ts"
+      ],
+      [
+        "SigintPanels.tsx",
+        "api.ts"
+      ],
+      [
+        "SigintPanels.tsx",
+        "meshProtocol.ts"
+      ],
+      [
+        "SigintPanels.tsx",
+        "meshSchema.ts"
+      ],
+      [
+        "SigintPopup.tsx",
+        "SigintPanels.tsx"
+      ],
+      [
+        "SigintPopup.tsx",
+        "dashboard.ts"
+      ],
+      [
+        "TerminalDashboard.tsx",
+        "LiveActivityLog.tsx"
+      ],
+      [
+        "TerminalDashboard.tsx",
+        "dashboard.ts"
+      ],
+      [
+        "TerminalDashboard.tsx",
+        "useDataStore.ts"
+      ],
+      [
+        "TimelinePanel.tsx",
+        "api.ts"
+      ],
+      [
+        "TimelinePanel.tsx",
+        "controlPlane.ts"
+      ],
+      [
+        "TimelinePanel.tsx",
+        "dashboard.ts"
+      ],
+      [
+        "TimelinePanel.tsx",
+        "useDataStore.ts"
+      ],
+      [
+        "TimelineScrubber.tsx",
+        "api.ts"
+      ],
+      [
+        "TimelineScrubber.tsx",
+        "controlPlane.ts"
+      ],
+      [
+        "TimelineScrubber.tsx",
+        "dashboard.ts"
+      ],
+      [
+        "TimelineScrubber.tsx",
+        "useDataStore.ts"
+      ],
+      [
+        "TopRightControls.tsx",
+        "api.ts"
+      ],
+      [
+        "TopRightControls.tsx",
+        "controlPlane.ts"
+      ],
+      [
+        "TopRightControls.tsx",
+        "meshDmWorkerClient.ts"
+      ],
+      [
+        "TopRightControls.tsx",
+        "meshIdentity.ts"
+      ],
+      [
+        "TopRightControls.tsx",
+        "wormholeClient.ts"
+      ],
+      [
+        "UpgradeView.tsx",
+        "useSignAndAppend.ts"
+      ],
+      [
+        "WastewaterPopup.tsx",
+        "dashboard.ts"
+      ],
+      [
+        "WatchlistWidget.tsx",
+        "useWatchlist.ts"
+      ],
+      [
+        "WikiImage.tsx",
+        "ExternalImage.tsx"
+      ],
+      [
+        "WorldviewLeftPanel.tsx",
+        "KiwiSdrConsentDialog.tsx"
+      ],
+      [
+        "WorldviewLeftPanel.tsx",
+        "SarModeChooserModal.tsx"
+      ],
+      [
+        "WorldviewLeftPanel.tsx",
+        "ThemeContext.tsx"
+      ],
+      [
+        "WorldviewLeftPanel.tsx",
+        "api.ts"
+      ],
+      [
+        "WorldviewLeftPanel.tsx",
+        "sentinelHub.ts"
+      ],
+      [
+        "WorldviewLeftPanel.tsx",
+        "useDataStore.ts"
+      ],
+      [
+        "WorldviewRightPanel.tsx",
+        "dashboard.ts"
+      ],
+      [
+        "__init__.py",
+        "appeal.py"
+      ],
+      [
+        "__init__.py",
+        "argon2id.py"
+      ],
+      [
+        "__init__.py",
+        "batched_settlement.py"
+      ],
+      [
+        "__init__.py",
+        "challenge.py"
+      ],
+      [
+        "__init__.py",
+        "challenge_response.py"
+      ],
+      [
+        "__init__.py",
+        "clustering.py"
+      ],
+      [
+        "__init__.py",
+        "common_rep.py"
+      ],
+      [
+        "__init__.py",
+        "config.py"
+      ],
+      [
+        "__init__.py",
+        "contracts.py"
+      ],
+      [
+        "__init__.py",
+        "data_unavailable.py"
+      ],
+      [
+        "__init__.py",
+        "dex.py"
+      ],
+      [
+        "__init__.py",
+        "dispute.py"
+      ],
+      [
+        "__init__.py",
+        "dsl_executor.py"
+      ],
+      [
+        "__init__.py",
+        "eligibility.py"
+      ],
+      [
+        "__init__.py",
+        "epoch_checkpoint.py"
+      ],
+      [
+        "__init__.py",
+        "evidence.py"
+      ],
+      [
+        "__init__.py",
+        "farming.py"
+      ],
+      [
+        "__init__.py",
+        "filter_funnel.py"
+      ],
+      [
+        "__init__.py",
+        "governance_decay.py"
+      ],
+      [
+        "__init__.py",
+        "hashchain_adapter.py"
+      ],
+      [
+        "__init__.py",
+        "identity_rotation.py"
+      ],
+      [
+        "__init__.py",
+        "infonet.py"
+      ],
+      [
+        "__init__.py",
+        "lifecycle.py"
+      ],
+      [
+        "__init__.py",
+        "locking.py"
+      ],
+      [
+        "__init__.py",
+        "nullifier.py"
+      ],
+      [
+        "__init__.py",
+        "one_vote_dedup.py"
+      ],
+      [
+        "__init__.py",
+        "oracle_rep.py"
+      ],
+      [
+        "__init__.py",
+        "petition.py"
+      ],
+      [
+        "__init__.py",
+        "progressive_penalty.py"
+      ],
+      [
+        "__init__.py",
+        "provisional.py"
+      ],
+      [
+        "__init__.py",
+        "ramp.py"
+      ],
+      [
+        "__init__.py",
+        "ratification.py"
+      ],
+      [
+        "__init__.py",
+        "receipt.py"
+      ],
+      [
+        "__init__.py",
+        "resolution.py"
+      ],
+      [
+        "__init__.py",
+        "ringct.py"
+      ],
+      [
+        "__init__.py",
+        "sacrifice.py"
+      ],
+      [
+        "__init__.py",
+        "sar_aoi.py"
+      ],
+      [
+        "__init__.py",
+        "sar_normalize.py"
+      ],
+      [
+        "__init__.py",
+        "sb_query.py"
+      ],
+      [
+        "__init__.py",
+        "sb_signatures.py"
+      ],
+      [
+        "__init__.py",
+        "schema.py"
+      ],
+      [
+        "__init__.py",
+        "shielded_balance.py"
+      ],
+      [
+        "__init__.py",
+        "shutdown.py"
+      ],
+      [
+        "__init__.py",
+        "signed_write_adapter.py"
+      ],
+      [
+        "__init__.py",
+        "snapshot.py"
+      ],
+      [
+        "__init__.py",
+        "stalemate_burn.py"
+      ],
+      [
+        "__init__.py",
+        "state.py"
+      ],
+      [
+        "__init__.py",
+        "stealth_address.py"
+      ],
+      [
+        "__init__.py",
+        "suspend.py"
+      ],
+      [
+        "__init__.py",
+        "temporal.py"
+      ],
+      [
+        "__init__.py",
+        "time_validity.py"
+      ],
+      [
+        "__init__.py",
+        "two_tier_state.py"
+      ],
+      [
+        "__init__.py",
+        "upgrade_hash.py"
+      ],
+      [
+        "__init__.py",
+        "vcs.py"
+      ],
+      [
+        "__init__.py",
+        "weekly_vote_budget.py"
+      ],
+      [
+        "_chain_cutover.py",
+        "schema.py"
+      ],
+      [
+        "_gate_factory.py",
+        "_chain_factory.py"
+      ],
+      [
+        "admin.py",
+        "ai_intel.py"
+      ],
+      [
+        "admin.py",
+        "api_settings.py"
+      ],
+      [
+        "admin.py",
+        "auth.py"
+      ],
+      [
+        "admin.py",
+        "config.py"
+      ],
+      [
+        "admin.py",
+        "limiter.py"
+      ],
+      [
+        "admin.py",
+        "main.py"
+      ],
+      [
+        "admin.py",
+        "meshtastic_mqtt_settings.py"
+      ],
+      [
+        "admin.py",
+        "news_feed_config.py"
+      ],
+      [
+        "admin.py",
+        "node_settings.py"
+      ],
+      [
+        "admin.py",
+        "node_state.py"
+      ],
+      [
+        "admin.py",
+        "openclaw_bridge.py"
+      ],
+      [
+        "admin.py",
+        "sigint_bridge.py"
+      ],
+      [
+        "admin.py",
+        "tor_hidden_service.py"
+      ],
+      [
+        "admin.py",
+        "transport_lane_isolation.py"
+      ],
+      [
+        "admin.py",
+        "updater.py"
+      ],
+      [
+        "admin.py",
+        "wormhole_settings.py"
+      ],
+      [
+        "admin.py",
+        "wormhole_supervisor.py"
+      ],
+      [
+        "adminSession.ts",
+        "api.ts"
+      ],
+      [
+        "adminSessionBoundary.test.ts",
+        "route.ts"
+      ],
+      [
+        "aiIntelClient.ts",
+        "api.ts"
+      ],
+      [
+        "ai_intel.py",
+        "_store.py"
+      ],
+      [
+        "ai_intel.py",
+        "ai_pin_store.py"
+      ],
+      [
+        "ai_intel.py",
+        "analysis_zone_store.py"
+      ],
+      [
+        "ai_intel.py",
+        "auth.py"
+      ],
+      [
+        "ai_intel.py",
+        "config.py"
+      ],
+      [
+        "ai_intel.py",
+        "feed_ingester.py"
+      ],
+      [
+        "ai_intel.py",
+        "limiter.py"
+      ],
+      [
+        "ai_intel.py",
+        "openclaw_bridge.py"
+      ],
+      [
+        "ai_intel.py",
+        "openclaw_channel.py"
+      ],
+      [
+        "ai_intel.py",
+        "sentinel_search.py"
+      ],
+      [
+        "ai_intel.py",
+        "telemetry.py"
+      ],
+      [
+        "ai_intel_store.py",
+        "_store.py"
+      ],
+      [
+        "ai_intel_store.py",
+        "ai_pin_store.py"
+      ],
+      [
+        "alertSpread.test.ts",
+        "alertSpread.ts"
+      ],
+      [
+        "alertSpread.ts",
+        "constants.py"
+      ],
+      [
+        "alertSpread.ts",
+        "constants.ts"
+      ],
+      [
+        "alertSpread.ts",
+        "dashboard.ts"
+      ],
+      [
+        "api_settings.py",
+        "config.py"
+      ],
+      [
+        "appeal.py",
+        "config.py"
+      ],
+      [
+        "appeal.py",
+        "shutdown.py"
+      ],
+      [
+        "appeal.py",
+        "state.py"
+      ],
+      [
+        "argon2id.py",
+        "config.py"
+      ],
+      [
+        "auth.py",
+        "ai_intel.py"
+      ],
+      [
+        "auth.py",
+        "config.py"
+      ],
+      [
+        "auth.py",
+        "env_check.py"
+      ],
+      [
+        "auth.py",
+        "mesh_compatibility.py"
+      ],
+      [
+        "auth.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "auth.py",
+        "mesh_privacy_policy.py"
+      ],
+      [
+        "auth.py",
+        "mesh_reputation.py"
+      ],
+      [
+        "auth.py",
+        "mesh_router.py"
+      ],
+      [
+        "auth.py",
+        "mesh_wormhole_root_manifest.py"
+      ],
+      [
+        "auth.py",
+        "mesh_wormhole_root_transparency.py"
+      ],
+      [
+        "auth.py",
+        "privacy_core_attestation.py"
+      ],
+      [
+        "auth.py",
+        "release_profiles.py"
+      ],
+      [
+        "auth.py",
+        "wormhole_settings.py"
+      ],
+      [
+        "auth.py",
+        "wormhole_status.py"
+      ],
+      [
+        "bootstrap_manifest_helper.py",
+        "mesh_bootstrap_manifest.py"
+      ],
+      [
+        "carrier_tracker.py",
+        "network_utils.py"
+      ],
+      [
+        "cctv.py",
+        "auth.py"
+      ],
+      [
+        "cctv.py",
+        "limiter.py"
+      ],
+      [
+        "cctv_pipeline.py",
+        "network_utils.py"
+      ],
+      [
+        "challenge.py",
+        "config.py"
+      ],
+      [
+        "challenge_response.py",
+        "nullifier.py"
+      ],
+      [
+        "clustering.py",
+        "config.py"
+      ],
+      [
+        "clustering.py",
+        "vcs.py"
+      ],
+      [
+        "common_rep.py",
+        "clustering.py"
+      ],
+      [
+        "common_rep.py",
+        "config.py"
+      ],
+      [
+        "common_rep.py",
+        "correlation_score.py"
+      ],
+      [
+        "common_rep.py",
+        "oracle_rep.py"
+      ],
+      [
+        "common_rep.py",
+        "temporal.py"
+      ],
+      [
+        "common_rep.py",
+        "vcs.py"
+      ],
+      [
+        "config.py",
+        "api_settings.py"
+      ],
+      [
+        "config.py",
+        "types.ts"
+      ],
+      [
+        "conftest.py",
+        "config.py"
+      ],
+      [
+        "conftest.py",
+        "main.py"
+      ],
+      [
+        "conftest.py",
+        "mesh_private_transport_manager.py"
+      ],
+      [
+        "contactTrustSummary.ts",
+        "meshIdentity.ts"
+      ],
+      [
+        "controlPlane.ts",
+        "adminSession.ts"
+      ],
+      [
+        "controlPlaneStatusClient.ts",
+        "controlPlane.ts"
+      ],
+      [
+        "correlation_engine.py",
+        "ai_pin_store.py"
+      ],
+      [
+        "correlation_engine.py",
+        "analysis_zone_store.py"
+      ],
+      [
+        "correlation_score.py",
+        "config.py"
+      ],
+      [
+        "correlation_score.py",
+        "progressive_penalty.py"
+      ],
+      [
+        "correlation_score.py",
+        "vcs.py"
+      ],
+      [
+        "crowdthreat.py",
+        "_store.py"
+      ],
+      [
+        "crowdthreat.py",
+        "network_utils.py"
+      ],
+      [
+        "crowdthreat.py",
+        "retry.py"
+      ],
+      [
+        "cspNoncePlumbing.test.ts",
+        "middleware.ts"
+      ],
+      [
+        "cspProductionHardening.test.ts",
+        "middleware.ts"
+      ],
+      [
+        "data.py",
+        "_store.py"
+      ],
+      [
+        "data.py",
+        "ais_stream.py"
+      ],
+      [
+        "data.py",
+        "auth.py"
+      ],
+      [
+        "data.py",
+        "data_fetcher.py"
+      ],
+      [
+        "data.py",
+        "earth_observation.py"
+      ],
+      [
+        "data.py",
+        "flights.py"
+      ],
+      [
+        "data.py",
+        "limiter.py"
+      ],
+      [
+        "data.py",
+        "meshtastic_mqtt_settings.py"
+      ],
+      [
+        "data.py",
+        "satellites.py"
+      ],
+      [
+        "data.py",
+        "schemas.py"
+      ],
+      [
+        "data.py",
+        "sigint_bridge.py"
+      ],
+      [
+        "data_fetcher.py",
+        "_store.py"
+      ],
+      [
+        "data_fetcher.py",
+        "ai_intel.py"
+      ],
+      [
+        "data_fetcher.py",
+        "aircraft_database.py"
+      ],
+      [
+        "data_fetcher.py",
+        "ais_stream.py"
+      ],
+      [
+        "data_fetcher.py",
+        "cctv_pipeline.py"
+      ],
+      [
+        "data_fetcher.py",
+        "correlation_engine.py"
+      ],
+      [
+        "data_fetcher.py",
+        "crowdthreat.py"
+      ],
+      [
+        "data_fetcher.py",
+        "earth_observation.py"
+      ],
+      [
+        "data_fetcher.py",
+        "feed_ingester.py"
+      ],
+      [
+        "data_fetcher.py",
+        "fetch_health.py"
+      ],
+      [
+        "data_fetcher.py",
+        "fimi.py"
+      ],
+      [
+        "data_fetcher.py",
+        "financial.py"
+      ],
+      [
+        "data_fetcher.py",
+        "flights.py"
+      ],
+      [
+        "data_fetcher.py",
+        "geo.py"
+      ],
+      [
+        "data_fetcher.py",
+        "infrastructure.py"
+      ],
+      [
+        "data_fetcher.py",
+        "mesh_oracle.py"
+      ],
+      [
+        "data_fetcher.py",
+        "meshtastic_map.py"
+      ],
+      [
+        "data_fetcher.py",
+        "military.py"
+      ],
+      [
+        "data_fetcher.py",
+        "news.py"
+      ],
+      [
+        "data_fetcher.py",
+        "node_settings.py"
+      ],
+      [
+        "data_fetcher.py",
+        "prediction_markets.py"
+      ],
+      [
+        "data_fetcher.py",
+        "route_database.py"
+      ],
+      [
+        "data_fetcher.py",
+        "sar_catalog.py"
+      ],
+      [
+        "data_fetcher.py",
+        "sar_products.py"
+      ],
+      [
+        "data_fetcher.py",
+        "satellites.py"
+      ],
+      [
+        "data_fetcher.py",
+        "sigint.py"
+      ],
+      [
+        "data_fetcher.py",
+        "trains.py"
+      ],
+      [
+        "data_fetcher.py",
+        "ukraine_alerts.py"
+      ],
+      [
+        "data_fetcher.py",
+        "unusual_whales.py"
+      ],
+      [
+        "data_fetcher.py",
+        "wastewater.py"
+      ],
+      [
+        "data_unavailable.py",
+        "config.py"
+      ],
+      [
+        "data_unavailable.py",
+        "evidence.py"
+      ],
+      [
+        "data_unavailable.py",
+        "stalemate_burn.py"
+      ],
+      [
+        "desktopBridge.ts",
+        "desktopRuntimeShim.ts"
+      ],
+      [
+        "desktopBridge.ts",
+        "localControlTransport.ts"
+      ],
+      [
+        "desktopBridgeBootstrapPreference.test.ts",
+        "desktopBridge.ts"
+      ],
+      [
+        "desktopRuntimeShim.ts",
+        "api.ts"
+      ],
+      [
+        "desktopRuntimeShim.ts",
+        "desktopBridge.ts"
+      ],
+      [
+        "desktopRuntimeShim.ts",
+        "desktopControlRouting.ts"
+      ],
+      [
+        "desktopRuntimeShimEnforcement.test.ts",
+        "desktopRuntimeShim.ts"
+      ],
+      [
+        "dex.py",
+        "contracts.py"
+      ],
+      [
+        "diagnostics.py",
+        "_store.py"
+      ],
+      [
+        "diagnostics.py",
+        "data_fetcher.py"
+      ],
+      [
+        "diagnostics.py",
+        "fetch_health.py"
+      ],
+      [
+        "dispute.py",
+        "config.py"
+      ],
+      [
+        "dmPollScheduler.ts",
+        "privacyBrowserStorage.ts"
+      ],
+      [
+        "dsl_executor.py",
+        "config.py"
+      ],
+      [
+        "dynamicMapLayers.worker.ts",
+        "aircraftClassification.ts"
+      ],
+      [
+        "dynamicMapLayers.worker.ts",
+        "dashboard.ts"
+      ],
+      [
+        "dynamicMapLayers.worker.ts",
+        "geoJSONBuilders.ts"
+      ],
+      [
+        "dynamicMapLayers.worker.ts",
+        "positioning.ts"
+      ],
+      [
+        "earth_observation.py",
+        "_store.py"
+      ],
+      [
+        "earth_observation.py",
+        "geocode_validate.py"
+      ],
+      [
+        "earth_observation.py",
+        "network_utils.py"
+      ],
+      [
+        "earth_observation.py",
+        "nuforc_enrichment.py"
+      ],
+      [
+        "earth_observation.py",
+        "retry.py"
+      ],
+      [
+        "earth_observation.py",
+        "slo.py"
+      ],
+      [
+        "eligibility.py",
+        "config.py"
+      ],
+      [
+        "eligibility.py",
+        "resolution.py"
+      ],
+      [
+        "eligibility.py",
+        "snapshot.py"
+      ],
+      [
+        "env_check.py",
+        "config.py"
+      ],
+      [
+        "env_check.py",
+        "mesh_compatibility.py"
+      ],
+      [
+        "env_check.py",
+        "mesh_secure_storage.py"
+      ],
+      [
+        "env_check.py",
+        "release_profiles.py"
+      ],
+      [
+        "events.py",
+        "schema.py"
+      ],
+      [
+        "farming.py",
+        "config.py"
+      ],
+      [
+        "feed_ingester.py",
+        "ai_pin_store.py"
+      ],
+      [
+        "fetch_health.py",
+        "_store.py"
+      ],
+      [
+        "fimi.py",
+        "_store.py"
+      ],
+      [
+        "fimi.py",
+        "network_utils.py"
+      ],
+      [
+        "fimi.py",
+        "retry.py"
+      ],
+      [
+        "financial.py",
+        "_store.py"
+      ],
+      [
+        "financial.py",
+        "retry.py"
+      ],
+      [
+        "flights.py",
+        "_store.py"
+      ],
+      [
+        "flights.py",
+        "aircraft_database.py"
+      ],
+      [
+        "flights.py",
+        "constants.py"
+      ],
+      [
+        "flights.py",
+        "constants.ts"
+      ],
+      [
+        "flights.py",
+        "emissions.py"
+      ],
+      [
+        "flights.py",
+        "network_utils.py"
+      ],
+      [
+        "flights.py",
+        "plane_alert.py"
+      ],
+      [
+        "flights.py",
+        "retry.py"
+      ],
+      [
+        "flights.py",
+        "route_database.py"
+      ],
+      [
+        "gateAccessProof.ts",
+        "controlPlane.ts"
+      ],
+      [
+        "gateAccessProof.ts",
+        "gateSessionStream.ts"
+      ],
+      [
+        "gateAccessProof.ts",
+        "localControlTransport.ts"
+      ],
+      [
+        "gateCatalogSnapshot.ts",
+        "api.ts"
+      ],
+      [
+        "gateCatalogSnapshot.ts",
+        "localControlTransport.ts"
+      ],
+      [
+        "gateCompatTelemetry.ts",
+        "meshIdentity.ts"
+      ],
+      [
+        "gateEnvelope.test.ts",
+        "meshProtocol.ts"
+      ],
+      [
+        "gateEnvelope.test.ts",
+        "meshSchema.ts"
+      ],
+      [
+        "gateEnvelopeHashBinding.test.ts",
+        "types.ts"
+      ],
+      [
+        "gateEnvelopeHashBinding.test.ts",
+        "utils.ts"
+      ],
+      [
+        "gateMessageSnapshot.ts",
+        "api.ts"
+      ],
+      [
+        "gateMessageSnapshot.ts",
+        "gateAccessProof.ts"
+      ],
+      [
+        "gateMessageSnapshot.ts",
+        "localControlTransport.ts"
+      ],
+      [
+        "gateMetadataTiming.ts",
+        "localControlTransport.ts"
+      ],
+      [
+        "gateMetadataTiming.ts",
+        "utils.ts"
+      ],
+      [
+        "gatePreviewSnapshot.ts",
+        "gateEnvelope.ts"
+      ],
+      [
+        "gatePreviewSnapshot.ts",
+        "localControlTransport.ts"
+      ],
+      [
+        "gatePreviewSnapshot.ts",
+        "wormholeIdentityClient.ts"
+      ],
+      [
+        "gateSessionStream.ts",
+        "controlPlane.ts"
+      ],
+      [
+        "gate_adapter.py",
+        "locking.py"
+      ],
+      [
+        "gate_adapter.py",
+        "suspend.py"
+      ],
+      [
+        "gate_adapter.py",
+        "time_validity.py"
+      ],
+      [
+        "geo.py",
+        "_store.py"
+      ],
+      [
+        "geo.py",
+        "ais_stream.py"
+      ],
+      [
+        "geo.py",
+        "carrier_tracker.py"
+      ],
+      [
+        "geo.py",
+        "geopolitics.py"
+      ],
+      [
+        "geo.py",
+        "liveuamap_scraper.py"
+      ],
+      [
+        "geo.py",
+        "network_utils.py"
+      ],
+      [
+        "geo.py",
+        "plan_vessel_alert.py"
+      ],
+      [
+        "geo.py",
+        "retry.py"
+      ],
+      [
+        "geo.py",
+        "yacht_alert.py"
+      ],
+      [
+        "geoJSONBuilders.ts",
+        "AircraftIcons.ts"
+      ],
+      [
+        "geoJSONBuilders.ts",
+        "SatelliteIcons.ts"
+      ],
+      [
+        "geoJSONBuilders.ts",
+        "aircraftClassification.ts"
+      ],
+      [
+        "geoJSONBuilders.ts",
+        "positioning.ts"
+      ],
+      [
+        "geoJSONBuilders.ts",
+        "shodan.ts"
+      ],
+      [
+        "geocode.py",
+        "geo.py"
+      ],
+      [
+        "geocode.py",
+        "network_utils.py"
+      ],
+      [
+        "geopolitics.py",
+        "network_utils.py"
+      ],
+      [
+        "governance_decay.py",
+        "config.py"
+      ],
+      [
+        "governance_decay.py",
+        "oracle_rep.py"
+      ],
+      [
+        "hashchain_adapter.py",
+        "mesh_schema.py"
+      ],
+      [
+        "hashchain_adapter.py",
+        "schema.py"
+      ],
+      [
+        "health.py",
+        "_store.py"
+      ],
+      [
+        "health.py",
+        "auth.py"
+      ],
+      [
+        "health.py",
+        "data_fetcher.py"
+      ],
+      [
+        "health.py",
+        "limiter.py"
+      ],
+      [
+        "health.py",
+        "main.py"
+      ],
+      [
+        "health.py",
+        "schemas.py"
+      ],
+      [
+        "health.py",
+        "slo.py"
+      ],
+      [
+        "index.tsx",
+        "InfonetShell.tsx"
+      ],
+      [
+        "index.tsx",
+        "RepBadge.tsx"
+      ],
+      [
+        "index.tsx",
+        "types.ts"
+      ],
+      [
+        "index.tsx",
+        "useMeshChatController.ts"
+      ],
+      [
+        "index.tsx",
+        "utils.ts"
+      ],
+      [
+        "infonet.py",
+        "config.py"
+      ],
+      [
+        "infonet.py",
+        "dsl_executor.py"
+      ],
+      [
+        "infonet.py",
+        "gate_adapter.py"
+      ],
+      [
+        "infonet.py",
+        "mesh_hashchain.py"
+      ],
+      [
+        "infonet.py",
+        "oracle_adapter.py"
+      ],
+      [
+        "infonet.py",
+        "reputation_adapter.py"
+      ],
+      [
+        "infonet.py",
+        "schema.py"
+      ],
+      [
+        "infonet.py",
+        "time_validity.py"
+      ],
+      [
+        "infrastructure.py",
+        "_store.py"
+      ],
+      [
+        "infrastructure.py",
+        "cctv_pipeline.py"
+      ],
+      [
+        "infrastructure.py",
+        "kiwisdr_fetcher.py"
+      ],
+      [
+        "infrastructure.py",
+        "network_utils.py"
+      ],
+      [
+        "infrastructure.py",
+        "psk_reporter_fetcher.py"
+      ],
+      [
+        "infrastructure.py",
+        "radio_intercept.py"
+      ],
+      [
+        "infrastructure.py",
+        "retry.py"
+      ],
+      [
+        "infrastructure.py",
+        "satnogs_fetcher.py"
+      ],
+      [
+        "infrastructure.py",
+        "tinygs_fetcher.py"
+      ],
+      [
+        "kiwisdr_fetcher.py",
+        "network_utils.py"
+      ],
+      [
+        "layout.tsx",
+        "DesktopBridgeBootstrap.tsx"
+      ],
+      [
+        "layout.tsx",
+        "ThemeContext.tsx"
+      ],
+      [
+        "lifecycle.py",
+        "config.py"
+      ],
+      [
+        "localControlTransport.ts",
+        "api.ts"
+      ],
+      [
+        "localControlTransport.ts",
+        "desktopControlRouting.ts"
+      ],
+      [
+        "locking.py",
+        "config.py"
+      ],
+      [
+        "locking.py",
+        "sacrifice.py"
+      ],
+      [
+        "locking.py",
+        "state.py"
+      ],
+      [
+        "main.py",
+        "_store.py"
+      ],
+      [
+        "main.py",
+        "ai_intel.py"
+      ],
+      [
+        "main.py",
+        "aircraft_database.py"
+      ],
+      [
+        "main.py",
+        "ais_stream.py"
+      ],
+      [
+        "main.py",
+        "api_settings.py"
+      ],
+      [
+        "main.py",
+        "auth.py"
+      ],
+      [
+        "main.py",
+        "carrier_tracker.py"
+      ],
+      [
+        "main.py",
+        "config.py"
+      ],
+      [
+        "main.py",
+        "data_fetcher.py"
+      ],
+      [
+        "main.py",
+        "earth_observation.py"
+      ],
+      [
+        "main.py",
+        "env_check.py"
+      ],
+      [
+        "main.py",
+        "geocode.py"
+      ],
+      [
+        "main.py",
+        "limiter.py"
+      ],
+      [
+        "main.py",
+        "mesh_bootstrap_manifest.py"
+      ],
+      [
+        "main.py",
+        "mesh_compatibility.py"
+      ],
+      [
+        "main.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "main.py",
+        "mesh_dm_mls.py"
+      ],
+      [
+        "main.py",
+        "mesh_dm_relay.py"
+      ],
+      [
+        "main.py",
+        "mesh_gate_mls.py"
+      ],
+      [
+        "main.py",
+        "mesh_gate_repair.py"
+      ],
+      [
+        "main.py",
+        "mesh_hashchain.py"
+      ],
+      [
+        "main.py",
+        "mesh_infonet_sync_support.py"
+      ],
+      [
+        "main.py",
+        "mesh_local_custody.py"
+      ],
+      [
+        "main.py",
+        "mesh_metadata_exposure.py"
+      ],
+      [
+        "main.py",
+        "mesh_metrics.py"
+      ],
+      [
+        "main.py",
+        "mesh_oracle.py"
+      ],
+      [
+        "main.py",
+        "mesh_peer_store.py"
+      ],
+      [
+        "main.py",
+        "mesh_privacy_policy.py"
+      ],
+      [
+        "main.py",
+        "mesh_privacy_prewarm.py"
+      ],
+      [
+        "main.py",
+        "mesh_private_outbox.py"
+      ],
+      [
+        "main.py",
+        "mesh_private_release_worker.py"
+      ],
+      [
+        "main.py",
+        "mesh_private_transport_manager.py"
+      ],
+      [
+        "main.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "main.py",
+        "mesh_reputation.py"
+      ],
+      [
+        "main.py",
+        "mesh_rns.py"
+      ],
+      [
+        "main.py",
+        "mesh_router.py"
+      ],
+      [
+        "main.py",
+        "mesh_schema.py"
+      ],
+      [
+        "main.py",
+        "mesh_signed_events.py"
+      ],
+      [
+        "main.py",
+        "mesh_wormhole_contacts.py"
+      ],
+      [
+        "main.py",
+        "mesh_wormhole_dead_drop.py"
+      ],
+      [
+        "main.py",
+        "mesh_wormhole_persona.py"
+      ],
+      [
+        "main.py",
+        "mesh_wormhole_ratchet.py"
+      ],
+      [
+        "main.py",
+        "mesh_wormhole_root_manifest.py"
+      ],
+      [
+        "main.py",
+        "mesh_wormhole_root_transparency.py"
+      ],
+      [
+        "main.py",
+        "mesh_wormhole_seal.py"
+      ],
+      [
+        "main.py",
+        "mesh_wormhole_sender_token.py"
+      ],
+      [
+        "main.py",
+        "meshtastic_mqtt_settings.py"
+      ],
+      [
+        "main.py",
+        "network_utils.py"
+      ],
+      [
+        "main.py",
+        "news_feed_config.py"
+      ],
+      [
+        "main.py",
+        "node_settings.py"
+      ],
+      [
+        "main.py",
+        "node_state.py"
+      ],
+      [
+        "main.py",
+        "oracle_service.py"
+      ],
+      [
+        "main.py",
+        "prediction_markets.py"
+      ],
+      [
+        "main.py",
+        "privacy_claims.py"
+      ],
+      [
+        "main.py",
+        "privacy_core_attestation.py"
+      ],
+      [
+        "main.py",
+        "radio_intercept.py"
+      ],
+      [
+        "main.py",
+        "region_dossier.py"
+      ],
+      [
+        "main.py",
+        "release_profiles.py"
+      ],
+      [
+        "main.py",
+        "route_database.py"
+      ],
+      [
+        "main.py",
+        "schemas.py"
+      ],
+      [
+        "main.py",
+        "sentinel_search.py"
+      ],
+      [
+        "main.py",
+        "shodan_connector.py"
+      ],
+      [
+        "main.py",
+        "sigint.py"
+      ],
+      [
+        "main.py",
+        "sigint_bridge.py"
+      ],
+      [
+        "main.py",
+        "thermal_sentinel.py"
+      ],
+      [
+        "main.py",
+        "tor_hidden_service.py"
+      ],
+      [
+        "main.py",
+        "transport_lane_isolation.py"
+      ],
+      [
+        "main.py",
+        "unusual_whales_connector.py"
+      ],
+      [
+        "main.py",
+        "updater.py"
+      ],
+      [
+        "main.py",
+        "wormhole_settings.py"
+      ],
+      [
+        "main.py",
+        "wormhole_status.py"
+      ],
+      [
+        "main.py",
+        "wormhole_supervisor.py"
+      ],
+      [
+        "maplibreBehavior.test.ts",
+        "cctvProxy.ts"
+      ],
+      [
+        "meshCanonical.test.ts",
+        "meshProtocol.ts"
+      ],
+      [
+        "meshChatBehavior.test.ts",
+        "meshChatPolicies.ts"
+      ],
+      [
+        "meshDeadDrop.ts",
+        "meshDmConsent.ts"
+      ],
+      [
+        "meshDeadDrop.ts",
+        "meshIdentity.ts"
+      ],
+      [
+        "meshDeadDrop.ts",
+        "meshMailbox.ts"
+      ],
+      [
+        "meshDmClient.ts",
+        "meshDeadDrop.ts"
+      ],
+      [
+        "meshDmClient.ts",
+        "meshMailbox.ts"
+      ],
+      [
+        "meshDmClient.ts",
+        "meshProtocol.ts"
+      ],
+      [
+        "meshDmClient.ts",
+        "meshSchema.ts"
+      ],
+      [
+        "meshDmRatchet.ts",
+        "meshKeyStore.ts"
+      ],
+      [
+        "meshDmWorkerClient.ts",
+        "controlPlane.ts"
+      ],
+      [
+        "meshDmWorkerClient.ts",
+        "meshDmWorkerVault.ts"
+      ],
+      [
+        "meshDmWorkerClient.ts",
+        "meshIdentity.ts"
+      ],
+      [
+        "meshDmWorkerClient.ts",
+        "wormholeIdentityClient.ts"
+      ],
+      [
+        "meshGateWorkerClient.ts",
+        "controlPlane.ts"
+      ],
+      [
+        "meshGateWorkerClient.ts",
+        "meshGateWorkerVault.ts"
+      ],
+      [
+        "meshIdentity.ts",
+        "contactTrustTypes.ts"
+      ],
+      [
+        "meshIdentity.ts",
+        "controlPlane.ts"
+      ],
+      [
+        "meshIdentity.ts",
+        "meshKeyStore.ts"
+      ],
+      [
+        "meshIdentity.ts",
+        "meshMailbox.ts"
+      ],
+      [
+        "meshIdentity.ts",
+        "meshProtocol.ts"
+      ],
+      [
+        "meshMailbox.ts",
+        "meshKeyStore.ts"
+      ],
+      [
+        "meshMerkle.test.ts",
+        "meshMerkle.ts"
+      ],
+      [
+        "meshPrivacyHints.ts",
+        "contactTrustSummary.ts"
+      ],
+      [
+        "meshPrivacyHints.ts",
+        "meshIdentity.ts"
+      ],
+      [
+        "meshSas.ts",
+        "meshDeadDrop.ts"
+      ],
+      [
+        "meshSas.ts",
+        "meshIdentity.ts"
+      ],
+      [
+        "meshSas.ts",
+        "wormholeIdentityClient.ts"
+      ],
+      [
+        "meshSchema.ts",
+        "meshProtocol.ts"
+      ],
+      [
+        "mesh_bootstrap_manifest.py",
+        "config.py"
+      ],
+      [
+        "mesh_bootstrap_manifest.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "mesh_compatibility.py",
+        "config.py"
+      ],
+      [
+        "mesh_crypto.py",
+        "mesh_compatibility.py"
+      ],
+      [
+        "mesh_crypto.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "mesh_dm.py",
+        "auth.py"
+      ],
+      [
+        "mesh_dm.py",
+        "config.py"
+      ],
+      [
+        "mesh_dm.py",
+        "limiter.py"
+      ],
+      [
+        "mesh_dm.py",
+        "main.py"
+      ],
+      [
+        "mesh_dm.py",
+        "mesh_compatibility.py"
+      ],
+      [
+        "mesh_dm.py",
+        "mesh_dm_relay.py"
+      ],
+      [
+        "mesh_dm.py",
+        "mesh_hashchain.py"
+      ],
+      [
+        "mesh_dm.py",
+        "mesh_reputation.py"
+      ],
+      [
+        "mesh_dm.py",
+        "mesh_signed_events.py"
+      ],
+      [
+        "mesh_dm.py",
+        "mesh_wormhole_prekey.py"
+      ],
+      [
+        "mesh_dm_mls.py",
+        "mesh_local_custody.py"
+      ],
+      [
+        "mesh_dm_mls.py",
+        "mesh_metrics.py"
+      ],
+      [
+        "mesh_dm_mls.py",
+        "mesh_privacy_logging.py"
+      ],
+      [
+        "mesh_dm_mls.py",
+        "mesh_privacy_policy.py"
+      ],
+      [
+        "mesh_dm_mls.py",
+        "mesh_rollout_flags.py"
+      ],
+      [
+        "mesh_dm_mls.py",
+        "mesh_secure_storage.py"
+      ],
+      [
+        "mesh_dm_mls.py",
+        "mesh_wormhole_persona.py"
+      ],
+      [
+        "mesh_dm_mls.py",
+        "privacy_core_client.py"
+      ],
+      [
+        "mesh_dm_mls.py",
+        "wormhole_supervisor.py"
+      ],
+      [
+        "mesh_dm_relay.py",
+        "config.py"
+      ],
+      [
+        "mesh_dm_relay.py",
+        "env_check.py"
+      ],
+      [
+        "mesh_dm_relay.py",
+        "mesh_metrics.py"
+      ],
+      [
+        "mesh_dm_relay.py",
+        "mesh_secure_storage.py"
+      ],
+      [
+        "mesh_dm_relay.py",
+        "mesh_wormhole_identity.py"
+      ],
+      [
+        "mesh_dm_relay.py",
+        "mesh_wormhole_prekey.py"
+      ],
+      [
+        "mesh_dm_selftest.py",
+        "config.py"
+      ],
+      [
+        "mesh_dm_selftest.py",
+        "mesh_local_custody.py"
+      ],
+      [
+        "mesh_dm_selftest.py",
+        "mesh_rollout_flags.py"
+      ],
+      [
+        "mesh_dm_selftest.py",
+        "mesh_wormhole_identity.py"
+      ],
+      [
+        "mesh_dm_selftest.py",
+        "mesh_wormhole_persona.py"
+      ],
+      [
+        "mesh_dm_selftest.py",
+        "mesh_wormhole_prekey.py"
+      ],
+      [
+        "mesh_dm_selftest.py",
+        "wormhole_supervisor.py"
+      ],
+      [
+        "mesh_gate_legacy_migration.py",
+        "mesh_hashchain.py"
+      ],
+      [
+        "mesh_gate_legacy_migration.py",
+        "mesh_local_custody.py"
+      ],
+      [
+        "mesh_gate_legacy_migration.py",
+        "mesh_wormhole_persona.py"
+      ],
+      [
+        "mesh_gate_mls.py",
+        "config.py"
+      ],
+      [
+        "mesh_gate_mls.py",
+        "mesh_hashchain.py"
+      ],
+      [
+        "mesh_gate_mls.py",
+        "mesh_local_custody.py"
+      ],
+      [
+        "mesh_gate_mls.py",
+        "mesh_privacy_logging.py"
+      ],
+      [
+        "mesh_gate_mls.py",
+        "mesh_reputation.py"
+      ],
+      [
+        "mesh_gate_mls.py",
+        "mesh_secure_storage.py"
+      ],
+      [
+        "mesh_gate_mls.py",
+        "mesh_wormhole_persona.py"
+      ],
+      [
+        "mesh_gate_mls.py",
+        "privacy_core_client.py"
+      ],
+      [
+        "mesh_gate_mls.py",
+        "wormhole_supervisor.py"
+      ],
+      [
+        "mesh_gate_repair.py",
+        "mesh_gate_mls.py"
+      ],
+      [
+        "mesh_gate_repair.py",
+        "mesh_metadata_exposure.py"
+      ],
+      [
+        "mesh_gate_repair.py",
+        "mesh_reputation.py"
+      ],
+      [
+        "mesh_hashchain.py",
+        "config.py"
+      ],
+      [
+        "mesh_hashchain.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "mesh_hashchain.py",
+        "mesh_merkle.py"
+      ],
+      [
+        "mesh_hashchain.py",
+        "mesh_metrics.py"
+      ],
+      [
+        "mesh_hashchain.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "mesh_hashchain.py",
+        "mesh_reputation.py"
+      ],
+      [
+        "mesh_hashchain.py",
+        "mesh_rns.py"
+      ],
+      [
+        "mesh_hashchain.py",
+        "mesh_rollout_flags.py"
+      ],
+      [
+        "mesh_hashchain.py",
+        "mesh_schema.py"
+      ],
+      [
+        "mesh_hashchain.py",
+        "mesh_secure_storage.py"
+      ],
+      [
+        "mesh_infonet_sync_support.py",
+        "mesh_peer_store.py"
+      ],
+      [
+        "mesh_operator.py",
+        "auth.py"
+      ],
+      [
+        "mesh_operator.py",
+        "limiter.py"
+      ],
+      [
+        "mesh_operator.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "mesh_operator.py",
+        "mesh_peer_store.py"
+      ],
+      [
+        "mesh_operator.py",
+        "mesh_router.py"
+      ],
+      [
+        "mesh_oracle.py",
+        "auth.py"
+      ],
+      [
+        "mesh_oracle.py",
+        "data_fetcher.py"
+      ],
+      [
+        "mesh_oracle.py",
+        "limiter.py"
+      ],
+      [
+        "mesh_oracle.py",
+        "mesh_hashchain.py"
+      ],
+      [
+        "mesh_oracle.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "mesh_oracle.py",
+        "mesh_reputation.py"
+      ],
+      [
+        "mesh_oracle.py",
+        "mesh_signed_events.py"
+      ],
+      [
+        "mesh_oracle.py",
+        "prediction_markets.py"
+      ],
+      [
+        "mesh_peer_store.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "mesh_peer_sync.py",
+        "auth.py"
+      ],
+      [
+        "mesh_peer_sync.py",
+        "config.py"
+      ],
+      [
+        "mesh_peer_sync.py",
+        "limiter.py"
+      ],
+      [
+        "mesh_peer_sync.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "mesh_peer_sync.py",
+        "mesh_hashchain.py"
+      ],
+      [
+        "mesh_peer_sync.py",
+        "mesh_router.py"
+      ],
+      [
+        "mesh_privacy_prewarm.py",
+        "config.py"
+      ],
+      [
+        "mesh_privacy_prewarm.py",
+        "mesh_privacy_policy.py"
+      ],
+      [
+        "mesh_privacy_prewarm.py",
+        "mesh_private_outbox.py"
+      ],
+      [
+        "mesh_privacy_prewarm.py",
+        "mesh_rns.py"
+      ],
+      [
+        "mesh_privacy_prewarm.py",
+        "mesh_wormhole_identity.py"
+      ],
+      [
+        "mesh_privacy_prewarm.py",
+        "mesh_wormhole_persona.py"
+      ],
+      [
+        "mesh_privacy_prewarm.py",
+        "mesh_wormhole_prekey.py"
+      ],
+      [
+        "mesh_privacy_prewarm.py",
+        "wormhole_settings.py"
+      ],
+      [
+        "mesh_privacy_prewarm.py",
+        "wormhole_status.py"
+      ],
+      [
+        "mesh_privacy_prewarm.py",
+        "wormhole_supervisor.py"
+      ],
+      [
+        "mesh_private_dispatcher.py",
+        "config.py"
+      ],
+      [
+        "mesh_private_dispatcher.py",
+        "mesh_dm_relay.py"
+      ],
+      [
+        "mesh_private_dispatcher.py",
+        "mesh_hashchain.py"
+      ],
+      [
+        "mesh_private_dispatcher.py",
+        "mesh_metrics.py"
+      ],
+      [
+        "mesh_private_dispatcher.py",
+        "mesh_privacy_policy.py"
+      ],
+      [
+        "mesh_private_dispatcher.py",
+        "mesh_rns.py"
+      ],
+      [
+        "mesh_private_dispatcher.py",
+        "mesh_router.py"
+      ],
+      [
+        "mesh_private_dispatcher.py",
+        "wormhole_settings.py"
+      ],
+      [
+        "mesh_private_dispatcher.py",
+        "wormhole_status.py"
+      ],
+      [
+        "mesh_private_outbox.py",
+        "config.py"
+      ],
+      [
+        "mesh_private_outbox.py",
+        "mesh_local_custody.py"
+      ],
+      [
+        "mesh_private_outbox.py",
+        "mesh_metadata_exposure.py"
+      ],
+      [
+        "mesh_private_outbox.py",
+        "mesh_privacy_policy.py"
+      ],
+      [
+        "mesh_private_outbox.py",
+        "mesh_relay_policy.py"
+      ],
+      [
+        "mesh_private_outbox.py",
+        "release_profiles.py"
+      ],
+      [
+        "mesh_private_release_worker.py",
+        "config.py"
+      ],
+      [
+        "mesh_private_release_worker.py",
+        "mesh_privacy_policy.py"
+      ],
+      [
+        "mesh_private_release_worker.py",
+        "mesh_private_dispatcher.py"
+      ],
+      [
+        "mesh_private_release_worker.py",
+        "mesh_private_outbox.py"
+      ],
+      [
+        "mesh_private_release_worker.py",
+        "mesh_private_transport_manager.py"
+      ],
+      [
+        "mesh_private_release_worker.py",
+        "mesh_relay_policy.py"
+      ],
+      [
+        "mesh_private_release_worker.py",
+        "mesh_wormhole_dead_drop.py"
+      ],
+      [
+        "mesh_private_release_worker.py",
+        "privacy_core_attestation.py"
+      ],
+      [
+        "mesh_private_release_worker.py",
+        "release_profiles.py"
+      ],
+      [
+        "mesh_private_release_worker.py",
+        "wormhole_supervisor.py"
+      ],
+      [
+        "mesh_private_transport_manager.py",
+        "mesh_privacy_policy.py"
+      ],
+      [
+        "mesh_private_transport_manager.py",
+        "mesh_privacy_prewarm.py"
+      ],
+      [
+        "mesh_private_transport_manager.py",
+        "wormhole_supervisor.py"
+      ],
+      [
+        "mesh_protocol.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "mesh_public.py",
+        "auth.py"
+      ],
+      [
+        "mesh_public.py",
+        "config.py"
+      ],
+      [
+        "mesh_public.py",
+        "data_fetcher.py"
+      ],
+      [
+        "mesh_public.py",
+        "env_check.py"
+      ],
+      [
+        "mesh_public.py",
+        "limiter.py"
+      ],
+      [
+        "mesh_public.py",
+        "main.py"
+      ],
+      [
+        "mesh_public.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "mesh_public.py",
+        "mesh_gate_mls.py"
+      ],
+      [
+        "mesh_public.py",
+        "mesh_hashchain.py"
+      ],
+      [
+        "mesh_public.py",
+        "mesh_metrics.py"
+      ],
+      [
+        "mesh_public.py",
+        "mesh_peer_store.py"
+      ],
+      [
+        "mesh_public.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "mesh_public.py",
+        "mesh_reputation.py"
+      ],
+      [
+        "mesh_public.py",
+        "mesh_rns.py"
+      ],
+      [
+        "mesh_public.py",
+        "mesh_router.py"
+      ],
+      [
+        "mesh_public.py",
+        "mesh_schema.py"
+      ],
+      [
+        "mesh_public.py",
+        "mesh_signed_events.py"
+      ],
+      [
+        "mesh_public.py",
+        "mesh_wormhole_persona.py"
+      ],
+      [
+        "mesh_public.py",
+        "meshtastic_mqtt_settings.py"
+      ],
+      [
+        "mesh_public.py",
+        "sigint.py"
+      ],
+      [
+        "mesh_public.py",
+        "sigint_bridge.py"
+      ],
+      [
+        "mesh_public.py",
+        "wormhole_supervisor.py"
+      ],
+      [
+        "mesh_relay_policy.py",
+        "config.py"
+      ],
+      [
+        "mesh_relay_policy.py",
+        "mesh_local_custody.py"
+      ],
+      [
+        "mesh_reputation.py",
+        "config.py"
+      ],
+      [
+        "mesh_reputation.py",
+        "mesh_metrics.py"
+      ],
+      [
+        "mesh_reputation.py",
+        "mesh_privacy_logging.py"
+      ],
+      [
+        "mesh_reputation.py",
+        "mesh_rollout_flags.py"
+      ],
+      [
+        "mesh_reputation.py",
+        "mesh_secure_storage.py"
+      ],
+      [
+        "mesh_rns.py",
+        "config.py"
+      ],
+      [
+        "mesh_rns.py",
+        "mesh_hashchain.py"
+      ],
+      [
+        "mesh_rns.py",
+        "mesh_ibf.py"
+      ],
+      [
+        "mesh_rns.py",
+        "mesh_metrics.py"
+      ],
+      [
+        "mesh_rns.py",
+        "wormhole_settings.py"
+      ],
+      [
+        "mesh_router.py",
+        "config.py"
+      ],
+      [
+        "mesh_router.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "mesh_router.py",
+        "mesh_hashchain.py"
+      ],
+      [
+        "mesh_router.py",
+        "mesh_metrics.py"
+      ],
+      [
+        "mesh_router.py",
+        "mesh_peer_store.py"
+      ],
+      [
+        "mesh_router.py",
+        "mesh_privacy_policy.py"
+      ],
+      [
+        "mesh_router.py",
+        "meshtastic_mqtt_settings.py"
+      ],
+      [
+        "mesh_router.py",
+        "meshtastic_topics.py"
+      ],
+      [
+        "mesh_router.py",
+        "sigint_bridge.py"
+      ],
+      [
+        "mesh_router.py",
+        "wormhole_supervisor.py"
+      ],
+      [
+        "mesh_schema.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "mesh_secure_storage.py",
+        "config.py"
+      ],
+      [
+        "mesh_signed_events.py",
+        "mesh_compatibility.py"
+      ],
+      [
+        "mesh_signed_events.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "mesh_signed_events.py",
+        "mesh_hashchain.py"
+      ],
+      [
+        "mesh_signed_events.py",
+        "mesh_metrics.py"
+      ],
+      [
+        "mesh_signed_events.py",
+        "mesh_privacy_policy.py"
+      ],
+      [
+        "mesh_signed_events.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "mesh_signed_events.py",
+        "mesh_rollout_flags.py"
+      ],
+      [
+        "mesh_signed_events.py",
+        "mesh_wormhole_sender_token.py"
+      ],
+      [
+        "mesh_signed_events.py",
+        "wormhole_supervisor.py"
+      ],
+      [
+        "mesh_wormhole_contacts.py",
+        "mesh_rollout_flags.py"
+      ],
+      [
+        "mesh_wormhole_contacts.py",
+        "mesh_secure_storage.py"
+      ],
+      [
+        "mesh_wormhole_contacts.py",
+        "mesh_wormhole_dead_drop.py"
+      ],
+      [
+        "mesh_wormhole_contacts.py",
+        "mesh_wormhole_prekey.py"
+      ],
+      [
+        "mesh_wormhole_contacts.py",
+        "mesh_wormhole_root_manifest.py"
+      ],
+      [
+        "mesh_wormhole_dead_drop.py",
+        "mesh_metrics.py"
+      ],
+      [
+        "mesh_wormhole_dead_drop.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "mesh_wormhole_dead_drop.py",
+        "mesh_reputation.py"
+      ],
+      [
+        "mesh_wormhole_dead_drop.py",
+        "mesh_rollout_flags.py"
+      ],
+      [
+        "mesh_wormhole_dead_drop.py",
+        "mesh_secure_storage.py"
+      ],
+      [
+        "mesh_wormhole_dead_drop.py",
+        "mesh_wormhole_contacts.py"
+      ],
+      [
+        "mesh_wormhole_dead_drop.py",
+        "mesh_wormhole_identity.py"
+      ],
+      [
+        "mesh_wormhole_dead_drop.py",
+        "mesh_wormhole_persona.py"
+      ],
+      [
+        "mesh_wormhole_dead_drop.py",
+        "wormhole_settings.py"
+      ],
+      [
+        "mesh_wormhole_identity.py",
+        "config.py"
+      ],
+      [
+        "mesh_wormhole_identity.py",
+        "mesh_compatibility.py"
+      ],
+      [
+        "mesh_wormhole_identity.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "mesh_wormhole_identity.py",
+        "mesh_dm_relay.py"
+      ],
+      [
+        "mesh_wormhole_identity.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "mesh_wormhole_identity.py",
+        "mesh_wormhole_contacts.py"
+      ],
+      [
+        "mesh_wormhole_identity.py",
+        "mesh_wormhole_persona.py"
+      ],
+      [
+        "mesh_wormhole_identity.py",
+        "mesh_wormhole_prekey.py"
+      ],
+      [
+        "mesh_wormhole_identity.py",
+        "mesh_wormhole_root_manifest.py"
+      ],
+      [
+        "mesh_wormhole_identity.py",
+        "mesh_wormhole_root_transparency.py"
+      ],
+      [
+        "mesh_wormhole_persona.py",
+        "config.py"
+      ],
+      [
+        "mesh_wormhole_persona.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "mesh_wormhole_persona.py",
+        "mesh_privacy_logging.py"
+      ],
+      [
+        "mesh_wormhole_persona.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "mesh_wormhole_persona.py",
+        "mesh_secure_storage.py"
+      ],
+      [
+        "mesh_wormhole_persona.py",
+        "wormhole_settings.py"
+      ],
+      [
+        "mesh_wormhole_prekey.py",
+        "config.py"
+      ],
+      [
+        "mesh_wormhole_prekey.py",
+        "mesh_compatibility.py"
+      ],
+      [
+        "mesh_wormhole_prekey.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "mesh_wormhole_prekey.py",
+        "mesh_dm_mls.py"
+      ],
+      [
+        "mesh_wormhole_prekey.py",
+        "mesh_dm_relay.py"
+      ],
+      [
+        "mesh_wormhole_prekey.py",
+        "mesh_metadata_exposure.py"
+      ],
+      [
+        "mesh_wormhole_prekey.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "mesh_wormhole_prekey.py",
+        "mesh_router.py"
+      ],
+      [
+        "mesh_wormhole_prekey.py",
+        "mesh_wormhole_contacts.py"
+      ],
+      [
+        "mesh_wormhole_prekey.py",
+        "mesh_wormhole_identity.py"
+      ],
+      [
+        "mesh_wormhole_prekey.py",
+        "mesh_wormhole_persona.py"
+      ],
+      [
+        "mesh_wormhole_prekey.py",
+        "mesh_wormhole_root_manifest.py"
+      ],
+      [
+        "mesh_wormhole_prekey.py",
+        "mesh_wormhole_root_transparency.py"
+      ],
+      [
+        "mesh_wormhole_ratchet.py",
+        "mesh_secure_storage.py"
+      ],
+      [
+        "mesh_wormhole_ratchet.py",
+        "mesh_wormhole_identity.py"
+      ],
+      [
+        "mesh_wormhole_root_manifest.py",
+        "config.py"
+      ],
+      [
+        "mesh_wormhole_root_manifest.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "mesh_wormhole_root_manifest.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "mesh_wormhole_root_manifest.py",
+        "mesh_secure_storage.py"
+      ],
+      [
+        "mesh_wormhole_root_manifest.py",
+        "mesh_wormhole_identity.py"
+      ],
+      [
+        "mesh_wormhole_root_manifest.py",
+        "mesh_wormhole_persona.py"
+      ],
+      [
+        "mesh_wormhole_root_transparency.py",
+        "config.py"
+      ],
+      [
+        "mesh_wormhole_root_transparency.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "mesh_wormhole_root_transparency.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "mesh_wormhole_root_transparency.py",
+        "mesh_secure_storage.py"
+      ],
+      [
+        "mesh_wormhole_root_transparency.py",
+        "mesh_wormhole_persona.py"
+      ],
+      [
+        "mesh_wormhole_root_transparency.py",
+        "mesh_wormhole_root_manifest.py"
+      ],
+      [
+        "mesh_wormhole_seal.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "mesh_wormhole_seal.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "mesh_wormhole_seal.py",
+        "mesh_wormhole_contacts.py"
+      ],
+      [
+        "mesh_wormhole_seal.py",
+        "mesh_wormhole_identity.py"
+      ],
+      [
+        "mesh_wormhole_seal.py",
+        "mesh_wormhole_prekey.py"
+      ],
+      [
+        "mesh_wormhole_seal.py",
+        "wormhole_settings.py"
+      ],
+      [
+        "mesh_wormhole_sender_token.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "mesh_wormhole_sender_token.py",
+        "mesh_wormhole_identity.py"
+      ],
+      [
+        "meshtastic_map.py",
+        "_store.py"
+      ],
+      [
+        "meshtastic_map.py",
+        "config.py"
+      ],
+      [
+        "meshtastic_map.py",
+        "sigint.py"
+      ],
+      [
+        "meshtastic_mqtt_settings.py",
+        "config.py"
+      ],
+      [
+        "messagesViewFirstContact.test.tsx",
+        "MessagesView.tsx"
+      ],
+      [
+        "military.py",
+        "_store.py"
+      ],
+      [
+        "military.py",
+        "emissions.py"
+      ],
+      [
+        "military.py",
+        "network_utils.py"
+      ],
+      [
+        "military.py",
+        "plane_alert.py"
+      ],
+      [
+        "nativeControlAudit.ts",
+        "types.ts"
+      ],
+      [
+        "nativeControlRouter.ts",
+        "settingsHandlers.ts"
+      ],
+      [
+        "nativeControlRouter.ts",
+        "updateHandlers.ts"
+      ],
+      [
+        "nativeControlRouter.ts",
+        "wormholeHandlers.ts"
+      ],
+      [
+        "nativeControlRouterCapability.test.ts",
+        "nativeControlRouter.ts"
+      ],
+      [
+        "nativeProtectedSettings.ts",
+        "localControlTransport.ts"
+      ],
+      [
+        "network_utils.py",
+        "retry.py"
+      ],
+      [
+        "news.py",
+        "_store.py"
+      ],
+      [
+        "news.py",
+        "network_utils.py"
+      ],
+      [
+        "news.py",
+        "news_feed_config.py"
+      ],
+      [
+        "news.py",
+        "oracle_service.py"
+      ],
+      [
+        "news.py",
+        "retry.py"
+      ],
+      [
+        "node_state.py",
+        "config.py"
+      ],
+      [
+        "node_state.py",
+        "mesh_bootstrap_manifest.py"
+      ],
+      [
+        "node_state.py",
+        "mesh_hashchain.py"
+      ],
+      [
+        "node_state.py",
+        "mesh_infonet_sync_support.py"
+      ],
+      [
+        "node_state.py",
+        "mesh_peer_store.py"
+      ],
+      [
+        "node_state.py",
+        "mesh_router.py"
+      ],
+      [
+        "node_state.py",
+        "node_settings.py"
+      ],
+      [
+        "nuforc_enrichment.py",
+        "network_utils.py"
+      ],
+      [
+        "openclaw_bridge.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "openclaw_bridge.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "openclaw_bridge.py",
+        "mesh_secure_storage.py"
+      ],
+      [
+        "openclaw_channel.py",
+        "_store.py"
+      ],
+      [
+        "openclaw_channel.py",
+        "ai_intel.py"
+      ],
+      [
+        "openclaw_channel.py",
+        "ai_intel_store.py"
+      ],
+      [
+        "openclaw_channel.py",
+        "analysis_zone_store.py"
+      ],
+      [
+        "openclaw_channel.py",
+        "config.py"
+      ],
+      [
+        "openclaw_channel.py",
+        "feed_ingester.py"
+      ],
+      [
+        "openclaw_channel.py",
+        "node_settings.py"
+      ],
+      [
+        "openclaw_channel.py",
+        "openclaw_bridge.py"
+      ],
+      [
+        "openclaw_channel.py",
+        "openclaw_watchdog.py"
+      ],
+      [
+        "openclaw_channel.py",
+        "privacy_core_client.py"
+      ],
+      [
+        "openclaw_channel.py",
+        "sar_aoi.py"
+      ],
+      [
+        "openclaw_channel.py",
+        "sar_config.py"
+      ],
+      [
+        "openclaw_channel.py",
+        "sentinel_search.py"
+      ],
+      [
+        "openclaw_channel.py",
+        "telemetry.py"
+      ],
+      [
+        "openclaw_channel.py",
+        "wormhole_supervisor.py"
+      ],
+      [
+        "openclaw_watchdog.py",
+        "ai_intel.py"
+      ],
+      [
+        "openclaw_watchdog.py",
+        "openclaw_channel.py"
+      ],
+      [
+        "openclaw_watchdog.py",
+        "telemetry.py"
+      ],
+      [
+        "oracle_rep.py",
+        "config.py"
+      ],
+      [
+        "oracle_rep.py",
+        "dispute.py"
+      ],
+      [
+        "oracle_rep.py",
+        "farming.py"
+      ],
+      [
+        "page.tsx",
+        "AIIntelPanel.tsx"
+      ],
+      [
+        "page.tsx",
+        "AlertToast.tsx"
+      ],
+      [
+        "page.tsx",
+        "ChangelogModal.tsx"
+      ],
+      [
+        "page.tsx",
+        "ErrorBoundary.tsx"
+      ],
+      [
+        "page.tsx",
+        "FilterPanel.tsx"
+      ],
+      [
+        "page.tsx",
+        "FindLocateBar.tsx"
+      ],
+      [
+        "page.tsx",
+        "GlobalTicker.tsx"
+      ],
+      [
+        "page.tsx",
+        "KeyboardShortcutsOverlay.tsx"
+      ],
+      [
+        "page.tsx",
+        "LocateBar.tsx"
+      ],
+      [
+        "page.tsx",
+        "MapLegend.tsx"
+      ],
+      [
+        "page.tsx",
+        "MarketsPanel.tsx"
+      ],
+      [
+        "page.tsx",
+        "MeshChat.tsx"
+      ],
+      [
+        "page.tsx",
+        "MeshTerminal.tsx"
+      ],
+      [
+        "page.tsx",
+        "NewsFeed.tsx"
+      ],
+      [
+        "page.tsx",
+        "OnboardingModal.tsx"
+      ],
+      [
+        "page.tsx",
+        "SarAoiEditorModal.tsx"
+      ],
+      [
+        "page.tsx",
+        "ScaleBar.tsx"
+      ],
+      [
+        "page.tsx",
+        "SentinelInfoModal.tsx"
+      ],
+      [
+        "page.tsx",
+        "SettingsPanel.tsx"
+      ],
+      [
+        "page.tsx",
+        "ShodanPanel.tsx"
+      ],
+      [
+        "page.tsx",
+        "StartupWarmupModal.tsx"
+      ],
+      [
+        "page.tsx",
+        "TimelinePanel.tsx"
+      ],
+      [
+        "page.tsx",
+        "TopRightControls.tsx"
+      ],
+      [
+        "page.tsx",
+        "WatchlistWidget.tsx"
+      ],
+      [
+        "page.tsx",
+        "WorldviewLeftPanel.tsx"
+      ],
+      [
+        "page.tsx",
+        "api.ts"
+      ],
+      [
+        "page.tsx",
+        "dashboard.ts"
+      ],
+      [
+        "page.tsx",
+        "shodan.ts"
+      ],
+      [
+        "page.tsx",
+        "useAgentActions.ts"
+      ],
+      [
+        "page.tsx",
+        "useAlertToasts.ts"
+      ],
+      [
+        "page.tsx",
+        "useDataPolling.ts"
+      ],
+      [
+        "page.tsx",
+        "useDataStore.ts"
+      ],
+      [
+        "page.tsx",
+        "useFeedHealth.ts"
+      ],
+      [
+        "page.tsx",
+        "useKeyboardShortcuts.ts"
+      ],
+      [
+        "page.tsx",
+        "useRegionDossier.ts"
+      ],
+      [
+        "page.tsx",
+        "useReverseGeocode.ts"
+      ],
+      [
+        "page.tsx",
+        "useWatchlist.ts"
+      ],
+      [
+        "page.tsx",
+        "wormholeClient.ts"
+      ],
+      [
+        "page.tsx",
+        "wormholeTeardown.ts"
+      ],
+      [
+        "pageBehavior.test.ts",
+        "useDataPolling.ts"
+      ],
+      [
+        "pageBehavior.test.ts",
+        "wormholeTeardown.ts"
+      ],
+      [
+        "petition.py",
+        "challenge.py"
+      ],
+      [
+        "petition.py",
+        "config.py"
+      ],
+      [
+        "pinIcons.ts",
+        "aiIntel.ts"
+      ],
+      [
+        "positioning.test.ts",
+        "positioning.ts"
+      ],
+      [
+        "prediction_markets.py",
+        "_store.py"
+      ],
+      [
+        "prediction_markets.py",
+        "network_utils.py"
+      ],
+      [
+        "privacy_claims.py",
+        "mesh_privacy_policy.py"
+      ],
+      [
+        "privacy_claims.py",
+        "mesh_rollout_flags.py"
+      ],
+      [
+        "privacy_claims.py",
+        "release_profiles.py"
+      ],
+      [
+        "privacy_core.js",
+        "inline0.js"
+      ],
+      [
+        "privacy_core_attestation.py",
+        "config.py"
+      ],
+      [
+        "privacy_core_attestation.py",
+        "privacy_core_client.py"
+      ],
+      [
+        "privacy_core_client.py",
+        "ai_intel.py"
+      ],
+      [
+        "privacy_core_client.py",
+        "config.py"
+      ],
+      [
+        "privacy_core_client.py",
+        "privacy_core_attestation.py"
+      ],
+      [
+        "provisional.py",
+        "time_validity.py"
+      ],
+      [
+        "provisional.py",
+        "two_tier_state.py"
+      ],
+      [
+        "proxyAdminKeyInjection.test.ts",
+        "route.ts"
+      ],
+      [
+        "radio.py",
+        "auth.py"
+      ],
+      [
+        "radio.py",
+        "limiter.py"
+      ],
+      [
+        "radio.py",
+        "network_utils.py"
+      ],
+      [
+        "radio.py",
+        "radio_intercept.py"
+      ],
+      [
+        "ramp.py",
+        "config.py"
+      ],
+      [
+        "ratification.py",
+        "config.py"
+      ],
+      [
+        "ratification.py",
+        "sacrifice.py"
+      ],
+      [
+        "region_dossier.py",
+        "network_utils.py"
+      ],
+      [
+        "release_profiles.py",
+        "config.py"
+      ],
+      [
+        "release_profiles.py",
+        "mesh_compatibility.py"
+      ],
+      [
+        "release_profiles.py",
+        "mesh_rollout_flags.py"
+      ],
+      [
+        "repair_wormhole_secure_storage.py",
+        "mesh_wormhole_contacts.py"
+      ],
+      [
+        "repair_wormhole_secure_storage.py",
+        "mesh_wormhole_identity.py"
+      ],
+      [
+        "repair_wormhole_secure_storage.py",
+        "mesh_wormhole_persona.py"
+      ],
+      [
+        "repair_wormhole_secure_storage.py",
+        "mesh_wormhole_ratchet.py"
+      ],
+      [
+        "reputation_adapter.py",
+        "oracle_rep.py"
+      ],
+      [
+        "reputation_adapter.py",
+        "time_validity.py"
+      ],
+      [
+        "resolution.py",
+        "config.py"
+      ],
+      [
+        "resolution.py",
+        "data_unavailable.py"
+      ],
+      [
+        "resolution.py",
+        "evidence.py"
+      ],
+      [
+        "resolution.py",
+        "identity_rotation.py"
+      ],
+      [
+        "resolution.py",
+        "snapshot.py"
+      ],
+      [
+        "resolution.py",
+        "stalemate_burn.py"
+      ],
+      [
+        "review_surface_contracts.py",
+        "privacy_claims.py"
+      ],
+      [
+        "ringct.py",
+        "contracts.py"
+      ],
+      [
+        "rotate_secure_storage_secret.py",
+        "mesh_secure_storage.py"
+      ],
+      [
+        "route.ts",
+        "adminSessionStore.ts"
+      ],
+      [
+        "runtimeBridge.ts",
+        "nativeControlAudit.ts"
+      ],
+      [
+        "runtimeBridge.ts",
+        "nativeControlRouter.ts"
+      ],
+      [
+        "runtimeBridgeSessionProfile.test.ts",
+        "runtimeBridge.ts"
+      ],
+      [
+        "sacrifice.py",
+        "state.py"
+      ],
+      [
+        "sar.py",
+        "_store.py"
+      ],
+      [
+        "sar.py",
+        "auth.py"
+      ],
+      [
+        "sar.py",
+        "limiter.py"
+      ],
+      [
+        "sar.py",
+        "sar_aoi.py"
+      ],
+      [
+        "sar.py",
+        "sar_config.py"
+      ],
+      [
+        "sar_catalog.py",
+        "_store.py"
+      ],
+      [
+        "sar_catalog.py",
+        "retry.py"
+      ],
+      [
+        "sar_catalog.py",
+        "sar_aoi.py"
+      ],
+      [
+        "sar_catalog.py",
+        "sar_catalog_client.py"
+      ],
+      [
+        "sar_catalog.py",
+        "sar_config.py"
+      ],
+      [
+        "sar_catalog_client.py",
+        "network_utils.py"
+      ],
+      [
+        "sar_catalog_client.py",
+        "sar_aoi.py"
+      ],
+      [
+        "sar_catalog_client.py",
+        "sar_normalize.py"
+      ],
+      [
+        "sar_config.py",
+        "config.py"
+      ],
+      [
+        "sar_products.py",
+        "_store.py"
+      ],
+      [
+        "sar_products.py",
+        "retry.py"
+      ],
+      [
+        "sar_products.py",
+        "sar_aoi.py"
+      ],
+      [
+        "sar_products.py",
+        "sar_config.py"
+      ],
+      [
+        "sar_products.py",
+        "sar_normalize.py"
+      ],
+      [
+        "sar_products.py",
+        "sar_products_client.py"
+      ],
+      [
+        "sar_products.py",
+        "sar_signing.py"
+      ],
+      [
+        "sar_products_client.py",
+        "network_utils.py"
+      ],
+      [
+        "sar_products_client.py",
+        "sar_aoi.py"
+      ],
+      [
+        "sar_products_client.py",
+        "sar_config.py"
+      ],
+      [
+        "sar_products_client.py",
+        "sar_normalize.py"
+      ],
+      [
+        "sar_signing.py",
+        "mesh_hashchain.py"
+      ],
+      [
+        "sar_signing.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "sar_signing.py",
+        "mesh_wormhole_persona.py"
+      ],
+      [
+        "sar_signing.py",
+        "sar_config.py"
+      ],
+      [
+        "sar_signing.py",
+        "sar_normalize.py"
+      ],
+      [
+        "sar_signing.py",
+        "wormhole_supervisor.py"
+      ],
+      [
+        "satellites.py",
+        "_store.py"
+      ],
+      [
+        "satellites.py",
+        "api.ts"
+      ],
+      [
+        "satellites.py",
+        "network_utils.py"
+      ],
+      [
+        "sb_alerts.py",
+        "sb_signatures.py"
+      ],
+      [
+        "sb_briefing.py",
+        "sb_signatures.py"
+      ],
+      [
+        "sb_monitor.py",
+        "sb_signatures.py"
+      ],
+      [
+        "sentinelHub.ts",
+        "api.ts"
+      ],
+      [
+        "settingsHandlers.ts",
+        "types.ts"
+      ],
+      [
+        "shielded_balance.py",
+        "contracts.py"
+      ],
+      [
+        "shodanClient.ts",
+        "api.ts"
+      ],
+      [
+        "shutdown.py",
+        "config.py"
+      ],
+      [
+        "shutdown.py",
+        "state.py"
+      ],
+      [
+        "shutdown.py",
+        "suspend.py"
+      ],
+      [
+        "sigint.py",
+        "_store.py"
+      ],
+      [
+        "sigint.py",
+        "auth.py"
+      ],
+      [
+        "sigint.py",
+        "data_fetcher.py"
+      ],
+      [
+        "sigint.py",
+        "limiter.py"
+      ],
+      [
+        "sigint.py",
+        "oracle_service.py"
+      ],
+      [
+        "sigint.py",
+        "sigint_bridge.py"
+      ],
+      [
+        "sigint.py",
+        "thermal_sentinel.py"
+      ],
+      [
+        "sigint.py",
+        "wormhole_supervisor.py"
+      ],
+      [
+        "sigint_bridge.py",
+        "config.py"
+      ],
+      [
+        "sigint_bridge.py",
+        "meshtastic_mqtt_settings.py"
+      ],
+      [
+        "sigint_bridge.py",
+        "meshtastic_topics.py"
+      ],
+      [
+        "solarTerminator.test.ts",
+        "solarTerminator.ts"
+      ],
+      [
+        "stalemate_burn.py",
+        "config.py"
+      ],
+      [
+        "stealth_address.py",
+        "contracts.py"
+      ],
+      [
+        "storage.ts",
+        "meshDmConsent.ts"
+      ],
+      [
+        "storage.ts",
+        "meshIdentity.ts"
+      ],
+      [
+        "storage.ts",
+        "types.ts"
+      ],
+      [
+        "suspend.py",
+        "config.py"
+      ],
+      [
+        "suspend.py",
+        "state.py"
+      ],
+      [
+        "telemetry.py",
+        "_store.py"
+      ],
+      [
+        "temporal.py",
+        "config.py"
+      ],
+      [
+        "test_10_partition.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_10_partition.py",
+        "schema.py"
+      ],
+      [
+        "test_10_partition.py",
+        "two_tier_state.py"
+      ],
+      [
+        "test_1_adapters.py",
+        "gate_adapter.py"
+      ],
+      [
+        "test_1_adapters.py",
+        "mesh_schema.py"
+      ],
+      [
+        "test_1_adapters.py",
+        "oracle_adapter.py"
+      ],
+      [
+        "test_1_adapters.py",
+        "reputation_adapter.py"
+      ],
+      [
+        "test_1_adapters.py",
+        "schema.py"
+      ],
+      [
+        "test_1_config_schema_bounds.py",
+        "config.py"
+      ],
+      [
+        "test_1_config_schema_bounds.py",
+        "types.ts"
+      ],
+      [
+        "test_1_immutable_principles.py",
+        "config.py"
+      ],
+      [
+        "test_1_immutable_principles.py",
+        "types.ts"
+      ],
+      [
+        "test_1_schema_event_types.py",
+        "events.py"
+      ],
+      [
+        "test_1_schema_event_types.py",
+        "mesh_schema.py"
+      ],
+      [
+        "test_1_schema_event_types.py",
+        "schema.py"
+      ],
+      [
+        "test_1b_admin_hardening.py",
+        "auth.py"
+      ],
+      [
+        "test_1b_admin_hardening.py",
+        "env_check.py"
+      ],
+      [
+        "test_2_common_rep.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_2_governance_decay.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_2_governance_decay.py",
+        "config.py"
+      ],
+      [
+        "test_2_identity_rotation.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_2_identity_rotation.py",
+        "identity_rotation.py"
+      ],
+      [
+        "test_2_oracle_rep_mint_rules.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_2_oracle_rep_mint_rules.py",
+        "config.py"
+      ],
+      [
+        "test_2_reputation_adapter.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_2_reputation_adapter.py",
+        "reputation_adapter.py"
+      ],
+      [
+        "test_2_time_validity.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_2_time_validity.py",
+        "config.py"
+      ],
+      [
+        "test_2_time_validity.py",
+        "time_validity.py"
+      ],
+      [
+        "test_2a_reliability.py",
+        "config.py"
+      ],
+      [
+        "test_2a_reliability.py",
+        "data_fetcher.py"
+      ],
+      [
+        "test_2a_reliability.py",
+        "main.py"
+      ],
+      [
+        "test_2a_reliability.py",
+        "mesh_hashchain.py"
+      ],
+      [
+        "test_2c_exception_visibility.py",
+        "mesh_secure_storage.py"
+      ],
+      [
+        "test_3_clustering.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_3_clustering.py",
+        "config.py"
+      ],
+      [
+        "test_3_common_rep_anti_gaming.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_3_common_rep_anti_gaming.py",
+        "config.py"
+      ],
+      [
+        "test_3_farming.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_3_farming.py",
+        "config.py"
+      ],
+      [
+        "test_3_temporal_burst.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_3_temporal_burst.py",
+        "config.py"
+      ],
+      [
+        "test_3_vcs.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_3_vcs.py",
+        "config.py"
+      ],
+      [
+        "test_3_weekly_vote_budget.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_3_weekly_vote_budget.py",
+        "config.py"
+      ],
+      [
+        "test_3b_backend_split.py",
+        "auth.py"
+      ],
+      [
+        "test_3b_backend_split.py",
+        "limiter.py"
+      ],
+      [
+        "test_3b_backend_split.py",
+        "main.py"
+      ],
+      [
+        "test_3b_backend_split.py",
+        "mesh_infonet_sync_support.py"
+      ],
+      [
+        "test_3b_backend_split.py",
+        "node_state.py"
+      ],
+      [
+        "test_4_evidence.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_4_lifecycle.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_4_lifecycle.py",
+        "config.py"
+      ],
+      [
+        "test_4_oracle_adapter.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_4_oracle_adapter.py",
+        "oracle_adapter.py"
+      ],
+      [
+        "test_4_resolution.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_4_snapshot.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_5_data_unavailable.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_5_data_unavailable.py",
+        "config.py"
+      ],
+      [
+        "test_5_data_unavailable.py",
+        "evidence.py"
+      ],
+      [
+        "test_5_data_unavailable.py",
+        "stalemate_burn.py"
+      ],
+      [
+        "test_5_dispute_bounded_reversal.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_5_stalemate_burn.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_5_stalemate_burn.py",
+        "evidence.py"
+      ],
+      [
+        "test_5_stalemate_burn.py",
+        "stalemate_burn.py"
+      ],
+      [
+        "test_5c_auth_log_redaction.py",
+        "auth.py"
+      ],
+      [
+        "test_5d_replay_persistence.py",
+        "mesh_hashchain.py"
+      ],
+      [
+        "test_5e_meshtastic_transport.py",
+        "config.py"
+      ],
+      [
+        "test_5e_meshtastic_transport.py",
+        "env_check.py"
+      ],
+      [
+        "test_5e_meshtastic_transport.py",
+        "mesh_router.py"
+      ],
+      [
+        "test_5e_meshtastic_transport.py",
+        "sigint_bridge.py"
+      ],
+      [
+        "test_6_locking.py",
+        "_gate_factory.py"
+      ],
+      [
+        "test_6_locking.py",
+        "config.py"
+      ],
+      [
+        "test_6_ratification.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_6_ratification.py",
+        "_gate_factory.py"
+      ],
+      [
+        "test_6_ratification.py",
+        "config.py"
+      ],
+      [
+        "test_6_sacrifice.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_6_sacrifice.py",
+        "_gate_factory.py"
+      ],
+      [
+        "test_6_sacrifice.py",
+        "schema.py"
+      ],
+      [
+        "test_6_shutdown.py",
+        "_gate_factory.py"
+      ],
+      [
+        "test_6_shutdown.py",
+        "config.py"
+      ],
+      [
+        "test_7_dsl_executor.py",
+        "config.py"
+      ],
+      [
+        "test_7_dsl_executor.py",
+        "dsl_executor.py"
+      ],
+      [
+        "test_7_petition_lifecycle.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_7_petition_lifecycle.py",
+        "config.py"
+      ],
+      [
+        "test_7_upgrade_hash.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_7_upgrade_hash.py",
+        "config.py"
+      ],
+      [
+        "test_8_argon2id_canonical.py",
+        "config.py"
+      ],
+      [
+        "test_8_bootstrap_resolution.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_8_bootstrap_resolution.py",
+        "config.py"
+      ],
+      [
+        "test_8_bootstrap_resolution.py",
+        "evidence.py"
+      ],
+      [
+        "test_8_eligibility.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_8_eligibility.py",
+        "config.py"
+      ],
+      [
+        "test_8_filter_funnel_and_ramp.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_8_filter_funnel_and_ramp.py",
+        "config.py"
+      ],
+      [
+        "test_8_one_vote_dedup.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_adversarial_regression_harness.py",
+        "main.py"
+      ],
+      [
+        "test_alias_history_bounds.py",
+        "mesh_wormhole_contacts.py"
+      ],
+      [
+        "test_alias_history_bounds.py",
+        "mesh_wormhole_dead_drop.py"
+      ],
+      [
+        "test_api_smoke.py",
+        "auth.py"
+      ],
+      [
+        "test_api_smoke.py",
+        "main.py"
+      ],
+      [
+        "test_chain_cutover.py",
+        "infonet.py"
+      ],
+      [
+        "test_chain_cutover.py",
+        "schema.py"
+      ],
+      [
+        "test_compatibility_containment.py",
+        "config.py"
+      ],
+      [
+        "test_compatibility_containment.py",
+        "main.py"
+      ],
+      [
+        "test_compatibility_containment.py",
+        "mesh_schema.py"
+      ],
+      [
+        "test_dm_alias_grace_acceptance.py",
+        "main.py"
+      ],
+      [
+        "test_dm_alias_rotation_reason_guard.py",
+        "mesh_wormhole_dead_drop.py"
+      ],
+      [
+        "test_dm_ciphertext_padding.py",
+        "mesh_dm_mls.py"
+      ],
+      [
+        "test_dm_ciphertext_padding.py",
+        "privacy_core_client.py"
+      ],
+      [
+        "test_dm_mls_durable_state.py",
+        "mesh_secure_storage.py"
+      ],
+      [
+        "test_dm_mls_restored_session_failclose.py",
+        "config.py"
+      ],
+      [
+        "test_dm_mls_restored_session_failclose.py",
+        "privacy_core_client.py"
+      ],
+      [
+        "test_dm_poll_batch_limit.py",
+        "main.py"
+      ],
+      [
+        "test_dm_poll_batch_limit.py",
+        "mesh_rns.py"
+      ],
+      [
+        "test_dm_selftest.py",
+        "mesh_dm_selftest.py"
+      ],
+      [
+        "test_fault_injection.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "test_fault_injection.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "test_fault_injection.py",
+        "mesh_schema.py"
+      ],
+      [
+        "test_fetch_health.py",
+        "fetch_health.py"
+      ],
+      [
+        "test_gate_envelope_authenticity.py",
+        "config.py"
+      ],
+      [
+        "test_gate_envelope_authenticity.py",
+        "main.py"
+      ],
+      [
+        "test_gate_envelope_authenticity.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "test_gate_envelope_authenticity.py",
+        "mesh_gate_mls.py"
+      ],
+      [
+        "test_gate_envelope_authenticity.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "test_gate_envelope_authenticity.py",
+        "mesh_reputation.py"
+      ],
+      [
+        "test_gate_mls_durable_state.py",
+        "mesh_secure_storage.py"
+      ],
+      [
+        "test_gate_mls_durable_state.py",
+        "privacy_core_client.py"
+      ],
+      [
+        "test_gate_rns_envelope_distribution.py",
+        "mesh_hashchain.py"
+      ],
+      [
+        "test_gate_rns_envelope_distribution.py",
+        "mesh_rns.py"
+      ],
+      [
+        "test_gate_rns_envelope_distribution.py",
+        "types.ts"
+      ],
+      [
+        "test_gate_secret_rotation_guard.py",
+        "config.py"
+      ],
+      [
+        "test_gate_segmented_storage.py",
+        "mesh_secure_storage.py"
+      ],
+      [
+        "test_gate_session_stream.py",
+        "types.ts"
+      ],
+      [
+        "test_gate_signature_compat_and_router_policy.py",
+        "mesh_router.py"
+      ],
+      [
+        "test_gate_state_resync.py",
+        "auth.py"
+      ],
+      [
+        "test_gate_state_resync.py",
+        "main.py"
+      ],
+      [
+        "test_gate_write_cutover.py",
+        "gate_sse.py"
+      ],
+      [
+        "test_gate_write_cutover.py",
+        "main.py"
+      ],
+      [
+        "test_gate_write_cutover.py",
+        "mesh_gate_mls.py"
+      ],
+      [
+        "test_gate_write_cutover.py",
+        "mesh_reputation.py"
+      ],
+      [
+        "test_geo_fetchers.py",
+        "_store.py"
+      ],
+      [
+        "test_geo_fetchers.py",
+        "types.ts"
+      ],
+      [
+        "test_icao_military.py",
+        "military.py"
+      ],
+      [
+        "test_infonet_router.py",
+        "infonet.py"
+      ],
+      [
+        "test_ledger_policy_split.py",
+        "mesh_hashchain.py"
+      ],
+      [
+        "test_ledger_policy_split.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "test_ledger_policy_split.py",
+        "mesh_schema.py"
+      ],
+      [
+        "test_lookup_handle_rotation.py",
+        "config.py"
+      ],
+      [
+        "test_lookup_handle_rotation.py",
+        "main.py"
+      ],
+      [
+        "test_mesh_anonymous_mode.py",
+        "auth.py"
+      ],
+      [
+        "test_mesh_anonymous_mode.py",
+        "config.py"
+      ],
+      [
+        "test_mesh_anonymous_mode.py",
+        "main.py"
+      ],
+      [
+        "test_mesh_bootstrap_manifest.py",
+        "mesh_bootstrap_manifest.py"
+      ],
+      [
+        "test_mesh_bootstrap_manifest.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "test_mesh_canonical.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "test_mesh_crypto.py",
+        "config.py"
+      ],
+      [
+        "test_mesh_crypto.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "test_mesh_dm_consent_privacy.py",
+        "config.py"
+      ],
+      [
+        "test_mesh_dm_consent_privacy.py",
+        "main.py"
+      ],
+      [
+        "test_mesh_dm_consent_privacy.py",
+        "mesh_wormhole_dead_drop.py"
+      ],
+      [
+        "test_mesh_dm_mls.py",
+        "auth.py"
+      ],
+      [
+        "test_mesh_dm_mls.py",
+        "config.py"
+      ],
+      [
+        "test_mesh_dm_mls.py",
+        "main.py"
+      ],
+      [
+        "test_mesh_dm_mls.py",
+        "mesh_local_custody.py"
+      ],
+      [
+        "test_mesh_dm_request_sender_blinding.py",
+        "config.py"
+      ],
+      [
+        "test_mesh_dm_request_sender_blinding.py",
+        "mesh_dm.py"
+      ],
+      [
+        "test_mesh_dm_request_sender_blinding_route.py",
+        "config.py"
+      ],
+      [
+        "test_mesh_dm_request_sender_blinding_route.py",
+        "main.py"
+      ],
+      [
+        "test_mesh_dm_security.py",
+        "config.py"
+      ],
+      [
+        "test_mesh_endpoint_integrity.py",
+        "auth.py"
+      ],
+      [
+        "test_mesh_endpoint_integrity.py",
+        "config.py"
+      ],
+      [
+        "test_mesh_endpoint_integrity.py",
+        "main.py"
+      ],
+      [
+        "test_mesh_endpoint_integrity.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "test_mesh_endpoint_integrity.py",
+        "mesh_gate_mls.py"
+      ],
+      [
+        "test_mesh_endpoint_integrity.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "test_mesh_endpoint_integrity.py",
+        "mesh_reputation.py"
+      ],
+      [
+        "test_mesh_endpoint_integrity.py",
+        "mesh_router.py"
+      ],
+      [
+        "test_mesh_endpoint_integrity.py",
+        "mesh_schema.py"
+      ],
+      [
+        "test_mesh_endpoint_integrity.py",
+        "privacy_claims.py"
+      ],
+      [
+        "test_mesh_endpoint_integrity.py",
+        "review_surface_contracts.py"
+      ],
+      [
+        "test_mesh_endpoint_integrity.py",
+        "types.ts"
+      ],
+      [
+        "test_mesh_env_security_audit.py",
+        "config.py"
+      ],
+      [
+        "test_mesh_env_security_audit.py",
+        "env_check.py"
+      ],
+      [
+        "test_mesh_env_security_audit.py",
+        "mesh_compatibility.py"
+      ],
+      [
+        "test_mesh_gate_catalog.py",
+        "main.py"
+      ],
+      [
+        "test_mesh_gate_catalog.py",
+        "mesh_reputation.py"
+      ],
+      [
+        "test_mesh_gate_mls.py",
+        "auth.py"
+      ],
+      [
+        "test_mesh_gate_mls.py",
+        "config.py"
+      ],
+      [
+        "test_mesh_gate_mls.py",
+        "main.py"
+      ],
+      [
+        "test_mesh_gate_mls.py",
+        "mesh_hashchain.py"
+      ],
+      [
+        "test_mesh_gate_mls.py",
+        "mesh_local_custody.py"
+      ],
+      [
+        "test_mesh_gate_mls.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "test_mesh_gate_mls.py",
+        "mesh_rns.py"
+      ],
+      [
+        "test_mesh_gate_mls.py",
+        "mesh_schema.py"
+      ],
+      [
+        "test_mesh_gate_mls.py",
+        "mesh_secure_storage.py"
+      ],
+      [
+        "test_mesh_gate_secret_containment.py",
+        "main.py"
+      ],
+      [
+        "test_mesh_gate_secret_containment.py",
+        "mesh_public.py"
+      ],
+      [
+        "test_mesh_gate_secret_containment.py",
+        "mesh_reputation.py"
+      ],
+      [
+        "test_mesh_ibf.py",
+        "mesh_ibf.py"
+      ],
+      [
+        "test_mesh_infonet_ingest.py",
+        "config.py"
+      ],
+      [
+        "test_mesh_infonet_sync_support.py",
+        "mesh_infonet_sync_support.py"
+      ],
+      [
+        "test_mesh_infonet_sync_support.py",
+        "mesh_peer_store.py"
+      ],
+      [
+        "test_mesh_merkle.py",
+        "mesh_merkle.py"
+      ],
+      [
+        "test_mesh_node_bootstrap_runtime.py",
+        "config.py"
+      ],
+      [
+        "test_mesh_node_bootstrap_runtime.py",
+        "main.py"
+      ],
+      [
+        "test_mesh_node_bootstrap_runtime.py",
+        "mesh_bootstrap_manifest.py"
+      ],
+      [
+        "test_mesh_node_bootstrap_runtime.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "test_mesh_node_bootstrap_runtime.py",
+        "types.ts"
+      ],
+      [
+        "test_mesh_peer_store.py",
+        "mesh_peer_store.py"
+      ],
+      [
+        "test_mesh_privacy_hardening.py",
+        "auth.py"
+      ],
+      [
+        "test_mesh_privacy_hardening.py",
+        "config.py"
+      ],
+      [
+        "test_mesh_privacy_hardening.py",
+        "main.py"
+      ],
+      [
+        "test_mesh_privacy_hardening.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "test_mesh_privacy_hardening.py",
+        "mesh_hashchain.py"
+      ],
+      [
+        "test_mesh_privacy_hardening.py",
+        "mesh_router.py"
+      ],
+      [
+        "test_mesh_protocol_hygiene.py",
+        "config.py"
+      ],
+      [
+        "test_mesh_protocol_hygiene.py",
+        "main.py"
+      ],
+      [
+        "test_mesh_protocol_hygiene.py",
+        "mesh_router.py"
+      ],
+      [
+        "test_mesh_protocol_hygiene.py",
+        "mesh_wormhole_prekey.py"
+      ],
+      [
+        "test_mesh_protocol_hygiene.py",
+        "mesh_wormhole_ratchet.py"
+      ],
+      [
+        "test_mesh_public_meshtastic_boundary.py",
+        "main.py"
+      ],
+      [
+        "test_mesh_public_meshtastic_boundary.py",
+        "mesh_router.py"
+      ],
+      [
+        "test_mesh_public_meshtastic_boundary.py",
+        "sigint_bridge.py"
+      ],
+      [
+        "test_mesh_public_meshtastic_boundary.py",
+        "types.ts"
+      ],
+      [
+        "test_mesh_reputation_link.py",
+        "config.py"
+      ],
+      [
+        "test_mesh_rns_concurrency.py",
+        "mesh_hashchain.py"
+      ],
+      [
+        "test_mesh_rns_concurrency.py",
+        "mesh_rns.py"
+      ],
+      [
+        "test_mesh_rns_concurrency.py",
+        "types.ts"
+      ],
+      [
+        "test_mesh_rns_private_dm.py",
+        "config.py"
+      ],
+      [
+        "test_mesh_rns_private_dm.py",
+        "main.py"
+      ],
+      [
+        "test_mesh_rns_private_dm.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "test_mesh_rns_private_dm.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "test_mesh_secure_storage.py",
+        "types.ts"
+      ],
+      [
+        "test_mesh_sensitive_no_store.py",
+        "config.py"
+      ],
+      [
+        "test_mesh_sensitive_no_store.py",
+        "main.py"
+      ],
+      [
+        "test_mesh_wormhole_endpoint_boundary.py",
+        "auth.py"
+      ],
+      [
+        "test_mesh_wormhole_endpoint_boundary.py",
+        "main.py"
+      ],
+      [
+        "test_mesh_wormhole_hardening.py",
+        "auth.py"
+      ],
+      [
+        "test_mesh_wormhole_hardening.py",
+        "config.py"
+      ],
+      [
+        "test_mesh_wormhole_hardening.py",
+        "main.py"
+      ],
+      [
+        "test_mesh_wormhole_hardening.py",
+        "mesh_wormhole_contacts.py"
+      ],
+      [
+        "test_mesh_wormhole_hardening.py",
+        "mesh_wormhole_identity.py"
+      ],
+      [
+        "test_mesh_wormhole_hardening.py",
+        "mesh_wormhole_prekey.py"
+      ],
+      [
+        "test_mesh_wormhole_hardening.py",
+        "mesh_wormhole_seal.py"
+      ],
+      [
+        "test_mesh_wormhole_hardening.py",
+        "mesh_wormhole_sender_token.py"
+      ],
+      [
+        "test_mesh_wormhole_persona.py",
+        "auth.py"
+      ],
+      [
+        "test_mesh_wormhole_persona.py",
+        "config.py"
+      ],
+      [
+        "test_mesh_wormhole_persona.py",
+        "main.py"
+      ],
+      [
+        "test_mesh_wormhole_root_manifest.py",
+        "config.py"
+      ],
+      [
+        "test_mesh_wormhole_root_transparency.py",
+        "config.py"
+      ],
+      [
+        "test_meshtastic_topics.py",
+        "meshtastic_topics.py"
+      ],
+      [
+        "test_military_bases.py",
+        "_store.py"
+      ],
+      [
+        "test_military_bases.py",
+        "infrastructure.py"
+      ],
+      [
+        "test_mls_vectors.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "test_mls_vectors.py",
+        "mesh_schema.py"
+      ],
+      [
+        "test_network_utils.py",
+        "network_utils.py"
+      ],
+      [
+        "test_news_keywords.py",
+        "news.py"
+      ],
+      [
+        "test_news_keywords.py",
+        "news_feed_config.py"
+      ],
+      [
+        "test_nuforc_enrichment.py",
+        "earth_observation.py"
+      ],
+      [
+        "test_nuforc_enrichment.py",
+        "nuforc_enrichment.py"
+      ],
+      [
+        "test_openclaw_channel_honesty.py",
+        "openclaw_channel.py"
+      ],
+      [
+        "test_openclaw_hmac_body_binding.py",
+        "auth.py"
+      ],
+      [
+        "test_openclaw_query_helpers.py",
+        "_store.py"
+      ],
+      [
+        "test_openclaw_query_helpers.py",
+        "openclaw_channel.py"
+      ],
+      [
+        "test_openclaw_query_helpers.py",
+        "openclaw_watchdog.py"
+      ],
+      [
+        "test_openclaw_query_helpers.py",
+        "telemetry.py"
+      ],
+      [
+        "test_openclaw_route_security.py",
+        "auth.py"
+      ],
+      [
+        "test_p0_security.py",
+        "auth.py"
+      ],
+      [
+        "test_p0_security.py",
+        "main.py"
+      ],
+      [
+        "test_phase0_audit_diagnostics.py",
+        "mesh_gate_mls.py"
+      ],
+      [
+        "test_phase0_audit_diagnostics.py",
+        "mesh_reputation.py"
+      ],
+      [
+        "test_phase3_metadata_hardening.py",
+        "config.py"
+      ],
+      [
+        "test_phase3_metadata_hardening.py",
+        "main.py"
+      ],
+      [
+        "test_phase3_tor_proof_hardening.py",
+        "types.ts"
+      ],
+      [
+        "test_phase4_replay_domains.py",
+        "main.py"
+      ],
+      [
+        "test_phase4_replay_domains.py",
+        "mesh_signed_events.py"
+      ],
+      [
+        "test_phase5_release_profiles.py",
+        "config.py"
+      ],
+      [
+        "test_phase5_release_profiles.py",
+        "env_check.py"
+      ],
+      [
+        "test_phase5_release_profiles.py",
+        "privacy_claims.py"
+      ],
+      [
+        "test_phase5_release_profiles.py",
+        "release_profiles.py"
+      ],
+      [
+        "test_phase6_protocol_context.py",
+        "config.py"
+      ],
+      [
+        "test_phase6_protocol_context.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "test_phase6_protocol_context.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "test_phase6_protocol_context.py",
+        "mesh_signed_events.py"
+      ],
+      [
+        "test_phase6_protocol_context.py",
+        "release_profiles.py"
+      ],
+      [
+        "test_phase7_gate_epoch_rotation.py",
+        "main.py"
+      ],
+      [
+        "test_phase7_gate_epoch_rotation.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "test_phase7_gate_epoch_rotation.py",
+        "mesh_gate_mls.py"
+      ],
+      [
+        "test_phase7_gate_epoch_rotation.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "test_phase7_gate_epoch_rotation.py",
+        "privacy_claims.py"
+      ],
+      [
+        "test_polish_progressive_penalty.py",
+        "_chain_factory.py"
+      ],
+      [
+        "test_polish_progressive_penalty.py",
+        "config.py"
+      ],
+      [
+        "test_polish_progressive_penalty.py",
+        "correlation_score.py"
+      ],
+      [
+        "test_prekey_lookup_correlation.py",
+        "config.py"
+      ],
+      [
+        "test_prekey_lookup_correlation.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "test_prekey_lookup_correlation.py",
+        "mesh_metadata_exposure.py"
+      ],
+      [
+        "test_prekey_lookup_correlation.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "test_prekey_lookup_correlation.py",
+        "mesh_wormhole_identity.py"
+      ],
+      [
+        "test_prekey_lookup_correlation.py",
+        "mesh_wormhole_prekey.py"
+      ],
+      [
+        "test_privacy_claims.py",
+        "main.py"
+      ],
+      [
+        "test_privacy_claims.py",
+        "privacy_claims.py"
+      ],
+      [
+        "test_privacy_claims.py",
+        "review_surface_contracts.py"
+      ],
+      [
+        "test_privacy_core_attestation.py",
+        "auth.py"
+      ],
+      [
+        "test_privacy_core_attestation.py",
+        "main.py"
+      ],
+      [
+        "test_privacy_core_attestation.py",
+        "types.ts"
+      ],
+      [
+        "test_privacy_core_cross_node.py",
+        "privacy_core_client.py"
+      ],
+      [
+        "test_privacy_core_ffi_invariants.py",
+        "privacy_core_client.py"
+      ],
+      [
+        "test_privacy_core_startup_policy.py",
+        "main.py"
+      ],
+      [
+        "test_privacy_core_startup_policy.py",
+        "types.ts"
+      ],
+      [
+        "test_privacy_prewarm.py",
+        "mesh_private_transport_manager.py"
+      ],
+      [
+        "test_privacy_scaffolding.py",
+        "receipt.py"
+      ],
+      [
+        "test_private_adversarial_regression.py",
+        "config.py"
+      ],
+      [
+        "test_private_adversarial_regression.py",
+        "main.py"
+      ],
+      [
+        "test_private_adversarial_regression.py",
+        "mesh_private_dispatcher.py"
+      ],
+      [
+        "test_private_adversarial_regression.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "test_private_adversarial_regression.py",
+        "mesh_router.py"
+      ],
+      [
+        "test_private_adversarial_regression.py",
+        "privacy_claims.py"
+      ],
+      [
+        "test_private_dispatcher.py",
+        "config.py"
+      ],
+      [
+        "test_private_dispatcher.py",
+        "main.py"
+      ],
+      [
+        "test_private_dispatcher.py",
+        "mesh_private_dispatcher.py"
+      ],
+      [
+        "test_private_dispatcher.py",
+        "mesh_router.py"
+      ],
+      [
+        "test_private_dispatcher_reason_guard.py",
+        "mesh_private_dispatcher.py"
+      ],
+      [
+        "test_private_metadata_exposure.py",
+        "config.py"
+      ],
+      [
+        "test_private_metadata_exposure.py",
+        "main.py"
+      ],
+      [
+        "test_private_release_outbox.py",
+        "config.py"
+      ],
+      [
+        "test_private_release_outbox.py",
+        "main.py"
+      ],
+      [
+        "test_private_release_outbox.py",
+        "mesh_privacy_policy.py"
+      ],
+      [
+        "test_private_transport_manager.py",
+        "main.py"
+      ],
+      [
+        "test_private_transport_manager.py",
+        "mesh_privacy_policy.py"
+      ],
+      [
+        "test_private_transport_manager.py",
+        "mesh_private_transport_manager.py"
+      ],
+      [
+        "test_runtime_smoke_lane.py",
+        "auth.py"
+      ],
+      [
+        "test_runtime_smoke_lane.py",
+        "config.py"
+      ],
+      [
+        "test_runtime_smoke_lane.py",
+        "main.py"
+      ],
+      [
+        "test_runtime_smoke_lane.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "test_runtime_smoke_lane.py",
+        "mesh_router.py"
+      ],
+      [
+        "test_runtime_smoke_lane.py",
+        "sigint_bridge.py"
+      ],
+      [
+        "test_runtime_smoke_lane.py",
+        "types.ts"
+      ],
+      [
+        "test_s10b_cover_dm_shape.py",
+        "config.py"
+      ],
+      [
+        "test_s10b_cover_dm_shape.py",
+        "mesh_rns.py"
+      ],
+      [
+        "test_s10b_cover_dm_shape.py",
+        "types.ts"
+      ],
+      [
+        "test_s11b_dm_trust_state.py",
+        "main.py"
+      ],
+      [
+        "test_s11b_dm_trust_state.py",
+        "mesh_wormhole_contacts.py"
+      ],
+      [
+        "test_s11b_router_trust_surface.py",
+        "main.py"
+      ],
+      [
+        "test_s11b_router_trust_surface.py",
+        "mesh_wormhole_contacts.py"
+      ],
+      [
+        "test_s11b_router_trust_surface.py",
+        "wormhole.py"
+      ],
+      [
+        "test_s12a_root_distribution_http.py",
+        "auth.py"
+      ],
+      [
+        "test_s12a_root_distribution_http.py",
+        "config.py"
+      ],
+      [
+        "test_s12a_root_distribution_http.py",
+        "main.py"
+      ],
+      [
+        "test_s12b_transport_truth.py",
+        "auth.py"
+      ],
+      [
+        "test_s12b_transport_truth.py",
+        "mesh_dm_mls.py"
+      ],
+      [
+        "test_s12b_transport_truth.py",
+        "wormhole_supervisor.py"
+      ],
+      [
+        "test_s13b_gate_identity_surface.py",
+        "main.py"
+      ],
+      [
+        "test_s13b_gate_identity_surface.py",
+        "mesh_public.py"
+      ],
+      [
+        "test_s13c_gate_envelope_policy.py",
+        "config.py"
+      ],
+      [
+        "test_s13c_gate_envelope_policy.py",
+        "main.py"
+      ],
+      [
+        "test_s13c_gate_envelope_policy.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "test_s13c_gate_envelope_policy.py",
+        "mesh_public.py"
+      ],
+      [
+        "test_s13c_gate_envelope_policy.py",
+        "mesh_reputation.py"
+      ],
+      [
+        "test_s13d_legacy_envelope_fallback.py",
+        "main.py"
+      ],
+      [
+        "test_s13d_legacy_envelope_fallback.py",
+        "mesh_gate_mls.py"
+      ],
+      [
+        "test_s13d_legacy_envelope_fallback.py",
+        "mesh_public.py"
+      ],
+      [
+        "test_s13d_legacy_envelope_fallback.py",
+        "mesh_reputation.py"
+      ],
+      [
+        "test_s14a_sas_repin_guard.py",
+        "auth.py"
+      ],
+      [
+        "test_s14a_sas_repin_guard.py",
+        "main.py"
+      ],
+      [
+        "test_s14a_sas_repin_guard.py",
+        "mesh_wormhole_contacts.py"
+      ],
+      [
+        "test_s14b_public_sync_gate_filter.py",
+        "main.py"
+      ],
+      [
+        "test_s14b_public_sync_gate_filter.py",
+        "mesh_public.py"
+      ],
+      [
+        "test_s15b_cover_ct_alignment.py",
+        "mesh_dm_mls.py"
+      ],
+      [
+        "test_s15b_cover_ct_alignment.py",
+        "mesh_rns.py"
+      ],
+      [
+        "test_s16a_dm_count_coarsening.py",
+        "config.py"
+      ],
+      [
+        "test_s16a_dm_count_coarsening.py",
+        "main.py"
+      ],
+      [
+        "test_s16c_truth_and_reply_to_integrity.py",
+        "auth.py"
+      ],
+      [
+        "test_s16c_truth_and_reply_to_integrity.py",
+        "config.py"
+      ],
+      [
+        "test_s16c_truth_and_reply_to_integrity.py",
+        "main.py"
+      ],
+      [
+        "test_s16c_truth_and_reply_to_integrity.py",
+        "mesh_crypto.py"
+      ],
+      [
+        "test_s16c_truth_and_reply_to_integrity.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "test_s16c_truth_and_reply_to_integrity.py",
+        "mesh_reputation.py"
+      ],
+      [
+        "test_s16c_truth_and_reply_to_integrity.py",
+        "privacy_core_client.py"
+      ],
+      [
+        "test_s16d_dm_invite_bootstrap.py",
+        "config.py"
+      ],
+      [
+        "test_s16d_dm_invite_bootstrap.py",
+        "main.py"
+      ],
+      [
+        "test_s16d_dm_invite_bootstrap.py",
+        "mesh_protocol.py"
+      ],
+      [
+        "test_s16e_dm_contact_upsert_authority.py",
+        "auth.py"
+      ],
+      [
+        "test_s16e_dm_contact_upsert_authority.py",
+        "main.py"
+      ],
+      [
+        "test_s7a_dm_middleware_tier.py",
+        "auth.py"
+      ],
+      [
+        "test_s7b_dm_sessionless_alias_recovery.py",
+        "mesh_secure_storage.py"
+      ],
+      [
+        "test_s8a_rns_cover_traffic.py",
+        "config.py"
+      ],
+      [
+        "test_s8a_rns_cover_traffic.py",
+        "mesh_rns.py"
+      ],
+      [
+        "test_s8b_auth_policy_table.py",
+        "auth.py"
+      ],
+      [
+        "test_s9b_gate_store_hydration.py",
+        "main.py"
+      ],
+      [
+        "test_s9b_gate_store_hydration.py",
+        "mesh_peer_sync.py"
+      ],
+      [
+        "test_s9b_gate_store_hydration.py",
+        "mesh_public.py"
+      ],
+      [
+        "test_schemas.py",
+        "schemas.py"
+      ],
+      [
+        "test_secure_storage_passphrase.py",
+        "mesh_secure_storage.py"
+      ],
+      [
+        "test_secure_storage_passphrase.py",
+        "types.ts"
+      ],
+      [
+        "test_secure_storage_rotation.py",
+        "types.ts"
+      ],
+      [
+        "test_sigint_cctv_accuracy.py",
+        "_store.py"
+      ],
+      [
+        "test_sigint_cctv_accuracy.py",
+        "main.py"
+      ],
+      [
+        "test_sigint_cctv_accuracy.py",
+        "types.ts"
+      ],
+      [
+        "test_signed_event_integrity_guard.py",
+        "mesh_signed_events.py"
+      ],
+      [
+        "test_signed_event_revocation_ttl.py",
+        "config.py"
+      ],
+      [
+        "test_signed_write_transport_matrix.py",
+        "auth.py"
+      ],
+      [
+        "test_signed_write_transport_matrix.py",
+        "main.py"
+      ],
+      [
+        "test_signed_write_transport_matrix.py",
+        "mesh_router.py"
+      ],
+      [
+        "test_signed_write_transport_matrix.py",
+        "sigint_bridge.py"
+      ],
+      [
+        "test_signed_write_transport_matrix.py",
+        "types.ts"
+      ],
+      [
+        "test_sprint0_diagnostics.py",
+        "mesh_router.py"
+      ],
+      [
+        "test_sprint0_diagnostics.py",
+        "mesh_wormhole_dead_drop.py"
+      ],
+      [
+        "test_sprint0_diagnostics.py",
+        "types.ts"
+      ],
+      [
+        "test_store.py",
+        "_store.py"
+      ],
+      [
+        "test_trains_fetcher.py",
+        "_store.py"
+      ],
+      [
+        "test_wormhole_envelope_binding.py",
+        "config.py"
+      ],
+      [
+        "test_wormhole_envelope_binding.py",
+        "main.py"
+      ],
+      [
+        "test_wormhole_envelope_binding.py",
+        "mesh_gate_mls.py"
+      ],
+      [
+        "test_wormhole_envelope_binding.py",
+        "mesh_reputation.py"
+      ],
+      [
+        "test_wormhole_supervisor_hardening.py",
+        "types.ts"
+      ],
+      [
+        "thermal_sentinel.py",
+        "_store.py"
+      ],
+      [
+        "time_validity.py",
+        "config.py"
+      ],
+      [
+        "tinygs_fetcher.py",
+        "api.ts"
+      ],
+      [
+        "tools.py",
+        "auth.py"
+      ],
+      [
+        "tools.py",
+        "geocode.py"
+      ],
+      [
+        "tools.py",
+        "limiter.py"
+      ],
+      [
+        "tools.py",
+        "region_dossier.py"
+      ],
+      [
+        "tools.py",
+        "sentinel_search.py"
+      ],
+      [
+        "tools.py",
+        "shodan_connector.py"
+      ],
+      [
+        "tools.py",
+        "unusual_whales_connector.py"
+      ],
+      [
+        "trains.py",
+        "_store.py"
+      ],
+      [
+        "trains.py",
+        "network_utils.py"
+      ],
+      [
+        "transport_lane_isolation.py",
+        "meshtastic_mqtt_settings.py"
+      ],
+      [
+        "transport_lane_isolation.py",
+        "sigint_bridge.py"
+      ],
+      [
+        "two_tier_state.py",
+        "schema.py"
+      ],
+      [
+        "types.ts",
+        "meshIdentity.ts"
+      ],
+      [
+        "types.ts",
+        "requestSenderRecovery.ts"
+      ],
+      [
+        "types.ts",
+        "wormholeIdentityClient.ts"
+      ],
+      [
+        "ukraine_alerts.py",
+        "_store.py"
+      ],
+      [
+        "ukraine_alerts.py",
+        "network_utils.py"
+      ],
+      [
+        "ukraine_alerts.py",
+        "retry.py"
+      ],
+      [
+        "unusual_whales.py",
+        "_store.py"
+      ],
+      [
+        "unusual_whales.py",
+        "retry.py"
+      ],
+      [
+        "unusual_whales.py",
+        "unusual_whales_connector.py"
+      ],
+      [
+        "updateHandlers.ts",
+        "types.ts"
+      ],
+      [
+        "upgrade_hash.py",
+        "config.py"
+      ],
+      [
+        "useAgentActions.ts",
+        "api.ts"
+      ],
+      [
+        "useAlertToasts.ts",
+        "dashboard.ts"
+      ],
+      [
+        "useAlertToasts.ts",
+        "useDataStore.ts"
+      ],
+      [
+        "useDataPolling.ts",
+        "api.ts"
+      ],
+      [
+        "useDataPolling.ts",
+        "useDataStore.ts"
+      ],
+      [
+        "useDataStore.ts",
+        "dashboard.ts"
+      ],
+      [
+        "useDataStore.ts",
+        "useDataPolling.ts"
+      ],
+      [
+        "useFeedHealth.ts",
+        "dashboard.ts"
+      ],
+      [
+        "useFeedHealth.ts",
+        "useDataStore.ts"
+      ],
+      [
+        "useImperativeSource.ts",
+        "mapConstants.ts"
+      ],
+      [
+        "useInterpolation.ts",
+        "constants.py"
+      ],
+      [
+        "useInterpolation.ts",
+        "constants.ts"
+      ],
+      [
+        "useInterpolation.ts",
+        "positioning.ts"
+      ],
+      [
+        "useMeshChatController.ts",
+        "api.ts"
+      ],
+      [
+        "useMeshChatController.ts",
+        "controlPlaneStatusClient.ts"
+      ],
+      [
+        "useMeshChatController.ts",
+        "desktopControlContract.ts"
+      ],
+      [
+        "useMeshChatController.ts",
+        "dmPollScheduler.ts"
+      ],
+      [
+        "useMeshChatController.ts",
+        "gateAccessProof.ts"
+      ],
+      [
+        "useMeshChatController.ts",
+        "meshChatPolicies.ts"
+      ],
+      [
+        "useMeshChatController.ts",
+        "meshSas.ts"
+      ],
+      [
+        "useMeshChatController.ts",
+        "meshSchema.ts"
+      ],
+      [
+        "useMeshChatController.ts",
+        "meshTerminalLauncher.ts"
+      ],
+      [
+        "useMeshChatController.ts",
+        "wormholeClient.ts"
+      ],
+      [
+        "useRegionDossier.ts",
+        "dashboard.ts"
+      ],
+      [
+        "useReverseGeocode.ts",
+        "api.ts"
+      ],
+      [
+        "useTimeMachine.ts",
+        "api.ts"
+      ],
+      [
+        "useTimeMachine.ts",
+        "useDataPolling.ts"
+      ],
+      [
+        "useTimeMachine.ts",
+        "useDataStore.ts"
+      ],
+      [
+        "useViewportBounds.ts",
+        "api.ts"
+      ],
+      [
+        "utils.ts",
+        "types.ts"
+      ],
+      [
+        "uwClient.ts",
+        "api.ts"
+      ],
+      [
+        "vcs.py",
+        "config.py"
+      ],
+      [
+        "wastewater.py",
+        "_store.py"
+      ],
+      [
+        "wastewater.py",
+        "network_utils.py"
+      ],
+      [
+        "wastewater.py",
+        "retry.py"
+      ],
+      [
+        "weekly_vote_budget.py",
+        "config.py"
+      ],
+      [
+        "weekly_vote_budget.py",
+        "oracle_rep.py"
+      ],
+      [
+        "wormhole.py",
+        "ai_intel.py"
+      ],
+      [
+        "wormhole.py",
+        "auth.py"
+      ],
+      [
+        "wormhole.py",
+        "config.py"
+      ],
+      [
+        "wormhole.py",
+        "limiter.py"
+      ],
+      [
+        "wormhole.py",
+        "main.py"
+      ],
+      [
+        "wormhole.py",
+        "mesh_dm_mls.py"
+      ],
+      [
+        "wormhole.py",
+        "mesh_dm_selftest.py"
+      ],
+      [
+        "wormhole.py",
+        "mesh_gate_mls.py"
+      ],
+      [
+        "wormhole.py",
+        "mesh_private_outbox.py"
+      ],
+      [
+        "wormhole.py",
+        "mesh_private_release_worker.py"
+      ],
+      [
+        "wormhole.py",
+        "mesh_wormhole_contacts.py"
+      ],
+      [
+        "wormhole.py",
+        "mesh_wormhole_dead_drop.py"
+      ],
+      [
+        "wormhole.py",
+        "mesh_wormhole_persona.py"
+      ],
+      [
+        "wormhole.py",
+        "mesh_wormhole_prekey.py"
+      ],
+      [
+        "wormhole.py",
+        "mesh_wormhole_ratchet.py"
+      ],
+      [
+        "wormhole.py",
+        "mesh_wormhole_seal.py"
+      ],
+      [
+        "wormhole.py",
+        "mesh_wormhole_sender_token.py"
+      ],
+      [
+        "wormhole.py",
+        "node_settings.py"
+      ],
+      [
+        "wormhole.py",
+        "tor_hidden_service.py"
+      ],
+      [
+        "wormhole.py",
+        "wormhole_settings.py"
+      ],
+      [
+        "wormhole.py",
+        "wormhole_status.py"
+      ],
+      [
+        "wormhole.py",
+        "wormhole_supervisor.py"
+      ],
+      [
+        "wormholeClient.ts",
+        "api.ts"
+      ],
+      [
+        "wormholeClient.ts",
+        "controlPlane.ts"
+      ],
+      [
+        "wormholeClient.ts",
+        "wormholeCompatibility.ts"
+      ],
+      [
+        "wormholeDmBootstrapClient.ts",
+        "controlPlane.ts"
+      ],
+      [
+        "wormholeDmBootstrapClient.ts",
+        "wormholeIdentityClient.ts"
+      ],
+      [
+        "wormholeHandlers.ts",
+        "types.ts"
+      ],
+      [
+        "wormholeIdentityClient.ts",
+        "controlPlane.ts"
+      ],
+      [
+        "wormholeIdentityClient.ts",
+        "gateAccessProof.ts"
+      ],
+      [
+        "wormholeIdentityClient.ts",
+        "gateCompatTelemetry.ts"
+      ],
+      [
+        "wormholeIdentityClient.ts",
+        "gateMessageSnapshot.ts"
+      ],
+      [
+        "wormholeIdentityClient.ts",
+        "localControlTransport.ts"
+      ],
+      [
+        "wormholeIdentityClient.ts",
+        "meshProtocol.ts"
+      ],
+      [
+        "wormholeIdentityClient.ts",
+        "wormholeCompatibility.ts"
+      ],
+      [
+        "wormhole_server.py",
+        "wormhole_settings.py"
+      ],
+      [
+        "wormhole_server.py",
+        "wormhole_status.py"
+      ],
+      [
+        "wormhole_supervisor.py",
+        "config.py"
+      ],
+      [
+        "wormhole_supervisor.py",
+        "mesh_privacy_policy.py"
+      ],
+      [
+        "wormhole_supervisor.py",
+        "mesh_router.py"
+      ],
+      [
+        "wormhole_supervisor.py",
+        "transport_lane_isolation.py"
+      ],
+      [
+        "wormhole_supervisor.py",
+        "wormhole_settings.py"
+      ],
+      [
+        "wormhole_supervisor.py",
+        "wormhole_status.py"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {
+      "wormholeIdentityClient.ts": [
+        {
+          "trigger": "auth_info_leak_via_thrown_error",
+          "matched_text": "token"
+        }
+      ],
+      "meshDmClient.ts": [
+        {
+          "trigger": "auth_info_leak_via_thrown_error",
+          "matched_text": "token"
+        }
+      ],
+      "meshIdentity.ts": [
+        {
+          "trigger": "auth_info_leak_via_thrown_error",
+          "matched_text": "email"
+        }
+      ],
+      "AIIntelPanel.tsx": [
+        {
+          "trigger": "auth_info_leak_via_thrown_error",
+          "matched_text": "token"
+        }
+      ],
+      "SarModeChooserModal.tsx": [
+        {
+          "trigger": "auth_info_leak_via_thrown_error",
+          "matched_text": "token"
+        }
+      ],
+      "OnboardingModal.tsx": [
+        {
+          "trigger": "auth_info_leak_via_thrown_error",
+          "matched_text": "password"
+        }
+      ],
+      "SettingsPanel.tsx": [
+        {
+          "trigger": "auth_info_leak_via_thrown_error",
+          "matched_text": "password"
+        }
+      ],
+      "MeshTerminal.tsx": [
+        {
+          "trigger": "auth_info_leak_via_thrown_error",
+          "matched_text": "email"
+        }
+      ],
+      "useMeshChatController.ts": [
+        {
+          "trigger": "auth_info_leak_via_thrown_error",
+          "matched_text": "password"
+        }
+      ],
+      "messagesViewFirstContact.test.tsx": [
+        {
+          "trigger": "auth_info_leak_via_thrown_error",
+          "matched_text": "token"
+        }
+      ],
+      "sentinelHub.ts": [
+        {
+          "trigger": "auth_info_leak_via_thrown_error",
+          "matched_text": "token"
+        }
+      ],
+      "test_api_settings.py": [
+        {
+          "trigger": "hardcoded_secret_pattern",
+          "matched_text": "API_KEY=\"saved-ais-key\""
+        }
+      ],
+      "dsl_executor.py": [
+        {
+          "trigger": "eval_or_dangerous_html",
+          "matched_text": "eval("
+        }
+      ]
+    },
+    "deep_read_count": 13,
+    "total_files": 726,
+    "cost_saved_ratio": 0.982
+  }
+}

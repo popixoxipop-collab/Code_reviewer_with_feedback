@@ -38,6 +38,7 @@ Repository
 | [`pipeline/ledger.py`](./pipeline/ledger.py) + `ledger.jsonl` | 전체 | 매 주입을 append-only로 영구 기록 — "지금까지 시도한 방법론들 비교해서 보여줘"에 답하는 데이터 소스 |
 | [`pipeline/compare_methodologies.py`](./pipeline/compare_methodologies.py) | 전체 | ledger.jsonl을 즉시 집계해 방법론간 비교표를 렌더링(재실행 없이 언제든 조회 가능) |
 | [`examples/lms/`](./examples/lms/) | 전체 | 두 번째 실제 공개 repo(jxxnixx/LMS, JS/TS 51파일)에 파이프라인 전체를 돌린 실행 결과 |
+| [`examples/shadowbroker/`](./examples/shadowbroker/) | 전체 | 세 번째 실제 공개 repo(Shadowbroker, Python+TS 726파일 monorepo) — tier_b 방법론 첫 실증 |
 
 ## 실행 방법
 
@@ -135,7 +136,7 @@ python3 pipeline/run_pipeline.py LMS/src pipeline/examples/lms_injections.json
 여러 개인 코드베이스에서는 부분적으로만 맞다. 관용패턴 hook과 별개로 "고립 판정용" 억제 메커니즘이
 아직 없음(다음 단계 9번).
 
-## 방법론간 비교표 — 축적된 원장을 즉시 조회 (D23~D25)
+## 방법론간 비교표 — 축적된 원장을 즉시 조회 (D23~D26)
 
 `run_pipeline.py`는 실행할 때마다 결과를 `pipeline/ledger.jsonl`에 append하고, 언제든
 `compare_methodologies.py`로 지금까지 시도한 모든 방법론(idiom_hook 패턴별/tier_b_hook 트리거별)을
@@ -145,16 +146,31 @@ python3 pipeline/run_pipeline.py LMS/src pipeline/examples/lms_injections.json
 python3 pipeline/compare_methodologies.py
 ```
 
-실제 축적된 결과(Study-Match- + LMS 두 repo, 각 1개 패턴씩 확정):
+실제 축적된 결과(Study-Match-·LMS·Shadowbroker 3개 repo, idiom 2개 + tier_b 1개 패턴 확정):
 
 | 방법론 | 키 | 적용 repo 수 | 총 주입 횟수 | 변경된 finding 누적 | 최근 예시 |
 |---|---|---|---|---|---|
 | idiom | `react-context-global-state` | 1 | 2 | 1 | `Study-Match-`: `architecture-diffusion:App.tsx` 상→하 |
 | idiom | `react-query-custom-hook` | 1 | 2 | 1 | `LMS`: `architecture-diffusion:useBooksQueries.ts` 상→하 |
+| tier_b | `hardcoded_secret_pattern` | 1 | 1 | 1 | `Shadowbroker`: `tier-b-risk:test_api_settings.py:secret` 하→(제거됨) |
 
 **실행 중 발견한 버그(D25)**: 같은 repo를 실행 위치에 따라 다른 상대경로(`Study-Match-/src` vs
 `repo_candidates/Study-Match-/src`)로 기록해 "적용 repo 수"가 1이어야 할 게 2로 잘못 집계됨 →
 `normalize_repo()`로 마지막 디렉터리명 기준 정규화해 수정, 재검증 완료.
+
+### tier_b 방법론 첫 실증(Shadowbroker, public, Python+TS 혼합 monorepo, 726파일)
+
+`pipeline/examples/shadowbroker_injections.json`으로 실제 테스트 픽스처 오탐(`backend/tests/test_api_settings.py`의
+`AIS_API_KEY="saved-ais-key"` — 명백한 플레이스홀더, 실제 크리덴셜 아님)을 tier_b_hook에 주입해 확인.
+
+**부수적으로 발견한 더 근본적인 한계(D26, 미수정·정직하게 기록)**: `meshIdentity.ts`(1500줄 이상)에서
+`auth_info_leak_via_thrown_error` 트리거가 오탐지됨 — "email"이라는 단어가 파일 8번째 줄 **주석**
+(`// No email.`)에만 등장하고, `JSON.stringify`/`throw`는 완전히 무관한 다른 함수들(암호화 키 직렬화,
+에러 핸들링)에서 나타남. 이 트리거는 "3개 키워드가 같은 파일 어딘가에 다 있으면" 발동하는데, 파일이
+커질수록 우연한 동시발생(coincidence) 확률이 올라가 정밀도가 떨어진다 — Study-Match-의 firebase.ts처럼
+작은 파일에선 잘 통했던 설계가 대형 파일에서는 근접성(proximity) 체크 없이는 못 버틴다는 게 실측으로
+드러남. `tier_b_hook`으로 이 특정 매치("email")를 억제하면 다른 파일의 진짜 위험까지 같이 막을 수 있어
+(매치 텍스트가 너무 일반적) 주입하지 않았다 — 코드 레벨 수정(근접성 검사)이 필요한 사안으로 별도 기록.
 
 ## 알려진 한계 (숨기지 않고 기록)
 
@@ -258,6 +274,10 @@ python3 pipeline/compare_methodologies.py
   - WHY: 실측 발견 — 같은 저장소를 실행 위치에 따라 다른 상대경로로 기록해 "적용 repo 수" 집계가 부풀려짐(1이어야 할 게 2로)
   - COST: 서로 다른 두 repo가 우연히 같은 마지막 디렉터리명을 쓰면 하나로 합쳐질 위험(드묾)
   - EXIT: 정확한 식별이 필요해지면 `git remote get-url origin`을 저장하는 방식으로 교체
+- **D26** (`cognition/two_tier_scan.py`의 `auth_info_leak_via_thrown_error` 트리거) — Shadowbroker의 `meshIdentity.ts` 오탐을 tier_b_hook으로 억제하지 않고 미수정으로 남김
+  - WHY: 매치 텍스트("email")가 너무 일반적 키워드라 억제하면 다른 파일의 진짜 위험까지 같이 가려질 위험이 큼 — 이 트리거 자체가 "3개 키워드 co-occurrence, 근접성 무시" 설계라 대형 파일에서 정밀도가 떨어지는 구조적 문제
+  - COST: 당장 이 오탐은 그대로 노출됨(Important로 잘못 분류된 채)
+  - EXIT: `matched_text` 주변 N줄 이내에 3개 키워드가 모두 있는지 근접성 검사를 추가하는 코드 수정이 근본 해법(hook 억제로 땜질하면 안 되는 사례)
 
 ## 다음 단계 (미해결)
 
@@ -271,7 +291,9 @@ python3 pipeline/compare_methodologies.py
 8. **신규**: Java/C/C++ import(`import`/`#include`) 파싱은 코드로는 존재하나 실제 Java/C/C++ repo로 검증된 적 없음(Python만 실증됨)
 9. **신규(jxxnixx/LMS 실측)**: D19로 고립 오탐을 30→6건 줄였지만, 남은 6건 중 개념적으로 허브와 무관한 파일(`authToken.js` 등)은 여전히 노이즈 — 관용패턴 hook과 별개로 "고립 판정용" 억제 메커니즘이 없음
 10. **신규**: `pipeline/run_pipeline.py`는 `injections.json`을 사람이 채워야 함(D22) — LLM이 코드를 읽고 injection 후보를 자동 생성하되 `note`는 강제하는 반자동화가 다음 단계
-11. **신규**: `ledger.jsonl`이 repo 3개(Study-Match-/RunPod_Deploy_Agent/LMS) 수준에서만 검증됨 — tier_b 방법론(idiom 아닌)으로 실제 축적된 사례가 아직 없음(진짜 오탐이 나온 적이 없어서), 대량 축적 시 성능/가독성 미검증
+11. ~~ledger.jsonl에 tier_b 방법론 실제 축적 사례가 없음~~ — Shadowbroker(`test_api_settings.py` 시크릿 오탐)로 완료. 대량 축적(수백 건) 시 성능/가독성은 여전히 미검증
+12. **신규(Shadowbroker 실측)**: `auth_info_leak_via_thrown_error` 트리거가 근접성 검사 없이 "3개 키워드가 파일 어딘가에 다 있으면" 발동해 대형 파일(1500줄+)에서 오탐 발생(D26) — 코드 수정(근접 N줄 검사) 필요, hook 억제로는 부적합한 사례
+13. **신규(Shadowbroker 실측)**: 726개 파일 규모 monorepo에서 `cognition-isolation` findings가 90건 이상 쏟아짐 — D19가 가정한 "entry point 1개, root 1개" 구조가 아니라 frontend/backend/스크립트가 독립된 여러 진입점을 가진 monorepo라 `find_routed_peers`가 사실상 무력화됨(진입점 다중화 미대응)
 
 ## 발표용 라이브 데모 실행 순서 (검증됨)
 
