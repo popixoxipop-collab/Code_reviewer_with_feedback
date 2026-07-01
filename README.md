@@ -42,7 +42,7 @@ Repository
 | [`examples/lms/`](./examples/lms/) | 전체 | 두 번째 실제 공개 repo(jxxnixx/LMS, JS/TS 51파일)에 파이프라인 전체를 돌린 실행 결과 |
 | [`examples/shadowbroker/`](./examples/shadowbroker/) | 전체 | 세 번째 실제 공개 repo(Shadowbroker, Python+TS 726파일 monorepo) — tier_b 방법론 첫 실증 |
 | [`pipeline/evidence_bridge.py`](./pipeline/evidence_bridge.py) | 전체 | D안(B안+C안 결합) — C안 finding을 B안 형식 Repository Evidence + 질문으로 자동 변환 |
-| [`examples/lms/d_plan/`](./examples/lms/d_plan/) | 전체 | D안을 LMS에 실행한 결과 + Codex로 독립 생성한 답변으로 검증한 Reflection 판정 시뮬레이션, A~E안 비교 및 6-axis 채점표 |
+| [`examples/lms/d_plan/`](./examples/lms/d_plan/) | 전체 | D안을 LMS에 실행한 결과 + Codex로 독립 생성한 답변 7건 전체 검증([`codex_verification_full.md`](./examples/lms/d_plan/codex_verification_full.md)), A~E안 비교 및 6-axis 채점표 |
 
 ## 실행 방법
 
@@ -342,6 +342,10 @@ python3 pipeline/compare_methodologies.py
   - WHY: 직접 작성한 시뮬레이션 답변은 "패턴에 맞춰 쓴 것 아니냐"는 의심에서 자유롭지 않음 — 실제 코드 컨텍스트만 주고 별도 모델(codex:codex-rescue)이 생성한 답변으로 검증해야 재현율 문제가 진짜인지 확인 가능. 결과: 정성적으로 매우 우수한 reflection(자기오류인식+이유+새판단+구체적 개선안 전부 포함)인데도 confirmed 패턴과 문구가 안 맞아 0/4로 완전히 놓침 — D34가 예상한 것보다 재현율 문제가 훨씬 심각함이 확정됨
   - COST: 이 발견에도 불구, D32의 "3회 확인 후 승격" 원칙을 지켜 새 후보 패턴 3개(`안일하게 생각`/`지금 보니`/`sanitize|DOMPurify`)는 confirmations=1로만 기록하고 승격하지 않음 — 당장은 재현율이 그대로 낮은 채로 남음
   - EXIT: 위 3개 후보에 2건씩 더 재확인이 쌓이면 자동 승격됨(`reflection_hook.py update <sub_signal>`), 재현율이 그때 다시 측정 가능
+- **D38** (`examples/lms/d_plan/codex_verification_full.md`) — LMS 인터뷰 가능 finding 7건 전부 Codex 병렬 생성으로 검증, 방향 전환 발견
+  - WHY: 1건(Bookshelf.jsx)만으로는 "재현율 문제인지 우연인지" 판단 근거가 약했음. 나머지 6건(cognition-isolation)까지 전부 Codex 독립 생성으로 검증한 결과 **7건 전부 reflection_present=False**였지만 원인이 다름: 1건은 진짜 재현율 실패(양질의 오류인정+개선안이 패턴 불일치로 누락), 6건은 "가상 학생"이 전부 GenreContext 미사용에 대한 타당한 설계 근거를 제시해 애초에 reflection이 필요한 상황이 아니었을 가능성이 높음
+  - COST: 이 결과가 시사하는 우선순위 전환을 아직 실행하지 않음 — Reflection 패턴 재현율 개선보다 D19의 `cognition-isolation` 규칙 자체(다중 concern 코드베이스 과탐지)를 먼저 재검토해야 할 수 있다는 결론만 기록하고 코드 변경은 안 함
+  - EXIT: `cognition-isolation` 규칙에 "합리적 근거 제시 시 자동 하향" 재귀 hook을 추가하는 안(idiom_hook/tier_b_hook과 동일 패턴)이 다음 후보 — 다만 이번엔 코드 신호가 아니라 자연어 답변 품질로 판단해야 해서 설계가 다름
 
 ## 다음 단계 (미해결)
 
@@ -360,6 +364,7 @@ python3 pipeline/compare_methodologies.py
 13. **신규(Shadowbroker 실측)**: 726개 파일 규모 monorepo에서 `cognition-isolation` findings가 90건 이상 쏟아짐 — D19가 가정한 "entry point 1개, root 1개" 구조가 아니라 frontend/backend/스크립트가 독립된 여러 진입점을 가진 monorepo라 `find_routed_peers`가 사실상 무력화됨(진입점 다중화 미대응)
 14. ~~판단 블록 3축을 LLM-as-Judge 수준으로 정량화(EVALUATION.md의 "열위(인정)" 항목)~~ — D27~D30(`judgment/subrubric.py`)으로 규칙기반 서브루브릭 구현·Study-Match-/LMS 재검증 완료. ~~서브축 construct 대표성의 외부 검증~~ — D35로 웹서치 기반 문헌 근거(SATD 탐지, CVSS/FindBugs confidence-severity 분리, 고전 검사이론 변별도 지수, Haladyna item-writing guideline, item exposure control) 확보, `location_signal`→`rationale_signal()` 교체·`risk` 공식 게이팅 구조로 변경 완료. **단, "이 문헌들이 이 도메인(레포 리뷰)에 그대로 전이되는가"는 논문 자체의 실증이지 이 시스템에서 실증된 게 아님 — 사람이 직접 채점한 것과 비교하는 검증은 여전히 안 함**. `exposure_client`의 "server" 문자열 휴리스틱 등 나머지 도메인 특화 서브축은 이번 라운드에서 손대지 않음(대체할 문헌을 못 찾음, `SUBRUBRIC_DRAFT.md`에 정직하게 기록). LLM-as-Judge 자체(자연어 논증 평가)로의 전환도 여전히 안 함, 규칙기반의 정량화 버전일 뿐
 15. ~~Reflection 판정이 너무 쉽게 확정됨(POC_TEST.md 문제4)~~ — D32~D34로 완료. AND-4(너무 엄격, B안 모범 예시도 탈락) → "self_error_recognition 필수 + 나머지 2/3"으로 재보정, B안 모범 예시=True/피상적 답변=False/자기오류인식 없는 프로브=False 3건 전부 실측 확인. **단, 4개 서브신호 각각의 confirmed 패턴은 아직 예시 1건씩만 시드됨**(다양한 실제 답변으로 더 채워야 재현율이 오름)
+16. **신규(D38 실측, 우선순위 최상위 후보)**: LMS의 `cognition-isolation` finding 6건 전부 Codex 가상 학생이 GenreContext 미사용에 대해 나름 타당한 설계 근거를 제시함 — 이건 Reflection 판정 문제가 아니라 D19의 고립 판정 규칙 자체가 다중 concern 코드베이스에서 여전히 과탐지 중이라는 6번째 독립 증거일 수 있음. 다음 스프린트는 Reflection 패턴 확충보다 **cognition-isolation에 idiom_hook류 재귀 억제 훅을 붙이는 것**을 먼저 검토해야 할 수 있음(단, 코드 신호가 아니라 자연어 답변 근거로 판단해야 해서 idiom_hook을 그대로 재사용은 못 하고 새 설계 필요)
 
 ## 발표용 라이브 데모 실행 순서 (검증됨)
 
