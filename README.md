@@ -134,3 +134,46 @@ python3 judgment/idiom_hook.py update-all
 4. 다른 언어/규모의 repo(Python, 대형 monorepo)로 재검증
 5. python/java/c/cpp/swift 관용 패턴 저장소에 실제 시드 데이터 채우기(현재 전부 `patterns: []`)
 6. 언어 판별을 확장자 기반에서 AST/툴체인 기반으로 교체 검토(`.h` 오분류 해소)
+
+## 발표용 라이브 데모 실행 순서 (검증됨)
+
+인지 블록(cost_saved_ratio)과 판단 블록(관용 패턴 자동 강등)을 화면 공유로 직접 실행해서 보여주는 절차.
+아래 명령 그대로 실행해 실측 확인됨.
+
+### 사전 준비 (발표 30분 전, 반드시 새 클론 사용)
+
+공유 clone을 쓰면 `judgment/idioms/javascript/idiom_patterns.json`이 이미 confirmed 상태라
+"before"(질문가치=상)가 안 보인다. 반드시 새 클론에서 진행할 것.
+
+```bash
+git clone https://github.com/popixoxipop-collab/Code_reviewer_with_feedback.git
+git clone https://github.com/popixoxipop-collab/Study-Match-.git
+cd Code_reviewer_with_feedback
+# 데모용으로만 로컬 초기화 (커밋 안 함, 발표 후 git checkout으로 복원)
+printf '{\n  "promotion_threshold": 3,\n  "patterns": []\n}\n' > judgment/idioms/javascript/idiom_patterns.json
+> judgment/idioms/javascript/idiom_feedback_log.jsonl
+```
+
+### 화면공유 순서 (5단계)
+
+```bash
+# 1) 인지 블록
+python3 cognition/two_tier_scan.py ../Study-Match-/src > /tmp/scan.json
+cat /tmp/scan.json   # cost_saved_ratio: 0.8 을 짚어줄 것
+
+# 2) 판단 블록 BEFORE — App.tsx 질문가치="상"인 걸 보여줌
+python3 judgment/score_findings.py /tmp/scan.json ../Study-Match-/src
+
+# 3) 팀원 3명이 "이건 관용패턴"이라 판정했다고 가정, 라이브로 기록
+python3 judgment/idiom_hook.py feedback javascript react-context-global-state idiom_not_decision "리뷰1"
+python3 judgment/idiom_hook.py feedback javascript react-context-global-state idiom_not_decision "리뷰2"
+python3 judgment/idiom_hook.py feedback javascript react-context-global-state idiom_not_decision "리뷰3"
+
+# 4) 재귀 업데이트 → confirmed 승격되는 순간을 보여줌
+python3 judgment/idiom_hook.py update javascript
+
+# 5) 판단 블록 AFTER — 같은 명령 재실행, "상→하" 자동 강등 확인
+python3 judgment/score_findings.py /tmp/scan.json ../Study-Match-/src
+```
+
+발표 후: `git checkout -- judgment/idioms/javascript/` (공유 clone이었다면 원상복구)
