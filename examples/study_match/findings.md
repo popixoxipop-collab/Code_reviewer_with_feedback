@@ -29,10 +29,11 @@
 6. **Constraint** — 이 Error가 최종적으로 어디서 잡히나요? UI에 `error.message`를 그대로 보여주는 곳이 있나요?
 7. **Reflection** — `authInfo`는 로그에만 남기고, `throw`엔 최소 정보만 담는 방식으로 지금 바로 리팩토링할 수 있을까요?
 
-## 검토 대상(자동 신뢰 금지) — Competitions.tsx 시크릿 패턴
-> 인지: Tier B `sk-` 정규식 매치 / 판단: 자동 확정하지 않고 "확인 필요"로만 표시
-
-실측 결과 오탐(캐글 URL 문자열 `"...credit-risk-model-stability"` 안의 `risk-s`가 `sk-`와 우연히 매치). **판단 블록이 이 신호를 그대로 위험으로 승격하지 않고 별도 등급으로 격리한 것 자체가 설계 포인트** — 신뢰도 낮은 트리거는 자동 확정 대신 사람 확인 대기열로 보내야 한다는 실증 사례.
+## (제거됨) Competitions.tsx 시크릿 패턴 오탐 — 이제 발생하지 않음
+> 인지: 기존 Tier B `sk-` 정규식이 캐글 URL 문자열 `"...credit-risk-model-stability"` 안의
+> `risk-s`를 우연히 매치했던 오탐. `\bsk-` 단어경계 강제로 수정한 뒤 재실행하니 이 finding 자체가
+> 더는 생성되지 않는다(판단 블록이 "확인 필요"로 격리했던 이전 방식보다, 애초에 인지 블록에서
+> 오탐을 걸러내는 게 더 근본적인 해결책이었다).
 
 ## 질문 대상 — onSnapshot 반복 등장 (Dashboard×3, ChatRoom×2, StudyGroups×2, IdeaBoard×2)
 1. **What** — 4개 파일에 각각 몇 번이나 직접 작성했나요?
@@ -47,7 +48,7 @@
 
 ## (관용 패턴 필터 데모) — App.tsx의 useAuth Context, 상 → 하로 자동 강등됨
 
-`architecture-diffusion:App.tsx` finding은 원래 fan_in=6(허브 다음으로 높음)이라는 이유만으로
+`architecture-diffusion:App.tsx` finding은 원래 fan_in=7(허브 다음으로 높음, fan-in 이중계산 버그 수정 후 정정된 값)이라는 이유만으로
 `질문가치=상`을 받았다. 이건 D3 COST로 남겨뒀던 문제 그대로다 — React Context는 컴포넌트가
 적을 때는 프레임워크 관용 패턴이지 "진짜 설계 판단"이 아닐 수 있는데, 구조 지표만으로는 구분이 안 됐다.
 

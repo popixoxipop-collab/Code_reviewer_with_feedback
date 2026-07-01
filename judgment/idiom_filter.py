@@ -1,5 +1,6 @@
 import json
 import os
+import re
 
 # D5: 관용 패턴 목록을 코드가 아니라 별도 상태 파일(idioms/<lang>/idiom_patterns.json)로 분리
 #   WHY: 관용 패턴 목록은 계속 늘어나는 "데이터"이지 "로직"이 아님 —
@@ -15,6 +16,15 @@ import os
 #        틀리면(예: .h가 C인지 C++인지 애매) 잘못된 저장소를 참조할 위험
 #   EXIT: 새 언어는 LANG_EXT_MAP에 확장자 매핑만 추가하면 됨. 언어 판별을 확장자가 아니라
 #        AST/툴체인 기반으로 바꾸고 싶으면 resolve_lang()만 교체
+#
+# D15: .h 확장자의 C/C++ 모호성을 파일 내용 스니핑으로 개선(repo_root가 주어질 때만)
+#   WHY: .h는 C/C++ 양쪽에서 다 쓰여 확장자만으론 확정 불가 — class/namespace/template/std::
+#        같은 C++ 전용 토큰이 있으면 cpp로, 없으면 기존처럼 c로 판정하면 오분류가 줄어듦
+#   COST: 완벽하지 않음 — C++ 스타일 헤더인데 이 토큰들을 하나도 안 쓰면 여전히 c로 오판정.
+#        repo_root 없이 파일명만으론 여전히 기존처럼 c로 고정(하위호환)
+#   EXIT: 이 휴리스틱도 부족하면 실제 컴파일러/AST 판별(예: clang -x c++ 파싱 성공 여부)로 교체
+
+CPP_HINT_RE = re.compile(r"\bclass\s+\w+|\bnamespace\s+\w+|\btemplate\s*<|std::|\bpublic:|\bprivate:")
 
 IDIOMS_ROOT = os.path.join(os.path.dirname(__file__), "idioms")
 
@@ -31,9 +41,20 @@ SUPPORTED_LANGS = sorted(set(LANG_EXT_MAP.values()))
 DOWNGRADE_MAP = {"상": "하", "중": "하", "하": "하"}
 
 
-def resolve_lang(filename):
+def resolve_lang(filename, content=None):
+    """content가 주어지고 확장자가 .h면 C++ 전용 토큰 유무로 c/cpp를 재판정한다(D15)."""
     _, ext = os.path.splitext(filename)
+    if ext == ".h" and content is not None:
+        return "cpp" if CPP_HINT_RE.search(content) else "c"
     return LANG_EXT_MAP.get(ext)
+
+
+def _find_file_content(repo_root, filename):
+    for root, dirs, fnames in os.walk(repo_root):
+        dirs[:] = [d for d in dirs if d not in {"node_modules", ".git", "dist", "build", "__pycache__"}]
+        if filename in fnames:
+            return open(os.path.join(root, filename), encoding="utf-8", errors="ignore").read()
+    return None
 
 
 def patterns_path_for(lang):
@@ -52,11 +73,12 @@ def load_patterns(lang):
         return json.load(f)
 
 
-def apply_idiom_filter(findings):
+def apply_idiom_filter(findings, repo_root=None):
     """finding["file"]의 확장자로 언어를 판별해 그 언어 저장소의 confirmed 패턴만 적용한다.
 
     candidate 상태인 패턴은 적용하지 않는다 — threshold 미달 신호를 신뢰하지 않는다는
     판단 블록의 원칙(D6) 그대로. 언어를 판별 못하면(확장자 미매핑) 필터를 건너뛴다.
+    repo_root가 주어지면 .h 파일은 내용을 읽어 c/cpp를 재판정한다(D15).
     """
     cache = {}
     for finding in findings:
@@ -65,7 +87,10 @@ def apply_idiom_filter(findings):
         if not pattern_key or not file:
             continue
 
-        lang = resolve_lang(file)
+        content = None
+        if repo_root and file.endswith(".h"):
+            content = _find_file_content(repo_root, file)
+        lang = resolve_lang(file, content)
         if lang is None:
             finding["idiom_note"] = f"언어 미판별(확장자 미지원) — {file} 관용 패턴 필터 건너뜀"
             continue

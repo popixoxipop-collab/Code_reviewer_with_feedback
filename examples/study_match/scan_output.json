@@ -3,9 +3,9 @@
   "total_source_files": 10,
   "tier_a_structural": {
     "fan_in": {
-      "App.tsx": 6,
+      "App.tsx": 7,
       "main.tsx": 0,
-      "firebase.ts": 8,
+      "firebase.ts": 7,
       "StudyGroups.tsx": 1,
       "Dashboard.tsx": 1,
       "AuthScreen.tsx": 1,
@@ -20,23 +20,7 @@
     "edges": [
       [
         "App.tsx",
-        "firebase.ts"
-      ],
-      [
-        "App.tsx",
         "AuthScreen.tsx"
-      ],
-      [
-        "App.tsx",
-        "Dashboard.tsx"
-      ],
-      [
-        "App.tsx",
-        "IdeaBoard.tsx"
-      ],
-      [
-        "App.tsx",
-        "StudyGroups.tsx"
       ],
       [
         "App.tsx",
@@ -48,26 +32,22 @@
       ],
       [
         "App.tsx",
+        "Dashboard.tsx"
+      ],
+      [
+        "App.tsx",
+        "IdeaBoard.tsx"
+      ],
+      [
+        "App.tsx",
         "Layout.tsx"
       ],
       [
-        "StudyGroups.tsx",
-        "App.tsx"
+        "App.tsx",
+        "StudyGroups.tsx"
       ],
       [
-        "StudyGroups.tsx",
-        "firebase.ts"
-      ],
-      [
-        "Dashboard.tsx",
-        "App.tsx"
-      ],
-      [
-        "Dashboard.tsx",
-        "firebase.ts"
-      ],
-      [
-        "AuthScreen.tsx",
+        "App.tsx",
         "firebase.ts"
       ],
       [
@@ -87,11 +67,11 @@
         "firebase.ts"
       ],
       [
-        "Layout.tsx",
+        "Dashboard.tsx",
         "App.tsx"
       ],
       [
-        "Layout.tsx",
+        "Dashboard.tsx",
         "firebase.ts"
       ],
       [
@@ -101,20 +81,40 @@
       [
         "IdeaBoard.tsx",
         "firebase.ts"
+      ],
+      [
+        "Layout.tsx",
+        "App.tsx"
+      ],
+      [
+        "Layout.tsx",
+        "firebase.ts"
+      ],
+      [
+        "StudyGroups.tsx",
+        "App.tsx"
+      ],
+      [
+        "StudyGroups.tsx",
+        "firebase.ts"
+      ],
+      [
+        "main.tsx",
+        "App.tsx"
       ]
     ]
   },
   "tier_b_risk_triggered": {
     "flagged_files": {
       "firebase.ts": [
-        "auth_info_leak_via_thrown_error"
-      ],
-      "Competitions.tsx": [
-        "hardcoded_secret_pattern"
+        {
+          "trigger": "auth_info_leak_via_thrown_error",
+          "matched_text": "authInfo"
+        }
       ]
     },
-    "deep_read_count": 2,
+    "deep_read_count": 1,
     "total_files": 10,
-    "cost_saved_ratio": 0.8
+    "cost_saved_ratio": 0.9
   }
 }

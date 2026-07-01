@@ -5,6 +5,17 @@ import sys
 
 sys.path.insert(0, os.path.dirname(__file__))
 from idiom_filter import apply_idiom_filter  # noqa: E402
+from tier_b_suppression_filter import apply_tier_b_suppression  # noqa: E402
+
+# D13: 반복 패턴 탐지 대상 확장자를 인지 블록(cognition/two_tier_scan.py)의 SRC_EXTS와 동일하게 유지
+#   WHY: 인지 블록만 다국어로 확장하고 판단 블록이 JS/TS만 스캔하면 다시 불일치가 생김
+#   COST: 두 파일에 같은 확장자 목록이 중복됨(cross-package import로 묶으면 경로가 더 취약해짐)
+#   EXIT: 확장자 목록이 3번째로 필요해지면 그때 공용 constants 모듈로 추출
+ALL_SRC_EXTS = (
+    ".ts", ".tsx", ".js", ".jsx", ".py", ".java",
+    ".c", ".h", ".cpp", ".cc", ".cxx", ".hpp", ".swift",
+)
+SKIP_DIRS = {"node_modules", ".git", "dist", "build", "__pycache__", ".venv", "venv"}
 
 # D3: 판단 블록 = 규칙 기반 정성 채점(상/중/하), ML 아님
 #   WHY: 사례가 적고(4건) 기준이 명확해 규칙 기반이 더 투명하고 디버깅 가능 —
@@ -21,12 +32,30 @@ REPEATED_PATTERN_MIN_FILES = 2
 REPEATED_PATTERN_MIN_HITS = 2
 
 
-def find_hub(fan_in):
-    """entry point(main.tsx 등)를 제외한 fan-in 최고 파일 = 인지 블록이 뽑은 '허브'."""
+# D16: hub 동점 시 fan-out(자신이 얼마나 많이 import하는지)이 낮은 쪽으로 tie-break
+#   WHY: D12(fan-in 이중계산 수정) 부작용으로 App.tsx(main.tsx→App.tsx 엣지가 새로 정확히
+#        잡히면서 fan_in 7)와 firebase.ts(fan_in 7)가 동점이 됨 — 회귀 테스트에서 실측 발견.
+#        fan_in만으론 "많은 파일이 의존하는 서비스 허브"(firebase.ts, fan_out=0)와
+#        "여러 컴포넌트를 조립하는 컨테이너"(App.tsx, fan_out=8)를 구분 못함. 진짜 허브는
+#        의존은 적게 받으면서 적게 하는(sink에 가까운) 쪽이라는 게 실측 근거
+#   COST: fan_out도 계산해야 해서 find_hub가 edges까지 받아야 함(시그니처 변경)
+#   EXIT: 이 휴리스틱도 틀리면 명시적 화이트리스트("firebase.ts", "db.ts" 같은 서비스 파일명
+#        패턴)로 대체 검토
+def find_hub(fan_in, edges):
+    """entry point(main.tsx 등)를 제외한 fan-in 최고 파일 = 인지 블록이 뽑은 '허브'.
+
+    fan_in이 동점이면 fan_out이 낮은(자기는 남을 덜 의존하는, sink에 가까운) 쪽을 우선한다.
+    """
     candidates = {k: v for k, v in fan_in.items() if not any(k.startswith(h) for h in ENTRY_POINT_HINTS)}
     if not candidates:
         return None
-    return max(candidates, key=candidates.get)
+    fan_out = {k: 0 for k in candidates}
+    for src, dst in edges:
+        if src in fan_out:
+            fan_out[src] += 1
+    max_fan_in = max(candidates.values())
+    top = [k for k, v in candidates.items() if v == max_fan_in]
+    return min(top, key=lambda k: fan_out[k])
 
 
 def find_isolated_from_hub(edges, fan_in, hub):
@@ -53,7 +82,7 @@ def find_architecture_diffusion_point(fan_in, hub, repo_root):
 
     pattern_key = None
     for root, dirs, fnames in os.walk(repo_root):
-        dirs[:] = [d for d in dirs if d not in {"node_modules", ".git", "dist", "build"}]
+        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for fn in fnames:
             if fn == top_file:
                 text = open(os.path.join(root, fn), encoding="utf-8", errors="ignore").read()
@@ -66,9 +95,9 @@ def find_architecture_diffusion_point(fan_in, hub, repo_root):
 def find_repeated_pattern_files(repo_root, pattern, min_hits):
     hits = {}
     for root, dirs, fnames in os.walk(repo_root):
-        dirs[:] = [d for d in dirs if d not in {"node_modules", ".git", "dist", "build"}]
+        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for fn in fnames:
-            if not fn.endswith((".ts", ".tsx", ".js", ".jsx")):
+            if not fn.endswith(ALL_SRC_EXTS):
                 continue
             text = open(os.path.join(root, fn), encoding="utf-8", errors="ignore").read()
             c = len(re.findall(re.escape(pattern), text))
@@ -84,7 +113,7 @@ def score(scan_result, repo_root):
 
     findings = []
 
-    hub = find_hub(fan_in)
+    hub = find_hub(fan_in, edges)
     if hub:
         for f in find_isolated_from_hub(edges, fan_in, hub):
             findings.append({
@@ -110,8 +139,11 @@ def score(scan_result, repo_root):
                 "priority": "질문 대상",
             })
 
-    for f, hits in tier_b["flagged_files"].items():
-        if "auth_info_leak_via_thrown_error" in hits:
+    # D14: Tier B raw 히트에서 confirmed 오탐((trigger,matched_text) 단위)을 먼저 걷어낸 뒤 채점
+    tier_b_flagged = apply_tier_b_suppression(tier_b["flagged_files"])
+    for f, hits in tier_b_flagged.items():
+        triggers = {h["trigger"] for h in hits}
+        if "auth_info_leak_via_thrown_error" in triggers:
             findings.append({
                 "id": f"tier-b-risk:{f}",
                 "file": f,
@@ -121,11 +153,12 @@ def score(scan_result, repo_root):
                 "risk": "상",
                 "priority": "Important(🔴)",
             })
-        if "hardcoded_secret_pattern" in hits:
+        if "hardcoded_secret_pattern" in triggers:
+            matched = next(h["matched_text"] for h in hits if h["trigger"] == "hardcoded_secret_pattern")
             findings.append({
                 "id": f"tier-b-risk:{f}:secret",
                 "file": f,
-                "finding": f"{f} — 시크릿 패턴 매치(오탐 가능성 있음, 육안 확인 필요)",
+                "finding": f"{f} — 시크릿 패턴 매치(오탐 가능성 있음, 육안 확인 필요) matched_text={matched!r}",
                 "design_intent": "확인 필요",
                 "question_value": "하",
                 "risk": "확인 전까지 중",
@@ -145,7 +178,7 @@ def score(scan_result, repo_root):
                 "priority": "질문 대상",
             })
 
-    findings = apply_idiom_filter(findings)
+    findings = apply_idiom_filter(findings, repo_root=repo_root)
     return {"hub": hub, "findings": findings}
 
 
