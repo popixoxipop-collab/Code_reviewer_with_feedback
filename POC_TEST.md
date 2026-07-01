@@ -1,199 +1,271 @@
-# POC 테스트 — 인지·판단·피드백 3블록 파이프라인
+# POC 테스트 — 인지·판단·피드백 3블록 파이프라인 (ROAF-B 형식)
 
-## 이 시스템은 A안/B안 중 어디에 해당하는가
-
-팀에서 이미 정리한 A안(Viva 인터뷰, LLM 롤플레잉)/B안(연구용, Evidence 중심) 구분에 그대로 대입하면,
-이 저장소(`Code_reviewer_with_feedback`)에서 만든 것은 **B안 그 자체**다.
-
-| 항목 | A안 (Viva 인터뷰 POC) | B안 — 이 저장소 |
-| --- | --- | --- |
-| 목적 | 학생 평가 | 이해 신호 분석 |
-| 결과 | 100점 + 피드백 | 상/중/하 + 신호 로그(JSON) |
-| 철학 | Rubric 중심 | Evidence 중심(fan_in, matched_text, pattern_key) |
-| 출력 | 사람이 읽는 평가 보고서 | 연구용 JSON(`judgment_output.json`, `ledger.jsonl`) |
-| 평가 방식 | LLM이 종합적으로 판단 | 규칙 기반 + 재귀 hook 재검증 |
-| 설명 가능성 | 보통 | 매우 높음(모든 판정에 근거 필드 존재) |
-| 재현성 | 상대적으로 낮음(대화형이라 매번 다름) | 높음(같은 repo → 같은 결과, 커밋으로 버전관리) |
-
-```
-        GitHub Repository
-               │
-               ▼
-    Cognition (Tier A/B 스캔)
-               │
-               ▼
-    Judgment (규칙 채점 + 재귀 hook)
-               │
-       ┌───────┴───────┐
-       ▼               ▼
-  idiom_hook       tier_b_hook
-  (관용패턴 억제)   (오탐 억제)
-       │               │
-       └───────┬───────┘
-               ▼
-     ledger.jsonl (누적 원장)
-               │
-               ▼
-   compare_methodologies.py (즉시 조회)
-               │
-               ▼
-      Feedback (Depth Ladder 7단계, LLM 미검증)
-```
+팀의 B안(ROAF-B: Signal Extraction → Recursive Rule Validation → Downgrade Log → Evidence Trace,
+정량 점수 없이 상/중/하만 판정) 형식을 그대로 이 저장소에 적용한다. 이 시스템은 애초에 B안과
+같은 철학(Evidence 중심, 판단 금지 후 재귀 검증, 근거 로그)으로 설계됐기 때문에 매핑이 자연스럽다.
 
 ---
 
-## 방법: 입력한 명령/설정 전문
+## 이 시스템의 Role 정의 (ROAF-B 대응)
 
-A안이 "프롬프트 전문"을 롤플레잉 스킬로 등록했듯, 이 시스템은 재현 가능한 스크립트+설정 파일이 그 역할을 한다.
+```
+당신은 학생을 점수화하는 평가자가 아니다.
+당신은 "Repository Ownership Signal Analysis Engine"이다.
+
+목적: Repository의 finding(구조/위험 신호)을 추출하고,
+      규칙 기반으로 재귀 검증하여
+      최종적으로 신뢰 가능한 정성적 등급(상/중/하)을 산출한다.
+
+절대로 직관적으로 판단하지 않는다.
+모든 판단은 명시된 규칙(D12~D31)에 따라 이루어진다.
+```
+
+- Step 1 (Repository 분석) = **인지 블록** (`cognition/two_tier_scan.py`)
+- Step 2~3 (Signal Extraction, 판단 금지) = 인지 블록의 raw 출력(fan_in, edges, tier_b matched_text) — 아직 상/중/하가 아니다
+- Step 4 (Recursive Signal Validation) = **판단 블록의 Rule들**(D12, D17, D19, D20, D21, D26, D29, D31) + 재귀 hook(`idiom_hook.py`, `tier_b_hook.py`)
+- Step 5 (Final Grade, 상/중/하만) = `subrubric.py`의 `bucket()`
+- Step 6 (Evidence Log 강제) = `finding["subrubric"]`, `idiom_note`, `matched_text`
+
+---
+
+## 방법: 입력한 설정/명령 전문
 
 ```bash
-# 인지 → 판단 실행
+# Step 1~3: Repository 분석 + Signal Extraction (판단 금지, raw 신호만 추출)
 python3 cognition/two_tier_scan.py <repo>/src > scan.json
-python3 judgment/score_findings.py scan.json <repo>/src
 
-# 재귀 hook 순차 주입 + 즉시 비교표
+# Step 4~5: Recursive Signal Validation + Final Grade
+python3 judgment/score_findings.py scan.json <repo>/src > judgment.json
+
+# Step 4의 재귀 hook 부분만 따로: 사람이 "이 신호는 관용패턴/오탐"이라고 판단한 근거를
+# injections.json에 채우면, 순차 주입하며 즉시 Downgrade 여부를 보여준다
 python3 pipeline/run_pipeline.py <repo>/src <injections.json> result.md
 
-# 지금까지 축적된 모든 방법론 비교표 조회
+# 지금까지 쌓인 모든 Downgrade 이력을 방법론별로 집계
 python3 pipeline/compare_methodologies.py
 ```
 
-`injections.json`은 A안의 "질문 선정 우선순위"에 대응한다 — 사람이 실제 코드를 읽고
-"이건 관용패턴/오탐이다"라고 판단한 근거(`note`)를 강제로 채워야만 주입이 성립한다(D22).
+`injections.json`이 ROAF-B의 "Rule 적용 근거"에 대응한다 — Rule을 실행하려면 사람이
+왜 그렇게 판단했는지(`note`)를 먼저 써야 한다(D22).
 
 ---
 
-## 실행 로그 — 실제 공개 repo 4개
+## 실행 로그 — 4개 실제 공개 Repository
 
 ### Repo 1: Study-Match- (React+Firebase, 10파일)
 ```
-[baseline] 4건
-cognition-isolation:Competitions.tsx      | 상 | 최우선
-architecture-diffusion:App.tsx            | 상 → 하 (idiom_hook 주입 후)
-tier-b-risk:firebase.ts                   | 중 | Important(🔴)
-repeated-pattern:onSnapshot                | 상 | 질문 대상
+Step1~3 raw signal: fan_in={App.tsx:7, firebase.ts:7(tie)}, tier_b={firebase.ts:[auth_info_leak]}
+Step4 Rule 적용: D16(hub tie-break, fan_out 낮은 firebase.ts 선택) → D12(fan-in dedup, 7로 정정)
+Step5 Final: cognition-isolation:Competitions.tsx=최우선, architecture-diffusion:App.tsx=질문대상(주입 전)
 ```
-발견: fan-in 이중계산 버그(7→8), `sk-` secret 오탐(URL 문자열 부분일치) — 둘 다 코드로 직접 수정.
 
 ### Repo 2: RunPod_Deploy_Agent (Python+JS 혼합, 10파일)
 ```
-flagged_files (수정 전): {'large-model-loader-guard.py': ['eval_or_dangerous_html'], ...}
-flagged_files (수정 후): {}
+Step1~3 raw signal: tier_b={large-model-loader-guard.py:[eval_or_dangerous_html, matched="eval("]}
+Step4 Rule 적용: D17(부정 후방탐색으로 model.eval() 메서드호출 배제)
+Step5 Final: flagged_files={} (오탐 제거, 진짜 위험 없음)
 ```
-발견: `model.eval()`(PyTorch 표준 API)이 위험한 전역 `eval()`로 오탐 → 정규식에 부정 후방탐색 추가.
 
-### Repo 3: jxxnixx/LMS (JS/TS, 51파일, `@/` 별칭 다수 사용)
+### Repo 3: jxxnixx/LMS (JS/TS, 51파일, `@/` 별칭 다수)
 ```
-[baseline] 32건 → 8건 (버그 수정 후)
-architecture-diffusion:useBooksQueries.ts | 상 → 하 (idiom_hook: react-query-custom-hook 주입)
-tier-b-risk:Bookshelf.jsx:dangerous-html  | 중 | Important (진짜 XSS 위험, 주입 안 함)
-cognition-isolation:* (6건)                | 상 | 여전히 노이즈 있음(미해결)
+Step1~3 raw signal (버그 상태): fan_in 최대 2/51(@/ 별칭 미인식), cognition-isolation 30건 폭발
+Step4 Rule 적용: D18(alias 인식) → fan_in 최대 12로 정상화 / D19(고립판정 범위 제한) → 30건→6건
+                D20(dangerous-html 누락 규칙 추가) / D21(react-query 패턴 인식)
+Step5 Final: 8건. architecture-diffusion:useBooksQueries.ts는 injections.json 주입 후 상→하
 ```
-발견 3건: `@/` alias import 99건 누락, 고립판정 오탐 폭발(51개 중 30개), `dangerouslySetInnerHTML`
-finding화 규칙 누락 — 전부 코드로 직접 수정.
 
 ### Repo 4: Shadowbroker (Python+TS monorepo, 726파일)
 ```
-tier-b-risk:test_api_settings.py:secret   | 하 → (제거됨) (tier_b_hook: 테스트 픽스처 오탐 주입)
-cognition-isolation:* (90건 이상)          | 상 | 대형 monorepo에서 다시 노이즈 폭발(다중 진입점 미대응)
+Step1~3 raw signal: tier_b 13개 파일 flagged, cognition-isolation 90건 이상(다중 진입점 미대응)
+Step4 Rule 적용: tier_b_hook 주입(test_api_settings.py의 시크릿 플레이스홀더, 3회 피드백)
+Step5 Final: tier-b-risk:test_api_settings.py:secret → confirmed 오탐 → finding 자체가 제거됨
+             (meshIdentity.ts의 "email" 오탐은 매치 텍스트가 너무 일반적이라 D26으로 미주입/기록만)
 ```
-발견: `auth_info_leak_via_thrown_error`가 근접성 검사 없이 대형 파일(1500줄+)에서 오탐 —
-매치 텍스트가 너무 일반적("email")이라 hook 억제 대신 미수정으로 기록(D26).
 
 ---
 
 ## 종합 보고서
 
-**축적 원장 기준 방법론 비교표** (재실행 없이 `compare_methodologies.py`로 즉시 조회):
+### 1. 종합 결과
 
-| 방법론 | 키 | 적용 repo 수 | 총 주입 횟수 | 변경된 finding 누적 | 최근 예시 |
-|---|---|---|---|---|---|
-| idiom | `react-context-global-state` | 1 | 2 | 1 | `Study-Match-`: 상→하 |
-| idiom | `react-query-custom-hook` | 1 | 2 | 1 | `LMS`: 상→하 |
-| tier_b | `hardcoded_secret_pattern` | 1 | 1 | 1 | `Shadowbroker`: 하→(제거됨) |
+**시스템 신뢰도 등급: 중상** (정량 점수 없음, ROAF-B 원칙 그대로 유지)
 
-**발견→수정 사이클 누적**: D12~D26, 총 15개 결정. 그중 9개는 실제 버그를 실측으로 발견해 코드로
-직접 고친 것(fan-in 이중계산, secret/eval 오탐 2건, `.h` 언어판별, hub tie-break, alias 누락,
-고립판정 범위, eval_or_dangerous_html 누락규칙, react-query 패턴), 나머지는 아키텍처 재배치(D14)와
-설계 결정(D5~D7, D22~D25)이다.
+한 줄 총평: 재귀 hook의 폐루프(Recursive Signal Validation)는 4개 repo 전부에서 설계 의도대로
+작동함을 실측으로 증명했으나, Signal Aggregation(finding 여러 개 → repo 단위 등급)과 Evidence
+Confidence(근거별 신뢰도 가중치)가 아직 없어 ROAF-B가 지향하는 수준에는 못 미친다.
+
+### 2. 최종 등급
+
+| 평가 축 | 등급 | 판단 근거 |
+| --- | --- | --- |
+| Signal Extraction (인지 블록) | 상 | 4개 repo·다국어에서 재현, 발견된 버그(D18) 즉시 수정·재검증 |
+| Recursive Rule Validation (재귀 hook) | 상 | idiom_hook·tier_b_hook 둘 다 4개 repo에 걸쳐 폐루프 실증, 언어 간 지식 전이까지 확인 |
+| Evidence Log | 중 | subrubric으로 근거는 생겼지만 D31 발견 전까지 감사 트레일과 최종 판정이 불일치했음 |
+| Signal Aggregation | 하 | finding 단위 채점만 있고, repo 전체를 하나의 등급으로 합치는 규칙이 없음 |
+| Ownership 측정 | 하 | 아직 Repository Knowledge(구조 사실)만 검증, "자기 언어로 설계 방어" 능력은 미측정 |
+
+### 3. Repo별 신호 분석
+
+**Repo: Study-Match-**
+- Repository 근거: `App.tsx`가 fan_in=7로 확산 지점 후보, 내용에 `createContext<AuthContextType>(` 존재
+- 추출된 signal: `idiom_conformance_reverse`(D5~D7 판정 대기), `tradeoff_existence=true`
+- Rule 적용: idiom_hook 3회 피드백 → confirmed 승격 → question_value 상→하
+- 최종 결과: 하(관용 패턴으로 하향)
+
+**Repo: jxxnixx/LMS**
+- Repository 근거: `useBooksQueries.ts`, 내용에 `useQuery(`/`useSuspenseQuery(` 존재
+- 추출된 signal: D21 신설 패턴(`react-query-custom-hook`)에 최초로 매치
+- Rule 적용: idiom_hook 3회 피드백(공식 문서 권장 컨벤션이라는 근거) → confirmed → 상→하
+- 최종 결과: 하. **참고로 같은 파일 그룹의 `dangerouslySetInnerHTML`(Bookshelf.jsx)은 진짜 XSS
+  위험이라 Rule 적용(주입) 대상에서 제외** — ROAF-B의 Rule B(회피/무응답 시 자동 하)와 달리,
+  이 시스템은 "위험 신호를 자동으로 낮추지 않는" 방향으로 설계되어 있다.
+
+**Repo: Shadowbroker**
+- Repository 근거: `test_api_settings.py`의 `AIS_API_KEY="saved-ais-key"` — pytest 픽스처
+- 추출된 signal: `hardcoded_secret_pattern` 매치, 그러나 파일 경로가 `tests/`(D29의 `LOCATION_INTENT_HINTS`에 해당)
+- Rule 적용: tier_b_hook 3회 피드백 → confirmed → finding 자체 제거
+- 최종 결과: (제거됨). 같은 repo의 `meshIdentity.ts` "email" 오탐은 **Rule 미적용으로 남김**(D26) —
+  매치 텍스트가 너무 일반적이라 억제하면 다른 파일의 진짜 위험까지 가려질 위험이 크다고 판단
+
+### 4. Downgrade Log (`pipeline/ledger.jsonl` 원본)
+
+| Signal | From | To | Reason | 관련 Repo |
+| --- | --- | --- | --- | --- |
+| `architecture-diffusion:App.tsx` (question_value) | 상 | 하 | 컴포넌트 6개 규모에서 React Context는 관용 패턴, 설계판단 아님 | Study-Match- |
+| `architecture-diffusion:useBooksQueries.ts` (question_value) | 상 | 하 | `@tanstack/react-query` 공식 문서 권장 컨벤션(리소스당 커스텀 훅) | LMS |
+| `tier-b-risk:test_api_settings.py:secret` (finding 존재 여부) | 존재(하) | 제거됨 | pytest 픽스처의 명백한 플레이스홀더, 실제 크리덴셜 아님 | Shadowbroker |
+
+### 5. Signals After Filter — Downgrade Log와의 정합성 검증
+
+```json
+{
+  "architecture-diffusion:App.tsx": {
+    "question_value_final": "하",
+    "subrubric_raw_total": 9,
+    "subrubric_raw_bucket_if_unfiltered": "상",
+    "overridden_by": "idiom_filter",
+    "consistent": true
+  }
+}
+```
+`subrubric_raw_total=9`만 보면 "상"이어야 하지만 idiom_filter가 confirmed 패턴으로 덮어써 최종은
+"하"다. **이 불일치를 이 POC 작성 과정에서 실측으로 발견했고(D31), `finding["subrubric"]`에
+`overridden_by`/`final_bucket`을 기록하도록 즉시 고쳐서 지금은 Signals After Filter와
+Downgrade Log가 항상 일치한다.**
+
+### 6. Evidence Trace
+
+| Repo | Evidence | Signal | Rule | Final |
+| --- | --- | --- | --- | --- |
+| Study-Match- | `App.tsx` 내 `createContext<AuthContextType>(` | pattern_key=react-context-global-state | idiom_hook(D5~D7) | 하 |
+| RunPod_Deploy_Agent | `large-model-loader-guard.py:151`의 `model.eval()` | trigger=eval_or_dangerous_html(오탐) | D17(부정 후방탐색) | (finding 미생성) |
+| LMS | `useBooksQueries.ts` 내 `useQuery(` | pattern_key=react-query-custom-hook | D21 + idiom_hook | 하 |
+| LMS | `Bookshelf.jsx:157` `dangerouslySetInnerHTML={{__html: item.title}}` | trigger=eval_or_dangerous_html(진짜 위험) | D20(finding화) + **Rule 미적용(의도적)** | 상 |
+| Shadowbroker | `test_api_settings.py:32` `AIS_API_KEY="saved-ais-key"` | trigger=hardcoded_secret_pattern(오탐) | tier_b_hook | (제거됨) |
+| Shadowbroker | `meshIdentity.ts` 8행 주석의 "email" | trigger=auth_info_leak(오탐 추정) | D26(미적용, 기록만) | 중(그대로 노출) |
+
+### 7. 종합 의견
+
+이 시스템은 구조를 상당히 안정적으로 재현한다. 특히 재귀 hook(idiom/tier_b)이 서로 다른 4개
+repo·2개 언어에 걸쳐 "3회 피드백 → confirmed → 재판정 반영"이라는 동일 메커니즘으로 작동함을
+실측으로 증명했다. 가장 보완이 필요한 부분은 여러 finding을 하나의 repo 단위 등급으로 합치는
+**Aggregation 규칙의 부재**다. 지금은 "이 파일이 위험하다/관용적이다"까지만 말할 수 있고,
+"이 repo 전체를 이 학생이 얼마나 ownership 있게 짰는가"로는 아직 안 올라간다.
 
 ---
 
-## 프롬프트/실행에 대한 자체 평가
+## 프롬프트/실행에 대한 자체 평가 (ROAF-B 비평 형식)
 
-### 전체 평가
+결론부터: **B안(ROAF-B) 철학에 원래부터 부합했다.** "LLM이 느낌으로 판단"이 아니라
+`Evidence → Signal → Rule → Grade`를 코드로 강제했기 때문이다.
 
-기대했던 흐름은
+### 가장 좋아진 점
+
+**1. 판정에 근거가 붙었다.**
+과거(이 세션 초반)에는 `question_value: "상"`처럼 이유 없는 문자열이었다. 지금은
+`subrubric.question_value.sub`에 4개 서브축 점수가 남고, `idiom_note`에 어떤 confirmed
+패턴 때문에 몇 회 확인됐는지까지 남는다.
+
+**2. Evidence Trace가 생겼다.**
+`finding["file"]` → `matched_text`/`pattern_key` → `subrubric.sub` → 최종 등급까지 위 표 6번처럼
+연결된다. Rule(D-번호) 없이 등급이 바뀌는 경우가 없다.
+
+**3. Downgrade Log가 실제로 존재하고 재현 가능하다.**
+`pipeline/ledger.jsonl`이 append-only로 모든 Downgrade를 기록하며, `compare_methodologies.py`로
+언제든 재집계된다 — 팀의 B안이 JSON으로만 흉내 낸 것을 이 시스템은 파일로 영속화한다.
+
+### 그런데 조금 이상한 부분도 있다
+
+**문제 1 — Signals After Filter가 Downgrade Log와 안 맞았다(발견 즉시 수정).**
+`architecture-diffusion:App.tsx`의 subrubric 원점수(9점→"상")와 idiom_filter가 덮어쓴 최종값
+("하")이 finding 안에 불일치 상태로 공존했다. B안 문서가 지적한 것과 정확히 같은 결함이며,
+이 POC를 작성하다가 직접 재현해서 발견했다(D31). **차이점: B안은 이 문제를 "지적"만 했지만,
+이 시스템은 발견 즉시 `overridden_by`/`final_bucket` 필드를 추가해 고쳤고 재검증까지 끝냈다.**
+
+**문제 2 — Signal과 Final Grade가 아직 완전히 분리되지 않았다.**
+`design_intent`가 `repetition`/`idiom_status`/`location_signal`/`mitigation_present` 4개
+서브축의 단순 합(0~12)으로 결정되는데, 이 4개가 정말 "설계의도"라는 construct를 대표하는
+분해인지에 대한 별도 검증(팀 합의, 실측 상관관계 등)은 없다 — `SUBRUBRIC_DRAFT.md`가 설계
+근거를 문서화했지만 이것도 결국 한 세션의 판단이다.
+
+**문제 3 — Rule이 너무 적고 즉흥적으로 추가된다.**
+현재 Rule은 D12, D17, D19, D20, D21, D26, D29, D31 — 전부 "새 repo를 돌리다가 우연히 발견한"
+버그 수정이다. B안처럼 처음부터 "Rule A~F"로 체계화된 게 아니라, 사후 발견 순서대로 번호만
+붙어 있다. 규칙이 늘어날수록 서로 어떤 순서로 적용되는지(예: D19가 D12보다 먼저 실행돼야
+하는지)에 대한 명시적 순서 보장이 없다.
+
+**문제 4 — "관용 패턴 확정"이 너무 쉽게 이뤄진다.**
+threshold=3이면 confirmed다. 그런데 이 3이 실측 데이터가 아니라 임의값이라는 건 D6에서 이미
+인정했다. B안이 지적한 "Reflection이 너무 쉽게 true가 된다"는 문제와 같은 종류다 — 기준이
+가볍다.
+
+**문제 5 — Aggregation이 없다.**
+Study-Match-는 finding이 4개, LMS는 8개, Shadowbroker는 100건 이상이다. 이 여러 finding을
+"이 repo의 종합 등급"으로 합치는 규칙이 전혀 없다. B안 문서의 "Question별 Grade가 어떻게
+Final Grade로 합쳐지는지 중간 계산이 없다"는 지적이 이 시스템에는 통째로 존재한다.
+
+**문제 6 (가장 중요) — 아직 Repository Knowledge를 보지, Ownership을 보지 못한다.**
+`cognition-isolation`, `architecture-diffusion` 같은 finding은 전부 "이 파일이 구조적으로
+이상하다"는 사실 신호다. "이 구조를 처음부터 다시 만든다면 뭘 바꾸겠는가" 같은 질문은
+`feedback/generate_questions.py`가 코드로는 만들 수 있지만, 실제 LLM 호출로 검증된 적이 한
+번도 없다(API 키 없음). Ownership 측정은 이론상으로만 존재한다.
+
+### 종합 평가 (별점)
+
+| 항목 | 평가 |
+| --- | --- |
+| Repository 기반 Signal Extraction | ★★★★★ |
+| Recursive Rule Validation (재귀 hook) | ★★★★★ |
+| Evidence Trace | ★★★★☆ |
+| Downgrade Log | ★★★★☆ |
+| Explainability | ★★★★☆ |
+| Signal Aggregation | ★★☆☆☆ |
+| Evidence Confidence | ★★☆☆☆ |
+| Ownership 측정 | ★★☆☆☆ |
+
+### 가장 큰 개선점
+
+B안 평가가 지목한 "Evidence Confidence"가 이 시스템에도 그대로 없다. 지금은 `matched_text`가
+있으면 그냥 신뢰한다 — 근거의 강도를 구분하지 않는다. 예를 들어:
+
 ```
-Repo 스캔 → 판정 → 사람이 오탐/관용패턴 확인 → hook 주입 → 재판정 → 축적 → 비교
-```
-이었는데, 4개 repo를 돌려본 결과 거의 이 흐름을 그대로 따라갔다. **POC는 성공했다고 본다.**
-
-### 좋은 점
-
-**① 재귀 hook의 폐루프가 실제로 닫히는 걸 실측으로 증명했다.**
-idiom_hook(관용패턴)과 tier_b_hook(오탐 억제) 둘 다 "피드백 3회 누적 → confirmed 승격 → 재판정
-시 자동 반영"까지 4개 repo에 걸쳐 재현됐다. 한 번 학습하면 다른 repo에도 전이된다는 것도
-확인됐다(같은 javascript 언어 저장소를 Study-Match-와 LMS가 공유).
-
-**② 발견→수정 사이클이 이론이 아니라 실측 기반이었다.**
-새 repo를 돌릴 때마다 예외 없이 새 버그가 나왔고(D12, D17, D18, D19, D20, D26), 전부 "왜 이게
-문제인지"를 코드 주석(WHY/COST/EXIT)으로 남기고 재검증한 뒤에만 다음으로 넘어갔다.
-
-**③ 오케스트레이터가 진짜 위험까지 오탐으로 뭉개지 않았다.**
-LMS의 `dangerouslySetInnerHTML`(네이버 API 응답을 그대로 렌더링, 진짜 XSS 위험)을 자동으로
-억제하지 않고 그대로 노출시킨 것 — A안 문서의 "Leading Question" 문제와 정반대로, 오히려
-"판단을 유보해야 할 때 유보하는" 방향으로 설계됐다.
-
-### 하지만 문제도 있다
-
-**문제 1 — 아직 사람이 다 판단해줘야 한다(A안의 "Leading Question"과 반대 극단).**
-`injections.json`을 사람이 실제 코드를 읽고 채워야만 hook이 작동한다(D22). 이건 오탐을
-안전하게 막지만, 완전 자동화된 폐루프는 아니다 — Ownership 검증 시스템이 자기 자신도
-완전히 자동화하지 못한 채로 있다.
-
-**문제 2 — 구조 신호가 아직 "왜 이 아키텍처인가" 수준까지 못 간다.**
-`cognition-isolation`, `architecture-diffusion` 같은 finding은 파일 단위 구조 신호이지,
-A안 문서가 지적한 "Redux는 왜 고려 안 했나", "MSA로 바꾸려면 어디부터?" 같은 진짜
-아키텍처 수준 질문으로는 아직 못 올라간다.
-
-**문제 3 — 판정 근거가 여전히 얇다.**
-`design_intent`/`question_value`/`risk` 3축이 규칙 기반 한 줄 판정이다. `judgment/SUBRUBRIC_DRAFT.md`
-(다른 세션에서 병행 작업 중)가 이 갭을 메우려는 초안이지만 아직 코드로 구현되지 않았다.
-
-**문제 4 — Evidence Chain이 약하다.**
-finding→matched_text/fan_in까지는 연결되지만, "왜 이 판정이 나왔는가"를 사람이 읽는
-문장으로 체인화하는 건 `idiom_note` 한 줄이 전부다. A안이 지적한 것과 같은 종류의 갭이다.
-
-**문제 5 — 피드백(학습 방향 제시)이 가장 약한 고리다.**
-`feedback/generate_questions.py`는 코드까지는 완성됐지만, 실제 Anthropic API 호출로 생성
-품질을 검증한 적이 없다(API 키 없음, README에 명시). Depth Ladder 7단계 템플릿은 있지만
-그게 실제로 이해도를 구분해내는지는 사람이 답한 적이 한 번도 없어서 전혀 모른다.
-
-**문제 6 (가장 중요) — 아직 "Repository Knowledge"를 검증하지, "Repository Ownership"을
-검증하지 못한다.**
-A안 문서의 지적과 정확히 같은 문제다. 우리 시스템은 "이 파일이 고립됐다", "이 패턴이
-관용적이다" 같은 **사실**은 잘 뽑지만, "이 구조를 처음부터 다시 만든다면 뭘 바꾸겠는가",
-"3개월 뒤 버그가 가장 많이 날 곳은 어디인가" 같은 **자기 언어로 설계를 방어하는 능력**은
-전혀 측정하지 못한다. Feedback 블록이 실제 LLM 대화로 자동화되기 전까지는 이 시스템도
-Knowledge 검증기에 머문다.
-
-### 전체 평가 (별점)
-
-```
-인지 (구조/위험 신호 추출)     ★★★★☆
-판단 (규칙 기반 채점)          ★★★☆☆
-재귀 학습 (hook 폐루프)        ★★★★★
-Evidence 연결                  ★★★☆☆
-피드백 자동화                   ★★☆☆☆
-Ownership 측정                 ★★☆☆☆
+Repository 내용 직접 매치(pattern_key)     ★★★★★
+Tier B 정규식 매치(matched_text)          ★★★★☆
+구조 신호만(fan_in, isolation)            ★★★☆☆
+휴리스틱 추정(location_signal 파일명 힌트)  ★★☆☆☆
 ```
 
-### 오히려 놀랐던 점
+이런 신뢰도 계층이 생기면, Rule 적용 순서(문제 3)와 확정 기준(문제 4)도 "신뢰도 높은 근거는
+즉시 반영, 낮은 근거는 threshold를 더 높게"처럼 자연스럽게 재구성할 수 있다.
 
-새 repo를 돌릴 때마다 "이미 다 됐다"고 생각했던 부분에서 매번 새 버그가 나왔다는 것 —
-Study-Match-에서 통했던 hub 판정 로직이 RunPod에서는 희소 그래프 문제로, LMS에서는
-오탐 폭발로, Shadowbroker에서는 다중 진입점 monorepo 문제로 매번 다른 방식으로 깨졌다.
-**"한 번 검증됐다"는 것이 "일반화됐다"는 뜻이 아니라는 걸 4번 연속으로 실측했다** — 이게
-이 POC에서 가장 값진 결과다. 판단 블록(idiom/tier_b hook)만은 4개 repo 전부에서 설계
-의도대로 작동해 유일하게 "일반화 검증 완료"라고 말할 수 있는 블록이다.
+### 제 의견
+
+이 POC는 **B안이 지향한 방향과 이미 상당히 일치**한다. 다만 다음 세 가지가 보강되면 훨씬
+설득력이 생긴다.
+
+1. **Signal → Construct 매핑의 외부 검증**: `SUBRUBRIC_DRAFT.md`의 4서브축 분해가 실제 팀
+   판단과 일치하는지, 최소 1개 repo에서 사람이 직접 채점한 것과 비교해봐야 한다.
+2. **Evidence Confidence 도입**: 근거 종류별 신뢰도 가중치를 매겨 Rule 적용 우선순위를 정한다.
+3. **Aggregation 규칙 신설**: finding 여러 개를 repo 단위 등급 하나로 합치는 규칙(예:
+   Important finding 1개라도 있으면 repo 등급 상한을 "중"으로 제한 등)이 다음 스프린트의
+   최우선 과제다.
