@@ -58,13 +58,32 @@ def find_hub(fan_in, edges):
     return min(top, key=lambda k: fan_out[k])
 
 
+# D19: 고립 판정 범위를 "전체 파일"이 아니라 "앱 루트가 직접 라우팅하는 형제 파일"로 제한
+#   WHY: jxxnixx/LMS 실측 — 기존 로직은 fan_in>=1인 전체 51개 파일 중 허브(GenreContext.jsx)에
+#        안 걸린 30개를 전부 "최우선" 고립으로 오탐지함. Study-Match-에서 통했던 이유는 App.tsx가
+#        직접 라우팅하는 형제 컴포넌트가 전부 firebase.ts를 쓰는 게 우연이 아니라 구조였기 때문 —
+#        규모가 커지고 관심사가 여러 개(Genre/Auth/Books 등)로 나뉘면 "전체가 허브를 써야 한다"는
+#        가정 자체가 깨짐. 대신 "entry→root가 직접 import하는 형제들"끼리만 비교해야 함
+#   COST: 형제 그룹 바깥의 진짜 고립 파일(예: 깊은 유틸리티 파일의 이상 패턴)은 이 규칙으로 못 잡음
+#        — 그건 애초에 이 규칙의 책임 범위가 아니라는 뜻으로 재정의한 것(범위 축소가 의도)
+#   EXIT: "형제 그룹"을 root 직계가 아니라 2단계까지 확장하고 싶으면 find_routed_peers의
+#        BFS 깊이만 늘리면 됨
+def find_routed_peers(edges):
+    """entry point가 import하는 루트 컴포넌트(들)가 직접 import하는 파일 집합 = 비교 대상 형제 그룹."""
+    entry_srcs = {src for src, dst in edges if any(src.startswith(h) for h in ENTRY_POINT_HINTS)}
+    roots = {dst for src, dst in edges if src in entry_srcs}
+    peers = {dst for src, dst in edges if src in roots}
+    return peers
+
+
 def find_isolated_from_hub(edges, fan_in, hub):
-    """앱에 라우팅되어 쓰이는데(fan_in>=1) 허브로 가는 edge가 없는 파일.
+    """루트가 직접 라우팅하는 형제 파일 중, 허브로 가는 edge가 없는 파일(D19로 범위 제한).
 
     실측(Study-Match-): fan-in 지표만 보면 이런 파일을 놓친다 — 이 파일도 fan_in=1로
-    '정상'처럼 보이기 때문. 반드시 edge의 목적지(dst)까지 봐야 드러남.
+    '정상'처럼 보이기 때문. 반드시 edge의 목적지(dst)까지 봐야 드러난다.
     """
-    routed = {f for f, n in fan_in.items() if n >= 1 and f != hub}
+    peers = find_routed_peers(edges)
+    routed = {f for f in peers if fan_in.get(f, 0) >= 1 and f != hub}
     connected_to_hub = {src for src, dst in edges if dst == hub}
     return sorted(routed - connected_to_hub)
 
@@ -88,6 +107,16 @@ def find_architecture_diffusion_point(fan_in, hub, repo_root):
                 text = open(os.path.join(root, fn), encoding="utf-8", errors="ignore").read()
                 if re.search(r"createContext\s*(<[^>]*>)?\s*\(", text):
                     pattern_key = "react-context-global-state"
+                # D21: React Query "리소스별 커스텀 훅" 컨벤션도 관용 패턴 후보로 인식
+                #   WHY: jxxnixx/LMS 실측 — useBooksQueries.ts가 fan_in=6으로 diffusion 후보에
+                #        올랐는데 내용은 @tanstack/react-query 공식 문서가 권장하는 표준 패턴
+                #        (리소스당 useQuery 래퍼 훅)이라 createContext 패턴 하나만 보던 기존
+                #        탐지로는 놓쳤음. 이것도 "설계 판단"보다 "라이브러리 컨벤션"에 가까움
+                #   COST: 다른 라이브러리의 유사 컨벤션(Redux Toolkit의 slice 등)은 여전히 미탐지
+                #   EXIT: 새 컨벤션이 발견될 때마다 이 블록에 정규식 분기 추가(패턴 사전이 커지면
+                #        PATTERN_DETECTORS 딕셔너리로 리팩터링 검토)
+                elif re.search(r"\buse(Suspense)?(Query|Mutation)\s*\(", text):
+                    pattern_key = "react-query-custom-hook"
                 break
     return {"file": top_file, "fan_in": candidates[top_file], "pattern_key": pattern_key}
 
@@ -163,6 +192,25 @@ def score(scan_result, repo_root):
                 "question_value": "하",
                 "risk": "확인 전까지 중",
                 "priority": "검토 대상(자동 신뢰 금지)",
+            })
+        # D20: eval_or_dangerous_html 트리거를 finding으로 승격하는 규칙이 누락돼 있었음
+        #   WHY: jxxnixx/LMS 실측 — 인지 블록은 Bookshelf.jsx의 dangerouslySetInnerHTML을 정확히
+        #        잡았는데 판단 블록에 이 트리거를 finding화하는 규칙 자체가 없어서 조용히 버려짐
+        #        (auth_info_leak/hardcoded_secret 두 트리거만 처리하고 있었음)
+        #   COST: 없음 — 순수 누락 버그였음
+        #   EXIT: 새 Tier B 트리거를 추가할 때마다 이 블록에도 대응 규칙을 반드시 추가해야 함
+        #        (트리거 추가와 finding화 규칙 추가가 분리돼 있어 또 누락될 수 있음 — 근본 해법은
+        #        트리거 이름→finding 템플릿을 딕셔너리로 묶어 한 곳에서 관리하는 리팩터링)
+        if "eval_or_dangerous_html" in triggers:
+            matched = next(h["matched_text"] for h in hits if h["trigger"] == "eval_or_dangerous_html")
+            findings.append({
+                "id": f"tier-b-risk:{f}:dangerous-html",
+                "file": f,
+                "finding": f"{f} — 위험한 동적 실행/HTML 삽입 패턴 matched_text={matched!r} (XSS 등 위험 가능, 입력 출처 확인 필요)",
+                "design_intent": "확인 필요",
+                "question_value": "중",
+                "risk": "상",
+                "priority": "Important(🔴)",
             })
 
     for pattern, min_files in {"onSnapshot": REPEATED_PATTERN_MIN_FILES}.items():

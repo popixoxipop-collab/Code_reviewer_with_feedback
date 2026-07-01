@@ -1,0 +1,81 @@
+{
+  "hub": "GenreContext.jsx",
+  "findings": [
+    {
+      "id": "cognition-isolation:Auth.jsx",
+      "file": "Auth.jsx",
+      "finding": "Auth.jsx — 허브 모듈(GenreContext.jsx)로 가는 edge 없음. fan_in=1만 보면 정상으로 보임",
+      "design_intent": "불명(의도적 스코프 축소 vs 미완성 방치 구분 불가)",
+      "question_value": "상",
+      "risk": "하",
+      "priority": "최우선"
+    },
+    {
+      "id": "cognition-isolation:BookDetail.jsx",
+      "file": "BookDetail.jsx",
+      "finding": "BookDetail.jsx — 허브 모듈(GenreContext.jsx)로 가는 edge 없음. fan_in=1만 보면 정상으로 보임",
+      "design_intent": "불명(의도적 스코프 축소 vs 미완성 방치 구분 불가)",
+      "question_value": "상",
+      "risk": "하",
+      "priority": "최우선"
+    },
+    {
+      "id": "cognition-isolation:BookList.jsx",
+      "file": "BookList.jsx",
+      "finding": "BookList.jsx — 허브 모듈(GenreContext.jsx)로 가는 edge 없음. fan_in=1만 보면 정상으로 보임",
+      "design_intent": "불명(의도적 스코프 축소 vs 미완성 방치 구분 불가)",
+      "question_value": "상",
+      "risk": "하",
+      "priority": "최우선"
+    },
+    {
+      "id": "cognition-isolation:Header.jsx",
+      "file": "Header.jsx",
+      "finding": "Header.jsx — 허브 모듈(GenreContext.jsx)로 가는 edge 없음. fan_in=1만 보면 정상으로 보임",
+      "design_intent": "불명(의도적 스코프 축소 vs 미완성 방치 구분 불가)",
+      "question_value": "상",
+      "risk": "하",
+      "priority": "최우선"
+    },
+    {
+      "id": "cognition-isolation:LibraryScene.jsx",
+      "file": "LibraryScene.jsx",
+      "finding": "LibraryScene.jsx — 허브 모듈(GenreContext.jsx)로 가는 edge 없음. fan_in=1만 보면 정상으로 보임",
+      "design_intent": "불명(의도적 스코프 축소 vs 미완성 방치 구분 불가)",
+      "question_value": "상",
+      "risk": "하",
+      "priority": "최우선"
+    },
+    {
+      "id": "cognition-isolation:authToken.js",
+      "file": "authToken.js",
+      "finding": "authToken.js — 허브 모듈(GenreContext.jsx)로 가는 edge 없음. fan_in=2만 보면 정상으로 보임",
+      "design_intent": "불명(의도적 스코프 축소 vs 미완성 방치 구분 불가)",
+      "question_value": "상",
+      "risk": "하",
+      "priority": "최우선"
+    },
+    {
+      "id": "architecture-diffusion:useBooksQueries.ts",
+      "file": "useBooksQueries.ts",
+      "pattern_key": "react-query-custom-hook",
+      "finding": "useBooksQueries.ts — 허브 다음으로 fan_in=6, 여러 컴포넌트가 공유",
+      "design_intent": "높음(다만 프레임워크 관용 패턴일 수 있음 — idiom_filter가 확정 여부 판정)",
+      "question_value": "하",
+      "risk": "하",
+      "priority": "질문 대상 → 관용 패턴 필터 적용됨(우선순위 낮음)",
+      "idiom_filtered": true,
+      "idiom_lang": "javascript",
+      "idiom_note": "[javascript] 관용 패턴으로 판단(pattern=react-query-custom-hook, confirmations=3) — 질문가치 상→하"
+    },
+    {
+      "id": "tier-b-risk:Bookshelf.jsx:dangerous-html",
+      "file": "Bookshelf.jsx",
+      "finding": "Bookshelf.jsx — 위험한 동적 실행/HTML 삽입 패턴 matched_text='dangerouslySetInnerHTML' (XSS 등 위험 가능, 입력 출처 확인 필요)",
+      "design_intent": "확인 필요",
+      "question_value": "중",
+      "risk": "상",
+      "priority": "Important(🔴)"
+    }
+  ]
+}

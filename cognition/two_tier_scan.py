@@ -73,8 +73,18 @@ def find_src_files(repo_root):
     return files
 
 
+# D18: '@/' 경로 별칭(alias) import도 로컬 import로 인식
+#   WHY: jxxnixx/LMS 실측 — Vite/TS의 흔한 관례(`"@": "./src"`)로 만든 `@/api/...` 형태
+#        import가 99건인데 기존 코드는 "." 로 시작하는 상대경로만 인식해서 전부 누락됨.
+#        누락 시 fan-in 그래프가 사실상 텅 비어 인지 블록이 무의미해짐(실측: 최대 fan_in=2/51파일)
+#   COST: alias 접두어를 tsconfig/vite.config에서 동적으로 읽지 않고 '@/' 하드코딩 —
+#        다른 접두어(예: '~/', 'src/')를 쓰는 프로젝트는 여전히 놓침
+#   EXIT: LOCAL_IMPORT_PREFIXES에 접두어 추가, 또는 tsconfig paths를 파싱해 동적 목록 생성으로 교체
+LOCAL_IMPORT_PREFIXES = (".", "@/")
+
+
 def extract_js_targets(text):
-    return [m.group(1) for m in JS_IMPORT_RE.finditer(text) if m.group(1).startswith(".")]
+    return [m.group(1) for m in JS_IMPORT_RE.finditer(text) if m.group(1).startswith(LOCAL_IMPORT_PREFIXES)]
 
 
 def extract_py_targets(text):

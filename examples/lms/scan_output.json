@@ -1,0 +1,491 @@
+{
+  "repo": "LMS/src",
+  "total_source_files": 51,
+  "tier_a_structural": {
+    "fan_in": {
+      "theme.js": 1,
+      "vite-env.d.ts": 0,
+      "main.jsx": 0,
+      "App.jsx": 1,
+      "validated.ts": 0,
+      "schema.d.ts": 0,
+      "tags.ts": 0,
+      "AuthContext.jsx": 5,
+      "GenreContext.jsx": 12,
+      "corridor.js": 3,
+      "bookUtils.js": 3,
+      "Header.jsx": 1,
+      "Panel.jsx": 1,
+      "Bookcase.jsx": 1,
+      "Page.jsx": 4,
+      "Button.jsx": 5,
+      "StateMessage.jsx": 5,
+      "Pagination.jsx": 1,
+      "FormField.jsx": 3,
+      "BookForm.jsx": 2,
+      "BookCover.jsx": 3,
+      "GenreBadge.jsx": 2,
+      "BookCard.jsx": 2,
+      "GenreSelect.jsx": 2,
+      "imageGen.js": 1,
+      "recommend.js": 1,
+      "authToken.js": 2,
+      "authAPI.ts": 1,
+      "useAuthMutations.ts": 1,
+      "genresAPI.ts": 1,
+      "useGenresQueries.ts": 1,
+      "useBooksQueries.ts": 6,
+      "booksAPI.ts": 2,
+      "useBooksMutations.ts": 2,
+      "useAiMutations.ts": 0,
+      "aiAPI.ts": 3,
+      "useApiQueries.ts": 0,
+      "apiAPI.ts": 2,
+      "fetcher.ts": 6,
+      "handlers.ts": 5,
+      "BookEdit.jsx": 1,
+      "BookCreate.jsx": 1,
+      "BookList.jsx": 1,
+      "BookDetail.jsx": 1,
+      "LibraryScene.jsx": 1,
+      "CorridorView.jsx": 1,
+      "ShelfView.jsx": 1,
+      "Bookshelf.jsx": 1,
+      "Auth.jsx": 1,
+      "SignupForm.jsx": 1,
+      "LoginForm.jsx": 1
+    },
+    "zero_fan_in_files": [
+      "vite-env.d.ts",
+      "main.jsx",
+      "validated.ts",
+      "schema.d.ts",
+      "tags.ts",
+      "useAiMutations.ts",
+      "useApiQueries.ts"
+    ],
+    "edges": [
+      [
+        "App.jsx",
+        "Auth.jsx"
+      ],
+      [
+        "App.jsx",
+        "BookCreate.jsx"
+      ],
+      [
+        "App.jsx",
+        "BookDetail.jsx"
+      ],
+      [
+        "App.jsx",
+        "BookEdit.jsx"
+      ],
+      [
+        "App.jsx",
+        "BookList.jsx"
+      ],
+      [
+        "App.jsx",
+        "Bookshelf.jsx"
+      ],
+      [
+        "App.jsx",
+        "GenreContext.jsx"
+      ],
+      [
+        "App.jsx",
+        "Header.jsx"
+      ],
+      [
+        "App.jsx",
+        "LibraryScene.jsx"
+      ],
+      [
+        "Auth.jsx",
+        "LoginForm.jsx"
+      ],
+      [
+        "Auth.jsx",
+        "SignupForm.jsx"
+      ],
+      [
+        "AuthContext.jsx",
+        "authToken.js"
+      ],
+      [
+        "BookCard.jsx",
+        "BookCover.jsx"
+      ],
+      [
+        "BookCard.jsx",
+        "GenreBadge.jsx"
+      ],
+      [
+        "BookCard.jsx",
+        "bookUtils.js"
+      ],
+      [
+        "BookCover.jsx",
+        "GenreContext.jsx"
+      ],
+      [
+        "BookCreate.jsx",
+        "BookForm.jsx"
+      ],
+      [
+        "BookCreate.jsx",
+        "GenreContext.jsx"
+      ],
+      [
+        "BookCreate.jsx",
+        "Page.jsx"
+      ],
+      [
+        "BookCreate.jsx",
+        "StateMessage.jsx"
+      ],
+      [
+        "BookCreate.jsx",
+        "useBooksMutations.ts"
+      ],
+      [
+        "BookDetail.jsx",
+        "AuthContext.jsx"
+      ],
+      [
+        "BookDetail.jsx",
+        "BookCover.jsx"
+      ],
+      [
+        "BookDetail.jsx",
+        "Button.jsx"
+      ],
+      [
+        "BookDetail.jsx",
+        "GenreBadge.jsx"
+      ],
+      [
+        "BookDetail.jsx",
+        "Page.jsx"
+      ],
+      [
+        "BookDetail.jsx",
+        "StateMessage.jsx"
+      ],
+      [
+        "BookDetail.jsx",
+        "bookUtils.js"
+      ],
+      [
+        "BookDetail.jsx",
+        "imageGen.js"
+      ],
+      [
+        "BookDetail.jsx",
+        "useBooksQueries.ts"
+      ],
+      [
+        "BookEdit.jsx",
+        "BookForm.jsx"
+      ],
+      [
+        "BookEdit.jsx",
+        "GenreContext.jsx"
+      ],
+      [
+        "BookEdit.jsx",
+        "Page.jsx"
+      ],
+      [
+        "BookEdit.jsx",
+        "StateMessage.jsx"
+      ],
+      [
+        "BookEdit.jsx",
+        "useBooksMutations.ts"
+      ],
+      [
+        "BookEdit.jsx",
+        "useBooksQueries.ts"
+      ],
+      [
+        "BookForm.jsx",
+        "Button.jsx"
+      ],
+      [
+        "BookForm.jsx",
+        "FormField.jsx"
+      ],
+      [
+        "BookForm.jsx",
+        "GenreContext.jsx"
+      ],
+      [
+        "BookForm.jsx",
+        "GenreSelect.jsx"
+      ],
+      [
+        "BookList.jsx",
+        "AuthContext.jsx"
+      ],
+      [
+        "BookList.jsx",
+        "BookCard.jsx"
+      ],
+      [
+        "BookList.jsx",
+        "GenreSelect.jsx"
+      ],
+      [
+        "BookList.jsx",
+        "Page.jsx"
+      ],
+      [
+        "BookList.jsx",
+        "Pagination.jsx"
+      ],
+      [
+        "BookList.jsx",
+        "StateMessage.jsx"
+      ],
+      [
+        "BookList.jsx",
+        "useBooksQueries.ts"
+      ],
+      [
+        "Bookcase.jsx",
+        "GenreContext.jsx"
+      ],
+      [
+        "Bookcase.jsx",
+        "bookUtils.js"
+      ],
+      [
+        "Bookcase.jsx",
+        "corridor.js"
+      ],
+      [
+        "Bookshelf.jsx",
+        "BookCard.jsx"
+      ],
+      [
+        "Bookshelf.jsx",
+        "GenreContext.jsx"
+      ],
+      [
+        "Bookshelf.jsx",
+        "recommend.js"
+      ],
+      [
+        "Bookshelf.jsx",
+        "useBooksQueries.ts"
+      ],
+      [
+        "CorridorView.jsx",
+        "GenreContext.jsx"
+      ],
+      [
+        "CorridorView.jsx",
+        "Panel.jsx"
+      ],
+      [
+        "CorridorView.jsx",
+        "corridor.js"
+      ],
+      [
+        "CorridorView.jsx",
+        "useBooksQueries.ts"
+      ],
+      [
+        "GenreBadge.jsx",
+        "GenreContext.jsx"
+      ],
+      [
+        "GenreContext.jsx",
+        "theme.js"
+      ],
+      [
+        "GenreContext.jsx",
+        "useGenresQueries.ts"
+      ],
+      [
+        "GenreSelect.jsx",
+        "GenreContext.jsx"
+      ],
+      [
+        "Header.jsx",
+        "AuthContext.jsx"
+      ],
+      [
+        "Header.jsx",
+        "Button.jsx"
+      ],
+      [
+        "LibraryScene.jsx",
+        "CorridorView.jsx"
+      ],
+      [
+        "LibraryScene.jsx",
+        "ShelfView.jsx"
+      ],
+      [
+        "LoginForm.jsx",
+        "AuthContext.jsx"
+      ],
+      [
+        "LoginForm.jsx",
+        "Button.jsx"
+      ],
+      [
+        "LoginForm.jsx",
+        "FormField.jsx"
+      ],
+      [
+        "LoginForm.jsx",
+        "useAuthMutations.ts"
+      ],
+      [
+        "Panel.jsx",
+        "Bookcase.jsx"
+      ],
+      [
+        "Panel.jsx",
+        "GenreContext.jsx"
+      ],
+      [
+        "ShelfView.jsx",
+        "BookCover.jsx"
+      ],
+      [
+        "ShelfView.jsx",
+        "GenreContext.jsx"
+      ],
+      [
+        "ShelfView.jsx",
+        "StateMessage.jsx"
+      ],
+      [
+        "ShelfView.jsx",
+        "useBooksQueries.ts"
+      ],
+      [
+        "SignupForm.jsx",
+        "Button.jsx"
+      ],
+      [
+        "SignupForm.jsx",
+        "FormField.jsx"
+      ],
+      [
+        "aiAPI.ts",
+        "fetcher.ts"
+      ],
+      [
+        "aiAPI.ts",
+        "handlers.ts"
+      ],
+      [
+        "apiAPI.ts",
+        "fetcher.ts"
+      ],
+      [
+        "apiAPI.ts",
+        "handlers.ts"
+      ],
+      [
+        "authAPI.ts",
+        "fetcher.ts"
+      ],
+      [
+        "authAPI.ts",
+        "handlers.ts"
+      ],
+      [
+        "bookUtils.js",
+        "corridor.js"
+      ],
+      [
+        "booksAPI.ts",
+        "fetcher.ts"
+      ],
+      [
+        "booksAPI.ts",
+        "handlers.ts"
+      ],
+      [
+        "genresAPI.ts",
+        "fetcher.ts"
+      ],
+      [
+        "genresAPI.ts",
+        "handlers.ts"
+      ],
+      [
+        "imageGen.js",
+        "aiAPI.ts"
+      ],
+      [
+        "main.jsx",
+        "App.jsx"
+      ],
+      [
+        "main.jsx",
+        "AuthContext.jsx"
+      ],
+      [
+        "main.jsx",
+        "authToken.js"
+      ],
+      [
+        "main.jsx",
+        "fetcher.ts"
+      ],
+      [
+        "recommend.js",
+        "aiAPI.ts"
+      ],
+      [
+        "recommend.js",
+        "apiAPI.ts"
+      ],
+      [
+        "useAiMutations.ts",
+        "aiAPI.ts"
+      ],
+      [
+        "useApiQueries.ts",
+        "apiAPI.ts"
+      ],
+      [
+        "useAuthMutations.ts",
+        "authAPI.ts"
+      ],
+      [
+        "useBooksMutations.ts",
+        "booksAPI.ts"
+      ],
+      [
+        "useBooksQueries.ts",
+        "booksAPI.ts"
+      ],
+      [
+        "useGenresQueries.ts",
+        "genresAPI.ts"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {
+      "Bookshelf.jsx": [
+        {
+          "trigger": "eval_or_dangerous_html",
+          "matched_text": "dangerouslySetInnerHTML"
+        }
+      ]
+    },
+    "deep_read_count": 1,
+    "total_files": 51,
+    "cost_saved_ratio": 0.98
+  }
+}
