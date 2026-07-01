@@ -6,7 +6,7 @@
       "file": "Competitions.tsx",
       "finding": "Competitions.tsx — 허브 모듈(firebase.ts)로 가는 edge 없음. fan_in=1만 보면 정상으로 보임",
       "priority": "최우선",
-      "design_intent": "하",
+      "design_intent": "중",
       "question_value": "상",
       "risk": "하",
       "subrubric": {
@@ -14,10 +14,10 @@
           "sub": {
             "repetition_consistency": 0,
             "idiom_conformance_reverse": 3,
-            "location_signal": 0,
+            "rationale_signal": 1,
             "mitigation_present": 1
           },
-          "total": 4
+          "total": 5
         },
         "question_value": {
           "sub": {
@@ -53,10 +53,10 @@
           "sub": {
             "repetition_consistency": 3,
             "idiom_conformance_reverse": 0,
-            "location_signal": 3,
+            "rationale_signal": 1,
             "mitigation_present": 1
           },
-          "total": 7
+          "total": 5
         },
         "question_value": {
           "sub": {
@@ -65,7 +65,10 @@
             "idiom_contamination_reverse": 0,
             "ladder_richness": 3
           },
-          "total": 9
+          "total": 9,
+          "overridden_by": "idiom_filter",
+          "overridden_reason": "[javascript] 관용 패턴으로 판단(pattern=react-context-global-state, confirmations=9) — 질문가치 상→하",
+          "final_bucket": "하"
         },
         "risk": {
           "sub": {
@@ -94,10 +97,10 @@
           "sub": {
             "repetition_consistency": 0,
             "idiom_conformance_reverse": 3,
-            "location_signal": 0,
+            "rationale_signal": 1,
             "mitigation_present": 3
           },
-          "total": 6
+          "total": 7
         },
         "question_value": {
           "sub": {
@@ -132,10 +135,10 @@
           "sub": {
             "repetition_consistency": 3,
             "idiom_conformance_reverse": 3,
-            "location_signal": 0,
+            "rationale_signal": 1,
             "mitigation_present": 1
           },
-          "total": 7
+          "total": 8
         },
         "question_value": {
           "sub": {

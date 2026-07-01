@@ -6,7 +6,7 @@ import sys
 sys.path.insert(0, os.path.dirname(__file__))
 from idiom_filter import apply_idiom_filter  # noqa: E402
 from tier_b_suppression_filter import apply_tier_b_suppression  # noqa: E402
-from subrubric import apply_subrubric, idiom_evidence  # noqa: E402
+from subrubric import apply_subrubric, idiom_evidence, rationale_signal  # noqa: E402
 
 # D13: 반복 패턴 탐지 대상 확장자를 인지 블록(cognition/two_tier_scan.py)의 SRC_EXTS와 동일하게 유지
 #   WHY: 인지 블록만 다국어로 확장하고 판단 블록이 JS/TS만 스캔하면 다시 불일치가 생김
@@ -36,8 +36,9 @@ ENTRY_POINT_HINTS = ("main.", "index.")
 REPEATED_PATTERN_MIN_FILES = 2
 REPEATED_PATTERN_MIN_HITS = 2
 
-# D29 계속: 파일명에 이런 힌트가 있으면 "의도적으로 분리했다"는 위치 신호로 채점(design_intent axis)
-LOCATION_INTENT_HINTS = ("test", "mock", "example", "legacy", "deprecated")
+# D29의 파일명 힌트 기반 location_signal은 D35로 대체됨 — 문헌 근거(SATD 탐지 방법론)가
+#   있는 subrubric.rationale_signal()(코멘트 스캔)로 교체. LOCATION_INTENT_HINTS 상수는
+#   더 이상 쓰이지 않아 삭제(원안은 git history D29 커밋 참고)
 
 
 # D16: hub 동점 시 fan-out(자신이 얼마나 많이 import하는지)이 낮은 쪽으로 tie-break
@@ -170,7 +171,7 @@ def score(scan_result, repo_root):
                 design_intent_evidence=dict(
                     repetition=len(isolated_files) - 1,
                     idiom_status="none",
-                    location_signal=any(h in f.lower() for h in LOCATION_INTENT_HINTS),
+                    rationale=rationale_signal(f, repo_root),
                     mitigation_present=None,
                 ),
                 question_value_evidence=dict(
@@ -203,7 +204,7 @@ def score(scan_result, repo_root):
                 design_intent_evidence=dict(
                     repetition=diffusion["fan_in"],
                     idiom_status=idiom_status,
-                    location_signal=True,
+                    rationale=rationale_signal(diffusion["file"], repo_root),
                     mitigation_present=None,
                 ),
                 question_value_evidence=dict(
@@ -245,7 +246,7 @@ def score(scan_result, repo_root):
                 design_intent_evidence=dict(
                     repetition=trigger_file_counts["auth_info_leak_via_thrown_error"] - 1,
                     idiom_status="none",
-                    location_signal=any(h in f.lower() for h in ("error", "handler")),
+                    rationale=rationale_signal(f, repo_root),
                     mitigation_present=True,  # throw로 에러 컨텍스트를 남기려는 의도 자체는 존재
                 ),
                 question_value_evidence=dict(
@@ -275,7 +276,7 @@ def score(scan_result, repo_root):
                 design_intent_evidence=dict(
                     repetition=0,
                     idiom_status="none",
-                    location_signal=False,
+                    rationale=rationale_signal(f, repo_root),
                     mitigation_present=None,  # 하드코딩 시크릿에 "의도된 완화책"이란 개념 자체가 성립 안 함
                 ),
                 question_value_evidence=dict(
@@ -313,7 +314,7 @@ def score(scan_result, repo_root):
                 design_intent_evidence=dict(
                     repetition=trigger_file_counts["eval_or_dangerous_html"] - 1,
                     idiom_status="none",
-                    location_signal=False,
+                    rationale=rationale_signal(f, repo_root),
                     mitigation_present=False,  # 정규식 매치 시점에 sanitize 흔적이 안 보임(부정 신호로 취급)
                 ),
                 question_value_evidence=dict(
@@ -345,7 +346,7 @@ def score(scan_result, repo_root):
                 design_intent_evidence=dict(
                     repetition=len(repeated),
                     idiom_status="none",
-                    location_signal=False,
+                    rationale=rationale_signal(None, repo_root),  # 단일 file 없음(여러 파일 걸침) → 항상 "none"
                     mitigation_present=None,
                 ),
                 question_value_evidence=dict(
