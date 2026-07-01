@@ -43,6 +43,7 @@ Repository
 | [`examples/shadowbroker/`](./examples/shadowbroker/) | 전체 | 세 번째 실제 공개 repo(Shadowbroker, Python+TS 726파일 monorepo) — tier_b 방법론 첫 실증 |
 | [`pipeline/evidence_bridge.py`](./pipeline/evidence_bridge.py) | 전체 | D안(B안+C안 결합) — C안 finding을 B안 형식 Repository Evidence + 질문으로 자동 변환 |
 | [`pipeline/followup_generator.py`](./pipeline/followup_generator.py) | 전체 | D안 적응형 Follow-up — 팀 §3 전략표를 isolation_classifier/reflection_signal 분류로 구현, Bookshelf.jsx 2턴 완주로 검증(D48) |
+| [`pipeline/escalation_hook.py`](./pipeline/escalation_hook.py) | 전체 | keyword hook 검출 실패 → Socratic escalation → judge 판정을 hook에 재귀 반영(D50). 테스트 중 dedup 버그(D51) + reflection_hook 최초 4패턴 전부 강등(D52) 발견 |
 | [`examples/lms/d_plan/`](./examples/lms/d_plan/) | 전체 | D안을 LMS에 실행한 결과 + Codex로 독립 생성한 답변 7건 전체 검증([`codex_verification_full.md`](./examples/lms/d_plan/codex_verification_full.md)), A~E안 비교 및 6-axis 채점표 |
 | [`judgment/isolation_hook.py`](./judgment/isolation_hook.py) + [`isolation_classifier.py`](./judgment/isolation_classifier.py) | 판단 | cognition-isolation 판정용 재귀 hook — "정규식 하나"가 아니라 "카테고리(동의어 alternation)" 단위로 타당한 설계 근거를 축적·확정([`검증 결과`](./examples/lms/d_plan/isolation_hook_verification.md)) |
 
@@ -388,6 +389,22 @@ python3 pipeline/compare_methodologies.py
   - WHY: 사용자가 팀 Notion 비교표(질문 생성/Follow-up 질문 칸, 모든 팀원이 실제 값을 채워 넣음)를 보여주며 "우리 진행 방식을 저기에 맞춰야지, 구현을 잘못했다"고 명확히 정정 — D안이 단발 질문만 내고 Follow-up을 "없음/미구현"으로 방치하는 건 팀 표준에 맞지 않음. 팀 자체 문서(`코드이해도_평가_질문및채점기준.md` §3 "적응형 후속 질문 전략" 표: 모호/추상적→구체화, 대안 미언급→대안탐색, 근거 얕음→변형질문, 오개념감지→소크라테스식 반례, 충분히 깊음→다음 축)를 그대로 규칙 트리로 옮기고, "1차 답변 상태" 판정은 새 LLM 호출 없이 기존 `isolation_classifier`/`reflection_signal`을 재사용. Bookshelf.jsx(tier-b-risk) 사례에서 Codex로 실제 2턴까지 완주해 검증 — 1턴("안일하게 생각했다"에서 멈춤)보다 2턴("script 삽입→쿠키탈취→외부전송"까지 구체화)이 실제로 더 깊었음을 실측 확인. cognition-isolation 3개 사례(Auth/Header/authToken)도 카테고리 매치 개수에 따라 서로 다른 후속 질문으로 정확히 분기되는 것 확인
   - COST: A/B안처럼 "매번 새로 생성되는 LLM 적응형 질문"이 아니라 팀 §3 표의 5개 방향 중 하나를 **미리 정의된 규칙(신호 분류 결과)으로 선택**하는 구조 — 문구는 고정 템플릿이고 분기만 적응형. "생성형 적응형"이 아니라 "규칙 기반 적응형"이라는 한계를 문서에 명시
   - EXIT: API가 생기면 같은 분기 로직(5개 방향) 위에서 각 분기의 질문 문구만 Codex/Claude가 매번 새로 생성하도록 교체 가능 — `_risk_type_followup`/`_isolation_followup`의 return 문자열만 LLM 호출로 대체하면 됨, 분기 트리 자체는 재사용
+- **D49** (`judgment/isolation_categories/domain_irrelevance/patterns.json` 정규식 버그 수정) — `딱히.*필요`의 그리디 와일드카드가 무관한 문맥까지 160자 건너뛰어 오매칭
+  - WHY: escalation 데모용으로 authToken.js를 재검증하다 실측으로 발견 — 텍스트 초반의 "딱히 큰 고민 없이"와 후반의 "리렌더링될 필요" 사이 160자를 `.*`가 그대로 삼켜 domain_irrelevance가 완전히 무관한 문장에 오매칭됨. `.{0,15}`로 범위를 제한
+  - COST: 원래 이 패턴을 confirmed시킨 두 출처(Auth.jsx/Header.jsx)에서 회귀 재확인 필요 — 둘 다 재확인 완료(매치 유지)
+  - EXIT: 카테고리 정규식에 그리디 와일드카드(`.*`)를 쓸 때마다 이 함정이 반복될 수 있음 — 새 카테고리/패턴 추가 시 `.*` 대신 `.{0,N}`을 기본으로 쓰는 컨벤션화 검토
+- **D50** ([`pipeline/escalation_hook.py`](./pipeline/escalation_hook.py)) — keyword hook 검출 실패 시 Socratic+Depth Ladder로 escalate하고, escalation 성공 판정을 hook에 재귀적으로 되먹이는 루프를 구현
+  - WHY: 사용자 제안("keyword hook 검출 실패하면 소크라틱+DepthLadder로 보내고 hook을 업데이트하는 재귀 규칙") — D37/D39~41에서 내가 수작업으로 하던 "새 데이터→hook 후보 등록"을 자동화. `followup_generator.py`(D48)가 escalation 질문 생성까지는 했지만 결과를 hook에 되먹이는 마지막 연결이 없었음
+  - COST: escalation "성공" 여부(judge) 자체는 결정론적 규칙으로 못 함 — 반드시 이 모듈 밖(Codex 등 실제 LLM)에서 판정을 받아와야 하는 반자동 루프. 완전 자동 폐루프가 아님
+  - EXIT: judge를 규칙으로 대체하면(예: evaluate_reflection 재적용) escalation의 의미(hook이 아직 모르는 신호를 더 깊이 파고들어야만 본다는 것) 자체가 사라짐 — judge는 hook과 독립적이어야 한다는 제약을 지켜야 함
+- **D51** (`isolation_hook.py`/`reflection_hook.py` `recursive_update()` 재설계) — 같은 출처 반복 제출 방지(dedup) + 양방향 승격/강등
+  - WHY: escalation_hook.py를 Bookshelf.jsx로 실제 테스트하다가 실측으로 발견 — 기존 `votes[key] += 1`은 로그 줄 수를 그대로 세서 같은 출처가 같은 pattern_id를 반복 제출하면 threshold를 인위적으로 넘길 수 있었다(isolation_hook은 `source_finding`을 저장은 했지만 집계는 안 씀, reflection_hook은 애초에 `source_finding` 필드 자체가 없었음). 두 파일 모두 `source_finding`(또는 fallback으로 timestamp) 집합의 크기로 집계하도록 변경 — 같은 출처는 몇 번을 제출해도 1표. 또한 기존엔 한 번 confirmed되면 재계산해도 절대 candidate로 안 돌아갔는데(단방향 승격만), 이제는 재계산할 때마다 `count>=threshold`로 상태를 그대로 재평가(양방향)
+  - COST: 과거에 "confirmed"였던 패턴이 재계산 후 "candidate"로 떨어질 수 있음(실제로 D52에서 4건 전부 발생) — 이전 세션에서 "재현율 X% 확인"이라고 보고했던 수치들의 전제(그 패턴들이 진짜 confirmed였다는 것) 자체가 흔들림
+  - EXIT: `source_finding`이 비어있는 과거 로그는 timestamp를 fallback 키로 써서 최소한 서로 다른 줄로는 구분되게 함 — 다만 진짜 출처가 같은데 fallback이 달라 우연히 다시 부풀려질 위험은 남아있어, 신규 코드는 `source_finding`을 반드시 채워야 함
+- **D52** (reflection_hook 4개 서브신호 전부 재검증 — 최초 seed 패턴이 전부 강등됨) — D51 적용 + 과거 로그 `source_finding` 역보강(note에서 출처 추론) 후 재계산한 결과, `too_trusted_browser`/`so_connector`/`should_do_pattern`/`backend_limit_pattern` 4개 패턴 전부가 "confirmed"에서 "candidate"로 강등됨
+  - WHY: D32/D33에서 이 4개 패턴을 처음 시드할 때, 서로 다른 4개의 실제 사례가 아니라 **같은 캐노니컬 예시 문장 하나를 "round 1/2/3"으로 3번 반복 제출**해서 확정시켰다는 걸 로그 원문(note 필드)에서 직접 확인. D41에서 정립한 "서로 다른 독립 출처가 필요하다"는 원칙이 reflection_hook의 최초 4개 패턴 자체에는 소급 적용된 적이 없었음. 사용자에게 "지금 강등 vs 예외로 남김" 중 선택지를 제시했고, "지금 강등(권장)"으로 결정 — 원칙 일관성을 재현율 실적보다 우선
+  - COST: **reflection_hook의 confirmed 패턴이 현재 0개**다 — `self_error_recognition`이 D34에서 REQUIRED로 지정한 유일한 필수 서브신호인데 confirmed 패턴이 없으므로 `reflection_present`는 새로운 독립 출처 2~3개가 쌓이기 전까지 항상 False다. 이전에 보고한 "재현율 0/7"(D37/D38)이라는 표현조차 이제 보면 애초에 confirmed 패턴이 있었다는 전제 자체가 부정확했다 — 진짜 상태는 "재현율 측정 불가(트래커가 아직 아무것도 확정 안 함)"에 더 가까움
+  - EXIT: 서로 다른 4개 이상의 실제(가짜/시뮬레이션이라도 서로 독립적인) 답변으로 각 서브신호를 다시 3회 이상 독립 확인해야 reflection_hook이 다시 작동을 시작함. `escalation_hook.py`(D50)가 바로 이 재축적 경로 — 앞으로 escalation이 성공할 때마다 정직하게 새 confirmations가 쌓인다
 
 ## 다음 단계 (미해결)
 

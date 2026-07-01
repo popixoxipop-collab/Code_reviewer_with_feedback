@@ -3,7 +3,7 @@
   "patterns": [
     {
       "id": "not_needed_here",
-      "regex": "필요\\s*없|딱히.*필요",
+      "regex": "필요\\s*없|딱히.{0,15}필요",
       "status": "confirmed",
       "confirmations": 2,
       "sources": [

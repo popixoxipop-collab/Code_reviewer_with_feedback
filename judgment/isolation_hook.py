@@ -84,7 +84,7 @@ def recursive_update(category):
     if not os.path.exists(log_path):
         return data, []
 
-    votes, regex_map, sources = {}, {}, {}
+    regex_map, sources = {}, {}
     with open(log_path, encoding="utf-8") as f:
         for line in f:
             line = line.strip()
@@ -94,24 +94,30 @@ def recursive_update(category):
             if entry["verdict"] != "genuine_justification":
                 continue
             key = entry["pattern_id"]
-            votes[key] = votes.get(key, 0) + 1
             regex_map[key] = entry["regex"]
-            sources.setdefault(key, []).append(entry.get("source_finding", ""))
+            # D51: source_finding이 같으면 반복 제출해도 1표만 인정(단일 사례로 threshold 우회 방지)
+            sources.setdefault(key, set()).add(entry.get("source_finding") or entry["timestamp"])
 
-    promotions = []
-    for key, count in votes.items():
+    # D51: 재계산할 때마다 상태를 양방향 갱신(승격뿐 아니라 강등도) — dedup 적용 후
+    #   독립 출처가 threshold 미만으로 드러나면 confirmed로 남겨두지 않는다
+    promotions, demotions = [], []
+    for key, src_set in sources.items():
+        count = len(src_set)
         if key not in by_id:
             by_id[key] = {"id": key, "regex": regex_map[key], "status": "candidate", "confirmations": 0, "sources": []}
         entry = by_id[key]
         entry["confirmations"] = count
-        entry["sources"] = sources.get(key, [])
-        if entry["status"] != "confirmed" and count >= threshold:
-            entry["status"] = "confirmed"
+        entry["sources"] = sorted(src_set)
+        was_confirmed = entry["status"] == "confirmed"
+        entry["status"] = "confirmed" if count >= threshold else "candidate"
+        if not was_confirmed and entry["status"] == "confirmed":
             promotions.append(key)
+        elif was_confirmed and entry["status"] == "candidate":
+            demotions.append(key)
 
     data["patterns"] = list(by_id.values())
     _save(category, data)
-    return data, promotions
+    return data, promotions, demotions
 
 
 def main():
@@ -127,8 +133,8 @@ def main():
         print(json.dumps(record_feedback(category, pattern_id, regex, verdict, note, source_finding), ensure_ascii=False, indent=2))
     elif cmd == "update":
         category = sys.argv[2]
-        data, promotions = recursive_update(category)
-        print(json.dumps({"category": category, "promotions": promotions, "patterns": data["patterns"]}, ensure_ascii=False, indent=2))
+        data, promotions, demotions = recursive_update(category)
+        print(json.dumps({"category": category, "promotions": promotions, "demotions": demotions, "patterns": data["patterns"]}, ensure_ascii=False, indent=2))
     else:
         print(f"unknown command: {cmd}", file=sys.stderr)
         sys.exit(1)

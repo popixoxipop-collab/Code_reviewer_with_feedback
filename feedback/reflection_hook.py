@@ -49,10 +49,12 @@ def _save(sub_signal, data):
         f.write("\n")
 
 
-def record_feedback(sub_signal, pattern_id, regex, verdict, note=""):
+def record_feedback(sub_signal, pattern_id, regex, verdict, note="", source_finding=""):
     """verdict: "genuine_signal"(진짜 이 서브신호를 나타냄) | "false_positive"(오탐).
 
     idiom_hook.py와 동일하게 즉시 patterns.json을 바꾸지 않는다 — 승격은 recursive_update()에서만.
+    source_finding: 이 신호가 관측된 출처(finding_id). recursive_update()가 같은 출처의
+    반복 제출을 중복 확인으로 세지 않기 위해 필요(D51).
     """
     _ensure_dir(sub_signal)
     entry = {
@@ -62,6 +64,7 @@ def record_feedback(sub_signal, pattern_id, regex, verdict, note=""):
         "regex": regex,
         "verdict": verdict,
         "note": note,
+        "source_finding": source_finding,
     }
     with open(log_path_for(sub_signal), "a", encoding="utf-8") as f:
         f.write(json.dumps(entry, ensure_ascii=False) + "\n")
@@ -79,7 +82,7 @@ def recursive_update(sub_signal):
     if not os.path.exists(log_path):
         return data, []
 
-    votes, regex_map = {}, {}
+    sources, regex_map = {}, {}
     with open(log_path, encoding="utf-8") as f:
         for line in f:
             line = line.strip()
@@ -89,38 +92,49 @@ def recursive_update(sub_signal):
             if entry["verdict"] != "genuine_signal":
                 continue
             key = entry["pattern_id"]
-            votes[key] = votes.get(key, 0) + 1
+            # D51: 같은 source_finding이 같은 pattern_id를 반복 제출해도 1표만 인정 —
+            #   그렇지 않으면 단일 사례를 여러 번 제출해 threshold를 인위적으로 넘길 수 있음
+            sources.setdefault(key, set()).add(entry.get("source_finding") or entry["timestamp"])
             regex_map[key] = entry["regex"]
 
-    promotions = []
-    for key, count in votes.items():
+    # D51: 재계산할 때마다 상태를 양방향으로 갱신한다(승격뿐 아니라 강등도) — 과거에
+    #   같은 출처를 반복 제출해 confirmed됐던 패턴(too_trusted_browser)이 dedup 적용 후
+    #   실제 독립 출처가 threshold 미만으로 드러나면 그대로 confirmed로 남겨두지 않는다.
+    #   "한 번 확정되면 영원히 확정"은 이 시스템 전체의 재귀 확인 철학(D6/D41)에 위배됨
+    promotions, demotions = [], []
+    for key, src_set in sources.items():
+        count = len(src_set)
         if key not in by_id:
             by_id[key] = {"id": key, "regex": regex_map[key], "status": "candidate", "confirmations": 0}
         entry = by_id[key]
         entry["confirmations"] = count
-        if entry["status"] != "confirmed" and count >= threshold:
-            entry["status"] = "confirmed"
+        was_confirmed = entry["status"] == "confirmed"
+        entry["status"] = "confirmed" if count >= threshold else "candidate"
+        if not was_confirmed and entry["status"] == "confirmed":
             promotions.append(key)
+        elif was_confirmed and entry["status"] == "candidate":
+            demotions.append(key)
 
     data["patterns"] = list(by_id.values())
     _save(sub_signal, data)
-    return data, promotions
+    return data, promotions, demotions
 
 
 def main():
     if len(sys.argv) < 2:
-        print("usage: reflection_hook.py feedback <sub_signal> <pattern_id> <regex> genuine_signal|false_positive [note]", file=sys.stderr)
+        print("usage: reflection_hook.py feedback <sub_signal> <pattern_id> <regex> genuine_signal|false_positive [note] [source_finding]", file=sys.stderr)
         print("       reflection_hook.py update <sub_signal>", file=sys.stderr)
         sys.exit(1)
     cmd = sys.argv[1]
     if cmd == "feedback":
         sub_signal, pattern_id, regex, verdict = sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5]
         note = sys.argv[6] if len(sys.argv) > 6 else ""
-        print(json.dumps(record_feedback(sub_signal, pattern_id, regex, verdict, note), ensure_ascii=False, indent=2))
+        source_finding = sys.argv[7] if len(sys.argv) > 7 else ""
+        print(json.dumps(record_feedback(sub_signal, pattern_id, regex, verdict, note, source_finding), ensure_ascii=False, indent=2))
     elif cmd == "update":
         sub_signal = sys.argv[2]
-        data, promotions = recursive_update(sub_signal)
-        print(json.dumps({"sub_signal": sub_signal, "promotions": promotions, "patterns": data["patterns"]}, ensure_ascii=False, indent=2))
+        data, promotions, demotions = recursive_update(sub_signal)
+        print(json.dumps({"sub_signal": sub_signal, "promotions": promotions, "demotions": demotions, "patterns": data["patterns"]}, ensure_ascii=False, indent=2))
     else:
         print(f"unknown command: {cmd}", file=sys.stderr)
         sys.exit(1)

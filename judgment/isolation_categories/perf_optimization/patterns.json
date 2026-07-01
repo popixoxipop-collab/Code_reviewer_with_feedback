@@ -7,8 +7,8 @@
       "status": "confirmed",
       "confirmations": 2,
       "sources": [
-        "cognition-isolation:LibraryScene.jsx",
-        "cognition-isolation:Header.jsx"
+        "cognition-isolation:Header.jsx",
+        "cognition-isolation:LibraryScene.jsx"
       ]
     }
   ]

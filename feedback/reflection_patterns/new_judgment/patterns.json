@@ -4,8 +4,8 @@
     {
       "id": "should_do_pattern",
       "regex": "해야\\s*합니다",
-      "status": "confirmed",
-      "confirmations": 3
+      "status": "candidate",
+      "confirmations": 1
     },
     {
       "id": "now_looking_back",
