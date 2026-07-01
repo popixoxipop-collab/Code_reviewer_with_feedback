@@ -42,3 +42,40 @@
 5. **Trade-off** — 지금처럼 각자 작성하면 뭐가 편하고, 훅으로 뽑으면 뭐가 편해지나요?
 6. **Constraint** — 화면마다 정렬 기준/limit이 달라서 공통화가 어려웠던 건가요?
 7. **Reflection** — 리팩토링 시간이 30분 주어진다면 어느 파일부터 손대시겠어요?
+
+---
+
+## (관용 패턴 필터 데모) — App.tsx의 useAuth Context, 상 → 하로 자동 강등됨
+
+`architecture-diffusion:App.tsx` finding은 원래 fan_in=6(허브 다음으로 높음)이라는 이유만으로
+`질문가치=상`을 받았다. 이건 D3 COST로 남겨뒀던 문제 그대로다 — React Context는 컴포넌트가
+적을 때는 프레임워크 관용 패턴이지 "진짜 설계 판단"이 아닐 수 있는데, 구조 지표만으로는 구분이 안 됐다.
+
+**재귀 업데이트 루프로 실제 강등시킨 절차** (전부 실행·검증됨):
+1. `idiom_hook.py feedback javascript react-context-global-state idiom_not_decision`을 3회 기록
+   (`judgment/idioms/javascript/idiom_feedback_log.jsonl`)
+2. `idiom_hook.py update javascript` 실행 → `promotion_threshold=3` 도달 → `status: candidate → confirmed`
+   (`judgment/idioms/javascript/idiom_patterns.json`)
+3. `score_findings.py` 재실행 → `idiom_filter.py`가 confirmed 패턴과 매치되는 `pattern_key`를 찾아
+   `질문가치 상→하`, `priority`에 `"→ 관용 패턴 필터 적용됨(우선순위 낮음)"` 자동 추가
+
+이전 세션(2026-07-01 초판)에서는 이 항목에 7단계 Depth Ladder 질문을 전부 만들어 "상" 등급으로
+다뤘지만, 지금은 자동 강등되어 **우선순위 낮음 — 굳이 학생에게 물어볼 만큼 판별력 있는 질문은 아님**으로
+재분류된다. 참고용으로 예전 질문 세트는 남겨둔다:
+
+<details>
+<summary>강등 전 질문 세트 (참고용, 현재는 저우선순위)</summary>
+
+1. **What** — 인증 상태(user)를 어디에 저장하나요?
+2. **How** — Context+useAuth 훅 구조를 설명해보세요.
+3. **Why** — Redux/Zustand 대신 Context를 선택한 이유는요?
+4. **Alternative** — prop drilling은 왜 안 썼나요?
+5. **Trade-off** — Context의 장점과 규모 커질 때 리렌더링 문제를 비교해보세요.
+6. **Constraint** — 컴포넌트 6개뿐이라 충분하다 판단한 건가요, 처음부터 확장성을 고려 안 한 건가요?
+7. **Reflection** — 컴포넌트가 30개가 되면 이 구조를 유지할 건가요?
+
+</details>
+
+다른 언어(Python/Java/C/C++/Swift) 저장소는 이 데모의 영향을 전혀 받지 않는다 —
+`judgment/idioms/python/idiom_patterns.json` 등은 여전히 `patterns: []`(빈 상태)로 남아있고,
+이는 [`README.md`](../../README.md#설계-결정-로그)의 D7(언어별 분리 저장)로 실측 확인됨.

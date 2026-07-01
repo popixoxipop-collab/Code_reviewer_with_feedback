@@ -3,13 +3,18 @@ import os
 import re
 import sys
 
+sys.path.insert(0, os.path.dirname(__file__))
+from idiom_filter import apply_idiom_filter  # noqa: E402
+
 # D3: 판단 블록 = 규칙 기반 정성 채점(상/중/하), ML 아님
 #   WHY: 사례가 적고(4건) 기준이 명확해 규칙 기반이 더 투명하고 디버깅 가능 —
 #        "설계의도/질문가치/위험도" 3축은 2026-07-01 수동 분석에서 검증된 기준을 그대로 코드화
-#   COST: 새로운 패턴이 생기면 사람이 직접 규칙을 추가해야 함(자동 일반화 안 됨).
-#        예: useAuth Context 같은 "관용 패턴"과 "진짜 설계 결정"을 구분하는 필터는 아직 없음
+#   COST: 새로운 패턴이 생기면 사람이 직접 규칙을 추가해야 함(자동 일반화 안 됨)
 #   EXIT: 규칙이 늘어나 유지보수가 안 되면 judgment_rules.yaml로 분리하거나,
 #        hook 발동 로그 기반 자동 승격(WARN→BLOCK류)으로 대체
+#
+# D3-COST 해소: "관용 패턴 vs 진짜 설계 결정" 구분은 idiom_filter.py + idiom_hook.py로 분리 구현
+#   (useAuth Context 같은 프레임워크 관례가 질문가치를 과대평가받던 문제, 아래 find_architecture_diffusion_point 참고)
 
 ENTRY_POINT_HINTS = ("main.", "index.")
 REPEATED_PATTERN_MIN_FILES = 2
@@ -33,6 +38,29 @@ def find_isolated_from_hub(edges, fan_in, hub):
     routed = {f for f, n in fan_in.items() if n >= 1 and f != hub}
     connected_to_hub = {src for src, dst in edges if dst == hub}
     return sorted(routed - connected_to_hub)
+
+
+def find_architecture_diffusion_point(fan_in, hub, repo_root):
+    """허브 다음으로 fan-in이 높은 파일 = 여러 컴포넌트가 공유해서 쓰는 두 번째 확산 지점.
+
+    이 자체는 관용 패턴(React Context 등)일 수도, 진짜 설계 판단일 수도 있다 —
+    여기서는 후보만 뽑고, "관용 패턴인지"는 pattern_key를 붙여 idiom_filter가 판정하게 넘긴다.
+    """
+    candidates = {k: v for k, v in fan_in.items() if k != hub and v >= 2}
+    if not candidates:
+        return None
+    top_file = max(candidates, key=candidates.get)
+
+    pattern_key = None
+    for root, dirs, fnames in os.walk(repo_root):
+        dirs[:] = [d for d in dirs if d not in {"node_modules", ".git", "dist", "build"}]
+        for fn in fnames:
+            if fn == top_file:
+                text = open(os.path.join(root, fn), encoding="utf-8", errors="ignore").read()
+                if re.search(r"createContext\s*(<[^>]*>)?\s*\(", text):
+                    pattern_key = "react-context-global-state"
+                break
+    return {"file": top_file, "fan_in": candidates[top_file], "pattern_key": pattern_key}
 
 
 def find_repeated_pattern_files(repo_root, pattern, min_hits):
@@ -61,6 +89,7 @@ def score(scan_result, repo_root):
         for f in find_isolated_from_hub(edges, fan_in, hub):
             findings.append({
                 "id": f"cognition-isolation:{f}",
+                "file": f,
                 "finding": f"{f} — 허브 모듈({hub})로 가는 edge 없음. fan_in={fan_in.get(f)}만 보면 정상으로 보임",
                 "design_intent": "불명(의도적 스코프 축소 vs 미완성 방치 구분 불가)",
                 "question_value": "상",
@@ -68,10 +97,24 @@ def score(scan_result, repo_root):
                 "priority": "최우선",
             })
 
+        diffusion = find_architecture_diffusion_point(fan_in, hub, repo_root)
+        if diffusion:
+            findings.append({
+                "id": f"architecture-diffusion:{diffusion['file']}",
+                "file": diffusion["file"],
+                "pattern_key": diffusion["pattern_key"],
+                "finding": f"{diffusion['file']} — 허브 다음으로 fan_in={diffusion['fan_in']}, 여러 컴포넌트가 공유",
+                "design_intent": "높음(다만 프레임워크 관용 패턴일 수 있음 — idiom_filter가 확정 여부 판정)",
+                "question_value": "상",
+                "risk": "하",
+                "priority": "질문 대상",
+            })
+
     for f, hits in tier_b["flagged_files"].items():
         if "auth_info_leak_via_thrown_error" in hits:
             findings.append({
                 "id": f"tier-b-risk:{f}",
+                "file": f,
                 "finding": f"{f} — 인증정보(uid/email 등)가 JSON.stringify되어 throw된 Error에 담김",
                 "design_intent": "중(에러 컨텍스트를 남기려는 의도는 있어 보임)",
                 "question_value": "중",
@@ -81,6 +124,7 @@ def score(scan_result, repo_root):
         if "hardcoded_secret_pattern" in hits:
             findings.append({
                 "id": f"tier-b-risk:{f}:secret",
+                "file": f,
                 "finding": f"{f} — 시크릿 패턴 매치(오탐 가능성 있음, 육안 확인 필요)",
                 "design_intent": "확인 필요",
                 "question_value": "하",
@@ -93,6 +137,7 @@ def score(scan_result, repo_root):
         if len(repeated) >= min_files:
             findings.append({
                 "id": f"repeated-pattern:{pattern}",
+                "file": None,
                 "finding": f"'{pattern}' 반복 등장 파일: {repeated}",
                 "design_intent": "하(리팩토링 누락 가능성)",
                 "question_value": "상",
@@ -100,6 +145,7 @@ def score(scan_result, repo_root):
                 "priority": "질문 대상",
             })
 
+    findings = apply_idiom_filter(findings)
     return {"hub": hub, "findings": findings}
 
 

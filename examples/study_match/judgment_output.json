@@ -3,6 +3,7 @@
   "findings": [
     {
       "id": "cognition-isolation:Competitions.tsx",
+      "file": "Competitions.tsx",
       "finding": "Competitions.tsx — 허브 모듈(firebase.ts)로 가는 edge 없음. fan_in=1만 보면 정상으로 보임",
       "design_intent": "불명(의도적 스코프 축소 vs 미완성 방치 구분 불가)",
       "question_value": "상",
@@ -10,7 +11,21 @@
       "priority": "최우선"
     },
     {
+      "id": "architecture-diffusion:App.tsx",
+      "file": "App.tsx",
+      "pattern_key": "react-context-global-state",
+      "finding": "App.tsx — 허브 다음으로 fan_in=6, 여러 컴포넌트가 공유",
+      "design_intent": "높음(다만 프레임워크 관용 패턴일 수 있음 — idiom_filter가 확정 여부 판정)",
+      "question_value": "하",
+      "risk": "하",
+      "priority": "질문 대상 → 관용 패턴 필터 적용됨(우선순위 낮음)",
+      "idiom_filtered": true,
+      "idiom_lang": "javascript",
+      "idiom_note": "[javascript] 관용 패턴으로 판단(pattern=react-context-global-state, confirmations=3) — 질문가치 상→하"
+    },
+    {
       "id": "tier-b-risk:firebase.ts",
+      "file": "firebase.ts",
       "finding": "firebase.ts — 인증정보(uid/email 등)가 JSON.stringify되어 throw된 Error에 담김",
       "design_intent": "중(에러 컨텍스트를 남기려는 의도는 있어 보임)",
       "question_value": "중",
@@ -19,6 +34,7 @@
     },
     {
       "id": "tier-b-risk:Competitions.tsx:secret",
+      "file": "Competitions.tsx",
       "finding": "Competitions.tsx — 시크릿 패턴 매치(오탐 가능성 있음, 육안 확인 필요)",
       "design_intent": "확인 필요",
       "question_value": "하",
@@ -27,6 +43,7 @@
     },
     {
       "id": "repeated-pattern:onSnapshot",
+      "file": null,
       "finding": "'onSnapshot' 반복 등장 파일: {'StudyGroups.tsx': 2, 'Dashboard.tsx': 3, 'ChatRoom.tsx': 2, 'IdeaBoard.tsx': 2}",
       "design_intent": "하(리팩토링 누락 가능성)",
       "question_value": "상",

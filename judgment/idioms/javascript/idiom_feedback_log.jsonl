@@ -1,0 +1,3 @@
+{"timestamp": "2026-07-01T01:50:09.306610+00:00", "lang": "javascript", "pattern_key": "react-context-global-state", "verdict": "idiom_not_decision", "note": "Study-Match- 리뷰1", "description": "컴포넌트 6개 규모에서 Context는 React 관용 패턴, 진짜 설계판단 아님"}
+{"timestamp": "2026-07-01T01:50:09.334337+00:00", "lang": "javascript", "pattern_key": "react-context-global-state", "verdict": "idiom_not_decision", "note": "가상 리뷰2", "description": ""}
+{"timestamp": "2026-07-01T01:50:09.360996+00:00", "lang": "javascript", "pattern_key": "react-context-global-state", "verdict": "idiom_not_decision", "note": "가상 리뷰3", "description": ""}
