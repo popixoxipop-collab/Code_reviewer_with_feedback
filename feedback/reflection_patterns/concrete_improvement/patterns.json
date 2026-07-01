@@ -6,6 +6,12 @@
       "regex": "백엔드에서\\s*제한",
       "status": "confirmed",
       "confirmations": 3
+    },
+    {
+      "id": "sanitize_pattern",
+      "regex": "sanitize|DOMPurify",
+      "status": "candidate",
+      "confirmations": 1
     }
   ]
 }

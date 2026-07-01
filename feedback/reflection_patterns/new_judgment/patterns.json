@@ -6,6 +6,12 @@
       "regex": "해야\\s*합니다",
       "status": "confirmed",
       "confirmations": 3
+    },
+    {
+      "id": "now_looking_back",
+      "regex": "지금\\s*보니",
+      "status": "candidate",
+      "confirmations": 1
     }
   ]
 }

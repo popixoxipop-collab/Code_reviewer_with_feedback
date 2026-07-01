@@ -1,3 +1,4 @@
 {"timestamp": "2026-07-01T05:35:21.455466+00:00", "sub_signal": "new_judgment", "pattern_id": "should_do_pattern", "regex": "해야\\s*합니다", "verdict": "genuine_signal", "note": "같은 예시에서 '~해야 합니다'가 수정된 판단 표현으로 확인 (round 1)"}
 {"timestamp": "2026-07-01T05:35:21.484256+00:00", "sub_signal": "new_judgment", "pattern_id": "should_do_pattern", "regex": "해야\\s*합니다", "verdict": "genuine_signal", "note": "같은 예시에서 '~해야 합니다'가 수정된 판단 표현으로 확인 (round 2)"}
 {"timestamp": "2026-07-01T05:35:21.515818+00:00", "sub_signal": "new_judgment", "pattern_id": "should_do_pattern", "regex": "해야\\s*합니다", "verdict": "genuine_signal", "note": "같은 예시에서 '~해야 합니다'가 수정된 판단 표현으로 확인 (round 3)"}
+{"timestamp": "2026-07-01T05:56:16.932476+00:00", "sub_signal": "new_judgment", "pattern_id": "now_looking_back", "regex": "지금\\s*보니", "verdict": "genuine_signal", "note": "같은 Codex 답변에서 확인 — round 1/3, 아직 미승격"}

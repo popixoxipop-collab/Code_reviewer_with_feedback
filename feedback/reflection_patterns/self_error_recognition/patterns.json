@@ -6,6 +6,12 @@
       "regex": "너무\\s*신뢰했",
       "status": "confirmed",
       "confirmations": 3
+    },
+    {
+      "id": "naive_assumption",
+      "regex": "안일하게\\s*생각",
+      "status": "candidate",
+      "confirmations": 1
     }
   ]
 }

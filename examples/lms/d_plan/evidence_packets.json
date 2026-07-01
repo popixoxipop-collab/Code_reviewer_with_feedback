@@ -1,0 +1,98 @@
+[
+  {
+    "finding_id": "cognition-isolation:Auth.jsx",
+    "priority": "최우선",
+    "current_grade": {
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하"
+    },
+    "repository_evidence": "파일: Auth.jsx\n관측: Auth.jsx — 허브 모듈(GenreContext.jsx)로 가는 edge 없음. fan_in=1만 보면 정상으로 보임\ndesign_intent 서브축: {'repetition_consistency': 3, 'idiom_conformance_reverse': 3, 'location_signal': 0, 'mitigation_present': 1} (총점 7)\nquestion_value 서브축: {'tradeoff_existence': 3, 'repo_specificity': 3, 'idiom_contamination_reverse': 3, 'ladder_richness': 1} (총점 10)\nrisk 서브축: {'trigger_confidence': 1, 'exposure_scope': 1, 'scenario_specificity': 0, 'spread_scope': 0} (총점 2)",
+    "suggested_question": "이 파일이 다른 형제 파일들과 달리 허브 모듈과 연결되어 있지 않은데, 이 구조를 선택/방치한 이유를 설명해보세요.",
+    "idiom_or_risk_status": "unresolved_signal"
+  },
+  {
+    "finding_id": "cognition-isolation:BookDetail.jsx",
+    "priority": "최우선",
+    "current_grade": {
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하"
+    },
+    "repository_evidence": "파일: BookDetail.jsx\n관측: BookDetail.jsx — 허브 모듈(GenreContext.jsx)로 가는 edge 없음. fan_in=1만 보면 정상으로 보임\ndesign_intent 서브축: {'repetition_consistency': 3, 'idiom_conformance_reverse': 3, 'location_signal': 0, 'mitigation_present': 1} (총점 7)\nquestion_value 서브축: {'tradeoff_existence': 3, 'repo_specificity': 3, 'idiom_contamination_reverse': 3, 'ladder_richness': 1} (총점 10)\nrisk 서브축: {'trigger_confidence': 1, 'exposure_scope': 1, 'scenario_specificity': 0, 'spread_scope': 0} (총점 2)",
+    "suggested_question": "이 파일이 다른 형제 파일들과 달리 허브 모듈과 연결되어 있지 않은데, 이 구조를 선택/방치한 이유를 설명해보세요.",
+    "idiom_or_risk_status": "unresolved_signal"
+  },
+  {
+    "finding_id": "cognition-isolation:BookList.jsx",
+    "priority": "최우선",
+    "current_grade": {
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하"
+    },
+    "repository_evidence": "파일: BookList.jsx\n관측: BookList.jsx — 허브 모듈(GenreContext.jsx)로 가는 edge 없음. fan_in=1만 보면 정상으로 보임\ndesign_intent 서브축: {'repetition_consistency': 3, 'idiom_conformance_reverse': 3, 'location_signal': 0, 'mitigation_present': 1} (총점 7)\nquestion_value 서브축: {'tradeoff_existence': 3, 'repo_specificity': 3, 'idiom_contamination_reverse': 3, 'ladder_richness': 1} (총점 10)\nrisk 서브축: {'trigger_confidence': 1, 'exposure_scope': 1, 'scenario_specificity': 0, 'spread_scope': 0} (총점 2)",
+    "suggested_question": "이 파일이 다른 형제 파일들과 달리 허브 모듈과 연결되어 있지 않은데, 이 구조를 선택/방치한 이유를 설명해보세요.",
+    "idiom_or_risk_status": "unresolved_signal"
+  },
+  {
+    "finding_id": "cognition-isolation:Header.jsx",
+    "priority": "최우선",
+    "current_grade": {
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하"
+    },
+    "repository_evidence": "파일: Header.jsx\n관측: Header.jsx — 허브 모듈(GenreContext.jsx)로 가는 edge 없음. fan_in=1만 보면 정상으로 보임\ndesign_intent 서브축: {'repetition_consistency': 3, 'idiom_conformance_reverse': 3, 'location_signal': 0, 'mitigation_present': 1} (총점 7)\nquestion_value 서브축: {'tradeoff_existence': 3, 'repo_specificity': 3, 'idiom_contamination_reverse': 3, 'ladder_richness': 1} (총점 10)\nrisk 서브축: {'trigger_confidence': 1, 'exposure_scope': 1, 'scenario_specificity': 0, 'spread_scope': 0} (총점 2)",
+    "suggested_question": "이 파일이 다른 형제 파일들과 달리 허브 모듈과 연결되어 있지 않은데, 이 구조를 선택/방치한 이유를 설명해보세요.",
+    "idiom_or_risk_status": "unresolved_signal"
+  },
+  {
+    "finding_id": "cognition-isolation:LibraryScene.jsx",
+    "priority": "최우선",
+    "current_grade": {
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하"
+    },
+    "repository_evidence": "파일: LibraryScene.jsx\n관측: LibraryScene.jsx — 허브 모듈(GenreContext.jsx)로 가는 edge 없음. fan_in=1만 보면 정상으로 보임\ndesign_intent 서브축: {'repetition_consistency': 3, 'idiom_conformance_reverse': 3, 'location_signal': 0, 'mitigation_present': 1} (총점 7)\nquestion_value 서브축: {'tradeoff_existence': 3, 'repo_specificity': 3, 'idiom_contamination_reverse': 3, 'ladder_richness': 1} (총점 10)\nrisk 서브축: {'trigger_confidence': 1, 'exposure_scope': 1, 'scenario_specificity': 0, 'spread_scope': 0} (총점 2)",
+    "suggested_question": "이 파일이 다른 형제 파일들과 달리 허브 모듈과 연결되어 있지 않은데, 이 구조를 선택/방치한 이유를 설명해보세요.",
+    "idiom_or_risk_status": "unresolved_signal"
+  },
+  {
+    "finding_id": "cognition-isolation:authToken.js",
+    "priority": "최우선",
+    "current_grade": {
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하"
+    },
+    "repository_evidence": "파일: authToken.js\n관측: authToken.js — 허브 모듈(GenreContext.jsx)로 가는 edge 없음. fan_in=2만 보면 정상으로 보임\ndesign_intent 서브축: {'repetition_consistency': 3, 'idiom_conformance_reverse': 3, 'location_signal': 0, 'mitigation_present': 1} (총점 7)\nquestion_value 서브축: {'tradeoff_existence': 3, 'repo_specificity': 3, 'idiom_contamination_reverse': 3, 'ladder_richness': 2} (총점 11)\nrisk 서브축: {'trigger_confidence': 1, 'exposure_scope': 1, 'scenario_specificity': 0, 'spread_scope': 0} (총점 2)",
+    "suggested_question": "이 파일이 다른 형제 파일들과 달리 허브 모듈과 연결되어 있지 않은데, 이 구조를 선택/방치한 이유를 설명해보세요.",
+    "idiom_or_risk_status": "unresolved_signal"
+  },
+  {
+    "finding_id": "architecture-diffusion:useBooksQueries.ts",
+    "priority": "질문 대상 → 관용 패턴 필터 적용됨(우선순위 낮음)",
+    "current_grade": {
+      "design_intent": "중",
+      "question_value": "하",
+      "risk": "하"
+    },
+    "repository_evidence": "파일: useBooksQueries.ts\n관측: useBooksQueries.ts — 허브 다음으로 fan_in=6, 여러 컴포넌트가 공유\n패턴: react-query-custom-hook (idiom_filtered: [javascript] 관용 패턴으로 판단(pattern=react-query-custom-hook, confirmations=15) — 질문가치 상→하)\ndesign_intent 서브축: {'repetition_consistency': 3, 'idiom_conformance_reverse': 0, 'location_signal': 3, 'mitigation_present': 1} (총점 7)\nquestion_value 서브축: {'tradeoff_existence': 3, 'repo_specificity': 3, 'idiom_contamination_reverse': 0, 'ladder_richness': 3} (총점 9)\nrisk 서브축: {'trigger_confidence': 1, 'exposure_scope': 1, 'scenario_specificity': 0, 'spread_scope': 0} (총점 2)",
+    "suggested_question": "이 파일이 여러 컴포넌트에서 공유되는 확산 지점인데, 왜 이런 구조를 선택했는지 설명해보세요.",
+    "idiom_or_risk_status": "confirmed_idiom"
+  },
+  {
+    "finding_id": "tier-b-risk:Bookshelf.jsx:dangerous-html",
+    "priority": "Important(🔴)",
+    "current_grade": {
+      "design_intent": "하",
+      "question_value": "상",
+      "risk": "상"
+    },
+    "repository_evidence": "파일: Bookshelf.jsx\n관측: Bookshelf.jsx — 위험한 동적 실행/HTML 삽입 패턴 matched_text='dangerouslySetInnerHTML' (XSS 등 위험 가능, 입력 출처 확인 필요)\ndesign_intent 서브축: {'repetition_consistency': 0, 'idiom_conformance_reverse': 3, 'location_signal': 0, 'mitigation_present': 0} (총점 3)\nquestion_value 서브축: {'tradeoff_existence': 3, 'repo_specificity': 3, 'idiom_contamination_reverse': 3, 'ladder_richness': 2} (총점 11)\nrisk 서브축: {'trigger_confidence': 3, 'exposure_scope': 3, 'scenario_specificity': 3, 'spread_scope': 0} (총점 9)",
+    "suggested_question": "이 코드에 잠재적 위험 패턴이 있는데, 이 부분이 어떤 위험을 가질 수 있는지, 그리고 왜 이렇게 구현했는지 설명해보세요.",
+    "idiom_or_risk_status": "tier_b_risk"
+  }
+]

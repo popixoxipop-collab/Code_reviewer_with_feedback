@@ -41,6 +41,8 @@ Repository
 | [`pipeline/compare_methodologies.py`](./pipeline/compare_methodologies.py) | 전체 | ledger.jsonl을 즉시 집계해 방법론간 비교표를 렌더링(재실행 없이 언제든 조회 가능) |
 | [`examples/lms/`](./examples/lms/) | 전체 | 두 번째 실제 공개 repo(jxxnixx/LMS, JS/TS 51파일)에 파이프라인 전체를 돌린 실행 결과 |
 | [`examples/shadowbroker/`](./examples/shadowbroker/) | 전체 | 세 번째 실제 공개 repo(Shadowbroker, Python+TS 726파일 monorepo) — tier_b 방법론 첫 실증 |
+| [`pipeline/evidence_bridge.py`](./pipeline/evidence_bridge.py) | 전체 | D안(B안+C안 결합) — C안 finding을 B안 형식 Repository Evidence + 질문으로 자동 변환 |
+| [`examples/lms/d_plan/`](./examples/lms/d_plan/) | 전체 | D안을 LMS에 실행한 결과 + Codex로 독립 생성한 답변으로 검증한 Reflection 판정 시뮬레이션, A~E안 비교 및 6-axis 채점표 |
 
 ## 실행 방법
 
@@ -332,6 +334,14 @@ python3 pipeline/compare_methodologies.py
   - WHY: POC_TEST.md D31 검증 과정의 "Signal→Construct 매핑 외부 검증 없음" 지적에 대한 응답. `design_intent.location_signal`(파일명 힌트)은 근거 문헌이 없어 가장 약한 서브축이었음 — Self-Admitted Technical Debt 탐지 연구(Potdar & Shihab, ICSME 2014; Maldonado & Shihab 2015)가 "의도성의 근거 = 코드 코멘트의 명시적 설명/시인 언어"임을 확립해 `rationale_signal()`(파일 내용에서 rationale/debt 인디케이터 스캔)로 교체. `risk` 축은 CVSS(Exploitability·Impact 지표 분리)와 FindBugs/SpotBugs(confidence는 severity와 별개 축) 문헌이 공통으로 "신뢰도와 심각도를 단순 합산하지 말라"고 하는데 기존 구현이 이를 위반하고 있어, 신뢰도가 심각도 총점을 게이팅하는 공식으로 변경. `question_value`의 4축(트레이드오프/repo_specificity/idiom_contamination/ladder_richness)은 검토 결과 이미 근거가 있어(고전 검사이론 변별도 지수, Haladyna item-writing guideline, CAT의 item exposure control 문헌, Bloom's Taxonomy) 재설계 없이 인용만 보강. 상세 인용: [`SUBRUBRIC_DRAFT.md`](./judgment/SUBRUBRIC_DRAFT.md#문헌-근거-d35)
   - COST: `rationale_signal()`이 repo_root 파일 I/O를 요구해 cognition-isolation/tier-b-risk finding에도 파일 읽기가 추가됨(이전엔 diffusion만 읽었음). risk 축은 여전히 최종 3단계(상/중/하) 하나로 뭉개져서 신뢰도·심각도 두 construct를 최종 사용자에게 완전히 분리해 보여주진 못함(subrubric.sub에는 남음). rationale/debt 인디케이터 정규식은 영어/한국어 일부만 커버
   - EXIT: 인디케이터 정규식 오탐/누락이 쌓이면 idiom_hook류 재귀 학습 루프로 교체 검토. risk를 confidence/severity 두 필드로 완전 분리하려면 `apply_subrubric()` 반환 스키마만 바꾸면 됨(score_risk 내부 로직은 이미 분리돼 있음). **문헌이 이 도메인에 실제로 전이되는지는 여전히 미검증** — 다음 단계는 사람 채점과의 직접 비교
+- **D36** ([`pipeline/evidence_bridge.py`](./pipeline/evidence_bridge.py)) — D안(B안+C안 결합) 최초 구현: C안 finding을 B안의 "Repository Evidence" 형식으로 자동 변환
+  - WHY: B안 프롬프트 Step1은 사람이 직접 Repository를 분석해 근거 문단을 써야 했다. C안(cognition+judgment)이 이미 그 분석을 코드로 자동화했으므로 그 출력을 그대로 재사용
+  - COST: 자동 생성 질문이 finding 단위로 끊어져 있어 B안 원본처럼 여러 파일을 엮은 서사형 질문보다 자연스러움이 떨어짐(LMS 실행 시 cognition-isolation 6건이 전부 동일한 템플릿 질문을 받음)
+  - EXIT: 품질 부족 시 자동 evidence를 초안으로만 쓰고 사람이 다듬는 반자동 모드로 전환
+- **D37** (D안 LMS 시뮬레이션, `examples/lms/d_plan/`) — Codex(별도 모델)로 독립 생성한 가상 답변으로 Reflection 판정을 검증, 압도적 예시 1건만으로는 패턴 승격하지 않음
+  - WHY: 직접 작성한 시뮬레이션 답변은 "패턴에 맞춰 쓴 것 아니냐"는 의심에서 자유롭지 않음 — 실제 코드 컨텍스트만 주고 별도 모델(codex:codex-rescue)이 생성한 답변으로 검증해야 재현율 문제가 진짜인지 확인 가능. 결과: 정성적으로 매우 우수한 reflection(자기오류인식+이유+새판단+구체적 개선안 전부 포함)인데도 confirmed 패턴과 문구가 안 맞아 0/4로 완전히 놓침 — D34가 예상한 것보다 재현율 문제가 훨씬 심각함이 확정됨
+  - COST: 이 발견에도 불구, D32의 "3회 확인 후 승격" 원칙을 지켜 새 후보 패턴 3개(`안일하게 생각`/`지금 보니`/`sanitize|DOMPurify`)는 confirmations=1로만 기록하고 승격하지 않음 — 당장은 재현율이 그대로 낮은 채로 남음
+  - EXIT: 위 3개 후보에 2건씩 더 재확인이 쌓이면 자동 승격됨(`reflection_hook.py update <sub_signal>`), 재현율이 그때 다시 측정 가능
 
 ## 다음 단계 (미해결)
 
