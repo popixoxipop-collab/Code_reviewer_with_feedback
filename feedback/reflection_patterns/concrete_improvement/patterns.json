@@ -1,0 +1,11 @@
+{
+  "promotion_threshold": 3,
+  "patterns": [
+    {
+      "id": "backend_limit_pattern",
+      "regex": "백엔드에서\\s*제한",
+      "status": "confirmed",
+      "confirmations": 3
+    }
+  ]
+}

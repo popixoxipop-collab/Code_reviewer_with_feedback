@@ -1,0 +1,11 @@
+{
+  "promotion_threshold": 3,
+  "patterns": [
+    {
+      "id": "too_trusted_browser",
+      "regex": "너무\\s*신뢰했",
+      "status": "confirmed",
+      "confirmations": 3
+    }
+  ]
+}
