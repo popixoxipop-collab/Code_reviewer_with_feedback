@@ -9,14 +9,35 @@ import sys
 #   EXIT: ANTHROPIC_API_KEY 없으면 조용히 실패하지 않고 여기서 즉시 중단. API 없이 쓰려면
 #        feedback/depth_ladder_template.md의 수기 체크리스트로 되돌아가면 됨(코드 삭제 불필요)
 #
-# 검증 상태(정직하게 기록): 이 스크립트는 문법/인자파싱/스키마 강제 로직까지는 실행해 확인했으나,
-# 실제 Anthropic API를 호출한 결과(생성된 질문의 품질)는 이 세션에서 검증하지 않았다
-# (API 키/과금이 필요해 실행 보류). README "알려진 한계"에 동일하게 기록되어 있다.
+# D56: 기본 제공자를 Anthropic Claude에서 NVIDIA Build(qwen/qwen3.5-397b-a17b)로 전환
+#   WHY: 2026-07-06 별도 세션에서 실제 코드(compression_rank1_test.py)를 NVIDIA 3개 모델
+#        (qwen3.5-397b-a17b / nemotron-3.3-super-49b / llama-3.1-8b-instruct)에 리뷰시키고
+#        각 지적을 코드와 대조 검증함 — qwen3.5-397b-a17b가 사실관계 오류 없이 가장 정확했음
+#        (nemotron-49b는 "index 파일을 여러 번 로드한다"는 틀린 지적을 확신도 High로 냄,
+#        llama-3.1-8b는 할루시네이션+반복 필러). NVIDIA Build 무료 티어는 40 RPM/모델/키 한도
+#        외 별도 quota가 없어(주간/월간 제한 없음, 2026-07-06 확인) 키 풀링만 하면 비용 없이
+#        운용 가능(../../nvidia-build 참고, 7키 풀 시 이론상 280 RPM)
+#   COST: NVIDIA Build는 OpenAI 호환 스키마(tools/tool_calls, 문자열 arguments)라 Anthropic의
+#        객체형 tool_use 블록과 응답 형태가 완전히 다름 — 파싱을 provider별로 분기해야 함.
+#        이 저장소 세션에는 NVIDIA_API_KEY가 없어(nvidia-build 쪽 세션에서만 보유) qwen3.5가
+#        이 정확한 depth_ladder_questions 스키마(7필드 강제)에서도 tool_choice를 순순히 지키는지는
+#        **실제 호출로 검증 못 함** — parse_nvidia_tool_response()의 파싱/에러 처리 로직만
+#        smoke_test_nvidia_parsing.py로 구조 검증(네트워크 없이 고정 fixture 사용)
+#   EXIT: FEEDBACK_PROVIDER=anthropic 환경변수 하나로 즉시 원복 — 코드 삭제 불필요, 두 경로 모두
+#        유지됨. NVIDIA 쪽에서 tool_choice 미준수가 실제로 확인되면 이 파일을 고칠 필요 없이
+#        기본값(PROVIDER 변수)만 "anthropic"으로 되돌리면 됨
 
 try:
     import anthropic
 except ImportError:
     anthropic = None
+
+try:
+    from nvidia_client import NvidiaRotatingClient
+    from nvidia_key_pool import NvidiaKeyPool
+except ImportError:
+    NvidiaRotatingClient = None
+    NvidiaKeyPool = None
 
 DEPTH_LADDER_KEYS = ["what", "how", "why", "alternative", "trade_off", "constraint", "reflection"]
 
@@ -39,7 +60,26 @@ DEPTH_LADDER_TOOL = {
     },
 }
 
-MODEL = os.environ.get("FEEDBACK_MODEL", "claude-sonnet-5")
+
+def _as_openai_tool(anthropic_tool):
+    """Anthropic {name, description, input_schema} -> OpenAI {type, function:{...,parameters}}.
+
+    NVIDIA Build's /v1/chat/completions is OpenAI-compatible, not Anthropic-compatible —
+    the two APIs wrap the same JSON-schema payload differently. See D56.
+    """
+    return {
+        "type": "function",
+        "function": {
+            "name": anthropic_tool["name"],
+            "description": anthropic_tool["description"],
+            "parameters": anthropic_tool["input_schema"],
+        },
+    }
+
+
+PROVIDER = os.environ.get("FEEDBACK_PROVIDER", "nvidia")
+_DEFAULT_MODEL = "qwen/qwen3.5-397b-a17b" if PROVIDER == "nvidia" else "claude-sonnet-5"
+MODEL = os.environ.get("FEEDBACK_MODEL", _DEFAULT_MODEL)
 
 
 def build_prompt(finding):
@@ -57,7 +97,14 @@ def build_prompt(finding):
     )
 
 
-def generate_for_finding(client, finding):
+def _validate_depth_ladder(result):
+    missing = [k for k in DEPTH_LADDER_KEYS if not result.get(k)]
+    if missing:
+        raise ValueError(f"7단계 중 누락된 필드: {missing}")
+    return result
+
+
+def _generate_via_anthropic(client, finding):
     message = client.messages.create(
         model=MODEL,
         max_tokens=1024,
@@ -67,12 +114,43 @@ def generate_for_finding(client, finding):
     )
     for block in message.content:
         if getattr(block, "type", None) == "tool_use" and block.name == "depth_ladder_questions":
-            result = block.input
-            missing = [k for k in DEPTH_LADDER_KEYS if not result.get(k)]
-            if missing:
-                raise ValueError(f"7단계 중 누락된 필드: {missing}")
-            return result
+            return _validate_depth_ladder(block.input)
     raise RuntimeError("tool_use 블록을 찾지 못함 — 모델이 스키마를 안 지킴")
+
+
+def parse_nvidia_tool_response(response):
+    """OpenAI 호환 tool_calls 응답에서 depth_ladder_questions 인자를 뽑아 검증한다.
+
+    _generate_via_nvidia()와 smoke_test_nvidia_parsing.py가 공유하는 순수 함수 —
+    네트워크 없이도(고정 응답 fixture로) 테스트 가능하도록 분리해뒀다.
+    """
+    choice = response["choices"][0]["message"]
+    for call in choice.get("tool_calls") or []:
+        if call["function"]["name"] == "depth_ladder_questions":
+            result = json.loads(call["function"]["arguments"])
+            return _validate_depth_ladder(result)
+    raise RuntimeError(
+        "tool_calls를 찾지 못함 — NVIDIA 모델이 이 요청에서 tool_choice를 지키지 않았을 수 있음. "
+        f"content={choice.get('content')!r}"
+    )
+
+
+def _generate_via_nvidia(client, finding):
+    response = client.chat(
+        model=MODEL,
+        messages=[{"role": "user", "content": build_prompt(finding)}],
+        tools=[_as_openai_tool(DEPTH_LADDER_TOOL)],
+        tool_choice={"type": "function", "function": {"name": "depth_ladder_questions"}},
+        max_tokens=1024,
+        temperature=0.0,
+    )
+    return parse_nvidia_tool_response(response)
+
+
+def generate_for_finding(client, finding):
+    if PROVIDER == "nvidia":
+        return _generate_via_nvidia(client, finding)
+    return _generate_via_anthropic(client, finding)
 
 
 def to_markdown(results_with_findings):
@@ -92,10 +170,19 @@ def to_markdown(results_with_findings):
     return "\n".join(lines)
 
 
-def main():
-    if len(sys.argv) < 2:
-        print("usage: generate_questions.py <judgment_output.json> [top_n] [--md]", file=sys.stderr)
-        sys.exit(1)
+def _build_client():
+    if PROVIDER == "nvidia":
+        if NvidiaRotatingClient is None:
+            print("nvidia_client 모듈을 찾을 수 없습니다 (feedback/nvidia_client.py 확인).", file=sys.stderr)
+            sys.exit(1)
+        try:
+            pool = NvidiaKeyPool.from_env()
+        except ValueError as e:
+            print(f"{e}", file=sys.stderr)
+            print("FEEDBACK_PROVIDER=anthropic 으로 되돌리려면 그 환경변수를 export 하세요.", file=sys.stderr)
+            sys.exit(1)
+        return NvidiaRotatingClient(pool=pool)
+
     if anthropic is None:
         print("anthropic 패키지가 없습니다. `pip install anthropic` 실행 후 재시도하세요.", file=sys.stderr)
         sys.exit(1)
@@ -103,6 +190,15 @@ def main():
     if not api_key:
         print("ANTHROPIC_API_KEY 환경변수가 없습니다. 조용히 실패하지 않고 여기서 중단합니다.", file=sys.stderr)
         sys.exit(1)
+    return anthropic.Anthropic(api_key=api_key)
+
+
+def main():
+    if len(sys.argv) < 2:
+        print("usage: generate_questions.py <judgment_output.json> [top_n] [--md]", file=sys.stderr)
+        sys.exit(1)
+
+    client = _build_client()
 
     args = [a for a in sys.argv[1:] if a != "--md"]
     want_md = "--md" in sys.argv[1:]
@@ -115,7 +211,6 @@ def main():
     if top_n:
         findings = findings[:top_n]
 
-    client = anthropic.Anthropic(api_key=api_key)
     results = []
     for finding in findings:
         try:
