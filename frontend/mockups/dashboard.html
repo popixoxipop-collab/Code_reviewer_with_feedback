@@ -1,0 +1,913 @@
+<title>Depth-of-Why — 통합 운영 현황 &amp; 개입 관리</title>
+<!--
+  결정 로그 (D1~D6은 1차 버전 · D7~D8은 사용자 제공 레퍼런스 반영 개정)
+  D1 시그널 색상=dataviz 고정 status 팔레트 재사용(에이스=good,팀이상=warning,프리라이더=serious,위험=critical)
+     WHY 검증된 4단계 팔레트 재사용, 임의 색 생성 금지 / COST 4유형을 단일 심각도 축에 강제정렬 / EXIT 브랜드 팔레트 확정 시 --status-* 4개만 교체
+  D2 사이드바 항상 다크 네이비 고정(테마 전환 무관), 본문만 라이트/다크 대응
+     WHY 팀 레퍼런스 목업 정체성 유지 / COST 라이트 테마에서도 사이드바는 안 밝아짐 / EXIT --sidebar-bg를 분기 토큰으로 바꾸면 전체 대응
+  D3 한글 웹폰트 미임베드, 시스템 고딕 스택 + 숫자만 모노스페이스 분리
+     WHY CSP가 외부 폰트 차단, 한글 전체 글리프 data URI는 과함 / COST 커스텀 서체 개성 포기 / EXIT 배포 시 Pretendard @font-face로 교체
+  D4 학생 데이터 단일 배열(STUDENTS) 기반 파생 — 산점도/랭킹/시그널패널/개입내역 전부 여기서 파생
+     WHY 화면 여러 곳에 같은 숫자가 반복 등장, 소스 분산 시 불일치 위험 / COST 선행 스키마 설계 비용 / EXIT 배열을 API 응답으로 교체, 필드명 유지
+  D5 산점도는 색상+마커 도형(다이아몬드/삼각형/원) 동시 사용 — 색맹 단독 의존 금지
+  D7 사용자가 제공한 2번째 레퍼런스 이미지를 IA 기준으로 채택 — 3-tab 구조 대신 "통합 운영 현황" 단일 대시보드 + "개입 관리" 전용 워크스페이스로 재구성
+     WHY 사용자가 명시적으로 "이거 컨셉 대시보드로 활용" 요청 / COST 기존 시그널 피드+모달 구조 폐기 / EXIT 데이터 배열은 유지되어 레이아웃만 교체 가능
+  D8 "AI 자동 실행"이 아니라 "AI 추천 → 매니저 확정"으로 카피 조정(레퍼런스 원문 그대로 옮기지 않음)
+     WHY 요구사항정의서 FR-08-02(자동확정 금지, 모든 조치는 매니저 액션) 충돌 방지 / COST 문구 길이 증가 / EXIT 정책 변경 시 카피 한 줄만 수정
+  D6(개정) 개입 생성은 모달이 아니라 "개입 관리" 화면의 인라인 3-컬럼(후보→유형→계획) 흐름으로 처리
+     WHY 후보 여러 건을 연속 처리하는 매니저 워크플로에 더 적합, 레퍼런스도 전용 화면으로 제시 / COST 화면 전환 한 단계 추가 / EXIT 컬럼2·3을 다이얼로그로 옮기면 모달로 환원 가능
+-->
+<style>
+  :root {
+    --page: #f5f7fb; --surface: #ffffff; --surface-2: #eef1f8;
+    --border: rgba(16,19,31,0.09); --border-strong: rgba(16,19,31,0.16);
+    --ink: #10131f; --ink-secondary: #5b6478; --ink-muted: #8b93a7;
+    --accent: #2a78d6; --accent-ink: #ffffff; --accent-soft: #e8f0fc; --accent-strong: #184f95;
+    --sidebar-bg: #0d1120; --sidebar-ink: #eef1fb; --sidebar-ink-muted: #8891ab;
+    --sidebar-active: #182047; --sidebar-border: rgba(255,255,255,0.08);
+    --status-good: #0ca30c; --status-warning: #c98500; --status-serious: #ec835a; --status-critical: #d03b3b;
+    --status-good-soft: rgba(12,163,12,0.12); --status-warning-soft: rgba(201,133,0,0.14);
+    --status-serious-soft: rgba(236,131,90,0.16); --status-critical-soft: rgba(208,59,59,0.12);
+    --shadow-card: 0 1px 2px rgba(16,19,31,0.04), 0 10px 28px -16px rgba(16,19,31,0.18);
+    --font-ui: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Pretendard Variable", Pretendard, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Menlo, monospace;
+    --radius-card: 12px; --radius-chip: 999px; --radius-control: 8px;
+  }
+  :root[data-theme="dark"] {
+    --page: #0a0c14; --surface: #141726; --surface-2: #1b2033;
+    --border: rgba(255,255,255,0.08); --border-strong: rgba(255,255,255,0.16);
+    --ink: #eef1fb; --ink-secondary: #aab0c9; --ink-muted: #7b8299;
+    --accent: #5b9bea; --accent-ink: #071523; --accent-soft: rgba(91,155,234,0.16); --accent-strong: #bcd8f9;
+    --sidebar-active: #1b2550;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --page: #0a0c14; --surface: #141726; --surface-2: #1b2033;
+      --border: rgba(255,255,255,0.08); --border-strong: rgba(255,255,255,0.16);
+      --ink: #eef1fb; --ink-secondary: #aab0c9; --ink-muted: #7b8299;
+      --accent: #5b9bea; --accent-ink: #071523; --accent-soft: rgba(91,155,234,0.16); --accent-strong: #bcd8f9;
+      --sidebar-active: #1b2550;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--page); color: var(--ink); font-family: var(--font-ui); -webkit-font-smoothing: antialiased; }
+  body { font-size: 14px; line-height: 1.5; }
+  h1, h2, h3, p { margin: 0; }
+  button, select, input, textarea { font-family: inherit; }
+  ::selection { background: var(--accent-soft); }
+  .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; } }
+
+  .app { display: grid; grid-template-columns: 240px 1fr; height: 100vh; min-height: 560px; }
+
+  .sidebar { background: var(--sidebar-bg); color: var(--sidebar-ink); display: flex; flex-direction: column; padding: 20px 14px; gap: 18px; overflow-y: auto; }
+  .brand { display: flex; align-items: center; gap: 10px; padding: 0 6px; }
+  .brand-mark { width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(155deg, var(--accent), #164a92); display: flex; align-items: center; justify-content: center; flex: none; }
+  .brand-name { font-weight: 700; font-size: 15px; letter-spacing: -0.01em; color: #fff; }
+  .brand-sub { font-size: 11px; color: var(--sidebar-ink-muted); margin-top: 1px; }
+  .nav-group { display: flex; flex-direction: column; gap: 2px; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 8px; color: var(--sidebar-ink-muted); background: transparent; border: none; width: 100%; text-align: left; font-size: 13.5px; cursor: pointer; }
+  .nav-item svg { flex: none; opacity: 0.85; }
+  .nav-item:hover { background: rgba(255,255,255,0.05); color: var(--sidebar-ink); }
+  .nav-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .nav-item.active { background: var(--sidebar-active); color: #fff; }
+  .nav-item.active svg { opacity: 1; }
+  .nav-count { margin-left: auto; font-family: var(--font-mono); font-size: 11px; background: rgba(255,255,255,0.1); color: #fff; padding: 1px 7px; border-radius: 999px; }
+  .nav-item.is-critical .nav-count { background: var(--status-critical); }
+  .sidebar-footer { margin-top: auto; border-top: 1px solid var(--sidebar-border); padding-top: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .org-card { padding: 10px; border-radius: 10px; background: rgba(255,255,255,0.04); }
+  .org-name { font-size: 13px; font-weight: 600; color: #fff; }
+  .org-role { font-size: 11.5px; color: var(--sidebar-ink-muted); margin-top: 2px; }
+  .set-pill { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 11.5px; color: var(--sidebar-ink-muted); padding: 0 2px; }
+  .set-pill b { color: var(--sidebar-ink); font-weight: 600; }
+
+  .main { display: flex; flex-direction: column; min-width: 0; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 28px; border-bottom: 1px solid var(--border); background: var(--surface); flex: none; flex-wrap: wrap; }
+  .topbar-title { display: flex; align-items: baseline; gap: 10px; }
+  .topbar-title h1 { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
+  .fr-tag { font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted); background: var(--surface-2); border: 1px solid var(--border); padding: 2px 7px; border-radius: 6px; }
+  .topbar-controls { display: flex; align-items: center; gap: 8px; }
+  .topbar-controls select { font-size: 12.5px; padding: 7px 10px; border-radius: var(--radius-control); border: 1px solid var(--border-strong); background: var(--surface); color: var(--ink); }
+  .topbar-right { display: flex; align-items: center; gap: 14px; }
+  .icon-btn { position: relative; width: 34px; height: 34px; border-radius: 9px; border: 1px solid var(--border); background: var(--surface); color: var(--ink-secondary); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .icon-btn:hover { background: var(--surface-2); color: var(--ink); }
+  .icon-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .icon-btn .dot { position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: var(--status-critical); border: 2px solid var(--surface); }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--accent-soft); color: var(--accent-strong); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12.5px; }
+
+  .viewport { flex: 1; overflow-y: auto; padding: 22px 28px 60px; }
+  .view { display: none; flex-direction: column; gap: 16px; max-width: 1340px; }
+  .view.active { display: flex; }
+
+  .section-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .section-head h2 { font-size: 14.5px; font-weight: 700; }
+  .section-head .desc { font-size: 12px; color: var(--ink-muted); margin-top: 3px; }
+  .section-head .more { font-size: 12px; font-weight: 600; color: var(--accent); background: none; border: none; cursor: pointer; }
+  .section-head .more:hover { text-decoration: underline; }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); }
+  .card-pad { padding: 16px 18px; }
+
+  .briefing { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border-radius: var(--radius-card); background: var(--status-critical-soft); border: 1px solid rgba(208,59,59,0.28); }
+  .briefing svg { flex: none; color: var(--status-critical); }
+  .briefing-text { flex: 1; font-size: 13px; }
+  .briefing-text b { font-weight: 700; }
+  .briefing-time { display: block; font-size: 11.5px; color: var(--ink-muted); margin-top: 2px; }
+
+  .btn { font-size: 12.5px; font-weight: 600; padding: 7px 13px; border-radius: var(--radius-control); border: 1px solid var(--border-strong); background: var(--surface); color: var(--ink); cursor: pointer; white-space: nowrap; }
+  .btn:hover { background: var(--surface-2); }
+  .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .btn-primary:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
+  .btn-sm { padding: 5px 10px; font-size: 11.5px; }
+
+  .chip { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 600; padding: 3px 9px; border-radius: var(--radius-chip); white-space: nowrap; }
+  .chip svg { flex: none; }
+  .chip-good { background: var(--status-good-soft); color: var(--status-good); }
+  .chip-warning { background: var(--status-warning-soft); color: var(--status-warning); }
+  .chip-serious { background: var(--status-serious-soft); color: var(--status-serious); }
+  .chip-critical { background: var(--status-critical-soft); color: var(--status-critical); }
+  .chip-neutral { background: var(--surface-2); color: var(--ink-secondary); }
+  .chip-outline { background: transparent; border: 1px solid var(--border-strong); color: var(--ink-secondary); }
+
+  /* Row 1: 브리핑 4카드 + 도넛 + 지표 */
+  .top-row { display: grid; grid-template-columns: 1.7fr 1fr 1fr; gap: 14px; align-items: stretch; }
+  .brief-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 4px 18px 16px; }
+  .brief-tile { border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; }
+  .brief-tile-top { display: flex; align-items: center; gap: 8px; }
+  .brief-tile-icon { width: 26px; height: 26px; border-radius: 7px; display: flex; align-items: center; justify-content: center; flex: none; }
+  .brief-tile-label { font-size: 11.5px; font-weight: 600; color: var(--ink-secondary); }
+  .brief-tile-value { font-size: 20px; font-weight: 700; font-family: var(--font-mono); }
+  .brief-tile-delta { font-size: 11px; font-family: var(--font-mono); font-weight: 700; }
+
+  .donut-row { display: flex; align-items: center; gap: 16px; padding: 4px 18px 16px; }
+  .donut-legend { display: flex; flex-direction: column; gap: 7px; font-size: 12px; flex: 1; min-width: 0; }
+  .donut-legend .item { display: flex; align-items: center; gap: 7px; justify-content: space-between; }
+  .donut-legend .item .lbl { display: flex; align-items: center; gap: 7px; color: var(--ink-secondary); }
+  .donut-legend .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+  .donut-legend .val { font-family: var(--font-mono); font-weight: 700; }
+
+  .metric-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 4px 18px 16px; }
+  .metric-mini { display: flex; flex-direction: column; gap: 3px; }
+  .metric-mini .lbl { font-size: 11px; color: var(--ink-muted); font-weight: 600; }
+  .metric-mini .val { font-size: 18px; font-weight: 700; font-family: var(--font-mono); }
+  .metric-mini .delta { font-size: 10.5px; font-family: var(--font-mono); font-weight: 700; }
+
+  /* Row 2: 4개 미니 패널 — D9: 미니 패널은 <table> 4컬럼이 아니라 세로 스택 카드로 구성
+     WHY 카드 폭이 ~270px뿐이라 이름·배지·근거·버튼 4개를 한 줄에 나란히 두면 어느 한 칸이 반드시
+         짓눌려 CJK 텍스트가 한 글자씩 세로로 쪼개지는 렌더링 버그 발생(실측, playwright 스크린샷 2회 확인)
+     COST 표 형태보다 행 높이가 길어짐(이름줄+근거줄+액션줄 3줄) — 패널이 세로로 더 길어짐
+     EXIT 카드 폭이 충분히 넓어지면 mt-row를 다시 한 줄 flex-row로 되돌릴 수 있음(구조는 재사용 가능) */
+  .panel-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .mt-rows { display: flex; flex-direction: column; }
+  .mt-row { display: flex; flex-direction: column; gap: 5px; padding: 10px 14px; border-top: 1px solid var(--border); font-size: 11.5px; }
+  .mt-rows .mt-row:first-child { border-top: none; }
+  .mt-row:hover { background: var(--surface-2); }
+  .mt-row-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+  .mt-who { display: flex; align-items: baseline; gap: 6px; min-width: 0; }
+  .mt-name { font-weight: 700; font-size: 12px; white-space: nowrap; }
+  .mt-sub { font-size: 10.5px; color: var(--ink-muted); white-space: nowrap; }
+  .mt-cause { color: var(--ink-secondary); font-size: 11px; line-height: 1.45; overflow-wrap: break-word; }
+  .mt-action-row { display: flex; justify-content: flex-end; }
+  .mt-action { font-size: 10.5px; font-weight: 700; color: var(--accent); background: var(--accent-soft); border: none; padding: 3px 8px; border-radius: 6px; cursor: pointer; white-space: nowrap; }
+  .mt-action:hover { background: var(--accent); color: var(--accent-ink); }
+  .mt-actions { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+
+  /* AI 개입 추천 */
+  .rec-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 4px 18px 18px; }
+  .rec-card { border: 1px solid var(--border); border-radius: 10px; padding: 12px 13px; display: flex; flex-direction: column; gap: 8px; }
+  .rec-num { width: 20px; height: 20px; border-radius: 50%; color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); }
+  .rec-top { display: flex; align-items: center; gap: 8px; }
+  .rec-name { font-weight: 700; font-size: 12.5px; }
+  .rec-reason { font-size: 11px; color: var(--ink-secondary); line-height: 1.45; flex: 1; }
+
+  /* 개입 현황 요약 */
+  .summary-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; padding: 4px 18px 18px; }
+  .summary-tile { text-align: left; }
+  .summary-tile .lbl { font-size: 11.5px; color: var(--ink-muted); font-weight: 600; }
+  .summary-tile .val { font-size: 22px; font-weight: 700; font-family: var(--font-mono); margin-top: 2px; }
+
+  /* Freerider view (scatter + table) */
+  .rule-strip { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 12px 16px; font-size: 12.5px; color: var(--ink-secondary); }
+  .rule-strip b { color: var(--ink); font-weight: 700; }
+  .threshold-pill { font-family: var(--font-mono); font-size: 11.5px; padding: 3px 9px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--border); color: var(--ink); }
+  .chart-card { padding: 18px 20px 12px; }
+  .chart-legend { display: flex; gap: 16px; flex-wrap: wrap; padding: 0 4px 10px; font-size: 12px; color: var(--ink-secondary); }
+  .chart-legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .chart-wrap { position: relative; }
+  .chart-wrap svg .grid-line { stroke: var(--border); stroke-width: 1; }
+  .chart-wrap svg .axis-line { stroke: var(--border-strong); stroke-width: 1; }
+  .chart-wrap svg .axis-label { fill: var(--ink-muted); font-size: 10.5px; font-family: var(--font-mono); }
+  .chart-wrap svg .zone-label { fill: var(--status-critical); font-size: 11px; font-weight: 700; }
+  .point { cursor: pointer; }
+  .point:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .tooltip { position: absolute; pointer-events: none; z-index: 5; background: #10131f; color: #f2f4fb; padding: 8px 10px; border-radius: 8px; font-size: 11.5px; line-height: 1.45; box-shadow: 0 24px 60px -20px rgba(8,10,20,0.45); opacity: 0; transform: translate(-50%, calc(-100% - 10px)); transition: opacity 0.1s ease; white-space: nowrap; }
+  .tooltip.show { opacity: 1; }
+  .tooltip b { font-weight: 700; }
+  .tooltip .tt-sub { color: #b7bdd1; }
+  .table-scroll { overflow-x: auto; }
+  table.full { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.full thead th { text-align: left; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-muted); padding: 10px 14px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  table.full tbody td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  table.full tbody tr:last-child td { border-bottom: none; }
+  table.full tbody tr:hover { background: var(--surface-2); }
+  table.full td.num, table.full th.num { text-align: right; font-family: var(--font-mono); }
+  .rank-name { font-weight: 700; }
+  .rank-team { font-size: 11.5px; color: var(--ink-muted); }
+  .spark { display: block; }
+  .evidence-text { color: var(--ink-secondary); max-width: 260px; }
+
+  /* 개입 관리 workspace */
+  .step-rail { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; padding: 14px 18px; }
+  .step { display: flex; align-items: center; gap: 8px; }
+  .step-num { width: 24px; height: 24px; border-radius: 50%; background: var(--surface-2); color: var(--ink-muted); font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); }
+  .step.active .step-num { background: var(--accent); color: var(--accent-ink); }
+  .step-label { font-size: 12.5px; color: var(--ink-secondary); font-weight: 600; }
+  .step.active .step-label { color: var(--ink); }
+  .step-arrow { color: var(--ink-muted); }
+
+  .itv-grid { display: grid; grid-template-columns: 1.3fr 1fr 1.1fr 0.9fr; gap: 14px; align-items: start; }
+  .itv-col-head { padding: 14px 16px 8px; }
+  .itv-col-head h3 { font-size: 13px; font-weight: 700; }
+  .itv-col-head p { font-size: 11px; color: var(--ink-muted); margin-top: 2px; }
+  .cand-tabs { display: flex; gap: 6px; padding: 0 16px 10px; flex-wrap: wrap; }
+  .cand-tab { font-size: 11.5px; font-weight: 600; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--border-strong); background: var(--surface); color: var(--ink-secondary); cursor: pointer; }
+  .cand-tab.on { background: var(--ink); border-color: var(--ink); color: var(--page); }
+  .cand-row { display: flex; align-items: flex-start; gap: 10px; padding: 9px 16px; border-top: 1px solid var(--border); cursor: pointer; }
+  .cand-row:hover { background: var(--surface-2); }
+  .cand-row.selected { background: var(--accent-soft); }
+  .cand-check { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(--border-strong); flex: none; margin-top: 2px; display: flex; align-items: center; justify-content: center; }
+  .cand-row.selected .cand-check { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .cand-info { flex: 1; min-width: 0; }
+  .cand-name { font-weight: 700; font-size: 12.5px; }
+  .cand-meta { font-size: 11px; color: var(--ink-muted); margin-top: 1px; }
+  .cand-cause { font-size: 11px; color: var(--ink-secondary); margin-top: 3px; line-height: 1.4; }
+
+  .type-list { display: flex; flex-direction: column; gap: 8px; padding: 10px 16px 16px; }
+  .type-opt { display: flex; align-items: flex-start; gap: 10px; padding: 10px 11px; border: 1px solid var(--border-strong); border-radius: 10px; cursor: pointer; text-align: left; background: var(--surface); }
+  .type-opt:hover { background: var(--surface-2); }
+  .type-opt.selected { border-color: var(--accent); background: var(--accent-soft); }
+  .type-opt-icon { width: 26px; height: 26px; border-radius: 7px; background: var(--surface-2); color: var(--ink-secondary); display: flex; align-items: center; justify-content: center; flex: none; }
+  .type-opt.selected .type-opt-icon { background: var(--accent); color: #fff; }
+  .type-opt-title { font-size: 12.5px; font-weight: 700; }
+  .type-opt-desc { font-size: 10.5px; color: var(--ink-muted); margin-top: 2px; line-height: 1.35; }
+
+  .plan-box { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 12px; }
+  .plan-target { display: flex; align-items: center; gap: 8px; padding: 9px 11px; background: var(--surface-2); border-radius: 9px; font-size: 12.5px; flex-wrap: wrap; }
+  .plan-goal-label { font-size: 11px; font-weight: 700; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.03em; }
+  .plan-goal { font-size: 12.5px; margin-top: 3px; }
+  .plan-list { margin: 4px 0 0; padding-left: 18px; font-size: 12px; color: var(--ink-secondary); display: flex; flex-direction: column; gap: 3px; }
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field label { font-size: 11.5px; font-weight: 600; color: var(--ink-secondary); }
+  .field select, .field input { font-size: 12.5px; padding: 7px 9px; border-radius: 8px; border: 1px solid var(--border-strong); background: var(--page); color: var(--ink); }
+  .field select:focus, .field input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .plan-actions { display: flex; justify-content: flex-end; gap: 8px; padding-top: 4px; }
+  .plan-empty { padding: 30px 16px; text-align: center; color: var(--ink-muted); font-size: 12.5px; }
+  .confirm-note { font-size: 12px; color: var(--status-good); font-weight: 600; padding: 0 16px; }
+
+  .effect-box { padding: 4px 16px 16px; display: flex; flex-direction: column; gap: 14px; }
+  .effect-stat { display: flex; flex-direction: column; gap: 2px; }
+  .effect-stat .lbl { font-size: 11px; color: var(--ink-muted); }
+  .effect-stat .val { font-size: 17px; font-weight: 700; font-family: var(--font-mono); }
+
+  .placeholder-card { padding: 60px 30px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; color: var(--ink-muted); }
+  .placeholder-card svg { color: var(--ink-muted); }
+  .placeholder-card h3 { color: var(--ink); font-size: 15px; }
+  .placeholder-card p { font-size: 12.5px; max-width: 380px; }
+
+  @media (max-width: 1180px) {
+    .top-row { grid-template-columns: 1fr; }
+    .panel-row { grid-template-columns: repeat(2, 1fr); }
+    .rec-grid { grid-template-columns: repeat(2, 1fr); }
+    .itv-grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 17 9 7l4 8 3-5 4 7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <div><div class="brand-name">Depth-of-Why</div><div class="brand-sub">AI 기반 코드 이해도 인증 플랫폼</div></div>
+    </div>
+    <nav class="nav-group" aria-label="주요 화면" id="main-nav">
+      <button class="nav-item active" data-view="dashboard" type="button"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="8" height="9" rx="1.5"/><rect x="13" y="3" width="8" height="5" rx="1.5"/><rect x="13" y="10" width="8" height="11" rx="1.5"/><rect x="3" y="14" width="8" height="7" rx="1.5"/></svg>통합 운영 현황</button>
+      <button class="nav-item" data-view="risk" type="button"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 2 20h20L12 3Z" stroke-linejoin="round"/><path d="M12 10v4"/><circle cx="12" cy="17" r="0.8" fill="currentColor"/></svg>위험 교육생<span class="nav-count" id="nav-count-risk">–</span></button>
+      <button class="nav-item" data-view="freerider" type="button"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l5.5 5.5" stroke-linecap="round"/><path d="M7.5 10a2.5 2.5 0 0 1 5 0" stroke-linecap="round"/></svg>프리라이더 의심<span class="nav-count" id="nav-count-freerider">–</span></button>
+      <button class="nav-item" data-view="ace" type="button"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3.5l2.4 5 5.5.6-4 3.8 1 5.5-4.9-2.7-4.9 2.7 1-5.5-4-3.8 5.5-.6Z" stroke-linejoin="round"/></svg>에이스</button>
+      <button class="nav-item" data-view="teamAnalysis" type="button"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="8.5" cy="8" r="3"/><path d="M3 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5" stroke-linecap="round"/><circle cx="16.5" cy="9" r="2.4"/></svg>팀 분석</button>
+      <button class="nav-item is-critical" data-view="intervention" type="button"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/><circle cx="12" cy="12" r="4"/></svg>개입 관리<span class="nav-count" id="nav-count-intervention">–</span></button>
+      <button class="nav-item" data-view="reports" type="button"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h9l4 4v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M9 12h6M9 16h6"/></svg>보고서</button>
+      <button class="nav-item" data-view="settings" type="button"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3.9a7 7 0 0 0-2-1.2L14 3h-4l-.6 2.6a7 7 0 0 0-2 1.2l-2.3-.9-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-.9c.6.5 1.3.9 2 1.2L10 21h4l.6-2.6c.7-.3 1.4-.7 2-1.2l2.3.9 2-3.4-2-1.5c.1-.4.1-.8.1-1.2Z"/></svg>설정</button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="set-pill"><span>평가 세트</span><b>팀 프로젝트 · 2차 체크포인트</b></div>
+      <div class="org-card"><div class="org-name">김지원 매니저</div><div class="org-role">수도권 6반 · 운영 매니저</div></div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-title"><h1 id="view-title">통합 운영 현황</h1><span class="fr-tag" id="view-fr-tag">FR-05-01 · FR-05-02</span></div>
+      <div class="topbar-controls" id="topbar-controls">
+        <select aria-label="과정 선택"><option>전체 과정</option><option>백엔드 트랙</option><option>프론트엔드 트랙</option></select>
+        <select aria-label="회차 선택"><option>2차 체크포인트 (07.05)</option><option>1차 체크포인트 (06.28)</option></select>
+        <button class="icon-btn" type="button" id="refresh-btn" aria-label="새로고침"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 11A8 8 0 1 0 18.5 16" stroke-linecap="round"/><path d="M20 5v6h-6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+      <div class="topbar-right">
+        <button class="icon-btn" id="bell-btn" type="button" aria-label="브리핑 알림, 개입 관리로 이동"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 10a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><span class="dot" aria-hidden="true"></span></button>
+        <div class="avatar" aria-hidden="true">지원</div>
+      </div>
+    </header>
+
+    <div class="viewport">
+      <section class="view active" id="view-dashboard"></section>
+      <section class="view" id="view-risk"></section>
+      <section class="view" id="view-freerider"></section>
+      <section class="view" id="view-ace"></section>
+      <section class="view" id="view-teamAnalysis"></section>
+      <section class="view" id="view-intervention"></section>
+      <section class="view" id="view-reports"></section>
+      <section class="view" id="view-settings"></section>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* D4: 단일 데이터 소스 — 아래 배열들에서 대시보드·프리라이더·개입관리 화면이 전부 파생됨 */
+  var STUDENTS = [
+    { id: "s1", name: "신동혁", team: "5팀", contribution: 70, understanding: 1.5, freeriderState: "neutral", trend: [3.1, 2.3, 1.5], evidence: "커밋 기여는 정상 수준이나 반례 대응 세션에서 코드 근거 제시 실패 — AI 생성 코드 의심(별도 위험 시그널)" },
+    { id: "s2", name: "임재현", team: "3팀", contribution: 12, understanding: 1.8, freeriderState: "critical", detectedWeek: 2, trend: [2.6, 2.1, 1.8], evidence: "기여율 12% (팀 평균 68%) × 이해도 1.8/5 교차 감지" },
+    { id: "s3", name: "문지아", team: "4팀", contribution: 22, understanding: 2.1, freeriderState: "serious", detectedWeek: 1, trend: [2.9, 2.4, 2.1], evidence: "기여율 22% × 이해도 2.1/5 교차, 2주 연속 하회" },
+    { id: "s4", name: "배수아", team: "1팀", contribution: 61, understanding: 3.6, freeriderState: "recovered", detectedWeek: 1, trend: [2.4, 2.9, 3.6], evidence: "개입(멘토링 요청) 이후 기여율 28%→61%, 이해도 2.4→3.6 회복" },
+    { id: "s5", name: "한지민", team: "2팀", contribution: 90, understanding: 4.5, freeriderState: "neutral", trend: [4.1, 4.3, 4.5], evidence: "정상 범위 — 에이스 시그널 별도 발생" },
+    { id: "s6", name: "오세훈", team: "1팀", contribution: 88, understanding: 4.2, freeriderState: "neutral", trend: [4.0, 4.1, 4.2], evidence: "정상 범위" },
+    { id: "s7", name: "김도윤", team: "1팀", contribution: 75, understanding: 3.8, freeriderState: "neutral", trend: [3.6, 3.7, 3.8], evidence: "정상 범위" },
+    { id: "s8", name: "유태양", team: "2팀", contribution: 68, understanding: 3.5, freeriderState: "neutral", trend: [3.3, 3.4, 3.5], evidence: "정상 범위" },
+    { id: "s9", name: "정민서", team: "2팀", contribution: 80, understanding: 4.0, freeriderState: "neutral", trend: [3.7, 3.9, 4.0], evidence: "정상 범위" },
+    { id: "s10", name: "강나은", team: "3팀", contribution: 72, understanding: 3.9, freeriderState: "neutral", trend: [3.6, 3.8, 3.9], evidence: "정상 범위" },
+    { id: "s11", name: "홍승우", team: "4팀", contribution: 55, understanding: 3.0, freeriderState: "neutral", trend: [3.1, 3.0, 3.0], evidence: "정상 범위" },
+    { id: "s12", name: "조은별", team: "5팀", contribution: 65, understanding: 3.6, freeriderState: "neutral", trend: [3.4, 3.5, 3.6], evidence: "정상 범위" }
+  ];
+
+  var TEAMS = [
+    { name: "1팀", participation: 82, avgUnderstanding: 3.4, attendance: 94 },
+    { name: "2팀", participation: 91, avgUnderstanding: 4.0, attendance: 97 },
+    { name: "3팀", participation: 58, avgUnderstanding: 2.9, attendance: 88 },
+    { name: "4팀", participation: 64, avgUnderstanding: 2.7, attendance: 90 },
+    { name: "5팀", participation: 60, avgUnderstanding: 2.6, attendance: 85 }
+  ];
+
+  var COHORT = { total: 48, risk: 5, freerider: 3, ace: 6, teamAnomaly: 1, prevRisk: 3, prevFreerider: 2, prevAce: 5, prevTeamAnomaly: 0 };
+
+  var RISK_TOP = [
+    { name: "신동혁", team: "5팀", score: 92, level: "HIGH", cause: "커밋 기여는 정상이나 반례 대응 세션에서 코드 근거 제시 실패 — AI 생성 코드 의심", type: "면접" },
+    { name: "박지훈", team: "3팀", score: 85, level: "HIGH", cause: "반례 대응 축 2주 연속 최저점, 자기수정 능력 감소", type: "멘토링 요청" },
+    { name: "최유리", team: "4팀", score: 72, level: "MID", cause: "설계 논리 부족, 이해도 정체 구간 지속", type: "보강 세션" },
+    { name: "정한결", team: "2팀", score: 68, level: "MID", cause: "대안 비교 축 저조, 발표 준비 미흡", type: "개별 면담" },
+    { name: "이수민", team: "5팀", score: 65, level: "MID", cause: "직전 대비 이해도 소폭 반등 — 관찰 지속 필요", type: "모니터링 유지" }
+  ];
+  RISK_TOP[0].type = "개별 면담";
+
+  function riskFreeriderScore(u) { return Math.round(u * 20); }
+  var FREERIDER_TOP = STUDENTS.filter(function (s) { return s.freeriderState === "critical" || s.freeriderState === "serious"; })
+    .map(function (s) {
+      return { name: s.name, team: s.team, contribution: s.contribution, score: riskFreeriderScore(s.understanding), cause: "기여량↓ + 이해도↓ 교차 — " + s.evidence, type: "개별 면담", ref: s.id };
+    });
+
+  var ACE_TOP = [
+    { name: "한지민", team: "2팀", understanding: riskFreeriderScore(4.5), growth: 18, actions: ["발표자 추천", "우수사례 등록", "기업 추천"], type: "모니터링 유지" },
+    { name: "오지민", team: "1팀", understanding: 92, growth: 14, actions: ["발표자 추천", "우수사례 등록"], type: "모니터링 유지" },
+    { name: "강하늘", team: "4팀", understanding: 90, growth: 12, actions: ["우수사례 등록", "기업 추천"], type: "모니터링 유지" },
+    { name: "한승우", team: "5팀", understanding: 88, growth: 10, actions: ["발표자 추천", "기업 추천"], type: "모니터링 유지" }
+  ];
+
+  var TEAM_ANOMALY_TOP = [
+    { team: "3팀", issue: "이해도 편차↑ 설명력 Gap↑", deviation: 47, gap: 32, opinion: "팀 내 특정 인원에게 업무가 집중되고 있습니다.", type: "팀 조정" }
+  ];
+
+  var INTERVENTION_TYPES = [
+    { key: "개별 면담", desc: "개별 면담을 통해 원인 파악 및 방향 설정" },
+    { key: "멘토링 요청", desc: "멘토와 1:1 매칭을 통해 학습 지원" },
+    { key: "보강 세션", desc: "이해도 보완을 위한 추가 학습 제공" },
+    { key: "팀 조정", desc: "팀 내 역할·구성 조정으로 이슈 해결" },
+    { key: "모니터링 유지", desc: "즉각 개입 없이 다음 체크포인트까지 관찰 지속" }
+  ];
+
+  var METRICS = [
+    { label: "평균 이해도", value: 68, unit: "점", delta: 3.2, good: "up" },
+    { label: "평균 성장률", value: 12.4, unit: "%", delta: 2.1, good: "up" },
+    { label: "프로젝트 완성도", value: 71, unit: "%", delta: 4, good: "up" },
+    { label: "팀 평균 편차", value: 18, unit: "%", delta: 2, good: "down" }
+  ];
+
+  var INTERVENTIONS = [
+    { target: "임재현 · 3팀", type: "개별 면담", owner: "김지원 매니저", created: "07-05", signal: "프리라이더 의심", status: "대기", recheck: "pending" },
+    { target: "문지아 · 4팀", type: "멘토링 요청", owner: "박서준 코치", created: "07-01", signal: "프리라이더 의심", status: "진행중", recheck: "pending", note: "07-08 체크포인트 재측정 예정" },
+    { target: "신동혁 · 5팀", type: "보강 세션", owner: "김지원 매니저", created: "07-04", signal: "위험(코드 이해 미흡)", status: "대기", recheck: "pending" },
+    { target: "3팀 전체", type: "팀 조정", owner: "김지원 매니저", created: "07-05", signal: "팀 이상", status: "대기", recheck: "pending" },
+    { target: "배수아 · 1팀", type: "멘토링 요청", owner: "박서준 코치", created: "06-20", signal: "프리라이더 의심(종료)", status: "완료", recheck: "recovered", note: "기여율 28%→61%, 이해도 2.4→3.6 확인(07-03 체크포인트)" },
+    { target: "한지민 · 2팀", type: "모니터링 유지", owner: "김지원 매니저", created: "06-29", signal: "에이스", status: "완료", recheck: "na", note: "3주차 발표자 선정" },
+    { target: "최유리 · 4팀", type: "보강 세션", owner: "박서준 코치", created: "07-02", signal: "위험(설계 논리 부족)", status: "진행중", recheck: "pending" },
+    { target: "오지민 · 1팀", type: "모니터링 유지", owner: "김지원 매니저", created: "06-27", signal: "에이스", status: "효과확인대기", recheck: "pending", note: "발표자 등록 — 3주차 확인 예정" }
+  ];
+
+  var STATUS_META = {
+    critical: { label: "위험", chip: "chip-critical" },
+    serious: { label: "프리라이더 의심", chip: "chip-serious" },
+    warning: { label: "팀 이상", chip: "chip-warning" },
+    good: { label: "에이스", chip: "chip-good" },
+    neutral: { label: "정상", chip: "chip-neutral" }
+  };
+
+  function svgIcon(kind, color) {
+    var icons = {
+      alert: '<path d="M12 3 2 20h20L12 3Z" stroke="' + color + '" stroke-width="1.8" stroke-linejoin="round" fill="none"/><path d="M12 10v4" stroke="' + color + '" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="17" r="1" fill="' + color + '"/>',
+      search: '<circle cx="10" cy="10" r="6.2" stroke="' + color + '" stroke-width="1.8" fill="none"/><path d="M15 15l5 5" stroke="' + color + '" stroke-width="1.8" stroke-linecap="round"/>',
+      users: '<circle cx="8.5" cy="8" r="3" stroke="' + color + '" stroke-width="1.8" fill="none"/><path d="M3 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5" stroke="' + color + '" stroke-width="1.8" fill="none" stroke-linecap="round"/><circle cx="16.5" cy="9" r="2.4" stroke="' + color + '" stroke-width="1.8" fill="none"/>',
+      star: '<path d="M12 3.5l2.4 5 5.5.6-4 3.8 1 5.5-4.9-2.7-4.9 2.7 1-5.5-4-3.8 5.5-.6Z" stroke="' + color + '" stroke-width="1.6" stroke-linejoin="round" fill="none"/>',
+      check: '<circle cx="12" cy="12" r="9" stroke="' + color + '" stroke-width="1.8" fill="none"/><path d="M8 12.5l2.5 2.5 5.5-6" stroke="' + color + '" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>'
+    };
+    return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none">' + icons[kind] + "</svg>";
+  }
+
+  function statusChip(statusKey, opts) {
+    var meta = STATUS_META[statusKey] || STATUS_META.neutral;
+    opts = opts || {};
+    var iconKind = statusKey === "critical" ? "alert" : statusKey === "serious" ? "search" : statusKey === "warning" ? "users" : statusKey === "good" ? "star" : null;
+    var iconHtml = "";
+    if (iconKind) {
+      iconHtml = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none">' + svgIcon(iconKind, "currentColor").replace(/stroke-width="1\.[68]"/g, 'stroke-width="2.4"').replace(/<svg[^>]*>|<\/svg>/g, "") + "</svg>";
+    }
+    return '<span class="chip ' + meta.chip + '">' + iconHtml + (opts.label || meta.label) + "</span>";
+  }
+
+  function esc(s) { return String(s == null ? "" : s).replace(/"/g, "&quot;"); }
+
+  function normalizeCandidate(category, item) {
+    if (category === "risk") return { category: category, name: item.name, team: item.team, metricLabel: "위험도", metricValue: item.score + " (" + item.level + ")", cause: item.cause, defaultType: item.type };
+    if (category === "freerider") return { category: category, name: item.name, team: item.team, metricLabel: "기여율 · 이해도", metricValue: item.contribution + "% · " + item.score + "점", cause: item.cause, defaultType: item.type };
+    if (category === "ace") return { category: category, name: item.name, team: item.team, metricLabel: "이해도 · 성장률", metricValue: item.understanding + "점 · ▲" + item.growth + "%", cause: "이해도·성장률·설명력 동시 상위 — " + item.actions.join(", "), defaultType: item.type };
+    return { category: category, name: item.team + " 전체", team: item.team, metricLabel: "편차 · Gap", metricValue: item.deviation + "% · " + item.gap + "%", cause: item.opinion, defaultType: item.type };
+  }
+  var CAND_SOURCE = { risk: RISK_TOP, freerider: FREERIDER_TOP, ace: ACE_TOP, teamAnomaly: TEAM_ANOMALY_TOP };
+  var GOALS = {
+    risk: "이해도 회복 및 반례 대응 능력 향상",
+    freerider: "실질 기여 회복 및 프로젝트 이해도 향상",
+    ace: "우수 사례 공유 및 대외 활용",
+    teamAnomaly: "팀 내 역할 편중 해소 및 협업 균형 회복"
+  };
+  var CONTENTS = {
+    risk: ["최근 학습 어려움 원인 파악", "반례 대응 방법 코칭", "학습 계획 재설계"],
+    freerider: ["최근 커밋 로그·기여 내역 함께 리뷰", "실질 역할 재설정", "다음 체크포인트 재측정 예고"],
+    ace: ["우수 사례 정리 및 팀 공유 요청", "다음 발표자 후보로 등록"],
+    teamAnomaly: ["팀 내 업무 분담 현황 점검", "편중된 역할 재조정 논의"]
+  };
+
+  /* ================= 통합 운영 현황 ================= */
+  function renderDashboard() {
+    var risk = COHORT.risk, fr = COHORT.freerider, ace = COHORT.ace, ta = COHORT.teamAnomaly;
+    var normal = COHORT.total - risk - fr - ace;
+
+    var briefHtml =
+      '<div class="briefing"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 10a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>' +
+      '<div class="briefing-text"><span><b>오늘 AI 브리핑</b> — 위험 ' + risk + '명, 프리라이더 의심 ' + fr + '명, 에이스 ' + ace + '명, 팀 이상 ' + ta + '건. AI가 우선순위를 추천하면 매니저가 개입을 확정합니다.</span>' +
+      '<span class="briefing-time">기준 시각 07:05 · FR-05-02 자동 브리핑</span></div>' +
+      '<button class="btn btn-primary" type="button" onclick="DOW.goView(\'intervention\')">개입 관리 열기</button></div>';
+
+    var tiles = [
+      { key: "critical", label: "위험 교육생", value: risk, delta: risk - COHORT.prevRisk, icon: "alert" },
+      { key: "serious", label: "프리라이더 의심", value: fr, delta: fr - COHORT.prevFreerider, icon: "search" },
+      { key: "good", label: "에이스", value: ace, delta: ace - COHORT.prevAce, icon: "star" },
+      { key: "warning", label: "팀 이상", value: ta, delta: ta - COHORT.prevTeamAnomaly, icon: "users" }
+    ];
+    var briefGrid = '<div class="brief-grid">' + tiles.map(function (t) {
+      return '<div class="brief-tile"><div class="brief-tile-top"><span class="brief-tile-icon" style="background:var(--status-' + t.key + '-soft);color:var(--status-' + t.key + ')">' + svgIcon(t.icon, "currentColor") + '</span><span class="brief-tile-label">' + t.label + '</span></div>' +
+        '<div class="brief-tile-value">' + t.value + '<span style="font-size:12px;color:var(--ink-muted);font-weight:500;">' + (t.key === "warning" ? "건" : "명") + '</span></div>' +
+        '<div class="brief-tile-delta" style="color:var(--status-' + t.key + ')">' + (t.delta >= 0 ? "▲" : "▼") + Math.abs(t.delta) + ' (지난 확인 대비)</div></div>';
+    }).join("") + "</div>";
+
+    var donutSegs = [
+      { label: "정상", value: normal, color: "var(--ink-muted)" },
+      { label: "위험", value: risk, color: "var(--status-critical)" },
+      { label: "프리라이더 의심", value: fr, color: "var(--status-serious)" },
+      { label: "에이스", value: ace, color: "var(--status-good)" }
+    ];
+    var donutCard = '<div class="card"><div class="section-head" style="padding:14px 18px 0;"><div><h2>교육생 상태 분포</h2><div class="desc">전체 ' + COHORT.total + '명 기준</div></div></div>' +
+      '<div class="donut-row"><div id="cohort-donut"></div><div class="donut-legend">' + donutSegs.map(function (s) {
+        return '<div class="item"><span class="lbl"><span class="dot" style="background:' + s.color + '"></span>' + s.label + '</span><span class="val">' + s.value + '명 (' + Math.round(s.value / COHORT.total * 100) + '%)</span></div>';
+      }).join("") + "</div></div></div>";
+
+    var metricCard = '<div class="card"><div class="section-head" style="padding:14px 18px 0;"><div><h2>주요 지표 (전체 과정)</h2><div class="desc">지난 확인 대비 변화</div></div></div>' +
+      '<div class="metric-grid">' + METRICS.map(function (m) {
+        var favorable = m.good === "up" ? m.delta >= 0 : m.delta <= 0;
+        var color = favorable ? "var(--status-good)" : "var(--status-critical)";
+        var arrow = m.delta === 0 ? "–" : (m.delta > 0 ? "▲" : "▼");
+        return '<div class="metric-mini"><div class="lbl">' + m.label + '</div><div class="val">' + m.value + '<span style="font-size:12px;color:var(--ink-muted);">' + m.unit + '</span></div><div class="delta" style="color:' + color + '">' + arrow + Math.abs(m.delta) + m.unit + '</div></div>';
+      }).join("") + "</div></div>";
+
+    var panels = [
+      { title: "위험도 TOP 5", view: "risk", cols: ["이름", "위험도", "주요 원인", "AI 추천"], rows: RISK_TOP.slice(0, 5).map(function (r) {
+        return { name: r.name, sub: r.team, mid: statusChip("critical", { label: r.score + " (" + r.level + ")" }), cause: r.cause, actionLabel: r.type, cat: "risk", ref: r.name };
+      }) },
+      { title: "프리라이더 의심", view: "freerider", cols: ["이름", "기여도 · 이해도", "근거", "AI 추천"], rows: FREERIDER_TOP.map(function (r) {
+        return { name: r.name, sub: r.team, mid: statusChip("serious", { label: r.contribution + "% / " + r.score + "점" }), cause: r.cause, actionLabel: r.type, cat: "freerider", ref: r.name };
+      }) },
+      { title: "에이스", view: "ace", cols: ["이름", "이해도 · 성장률", "AI 추천", ""], rows: ACE_TOP.slice(0, 4).map(function (r) {
+        return { name: r.name, sub: r.team, mid: statusChip("good", { label: r.understanding + "점 / ▲" + r.growth + "%" }), cause: r.actions.join(" · "), actionLabel: r.type, cat: "ace", ref: r.name };
+      }) },
+      { title: "팀 이상 감지", view: "teamAnalysis", cols: ["팀", "이상 유형", "지표", "AI 의견"], rows: TEAM_ANOMALY_TOP.map(function (r) {
+        return { name: r.team, sub: r.issue, mid: statusChip("warning", { label: "편차 " + r.deviation + "% / Gap " + r.gap + "%" }), cause: r.opinion, actionLabel: r.type, cat: "teamAnomaly", ref: r.team };
+      }) }
+    ];
+    var panelRow = '<div class="panel-row">' + panels.map(function (p) {
+      return '<div class="card"><div class="section-head" style="padding:12px 14px 4px;"><h2 style="font-size:12.5px;">' + p.title + '</h2><button class="more" type="button" onclick="DOW.goView(\'' + p.view + '\')">전체 보기</button></div>' +
+        '<div class="mt-rows">' + p.rows.map(function (r) {
+          return '<div class="mt-row"><div class="mt-row-top"><div class="mt-who"><span class="mt-name">' + r.name + '</span><span class="mt-sub">' + r.sub + '</span></div>' + r.mid + '</div><div class="mt-cause">' + r.cause + '</div><div class="mt-action-row"><button class="mt-action" type="button" onclick="DOW.openIntervention(\'' + r.cat + "', '" + esc(r.ref) + "')\">" + r.actionLabel + "</button></div></div>";
+        }).join("") + "</div></div>";
+    }).join("") + "</div>";
+
+    var recommendPool = [
+      normalizeCandidate("risk", RISK_TOP[0]),
+      normalizeCandidate("risk", RISK_TOP[1]),
+      normalizeCandidate("teamAnomaly", TEAM_ANOMALY_TOP[0]),
+      normalizeCandidate("freerider", FREERIDER_TOP[0])
+    ];
+    var recommendCard = '<div class="card"><div class="section-head" style="padding:14px 18px 0;"><div><h2>AI 개입 추천 (우선순위)</h2><div class="desc">AI가 후보를 추천하면 매니저가 확정합니다 — FR-08-02 자동확정 금지</div></div></div>' +
+      '<div class="rec-grid">' + recommendPool.map(function (c, i) {
+        var color = c.category === "risk" ? "var(--status-critical)" : c.category === "teamAnomaly" ? "var(--status-warning)" : c.category === "freerider" ? "var(--status-serious)" : "var(--status-good)";
+        return '<div class="rec-card"><div class="rec-top"><span class="rec-num" style="background:' + color + '">' + (i + 1) + '</span><span class="rec-name">' + c.name + "</span></div><div class=\"rec-reason\">" + c.cause + '</div><button class="btn btn-sm btn-primary" type="button" onclick="DOW.openIntervention(\'' + c.category + "', '" + esc(c.name === (TEAM_ANOMALY_TOP[0] && TEAM_ANOMALY_TOP[0].team + " 전체") ? TEAM_ANOMALY_TOP[0].team : c.name) + "')\">" + c.defaultType + "</button></div>";
+      }).join("") + "</div></div>";
+
+    var summaryCard = '<div class="card"><div class="section-head" style="padding:14px 18px 0;"><div><h2>개입 현황 요약</h2><div class="desc">FR-06-02 상태 · FR-06-03 효과 재측정</div></div><button class="more" type="button" onclick="DOW.goView(\'intervention\')">개입 관리 열기</button></div>' +
+      '<div class="summary-row">' + ["대기", "진행중", "완료", "효과확인대기"].map(function (st) {
+        var n = INTERVENTIONS.filter(function (i) { return i.status === st; }).length;
+        var color = st === "대기" ? "var(--ink-muted)" : st === "진행중" ? "var(--status-warning)" : st === "완료" ? "var(--status-good)" : "var(--accent)";
+        return '<div class="summary-tile"><div class="lbl">' + st + '</div><div class="val" style="color:' + color + '">' + n + "건</div></div>";
+      }).join("") + "</div></div>";
+
+    document.getElementById("view-dashboard").innerHTML =
+      briefHtml +
+      '<div class="top-row"><div class="card">' + briefGrid.replace('<div class="brief-grid">', '<div class="section-head" style="padding:14px 18px 0;"><div><h2>오늘 AI 브리핑</h2><div class="desc">09:30 기준</div></div></div><div class="brief-grid">') + "</div>" + donutCard + metricCard + "</div>" +
+      panelRow + recommendCard + summaryCard;
+
+    renderDonut(document.getElementById("cohort-donut"), donutSegs, { size: 128, stroke: 17 });
+    if (window.DOW) DOW.wireDashboardActions();
+  }
+
+  function renderDonut(container, segments, opts) {
+    var size = (opts && opts.size) || 128, sw = (opts && opts.stroke) || 16, gap = 3;
+    var r = (size - sw) / 2, c = 2 * Math.PI * r;
+    var total = segments.reduce(function (a, s) { return a + s.value; }, 0) || 1;
+    var offset = 0;
+    var parts = ['<circle cx="' + size / 2 + '" cy="' + size / 2 + '" r="' + r + '" fill="none" stroke="var(--surface-2)" stroke-width="' + sw + '"/>'];
+    segments.forEach(function (s) {
+      var frac = s.value / total, full = frac * c, drawn = Math.max(full - gap, 0);
+      parts.push('<circle cx="' + size / 2 + '" cy="' + size / 2 + '" r="' + r + '" fill="none" stroke="' + s.color + '" stroke-width="' + sw + '" stroke-dasharray="' + drawn + " " + (c - drawn) + '" stroke-dashoffset="' + -offset + '" transform="rotate(-90 ' + size / 2 + " " + size / 2 + ')"/>');
+      offset += full;
+    });
+    parts.push('<text x="' + size / 2 + '" y="' + (size / 2 - 3) + '" text-anchor="middle" font-family="var(--font-mono)" font-size="18" font-weight="700" fill="var(--ink)">' + total + "</text>");
+    parts.push('<text x="' + size / 2 + '" y="' + (size / 2 + 15) + '" text-anchor="middle" font-size="10.5" fill="var(--ink-muted)">전체 인원</text>');
+    container.innerHTML = '<svg width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + " " + size + '" role="img" aria-label="교육생 상태 분포 도넛 차트">' + parts.join("") + "</svg>";
+  }
+
+  /* ================= 프리라이더 의심 (산점도 + 랭킹) ================= */
+  var CHART = { w: 680, h: 400, mLeft: 42, mRight: 20, mTop: 20, mBottom: 40, contribThresh: 35, underThresh: 2.5 };
+  function xScale(pct) { return CHART.mLeft + (pct / 100) * (CHART.w - CHART.mLeft - CHART.mRight); }
+  function yScale(score) { return CHART.mTop + (1 - score / 5) * (CHART.h - CHART.mTop - CHART.mBottom); }
+
+  function freeriderLabel(state) {
+    if (state === "critical") return "프리라이더 의심 · 신규 감지";
+    if (state === "serious") return "프리라이더 의심 · 모니터링 중";
+    if (state === "recovered") return "개입 후 회복";
+    return "정상 범위";
+  }
+  function freeriderChipKey(state) { return state === "critical" ? "critical" : state === "serious" ? "serious" : state === "recovered" ? "good" : "neutral"; }
+
+  function markerFor(state, cx, cy, r) {
+    if (state === "critical") return '<rect x="' + (cx - r) + '" y="' + (cy - r) + '" width="' + (2 * r) + '" height="' + (2 * r) + '" rx="2" fill="var(--status-critical)" transform="rotate(45 ' + cx + " " + cy + ')"/>';
+    if (state === "serious") { var p1 = cx + "," + (cy - r * 1.15), p2 = (cx - r * 1.05) + "," + (cy + r * 0.9), p3 = (cx + r * 1.05) + "," + (cy + r * 0.9); return '<polygon points="' + p1 + " " + p2 + " " + p3 + '" fill="var(--status-serious)"/>'; }
+    if (state === "recovered") return '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="var(--status-good)" stroke-width="2.4"/><circle cx="' + cx + '" cy="' + cy + '" r="' + (r * 0.35) + '" fill="var(--status-good)"/>';
+    return '<circle cx="' + cx + '" cy="' + cy + '" r="' + (r * 0.72) + '" fill="var(--ink-muted)" opacity="0.55"/>';
+  }
+
+  function renderScatter() {
+    var svg = document.getElementById("scatter-svg");
+    if (!svg) return;
+    var parts = [];
+    var L = CHART.mLeft, R = CHART.w - CHART.mRight, T = CHART.mTop, B = CHART.h - CHART.mBottom;
+    var zx = xScale(0), zw = xScale(CHART.contribThresh) - xScale(0);
+    var zy = yScale(CHART.underThresh), zh = yScale(0) - yScale(CHART.underThresh);
+    parts.push('<rect x="' + zx + '" y="' + zy + '" width="' + zw + '" height="' + zh + '" fill="var(--status-critical)" opacity="0.07"/>');
+    parts.push('<rect x="' + zx + '" y="' + zy + '" width="' + zw + '" height="' + zh + '" fill="none" stroke="var(--status-critical)" stroke-opacity="0.35" stroke-dasharray="4 3"/>');
+    parts.push('<text x="' + (zx + 8) + '" y="' + (zy + 16) + '" class="zone-label">프리라이더 의심 영역</text>');
+    parts.push('<line x1="' + xScale(CHART.contribThresh) + '" y1="' + T + '" x2="' + xScale(CHART.contribThresh) + '" y2="' + B + '" stroke="var(--status-critical)" stroke-opacity="0.3" stroke-dasharray="3 3"/>');
+    parts.push('<line x1="' + L + '" y1="' + yScale(CHART.underThresh) + '" x2="' + R + '" y2="' + yScale(CHART.underThresh) + '" stroke="var(--status-critical)" stroke-opacity="0.3" stroke-dasharray="3 3"/>');
+    [0, 1, 2, 3, 4, 5].forEach(function (v) {
+      var y = yScale(v);
+      parts.push('<line x1="' + L + '" y1="' + y + '" x2="' + R + '" y2="' + y + '" class="grid-line"/>');
+      parts.push('<text x="' + (L - 10) + '" y="' + (y + 3) + '" text-anchor="end" class="axis-label">' + v + "</text>");
+    });
+    [0, 20, 40, 60, 80, 100].forEach(function (v) {
+      parts.push('<text x="' + xScale(v) + '" y="' + (B + 18) + '" text-anchor="middle" class="axis-label">' + v + "%</text>");
+    });
+    parts.push('<line x1="' + L + '" y1="' + B + '" x2="' + R + '" y2="' + B + '" class="axis-line"/>');
+    parts.push('<line x1="' + L + '" y1="' + T + '" x2="' + L + '" y2="' + B + '" class="axis-line"/>');
+    parts.push('<text x="' + ((L + R) / 2) + '" y="' + (CHART.h - 4) + '" text-anchor="middle" class="axis-label">커밋 기여율 →</text>');
+
+    var ordered = STUDENTS.slice().sort(function (a, b) {
+      var rank = { neutral: 0, recovered: 1, serious: 2, critical: 3 };
+      return rank[a.freeriderState] - rank[b.freeriderState];
+    });
+    ordered.forEach(function (s) {
+      var cx = xScale(s.contribution), cy = yScale(s.understanding), r = s.freeriderState === "neutral" ? 6 : 8.5;
+      parts.push('<g class="point" tabindex="0" role="img" data-id="' + s.id + '" aria-label="' + s.name + ", " + s.team + ", 기여율 " + s.contribution + "%, 이해도 " + s.understanding + '점">' + markerFor(s.freeriderState, cx, cy, r) + '<circle cx="' + cx + '" cy="' + cy + '" r="' + (r + 6) + '" fill="transparent"/></g>');
+    });
+    svg.innerHTML = parts.join("");
+    wireScatterTooltips();
+  }
+
+  function wireScatterTooltips() {
+    var svg = document.getElementById("scatter-svg"), wrap = document.getElementById("scatter-wrap"), tooltip = document.getElementById("chart-tooltip");
+    svg.querySelectorAll(".point").forEach(function (pt) {
+      var s = STUDENTS.filter(function (x) { return x.id === pt.getAttribute("data-id"); })[0];
+      function show() {
+        var rect = pt.getBoundingClientRect(), wrapRect = wrap.getBoundingClientRect();
+        tooltip.innerHTML = "<b>" + s.name + "</b> · " + s.team + "<br/>기여율 <b class=\"num\">" + s.contribution + '%</b> · 이해도 <b class="num">' + s.understanding + "</b><br/><span class=\"tt-sub\">" + (s.detectedWeek ? s.detectedWeek + "주차 최초 감지" : freeriderLabel(s.freeriderState)) + "</span>";
+        tooltip.style.left = (rect.left - wrapRect.left + rect.width / 2) + "px";
+        tooltip.style.top = (rect.top - wrapRect.top) + "px";
+        tooltip.classList.add("show");
+      }
+      function hide() { tooltip.classList.remove("show"); }
+      pt.addEventListener("mouseenter", show); pt.addEventListener("mouseleave", hide);
+      pt.addEventListener("focus", show); pt.addEventListener("blur", hide);
+      pt.addEventListener("click", function () { if (s.freeriderState === "serious" || s.freeriderState === "critical") DOW.openIntervention("freerider", s.name); });
+    });
+  }
+
+  function sparkline(trend) {
+    var w = 64, h = 22, pad = 3;
+    var min = Math.min.apply(null, trend), max = Math.max.apply(null, trend), range = (max - min) || 1;
+    var pts = trend.map(function (v, i) { return (pad + (i / (trend.length - 1)) * (w - pad * 2)).toFixed(1) + "," + (h - pad - ((v - min) / range) * (h - pad * 2)).toFixed(1); });
+    var last = pts[pts.length - 1].split(","), declining = trend[trend.length - 1] < trend[0], color = declining ? "var(--status-critical)" : "var(--status-good)";
+    return '<svg class="spark" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + " " + h + '"><polyline points="' + pts.join(" ") + '" fill="none" stroke="' + color + '" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="' + last[0] + '" cy="' + last[1] + '" r="2.2" fill="' + color + '"/></svg>';
+  }
+
+  function renderFreeriderView() {
+    var el = document.getElementById("view-freerider");
+    if (!el) return;
+    el.innerHTML =
+      '<div class="section-head"><div><h2>프리라이더 의심 뷰</h2><div class="desc">교차 근거와 함께 프로젝트 초반부터 표시 — FR-05-04-01-01</div></div></div>' +
+      '<div class="card rule-strip"><b>판정 로직 (FR-16 · 04-04-01-01)</b><span>기여 저조</span><span class="threshold-pill">커밋 기여율 &lt; 35%</span><span>×</span><span>이해도 저조</span><span class="threshold-pill">세션 점수 ≤ 2.5 / 5</span><span>교차 시 자동 시그널 생성</span></div>' +
+      '<div class="card chart-card"><div class="section-head" style="margin-bottom:2px;"><div><h2>기여율 × 이해도 교차 분포</h2><div class="desc">좌하단 음영 = 프리라이더 의심 영역 · 점을 클릭하면 개입 관리로 이동</div></div></div>' +
+      '<div class="chart-legend"><span><svg width="12" height="12" viewBox="0 0 12 12"><rect x="1" y="1" width="10" height="10" rx="2" fill="#d03b3b" transform="rotate(45 6 6)"/></svg> 신규 감지</span><span><svg width="12" height="12" viewBox="0 0 12 12"><polygon points="6,1 11,10 1,10" fill="#ec835a"/></svg> 모니터링 중</span><span><svg width="12" height="12" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" fill="none" stroke="#0ca30c" stroke-width="2"/></svg> 개입 후 회복</span><span><svg width="12" height="12" viewBox="0 0 12 12"><circle cx="6" cy="6" r="3.5" fill="#8b93a7"/></svg> 정상 범위</span></div>' +
+      '<div class="chart-wrap" id="scatter-wrap"><svg id="scatter-svg" viewBox="0 0 680 400" width="100%" role="img" aria-label="기여율과 이해도 점수의 교차 산점도"></svg><div class="tooltip" id="chart-tooltip"></div></div></div>' +
+      '<div class="card"><div class="section-head" style="padding:16px 18px 8px;"><div><h2>의심도 우선순위 목록</h2><div class="desc">근거·최초 감지 시점 순으로 정렬</div></div></div>' +
+      '<div class="table-scroll"><table class="full"><thead><tr><th>학습자</th><th class="num">기여율</th><th class="num">이해도</th><th>추이 (주차별)</th><th>최초 감지</th><th>교차 근거</th><th>상태</th><th></th></tr></thead><tbody id="freerider-table-body"></tbody></table></div></div>';
+
+    var flagged = STUDENTS.filter(function (s) { return s.freeriderState !== "neutral"; }).sort(function (a, b) {
+      var rank = { critical: 0, serious: 1, recovered: 2 };
+      return rank[a.freeriderState] - rank[b.freeriderState];
+    });
+    document.getElementById("freerider-table-body").innerHTML = flagged.map(function (s) {
+      var chip = statusChip(freeriderChipKey(s.freeriderState), { label: s.freeriderState === "critical" ? "신규 감지" : s.freeriderState === "serious" ? "모니터링 중" : "회복" });
+      return "<tr><td><div class=\"rank-name\">" + s.name + '</div><div class="rank-team">' + s.team + '</div></td><td class="num">' + s.contribution + '%</td><td class="num">' + s.understanding.toFixed(1) + "</td><td>" + sparkline(s.trend) + "</td><td>" + (s.detectedWeek ? s.detectedWeek + "주차" : "—") + '</td><td class="evidence-text">' + s.evidence + "</td><td>" + chip + '</td><td><button class="btn btn-sm" type="button" onclick="DOW.openIntervention(\'freerider\', \'' + esc(s.name) + '\')">' + (s.freeriderState === "recovered" ? "이력 보기" : "개입 생성") + "</button></td></tr>";
+    }).join("");
+    renderScatter();
+  }
+
+  /* ================= 개입 관리 워크스페이스 ================= */
+  var candTab = "risk";
+  var selection = { category: null, ref: null, type: null };
+
+  function candList(cat) { return CAND_SOURCE[cat].map(function (item) { return normalizeCandidate(cat, item); }); }
+
+  function renderInterventionView() {
+    var el = document.getElementById("view-intervention");
+    if (!el) return;
+    var pending = INTERVENTIONS.filter(function (i) { return i.status === "대기"; }).length;
+    var progressing = INTERVENTIONS.filter(function (i) { return i.status === "진행중"; }).length;
+    var awaitEffect = INTERVENTIONS.filter(function (i) { return i.status === "효과확인대기"; }).length;
+    el.innerHTML =
+      '<div class="section-head"><div><h2>개입 관리</h2><div class="desc">AI가 추천한 개입 후보를 매니저가 확정하고 효과를 추적합니다 — FR-06-01 · FR-06-02 · FR-06-03</div></div></div>' +
+      '<div class="card step-rail">' +
+        '<div class="step"><span class="step-num">' + (RISK_TOP.length + FREERIDER_TOP.length + ACE_TOP.length + TEAM_ANOMALY_TOP.length) + '</span><span class="step-label">개입 추천</span></div><span class="step-arrow">→</span>' +
+        '<div class="step active"><span class="step-num">•</span><span class="step-label">개입 생성</span></div><span class="step-arrow">→</span>' +
+        '<div class="step"><span class="step-num">' + progressing + '</span><span class="step-label">개입 진행</span></div><span class="step-arrow">→</span>' +
+        '<div class="step"><span class="step-num">' + awaitEffect + '</span><span class="step-label">효과 확인</span></div><span class="step-arrow">→</span>' +
+        '<div class="step"><span class="step-num">' + INTERVENTIONS.filter(function (i) { return i.status === "완료"; }).length + '</span><span class="step-label">개입 이력</span></div>' +
+      '</div>' +
+      '<div class="itv-grid">' +
+        '<div class="card"><div class="itv-col-head"><h3>개입 생성 후보</h3><p>탭에서 유형을 고르고 후보를 선택하세요</p></div><div class="cand-tabs" id="cand-tabs"></div><div id="cand-list"></div></div>' +
+        '<div class="card"><div class="itv-col-head"><h3>개입 유형 선택</h3><p>FR-06-01 지정 유형 5종</p></div><div class="type-list" id="type-list"></div></div>' +
+        '<div class="card"><div class="itv-col-head"><h3>개입 계획 (임시)</h3><p>확정 전 마지막 확인</p></div><div id="plan-box"></div></div>' +
+        '<div class="card"><div class="itv-col-head"><h3>개입 현황</h3><p>전체 ' + INTERVENTIONS.length + '건</p></div><div id="status-box"></div></div>' +
+      '</div>' +
+      '<div class="card"><div class="section-head" style="padding:16px 18px 8px;"><div><h2>개입 이력</h2><div class="desc">FR-06-02 상태·자동 연결 / FR-06-03 효과 재측정 — 자동확정 없음, 매니저 액션만 반영</div></div></div>' +
+      '<div class="table-scroll"><table class="full"><thead><tr><th>대상</th><th>유형</th><th>담당자</th><th>생성일</th><th>연결 시그널</th><th>상태</th><th>효과 재측정</th></tr></thead><tbody id="intervention-table-body"></tbody></table></div></div>';
+
+    renderCandTabs();
+    renderCandList();
+    renderTypeList();
+    renderPlanBox();
+    renderStatusBox();
+    renderHistoryTable();
+  }
+
+  function renderCandTabs() {
+    var tabs = [
+      { key: "risk", label: "위험 교육생 (" + RISK_TOP.length + ")" },
+      { key: "freerider", label: "프리라이더 (" + FREERIDER_TOP.length + ")" },
+      { key: "ace", label: "에이스 (" + ACE_TOP.length + ")" },
+      { key: "teamAnomaly", label: "팀 이상 (" + TEAM_ANOMALY_TOP.length + ")" }
+    ];
+    document.getElementById("cand-tabs").innerHTML = tabs.map(function (t) {
+      return '<button class="cand-tab' + (candTab === t.key ? " on" : "") + '" type="button" data-tab="' + t.key + '">' + t.label + "</button>";
+    }).join("");
+    document.querySelectorAll("#cand-tabs .cand-tab").forEach(function (b) {
+      b.addEventListener("click", function () { candTab = b.getAttribute("data-tab"); renderCandTabs(); renderCandList(); });
+    });
+  }
+
+  function renderCandList() {
+    var list = candList(candTab);
+    document.getElementById("cand-list").innerHTML = list.map(function (c) {
+      var isSel = selection.category === c.category && selection.ref === c.name;
+      return '<div class="cand-row' + (isSel ? " selected" : "") + '" data-cat="' + c.category + '" data-ref="' + esc(c.name) + '"><span class="cand-check">' + (isSel ? svgIcon("check", "#fff").replace('width="18" height="18"', 'width="11" height="11"') : "") + '</span><div class="cand-info"><div class="cand-name">' + c.name + " · " + c.team + '</div><div class="cand-meta">' + c.metricLabel + ": " + c.metricValue + '</div><div class="cand-cause">' + c.cause + "</div></div></div>";
+    }).join("");
+    document.querySelectorAll("#cand-list .cand-row").forEach(function (row) {
+      row.addEventListener("click", function () { selectCandidate(row.getAttribute("data-cat"), row.getAttribute("data-ref")); });
+    });
+  }
+
+  function renderTypeList() {
+    document.getElementById("type-list").innerHTML = INTERVENTION_TYPES.map(function (t) {
+      var isSel = selection.type === t.key;
+      return '<button class="type-opt' + (isSel ? " selected" : "") + '" type="button" data-type="' + t.key + '"><span class="type-opt-icon">' + svgIcon("check", "currentColor").replace('width="18" height="18"', 'width="15" height="15"') + '</span><span><div class="type-opt-title">' + t.key + '</div><div class="type-opt-desc">' + t.desc + "</div></span></button>";
+    }).join("");
+    document.querySelectorAll("#type-list .type-opt").forEach(function (b) {
+      b.addEventListener("click", function () { selection.type = b.getAttribute("data-type"); renderTypeList(); renderPlanBox(); });
+    });
+  }
+
+  function renderPlanBox() {
+    var box = document.getElementById("plan-box");
+    if (!selection.category) { box.innerHTML = '<div class="plan-empty">왼쪽에서 후보를 선택하면<br/>개입 계획이 여기에 표시됩니다.</div>'; return; }
+    var c = normalizeCandidate(selection.category, CAND_SOURCE[selection.category].filter(function (item) {
+      var n = normalizeCandidate(selection.category, item);
+      return n.name === selection.ref;
+    })[0]);
+    var color = selection.category === "risk" ? "critical" : selection.category === "freerider" ? "serious" : selection.category === "ace" ? "good" : "warning";
+    box.innerHTML =
+      '<div class="plan-box">' +
+      '<div class="plan-target">' + statusChip(color, { label: STATUS_META[color].label }) + "<span><b>" + c.name + "</b> · " + c.team + "</span></div>" +
+      '<div><div class="plan-goal-label">개입 목표</div><div class="plan-goal">' + GOALS[selection.category] + "</div></div>" +
+      '<div><div class="plan-goal-label">개입 내용</div><ul class="plan-list">' + CONTENTS[selection.category].map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul></div>" +
+      '<div class="field-row"><div class="field"><label for="itv-owner">담당자</label><select id="itv-owner"><option>김지원 매니저</option><option>박서준 코치</option><option>이하늘 코치</option></select></div>' +
+      '<div class="field"><label for="itv-channel">채널</label><select id="itv-channel"><option>오프라인</option><option>온라인</option><option>비동기 코멘트</option></select></div></div>' +
+      '<div class="field-row"><div class="field"><label for="itv-date">예약일</label><input id="itv-date" type="date" /></div><div class="field"><label for="itv-duration">예상 소요시간</label><select id="itv-duration"><option>15분</option><option selected>30분</option><option>45분</option><option>60분</option></select></div></div>' +
+      '<div id="confirm-note" class="confirm-note" style="display:none;">개입이 생성되었습니다 — 개입 이력에 반영됨</div>' +
+      '<div class="plan-actions"><button class="btn" type="button" id="plan-cancel">취소</button><button class="btn btn-primary" type="button" id="plan-submit">개입 생성</button></div>' +
+      "</div>";
+    document.getElementById("plan-cancel").addEventListener("click", function () { selection = { category: null, ref: null, type: null }; renderCandList(); renderTypeList(); renderPlanBox(); });
+    document.getElementById("plan-submit").addEventListener("click", function () {
+      INTERVENTIONS.unshift({ target: c.name + " · " + c.team, type: selection.type, owner: document.getElementById("itv-owner").value, created: "07-06", signal: STATUS_META[color].label, status: "대기", recheck: "pending" });
+      document.getElementById("confirm-note").style.display = "block";
+      renderStatusBox(); renderHistoryTable(); DOW.renderNavCounts();
+    });
+  }
+
+  function renderStatusBox() {
+    var counts = { "대기": 0, "진행중": 0, "완료": 0, "효과확인대기": 0 };
+    INTERVENTIONS.forEach(function (i) { counts[i.status] = (counts[i.status] || 0) + 1; });
+    var segs = [
+      { label: "대기", value: counts["대기"], color: "var(--ink-muted)" },
+      { label: "진행중", value: counts["진행중"], color: "var(--status-warning)" },
+      { label: "완료", value: counts["완료"], color: "var(--status-good)" },
+      { label: "효과확인대기", value: counts["효과확인대기"], color: "var(--accent)" }
+    ];
+    var box = document.getElementById("status-box");
+    box.innerHTML = '<div class="effect-box"><div id="itv-donut"></div><div class="donut-legend">' + segs.map(function (s) {
+      return '<div class="item"><span class="lbl"><span class="dot" style="background:' + s.color + '"></span>' + s.label + '</span><span class="val">' + s.value + "건</span></div>";
+    }).join("") + '</div><div style="border-top:1px solid var(--border);padding-top:12px;display:flex;flex-direction:column;gap:10px;"><div class="effect-stat"><div class="lbl">개입 후 평균 이해도 변화 (최근 4주)</div><div class="val" style="color:var(--status-good);">+1.2 / 5점</div></div><div class="effect-stat"><div class="lbl">개입 효과가 확인된 비율</div><div class="val">74%</div></div></div></div>';
+    renderDonut(document.getElementById("itv-donut"), segs, { size: 120, stroke: 15 });
+  }
+
+  function recheckChip(recheck, note) {
+    if (recheck === "recovered") return statusChip("good", { label: "회복" }) + (note ? '<div class="mt-sub" style="margin-top:3px;max-width:220px;white-space:normal;">' + note + "</div>" : "");
+    if (recheck === "pending") return statusChip("warning", { label: "측정 예정" }) + (note ? '<div class="mt-sub" style="margin-top:3px;max-width:220px;white-space:normal;">' + note + "</div>" : "");
+    return '<span class="chip chip-neutral">해당 없음</span>';
+  }
+  function renderHistoryTable() {
+    document.getElementById("intervention-table-body").innerHTML = INTERVENTIONS.map(function (i) {
+      var statusColor = i.status === "완료" ? "good" : i.status === "진행중" ? "warning" : i.status === "효과확인대기" ? "neutral" : "neutral";
+      return "<tr><td>" + i.target + "</td><td>" + i.type + "</td><td>" + i.owner + '</td><td class="num">' + i.created + "</td><td>" + i.signal + "</td><td>" + statusChip(statusColor, { label: i.status }) + "</td><td>" + recheckChip(i.recheck, i.note) + "</td></tr>";
+    }).join("");
+  }
+
+  function selectCandidate(category, ref) {
+    selection.category = category; selection.ref = ref;
+    var normalized = candList(category).filter(function (c) { return c.name === ref; })[0];
+    selection.type = normalized ? normalized.defaultType : INTERVENTION_TYPES[0].key;
+    renderCandList(); renderTypeList(); renderPlanBox();
+  }
+
+  /* ================= 위험 / 에이스 / 팀 분석 (경량 상세 뷰) ================= */
+  function renderRiskView() {
+    document.getElementById("view-risk").innerHTML =
+      '<div class="section-head"><div><h2>위험 교육생</h2><div class="desc">이해도 연속 하락 · 반례 대응 저점 지속 — FR-05-03</div></div></div>' +
+      '<div class="card"><div class="table-scroll"><table class="full"><thead><tr><th>이름</th><th>팀</th><th class="num">위험도</th><th>주요 원인</th><th>AI 추천</th></tr></thead><tbody>' +
+      RISK_TOP.map(function (r) {
+        return "<tr><td class=\"rank-name\">" + r.name + "</td><td>" + r.team + '</td><td class="num">' + statusChip("critical", { label: r.score + " (" + r.level + ")" }) + '</td><td class="evidence-text">' + r.cause + '</td><td><button class="btn btn-sm btn-primary" type="button" onclick="DOW.openIntervention(\'risk\', \'' + esc(r.name) + '\')">' + r.type + "</button></td></tr>";
+      }).join("") + "</tbody></table></div></div>";
+  }
+
+  function renderAceView() {
+    document.getElementById("view-ace").innerHTML =
+      '<div class="section-head"><div><h2>에이스</h2><div class="desc">이해도·성장률·설명력 동시 상위 — FR-05-05</div></div></div>' +
+      '<div class="card"><div class="table-scroll"><table class="full"><thead><tr><th>이름</th><th>팀</th><th class="num">이해도</th><th class="num">성장률</th><th>AI 추천</th></tr></thead><tbody>' +
+      ACE_TOP.map(function (r) {
+        return "<tr><td class=\"rank-name\">" + r.name + "</td><td>" + r.team + '</td><td class="num">' + statusChip("good", { label: r.understanding + "점" }) + '</td><td class="num">▲' + r.growth + '%</td><td><div class="mt-actions">' + r.actions.map(function (a) { return '<button class="mt-action" type="button" onclick="DOW.openIntervention(\'ace\', \'' + esc(r.name) + '\')">' + a + "</button>"; }).join("") + "</div></td></tr>";
+      }).join("") + "</tbody></table></div></div>";
+  }
+
+  function renderTeamAnalysisView() {
+    document.getElementById("view-teamAnalysis").innerHTML =
+      '<div class="section-head"><div><h2>팀 분석</h2><div class="desc">팀별 이해도 분포·편차, 완성도 대비 설명력 갭 — FR-05-06</div></div></div>' +
+      '<div class="card"><div class="table-scroll"><table class="full"><thead><tr><th>팀</th><th>참여도</th><th class="num">평균 이해도</th><th class="num">응시율</th><th>상태</th></tr></thead><tbody>' +
+      TEAMS.map(function (t) {
+        var anomaly = TEAM_ANOMALY_TOP.filter(function (a) { return a.team === t.name; })[0];
+        return "<tr><td class=\"rank-name\">" + t.name + '</td><td><div class="progress-track" style="width:100px;height:6px;border-radius:999px;background:var(--surface-2);overflow:hidden;"><div style="height:100%;background:var(--accent);border-radius:999px;width:' + t.participation + '%"></div></div></td><td class="num">' + t.avgUnderstanding.toFixed(1) + '</td><td class="num">' + t.attendance + '%</td><td>' + (anomaly ? statusChip("warning", { label: "편차 " + anomaly.deviation + "% · Gap " + anomaly.gap + "%" }) : statusChip("good", { label: "안정" })) + "</td></tr>";
+      }).join("") + "</tbody></table></div>" +
+      (TEAM_ANOMALY_TOP.length ? '<div class="card-pad" style="border-top:1px solid var(--border);"><b>AI 의견</b> — ' + TEAM_ANOMALY_TOP[0].opinion + ' <button class="btn btn-sm btn-primary" type="button" style="margin-left:8px;" onclick="DOW.openIntervention(\'teamAnomaly\', \'' + esc(TEAM_ANOMALY_TOP[0].team) + '\')">팀 조정 생성</button></div>' : "") +
+      "</div>";
+  }
+
+  function renderPlaceholder(key, title, desc) {
+    document.getElementById("view-" + key).innerHTML =
+      '<div class="section-head"><div><h2>' + title + '</h2><div class="desc">' + desc + '</div></div></div>' +
+      '<div class="card placeholder-card"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M4 9h16M9 9v11"/></svg>' +
+      "<h3>다음 스프린트에서 제공됩니다</h3><p>지금은 통합 운영 현황의 요약 패널과 개입 관리 화면에서 관련 정보를 확인할 수 있습니다.</p>" +
+      '<button class="btn btn-primary" type="button" onclick="DOW.goView(\'dashboard\')">통합 운영 현황으로 이동</button></div>';
+  }
+
+  /* ================= NAV / VIEW SWITCH ================= */
+  var VIEW_META = {
+    dashboard: { title: "통합 운영 현황", fr: "FR-05-01 · FR-05-02" },
+    risk: { title: "위험 교육생", fr: "FR-05-03" },
+    freerider: { title: "프리라이더 의심", fr: "FR-05-04" },
+    ace: { title: "에이스", fr: "FR-05-05" },
+    teamAnalysis: { title: "팀 분석", fr: "FR-05-06" },
+    intervention: { title: "개입 관리", fr: "FR-06-01 · FR-06-02 · FR-06-03" },
+    reports: { title: "보고서", fr: "FR-07-01 · FR-07-02" },
+    settings: { title: "설정", fr: "—" }
+  };
+  var rendered = {};
+  function ensureRendered(key) {
+    if (key === "dashboard") { renderDashboard(); return; }
+    if (key === "risk") { renderRiskView(); return; }
+    if (key === "freerider") { renderFreeriderView(); return; }
+    if (key === "ace") { renderAceView(); return; }
+    if (key === "teamAnalysis") { renderTeamAnalysisView(); return; }
+    if (key === "intervention") {
+      renderInterventionView();
+      if (window._pendingSelect) { selectCandidate(window._pendingSelect.category, window._pendingSelect.ref); window._pendingSelect = null; }
+      return;
+    }
+    if (!rendered[key]) {
+      renderPlaceholder(key, VIEW_META[key].title, "구현 예정 화면입니다.");
+      rendered[key] = true;
+    }
+  }
+
+  window.DOW = {
+    goView: function (key) {
+      document.querySelectorAll(".view").forEach(function (v) { v.classList.toggle("active", v.id === "view-" + key); });
+      document.querySelectorAll("#main-nav .nav-item").forEach(function (b) { b.classList.toggle("active", b.getAttribute("data-view") === key); });
+      document.getElementById("view-title").textContent = VIEW_META[key].title;
+      document.getElementById("view-fr-tag").textContent = VIEW_META[key].fr;
+      document.getElementById("topbar-controls").style.display = key === "dashboard" ? "flex" : "none";
+      ensureRendered(key);
+    },
+    openIntervention: function (category, ref) {
+      candTab = category;
+      window._pendingSelect = { category: category, ref: ref };
+      DOW.goView("intervention");
+    },
+    wireDashboardActions: function () {},
+    renderNavCounts: function () {
+      document.getElementById("nav-count-risk").textContent = RISK_TOP.length;
+      document.getElementById("nav-count-freerider").textContent = FREERIDER_TOP.length;
+      document.getElementById("nav-count-intervention").textContent = INTERVENTIONS.filter(function (i) { return i.status === "대기" || i.status === "진행중"; }).length;
+    }
+  };
+
+  document.querySelectorAll("#main-nav .nav-item").forEach(function (btn) {
+    btn.addEventListener("click", function () { DOW.goView(btn.getAttribute("data-view")); });
+  });
+  document.getElementById("bell-btn").addEventListener("click", function () { DOW.goView("intervention"); });
+  document.getElementById("refresh-btn").addEventListener("click", function () { ensureRendered("dashboard"); });
+
+  renderDashboard();
+  DOW.renderNavCounts();
+</script>
