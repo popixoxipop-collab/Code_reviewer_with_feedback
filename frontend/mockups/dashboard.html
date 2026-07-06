@@ -174,6 +174,19 @@
   .mt-actions { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
 
   /* AI 개입 추천 */
+  /* FR-05-07 코호트 히트맵 (sequential — 값=이해 단계 통과율, 단일 색상 명암) */
+  .heatmap-box { padding: 4px 18px 4px; display: flex; flex-direction: column; gap: 4px; }
+  .heat-row { display: grid; grid-template-columns: 92px repeat(5, 1fr); gap: 5px; align-items: stretch; }
+  .heat-header .heat-collabel { text-align: center; padding-bottom: 2px; }
+  .heat-collabel { font-size: 11.5px; font-weight: 700; color: var(--ink); display: flex; flex-direction: column; align-items: center; }
+  .heat-collabel span { font-size: 9.5px; font-weight: 500; color: var(--ink-muted); }
+  .heat-rowlabel { display: flex; align-items: center; font-size: 12px; font-weight: 600; color: var(--ink-secondary); }
+  .heat-row-cohort { padding-bottom: 8px; margin-bottom: 4px; border-bottom: 1px dashed var(--border-strong); }
+  .heat-row-cohort .heat-rowlabel { font-weight: 700; color: var(--ink); }
+  .heat-cell { border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12.5px; font-weight: 700; font-family: var(--font-mono); padding: 11px 4px; }
+  .heat-insight { margin: 12px 18px 16px; padding: 10px 12px; background: var(--surface-2); border-radius: 8px; font-size: 12px; color: var(--ink-secondary); line-height: 1.5; }
+  .heat-insight b { color: var(--ink); }
+
   .rec-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 4px 18px 18px; }
   .rec-card { border: 1px solid var(--border); border-radius: 10px; padding: 12px 13px; display: flex; flex-direction: column; gap: 8px; }
   .rec-num { width: 20px; height: 20px; border-radius: 50%; color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); }
@@ -424,6 +437,35 @@
 
   var COHORT = { total: 48, risk: 5, freerider: 3, ace: 6, teamAnomaly: 1, prevRisk: 3, prevFreerider: 2, prevAce: 5, prevTeamAnomaly: 0 };
 
+  /* FR-05-07 이해 단계별 코호트 히트맵 — L1/L4/L5 명칭은 요구사항정의서 원문("L1 What ~ L5 Transfer",
+     예시 "L4 트레이드오프에서 급락")을 그대로 사용, L2/L3는 동일 Bloom형 표기 관례로 채움(What→How→Why→Trade-off→Transfer) */
+  var LEVELS = [
+    { key: "L1", label: "What" },
+    { key: "L2", label: "How" },
+    { key: "L3", label: "Why" },
+    { key: "L4", label: "Trade-off" },
+    { key: "L5", label: "Transfer" }
+  ];
+  var HEATMAP_BASE = [92, 82, 62, 38, 28];
+  var teamAvgAvg = TEAMS.reduce(function (a, t) { return a + t.avgUnderstanding; }, 0) / TEAMS.length;
+  var HEATMAP_ROWS = TEAMS.map(function (t) {
+    var mult = t.avgUnderstanding / teamAvgAvg;
+    return { name: t.name, values: HEATMAP_BASE.map(function (v) { return Math.max(5, Math.min(98, Math.round(v * mult))); }) };
+  });
+  var HEATMAP_COHORT = LEVELS.map(function (_, i) {
+    return Math.round(HEATMAP_ROWS.reduce(function (a, r) { return a + r.values[i]; }, 0) / HEATMAP_ROWS.length);
+  });
+  var SEQ_RAMP = [
+    { hex: "#cde2fb", text: "#0b0b0b" }, { hex: "#b7d3f6", text: "#0b0b0b" }, { hex: "#9ec5f4", text: "#0b0b0b" },
+    { hex: "#86b6ef", text: "#0b0b0b" }, { hex: "#6da7ec", text: "#0b0b0b" }, { hex: "#5598e7", text: "#0b0b0b" },
+    { hex: "#3987e5", text: "#0b0b0b" }, { hex: "#2a78d6", text: "#0b0b0b" }, { hex: "#256abf", text: "#ffffff" },
+    { hex: "#1c5cab", text: "#ffffff" }, { hex: "#184f95", text: "#ffffff" }, { hex: "#104281", text: "#ffffff" }, { hex: "#0d366b", text: "#ffffff" }
+  ];
+  function seqStep(pct) {
+    var t = Math.max(0, Math.min(1, pct / 100));
+    return SEQ_RAMP[Math.round(t * (SEQ_RAMP.length - 1))];
+  }
+
   var RISK_TOP = [
     { name: "신동혁", team: "5팀", score: 92, level: "HIGH", cause: "커밋 기여는 정상이나 반례 대응 세션에서 코드 근거 제시 실패 — AI 생성 코드 의심", type: "면접" },
     { name: "박지훈", team: "3팀", score: 85, level: "HIGH", cause: "반례 대응 축 2주 연속 최저점, 자기수정 능력 감소", type: "멘토링 요청" },
@@ -592,6 +634,24 @@
         }).join("") + "</div></div>";
     }).join("") + "</div>";
 
+    var heatHeader = '<div class="heat-row heat-header"><div class="heat-rowlabel"></div>' + LEVELS.map(function (l) {
+      return '<div class="heat-collabel">' + l.key + "<span>" + l.label + "</span></div>";
+    }).join("") + "</div>";
+    var heatCohortRow = '<div class="heat-row heat-row-cohort"><div class="heat-rowlabel">전체 기수</div>' + HEATMAP_COHORT.map(function (v) {
+      var step = seqStep(v);
+      return '<div class="heat-cell" style="background:' + step.hex + ";color:" + step.text + ';">' + v + "%</div>";
+    }).join("") + "</div>";
+    var heatTeamRows = HEATMAP_ROWS.map(function (row) {
+      return '<div class="heat-row"><div class="heat-rowlabel">' + row.name + "</div>" + row.values.map(function (v) {
+        var step = seqStep(v);
+        return '<div class="heat-cell" style="background:' + step.hex + ";color:" + step.text + ';">' + v + "%</div>";
+      }).join("") + "</div>";
+    }).join("");
+    var weakestIdx = HEATMAP_COHORT.indexOf(Math.min.apply(null, HEATMAP_COHORT));
+    var heatmapCard = '<div class="card"><div class="section-head" style="padding:14px 18px 0;"><div><h2>이해 단계별 코호트 히트맵</h2><div class="desc">세션 응답을 이해 단계(L1 What ~ L5 Transfer)로 집계 — FR-05-07</div></div></div>' +
+      '<div class="heatmap-box">' + heatHeader + heatCohortRow + heatTeamRows + "</div>" +
+      '<div class="heat-insight"><b>AI 의견 —</b> 전체 기수는 ' + LEVELS[0].key + '·' + LEVELS[1].key + '(' + LEVELS[0].label + '/' + LEVELS[1].label + ') 단계는 ' + HEATMAP_COHORT[0] + '%·' + HEATMAP_COHORT[1] + '%로 안정적으로 통과하지만, <b>' + LEVELS[weakestIdx].key + ' ' + LEVELS[weakestIdx].label + '</b> 단계에서 ' + HEATMAP_COHORT[weakestIdx] + '%로 급락합니다. 해당 구간 커리큘럼 보강 시점 후보로 반영하세요. → 의사결정: 커리큘럼 품질관리</div></div>';
+
     var recommendPool = [
       normalizeCandidate("risk", RISK_TOP[0]),
       normalizeCandidate("risk", RISK_TOP[1]),
@@ -614,7 +674,7 @@
     document.getElementById("view-dashboard").innerHTML =
       briefHtml +
       '<div class="top-row"><div class="card">' + briefGrid.replace('<div class="brief-grid">', '<div class="section-head" style="padding:14px 18px 0;"><div><h2>오늘 AI 브리핑</h2><div class="desc">09:30 기준</div></div></div><div class="brief-grid">') + "</div>" + donutCard + metricCard + "</div>" +
-      panelRow + recommendCard + summaryCard;
+      panelRow + heatmapCard + recommendCard + summaryCard;
 
     renderDonut(document.getElementById("cohort-donut"), donutSegs, { size: 128, stroke: 17 });
     if (window.DOW) DOW.wireDashboardActions();
