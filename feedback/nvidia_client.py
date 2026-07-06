@@ -5,7 +5,7 @@ with the number of keys in the pool (see nvidia_key_pool.py).
 Vendored verbatim from github.com/popixoxipop-collab/nvidia-build (src/nvidia_client.py).
 See D56 in generate_questions.py / README.md for why this is a copy, not a package
 dependency. If you change rotation/retry behavior, update the source repo first,
-then re-copy here.
+then re-copy here. (Last synced: nvidia-build commit 6b57963, D11 per-model fix.)
 """
 
 from __future__ import annotations
@@ -33,7 +33,7 @@ class NvidiaRotatingClient:
         """
         last_error: Exception | None = None
         for attempt in range(max_retries):
-            key = self.pool.acquire()
+            key = self.pool.acquire(model)
             body = json.dumps({"model": model, "messages": messages, **kwargs}).encode()
             req = urllib.request.Request(
                 API_URL,
@@ -53,7 +53,7 @@ class NvidiaRotatingClient:
                 raise
             except urllib.error.URLError as e:
                 # never reached the server; don't burn this key's budget slot
-                self.pool.release_on_failure(key)
+                self.pool.release_on_failure(key, model)
                 last_error = e
                 if attempt < max_retries - 1:
                     continue

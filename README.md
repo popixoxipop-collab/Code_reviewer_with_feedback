@@ -214,7 +214,7 @@ python3 pipeline/compare_methodologies.py
 - **hub 판정이 희소 그래프에서 신뢰도 낮음(신규 발견, 미수정)**: RunPod_Deploy_Agent처럼 edge가 몇 개 안 되는 repo에서는 fan_in=1짜리가 "허브"로 뽑혀도 의미가 약함 — 최소 edge 수 임계값 미달 시 hub 판정 자체를 보류하는 로직이 없음
 - **javascript 외 언어의 관용 패턴 저장소는 전부 빈 상태(미검증)**: python/java/c/cpp/swift는 구조(디렉토리·threshold)만 있고 실제 피드백으로 채워진 패턴이 하나도 없음
 - **`feedback/generate_questions.py`는 제어 흐름만 검증됨, 실제 LLM 출력 품질은 미검증**: 스키마 강제(7단계 필드 누락 시 예외)·API 키 없을 때 실패 방식·마크다운 렌더링은 스텁 클라이언트로 확인했지만, 실제 Anthropic API를 호출해 생성된 질문의 품질(판별력, Depth Ladder 취지 부합 여부)은 이 세션에서 검증하지 않았음(API 키/과금 필요)
-- **NVIDIA 제공자(기본값)는 tool_choice 준수 여부를 라이브로 검증 못 함(D56)**: `parse_nvidia_tool_response()`의 파싱/예외 처리는 `smoke_test_nvidia_parsing.py`로 구조 검증했지만, 이 세션엔 `NVIDIA_API_KEY`가 없어 `qwen/qwen3.5-397b-a17b`가 실제로 7필드 스키마를 강제 준수하는지는 확인 못 함 — 키 확보되는 대로 실제 judgment_output.json으로 1회 검증 필요
+- ~~NVIDIA 제공자(기본값)는 tool_choice 준수 여부를 라이브로 검증 못 함(D56)~~ — **2026-07-06 해결(D58)**: 87개 카탈로그 모델 × 실제 finding 12개 전수조사로 라이브 검증 완료. 결과/방법론은 [`SURVEY_RESULTS.md`](./SURVEY_RESULTS.md) 참고. 기본 모델을 `qwen/qwen3-next-80b-a3b-instruct`로 교체(동일 100% 준수, 4배 빠름)
 
 ## 설계 결정 로그
 
@@ -427,16 +427,21 @@ python3 pipeline/compare_methodologies.py
   - WHY: escalation_hook.py(D50)의 judge 단계를 실제 Codex로 돌리려 했으나 `codex:codex-rescue`가 "저는 순수 rescue-forwarder라 역할 재할당 요청은 처리 안 합니다"라고 2번 재시도에도 동일하게 거부(자기 자신에 대한 역할 지정 시도로 오해). codex-rescue 정의 파일을 직접 고치는 대신(플러그인 마켓플레이스 파일이라 업데이트 시 덮어써질 위험) 같은 `codex-companion.mjs task` forwarding 메커니즘을 쓰되 "이 프롬프트는 Codex에게 전달할 payload"라는 프레이밍을 명시한 별도 에이전트(`codex-judge`)를 `~/.claude/agents/`에 신설
   - COST: 새 에이전트 파일은 세션 시작 시 한 번 로드되는 레지스트리라 **이번 세션에는 반영 안 됨** — 실시간 검증을 위해 같은 메커니즘(`node codex-companion.mjs task ...`)을 이번 세션에서는 Bash로 직접 호출해 우회. 실제로 Codex가 정상 판정함을 확인(VERDICT: true, PATTERN_HINT: concrete_improvement) — 문제가 Codex 자체가 아니라 codex-rescue 래퍼의 해석 층이었음이 실증됨. `pipeline/escalation_hook.py`로 이 진짜 verdict를 hook에 반영 → concrete_improvement의 `sanitize_pattern`이 confirmations=1 유지(같은 출처라 dedup이 정상 작동, 인위적 승격 없음)까지 확인
   - EXIT: 다음 세션부터 `subagent_type: "codex-judge"`로 정상 호출 가능할 것으로 예상 — 새 세션에서 재확인 필요. codex-rescue 플러그인이 업데이트돼 임의 역할 프롬프트를 투명하게 전달하게 되면 이 별도 에이전트는 폐기하고 합침
-- **D56** ([`feedback/generate_questions.py`](./feedback/generate_questions.py)) — 기본 LLM 제공자를 Anthropic Claude에서 NVIDIA Build(`qwen/qwen3.5-397b-a17b`)로 전환
+- **D56** ([`feedback/generate_questions.py`](./feedback/generate_questions.py)) — 기본 LLM 제공자를 Anthropic Claude에서 NVIDIA Build(`qwen/qwen3.5-397b-a17b`)로 전환. **모델 선택 자체는 D58로 대체됨** (아래, `qwen/qwen3-next-80b-a3b-instruct`)
   - WHY: 2026-07-06 별도 세션에서 실제 코드(`compression_rank1_test.py`)를 NVIDIA 3개 모델(qwen3.5-397b-a17b/nemotron-3.3-super-49b/llama-3.1-8b-instruct)에 리뷰시키고 각 지적을 코드와 대조 검증한 결과, qwen3.5-397b-a17b가 사실관계 오류 없이 가장 정확했음(nemotron-49b는 확신도 High로 낸 지적 1건이 사실과 다름, llama-3.1-8b는 할루시네이션+반복 필러). NVIDIA Build 무료 티어는 40 RPM/모델/키 한도 외 별도 quota가 없어(2026-07-06 확인) [`nvidia-build`](https://github.com/popixoxipop-collab/nvidia-build) 키 풀링과 결합하면 비용 없이 운용 가능
   - COST: NVIDIA Build는 OpenAI 호환 스키마(`tools`/`tool_calls`, 문자열 `arguments`)라 Anthropic의 객체형 `tool_use` 블록과 응답 형태가 완전히 달라 `generate_for_finding()`이 provider별로 분기됨. `feedback/nvidia_client.py`·`nvidia_key_pool.py`는 별도 private repo(`nvidia-build`)에서 그대로 복사해온 것이라 그쪽이 바뀌면 수동 재동기화 필요(패키지 의존성 대신 vendoring한 이유: private repo라 `pip install git+https://...`가 CI/팀 공유에 부적합하고, 파일 2개짜리에 git submodule은 과함). 이 세션엔 `NVIDIA_API_KEY`가 없어 qwen3.5가 이 7필드 스키마에서 `tool_choice`를 실제로 지키는지는 검증 못 함(`smoke_test_nvidia_parsing.py`는 파싱 로직만 fixture로 구조 검증)
   - EXIT: `FEEDBACK_PROVIDER=anthropic` 환경변수 하나로 즉시 원복, 코드 삭제 불필요. `nvidia_client.py`/`nvidia_key_pool.py` drift가 문제되면 `nvidia-build`를 public으로 바꾸거나 사설 PyPI 인덱스로 배포해 `requirements.txt` 의존성으로 전환(공개 API는 동일해 호출부 변경 없음)
+
+- **D58** ([`feedback/generate_questions.py`](./feedback/generate_questions.py)) — 기본 모델을 `qwen/qwen3.5-397b-a17b`에서 `qwen/qwen3-next-80b-a3b-instruct`로 교체
+  - WHY: 2026-07-06 라이브 전수조사(87개 카탈로그 모델 × 실제 finding 12개)로 D56의 근거를 이 저장소의 실제 task(스키마 강제 tool-calling)에서 재검증. 두 모델 다 `tool_choice` 100% 준수(12/12)·질문 품질 대등이지만 qwen3-next-80b-a3b-instruct가 13.2s로 qwen3.5-397b-a17b(52.9s)보다 4배 빠름. 별도 코드리뷰 벤치마크(`nvidia-build`)에서도 속도·정확도·재현성 3축 전부 상위 — 서로 다른 두 task가 같은 모델을 가리킴
+  - COST: 없음 확인됨(같은 증거 기준 순수 개선). `idiom_filtered` 케이스가 fixture에 2/12뿐이라 "짧게/쉽게" 지시 준수 검증은 약함
+  - EXIT: `SURVEY_RESULTS.md`에 100% 준수 확인된 대안 순위표 있음 — `stepfun-ai/step-3.5-flash`(4.6s, 최속이나 재현성 미검증), `deepseek-ai/deepseek-v4-pro`(48.9s, 재현성 최고 0.9)
 
 ## 다음 단계 (미해결)
 
 1. ~~판단 블록에 "프레임워크 관용 패턴 목록" 대조 필터 추가~~ — D5~D7로 완료(javascript만 실증, 나머지 언어는 빈 상태)
 2. ~~Tier B 트리거 오탐/이중계산 로그를 쌓아 hook 재귀 업데이트로 자동 보정~~ — D14(`tier_b_hook.py`)로 재귀 억제 루프 신설·검증 완료. 단, `sk-`/`eval(` 오탐 자체는 이미 코드로 직접 고쳤고(D12/D17), 이 훅은 *앞으로 발견될* 새 오탐용
-3. ~~피드백 블록의 7단계 질문 생성을 수기가 아니라 LLM 호출로 자동화~~ — D11로 코드 구현 완료, D56으로 기본 제공자를 NVIDIA Build로 전환. **단, 실제 API 호출로 생성 품질을 검증하는 것은 두 제공자 다 아직 남아있음**(NVIDIA는 키 자체가 없어 tool_choice 준수 여부조차 미확인 — 항목 18 참고)
+3. ~~피드백 블록의 7단계 질문 생성을 수기가 아니라 LLM 호출로 자동화~~ — D11로 코드 구현 완료, D56으로 기본 제공자를 NVIDIA Build로 전환, D58로 라이브 검증+모델 교체 완료(2026-07-06). **Anthropic 경로는 여전히 라이브 미검증**(ANTHROPIC_API_KEY 필요)
 4. ~~다른 언어/규모의 repo(Python)로 재검증~~ — D13으로 인지 블록 다국어 확장 + RunPod_Deploy_Agent(Python+JS 혼합)로 실증 완료(위 "다국어 재검증 실측" 참고). **대형 monorepo는 아직 미검증**
 5. python/java/c/cpp/swift 관용 패턴 저장소에 실제 시드 데이터 채우기(현재 전부 `patterns: []`)
 6. ~~언어 판별을 확장자 기반에서 AST/툴체인 기반으로 교체 검토~~ — D15로 `.h`만 부분 완화(내용 스니핑), 완전한 AST 기반 전환은 아직 안 함
@@ -451,7 +456,7 @@ python3 pipeline/compare_methodologies.py
 15. ~~Reflection 판정이 너무 쉽게 확정됨(POC_TEST.md 문제4)~~ — D32~D34로 완료. AND-4(너무 엄격, B안 모범 예시도 탈락) → "self_error_recognition 필수 + 나머지 2/3"으로 재보정, B안 모범 예시=True/피상적 답변=False/자기오류인식 없는 프로브=False 3건 전부 실측 확인. **단, 4개 서브신호 각각의 confirmed 패턴은 아직 예시 1건씩만 시드됨**(다양한 실제 답변으로 더 채워야 재현율이 오름)
 16. ~~D38 발견에 대응해 cognition-isolation용 재귀 hook 신설~~ — D39~D41로 완료. `isolation_hook.py`/`isolation_classifier.py`가 4개 카테고리(role_separation/perf_optimization/alt_storage_or_scope/domain_irrelevance)로 6개 실제 Codex 답변 중 5건을 "타당한 근거"로 정확히 분류, 근거 부족한 1건(authToken.js)은 성급히 확정 안 함. **단, 이 6건은 카테고리 패턴을 도출한 바로 그 데이터라 held-out 검증이 아니다** — 다른 repo의 새 답변으로 재검증해야 진짜 일반화 여부를 알 수 있음. `score_findings.py`에도 아직 연결 안 함(학생 답변 입력 자체가 정적 스캔 파이프라인엔 없음)
 17. ~~서브루브릭 4서브축의 고정 가중치를 재귀적으로 조정 가능하게~~ — D49(`subrubric_hook.py`)로 완료. 실측 데모로 `mitigation_present` 가중치를 discounted로 내린 뒤 실제 finding 2건의 버킷이 서로 다른 방향으로 바뀌는 것까지 확인. **신규**: discounted→trusted로 되돌리는 로직(aligned 누적 기반 복귀)이 아직 없어 한쪽 방향으로만 조정됨. 서브루브릭 가중치 조정과 idiom_hook/isolation_hook/reflection_hook의 재귀 로직 4개가 이제 전부 병렬로 존재하는데, 이들 사이의 실행 순서·상호작용(예: idiom_filter가 question_value를 덮어쓴 뒤에 subrubric 가중치가 다시 조정되면 어떤 순서로 재계산해야 하는지)은 아직 검토 안 함
-18. **신규(D56)**: `NVIDIA_API_KEY_1`을 확보해 `feedback/generate_questions.py`를 실제 judgment_output.json으로 최소 1회 라이브 실행 — `qwen/qwen3.5-397b-a17b`가 `depth_ladder_questions` 7필드 스키마에서 `tool_choice`를 실제로 지키는지, 그리고 생성된 질문 품질이 Anthropic 대비 어떤지 둘 다 미확인. 실패 시(모델이 tool_calls 대신 산문으로 응답) `parse_nvidia_tool_response()`가 `RuntimeError`로 명확히 드러내도록 짜뒀지만, 그 경로 자체가 라이브로 발동해본 적은 없음
+18. ~~`NVIDIA_API_KEY_1`을 확보해 라이브 실행~~ — **2026-07-06 완료(D58)**: 87개 모델 전수조사, 19개 모델이 tool_choice 100% 준수 확인. `nemotron-3-nano-omni-30b-a3b-reasoning`은 실제로 산문 응답(예견된 실패 경로가 라이브로 확인됨), `nemotron-3.3-super-49b-v1.5`는 tool_calls는 왔지만 arguments가 깨진 JSON(신규 실패 유형). Anthropic 대비 품질 비교는 여전히 미확인(ANTHROPIC_API_KEY 필요). 상세: [`SURVEY_RESULTS.md`](./SURVEY_RESULTS.md)
 
 ## 발표용 라이브 데모 실행 순서 (검증됨)
 

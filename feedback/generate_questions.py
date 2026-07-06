@@ -26,6 +26,22 @@ import sys
 #   EXIT: FEEDBACK_PROVIDER=anthropic 환경변수 하나로 즉시 원복 — 코드 삭제 불필요, 두 경로 모두
 #        유지됨. NVIDIA 쪽에서 tool_choice 미준수가 실제로 확인되면 이 파일을 고칠 필요 없이
 #        기본값(PROVIDER 변수)만 "anthropic"으로 되돌리면 됨
+#
+# D58: 기본 모델을 qwen/qwen3.5-397b-a17b에서 qwen/qwen3-next-80b-a3b-instruct로 교체
+#   WHY: 2026-07-06 라이브 전수조사(87개 카탈로그 모델 × 12개 실제 finding, LMS+study_match
+#        fixture 전부)로 D56의 근거(3모델 코드리뷰 벤치마크)를 이 저장소의 실제 task(스키마
+#        강제 tool-calling)로 재검증함. qwen3.5-397b-a17b는 tool_choice 100% 준수(12/12)하지만
+#        평균 52.9s/호출 — qwen3-next-80b-a3b-instruct도 100% 준수(12/12)하면서 13.2s로 4배
+#        빠르고, 질문 품질도 대조 확인 결과 대등하게 구체적/맞춤형(예: tier-b-risk:Bookshelf.jsx
+#        dangerous-html finding에서 DOMPurify/markdown-to-jsx 등 구체적 대안까지 언급).
+#        qwen3-next-80b-a3b-instruct는 별도 코드리뷰 벤치마크(nvidia-build repo)에서도 속도·
+#        정확도·재현성 3축 전부 상위였음 — 두 독립적인 task에서 같은 결론이 나온 것.
+#        결과 전체는 SURVEY_RESULTS.md 참고.
+#   COST: 없음 확인됨 — 같은 증거 기준으로 순수 개선. 단, 이 서베이는 idiom_filtered 케이스가
+#        2/12뿐이라 "짧게/쉽게" 지시 준수 여부는 약하게만 검증됨(그래도 두 모델 모두 통과).
+#   EXIT: 이 모델이 실전에서 문제 생기면 SURVEY_RESULTS.md의 순위표에서 다음 후보로 즉시 교체
+#        가능(전부 100% 준수 확인됨): stepfun-ai/step-3.5-flash(4.6s, 가장 빠름, 미검증 영역=
+#        재현성), deepseek-ai/deepseek-v4-pro(48.9s, 별도 벤치마크에서 재현성 최고 0.9)
 
 try:
     import anthropic
@@ -78,7 +94,7 @@ def _as_openai_tool(anthropic_tool):
 
 
 PROVIDER = os.environ.get("FEEDBACK_PROVIDER", "nvidia")
-_DEFAULT_MODEL = "qwen/qwen3.5-397b-a17b" if PROVIDER == "nvidia" else "claude-sonnet-5"
+_DEFAULT_MODEL = "qwen/qwen3-next-80b-a3b-instruct" if PROVIDER == "nvidia" else "claude-sonnet-5"
 MODEL = os.environ.get("FEEDBACK_MODEL", _DEFAULT_MODEL)
 
 

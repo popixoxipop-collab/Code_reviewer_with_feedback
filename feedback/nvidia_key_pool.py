@@ -3,7 +3,8 @@
 NVIDIA Build's free tier caps each API key at 40 requests/minute *per model*
 (https://build.nvidia.com). Pooling N independently-issued keys and routing
 each call to whichever key currently has the most headroom raises the
-practical ceiling to N x 40 RPM without exceeding any single key's limit.
+practical ceiling to N x 40 RPM per model without exceeding any single key's
+limit for that model.
 
 This module only tracks and enforces the sliding-window budget; it does not
 make HTTP calls itself (see nvidia_client.py for the calling wrapper).
@@ -11,7 +12,7 @@ make HTTP calls itself (see nvidia_client.py for the calling wrapper).
 Vendored verbatim from github.com/popixoxipop-collab/nvidia-build (src/nvidia_key_pool.py).
 See D56 in generate_questions.py / README.md for why this is a copy, not a package
 dependency. If you change rotation/retry behavior, update the source repo first,
-then re-copy here.
+then re-copy here. (Last synced: nvidia-build commit 6b57963, D11 per-model fix.)
 """
 
 from __future__ import annotations
@@ -20,14 +21,28 @@ import os
 import re
 import threading
 import time
-from collections import deque
+from collections import defaultdict, deque
 from dataclasses import dataclass, field
 
 
 @dataclass
 class _KeyState:
     key: str
-    timestamps: deque = field(default_factory=deque)
+    # D11: budget tracked per model, not one shared bucket for the whole key
+    #   WHY: NVIDIA's 40/min cap is per (key, model) pair, not per key overall.
+    #        A single shared bucket meant that driving many *different*
+    #        models through one key (e.g. benchmarking 87 models with 1 key)
+    #        made the pool think the key was saturated after only 40 calls
+    #        total, even though each individual model was nowhere near its
+    #        own real 40/min ceiling. Discovered when a live survey against
+    #        87 models logged "All 1 keys saturated" / HTTP 429 for slow
+    #        models whose calls piled up behind faster ones sharing the same
+    #        bucket -- not a real server-side limit, a client-side undercount.
+    #   COST: memory grows with the number of distinct models seen (each gets
+    #         its own deque); irrelevant in practice (a handful of model IDs).
+    #   EXIT: if NVIDIA's limit is ever confirmed to be per-key-total instead
+    #         of per-(key,model), collapse this back to a single deque.
+    timestamps_by_model: dict = field(default_factory=lambda: defaultdict(deque))
 
 
 class KeyPoolExhausted(RuntimeError):
@@ -35,7 +50,7 @@ class KeyPoolExhausted(RuntimeError):
 
 
 class NvidiaKeyPool:
-    """Round-robins across API keys, respecting a per-key requests/window budget.
+    """Round-robins across API keys, respecting a per-(key, model) requests/window budget.
 
     Thread-safe: safe to share one instance across concurrent callers.
     """
@@ -81,18 +96,20 @@ class NvidiaKeyPool:
 
     @property
     def theoretical_max_rpm(self) -> int:
+        """Max requests/minute *per model* achievable across the whole pool."""
         return len(self._states) * self._capacity
 
-    def _prune(self, state: _KeyState, now: float) -> None:
+    def _prune(self, timestamps: deque, now: float) -> None:
         cutoff = now - self._window_s
-        while state.timestamps and state.timestamps[0] < cutoff:
-            state.timestamps.popleft()
+        while timestamps and timestamps[0] < cutoff:
+            timestamps.popleft()
 
-    def acquire(self, max_wait_s: float = 30.0) -> str:
-        """Return an API key with available capacity, reserving a slot for it.
+    def acquire(self, model: str, max_wait_s: float = 30.0) -> str:
+        """Return an API key with available capacity *for this model*, reserving a slot.
 
-        Blocks (briefly) if every key is currently saturated, waking up as
-        soon as the least-loaded key's oldest request ages out of the window.
+        Blocks (briefly) if every key is currently saturated for `model`,
+        waking up as soon as the least-loaded key's oldest request for that
+        model ages out of the window.
 
         # D1: per-key sliding-window budget instead of naive round-robin
         #   WHY:  round-robin alone doesn't know a key's actual remaining
@@ -108,28 +125,30 @@ class NvidiaKeyPool:
         while True:
             with self._lock:
                 now = time.time()
-                best_state = None
                 best_wait = None
                 for state in self._states:
-                    self._prune(state, now)
-                    if len(state.timestamps) < self._capacity:
-                        state.timestamps.append(now)
+                    timestamps = state.timestamps_by_model[model]
+                    self._prune(timestamps, now)
+                    if len(timestamps) < self._capacity:
+                        timestamps.append(now)
                         return state.key
-                    wait = state.timestamps[0] + self._window_s - now
+                    wait = timestamps[0] + self._window_s - now
                     if best_wait is None or wait < best_wait:
-                        best_wait, best_state = wait, state
+                        best_wait = wait
             if time.monotonic() >= deadline:
                 raise KeyPoolExhausted(
-                    f"All {len(self._states)} keys saturated ({self._capacity}/min each); "
-                    f"gave up after {max_wait_s}s"
+                    f"All {len(self._states)} keys saturated for model {model!r} "
+                    f"({self._capacity}/min each); gave up after {max_wait_s}s"
                 )
             time.sleep(max(0.05, min(best_wait or 0.5, deadline - time.monotonic())))
 
-    def release_on_failure(self, key: str) -> None:
-        """Undo the reservation for `key` when the call never reached the server
-        (e.g. connection error) so it doesn't count against that key's budget."""
+    def release_on_failure(self, key: str, model: str) -> None:
+        """Undo the reservation for `key`+`model` when the call never reached the
+        server (e.g. connection error) so it doesn't count against that budget."""
         with self._lock:
             for state in self._states:
-                if state.key == key and state.timestamps:
-                    state.timestamps.pop()
+                if state.key == key:
+                    timestamps = state.timestamps_by_model[model]
+                    if timestamps:
+                        timestamps.pop()
                     return
