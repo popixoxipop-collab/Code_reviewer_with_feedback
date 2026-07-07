@@ -1,0 +1,1077 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmptki64017/zgc-ems",
+  "total_source_files": 102,
+  "tier_a_structural": {
+    "fan_in": {
+      "ZhaopinAdminApplicationTests.java": 0,
+      "ZhaopinAdminApplication.java": 0,
+      "RestDeptController.java": 0,
+      "RenderController.java": 0,
+      "RestUserController.java": 0,
+      "ErrorPagesController.java": 0,
+      "RestRoleController.java": 0,
+      "ExceptionHandleController.java": 0,
+      "RestEmployeeController.java": 0,
+      "RestResourcesController.java": 0,
+      "RestDownloadController.java": 0,
+      "RestUploadController.java": 0,
+      "PassportController.java": 0,
+      "ResultUtil.java": 8,
+      "PasswordUtil.java": 5,
+      "IpUtil.java": 1,
+      "Md5Util.java": 0,
+      "SessionUtil.java": 0,
+      "AesUtil.java": 0,
+      "DruidConfig.java": 0,
+      "WebMvcConfig.java": 0,
+      "PrimaryDataSource.java": 0,
+      "ErrorPagesConfig.java": 0,
+      "RedisConfig.java": 0,
+      "SwaggerConfig.java": 0,
+      "DynamicDataSourceConfig.java": 0,
+      "ShiroConfig.java": 0,
+      "FreeMarkerConfig.java": 0,
+      "MybatisConfig.java": 0,
+      "CustomRedisManager.java": 1,
+      "DruidProperties.java": 1,
+      "RedisProperties.java": 1,
+      "BlogApplicationRunner.java": 0,
+      "ExcelUtils.java": 5,
+      "SpringContextUtil.java": 5,
+      "HttpServletUtils.java": 0,
+      "Excel.java": 7,
+      "ExcelType.java": 2,
+      "SpringContextHolder.java": 1,
+      "RequestHolder.java": 2,
+      "AbstractDO.java": 6,
+      "AbstractBO.java": 2,
+      "AbstractService.java": 7,
+      "ResponseVO.java": 8,
+      "PageResult.java": 6,
+      "BaseConditionVO.java": 5,
+      "ZhydException.java": 2,
+      "CustomTagDirective.java": 1,
+      "RememberAuthenticationInterceptor.java": 1,
+      "UserConditionVO.java": 5,
+      "ResourceConditionVO.java": 4,
+      "DeptConditionVO.java": 4,
+      "RoleConditionVO.java": 4,
+      "EmployeeConditionVO.java": 4,
+      "UserRole.java": 3,
+      "Dept.java": 5,
+      "User.java": 12,
+      "Resources.java": 5,
+      "Role.java": 5,
+      "RoleResources.java": 2,
+      "Employee.java": 3,
+      "UserTypeEnum.java": 2,
+      "ResponseStatus.java": 7,
+      "UserStatusEnum.java": 3,
+      "UserGenderEnum.java": 1,
+      "ResourceTypeEnum.java": 1,
+      "SysRoleService.java": 4,
+      "ShiroService.java": 4,
+      "SysUserService.java": 7,
+      "SysResourcesService.java": 5,
+      "SysRoleResourcesService.java": 2,
+      "SysUserRoleService.java": 2,
+      "SysEmployeeService.java": 2,
+      "SysDeptService.java": 2,
+      "SysDeptServiceImpl.java": 0,
+      "SysRoleServiceImpl.java": 0,
+      "SysEmployeeServiceImpl.java": 0,
+      "SysRoleResourcesServiceImpl.java": 0,
+      "ShiroServiceImpl.java": 0,
+      "SysUserRoleServiceImpl.java": 0,
+      "SysUserServiceImpl.java": 0,
+      "SysResourcesServiceImpl.java": 0,
+      "SessionConst.java": 3,
+      "CommonConst.java": 3,
+      "ShiroRealm.java": 2,
+      "CredentialsMatcher.java": 0,
+      "RetryLimitCredentialsMatcher.java": 1,
+      "BaseMapper.java": 7,
+      "SysRoleResourcesMapper.java": 1,
+      "SysEmployeeMapper.java": 1,
+      "SysRoleMapper.java": 1,
+      "SysDeptMapper.java": 1,
+      "SysUserMapper.java": 1,
+      "SysUserRoleMapper.java": 1,
+      "SysResourceMapper.java": 1,
+      "SysUserRole.java": 3,
+      "SysResources.java": 5,
+      "SysRole.java": 5,
+      "SysRoleResources.java": 3,
+      "SysUser.java": 6,
+      "SysDept.java": 5,
+      "SysEmployee.java": 5
+    },
+    "zero_fan_in_files": [
+      "ZhaopinAdminApplicationTests.java",
+      "ZhaopinAdminApplication.java",
+      "RestDeptController.java",
+      "RenderController.java",
+      "RestUserController.java",
+      "ErrorPagesController.java",
+      "RestRoleController.java",
+      "ExceptionHandleController.java",
+      "RestEmployeeController.java",
+      "RestResourcesController.java",
+      "RestDownloadController.java",
+      "RestUploadController.java",
+      "PassportController.java",
+      "Md5Util.java",
+      "SessionUtil.java",
+      "AesUtil.java",
+      "DruidConfig.java",
+      "WebMvcConfig.java",
+      "PrimaryDataSource.java",
+      "ErrorPagesConfig.java",
+      "RedisConfig.java",
+      "SwaggerConfig.java",
+      "DynamicDataSourceConfig.java",
+      "ShiroConfig.java",
+      "FreeMarkerConfig.java",
+      "MybatisConfig.java",
+      "BlogApplicationRunner.java",
+      "HttpServletUtils.java",
+      "SysDeptServiceImpl.java",
+      "SysRoleServiceImpl.java",
+      "SysEmployeeServiceImpl.java",
+      "SysRoleResourcesServiceImpl.java",
+      "ShiroServiceImpl.java",
+      "SysUserRoleServiceImpl.java",
+      "SysUserServiceImpl.java",
+      "SysResourcesServiceImpl.java",
+      "CredentialsMatcher.java"
+    ],
+    "edges": [
+      [
+        "AbstractDO.java",
+        "Excel.java"
+      ],
+      [
+        "CredentialsMatcher.java",
+        "PasswordUtil.java"
+      ],
+      [
+        "CustomTagDirective.java",
+        "SysResourcesService.java"
+      ],
+      [
+        "Dept.java",
+        "AbstractBO.java"
+      ],
+      [
+        "Dept.java",
+        "SysDept.java"
+      ],
+      [
+        "DeptConditionVO.java",
+        "BaseConditionVO.java"
+      ],
+      [
+        "DeptConditionVO.java",
+        "Dept.java"
+      ],
+      [
+        "DruidConfig.java",
+        "DruidProperties.java"
+      ],
+      [
+        "Employee.java",
+        "SysEmployee.java"
+      ],
+      [
+        "EmployeeConditionVO.java",
+        "BaseConditionVO.java"
+      ],
+      [
+        "EmployeeConditionVO.java",
+        "SysEmployee.java"
+      ],
+      [
+        "Excel.java",
+        "ExcelType.java"
+      ],
+      [
+        "ExcelUtils.java",
+        "Excel.java"
+      ],
+      [
+        "ExcelUtils.java",
+        "ExcelType.java"
+      ],
+      [
+        "ExceptionHandleController.java",
+        "CommonConst.java"
+      ],
+      [
+        "ExceptionHandleController.java",
+        "ResponseStatus.java"
+      ],
+      [
+        "ExceptionHandleController.java",
+        "ResponseVO.java"
+      ],
+      [
+        "ExceptionHandleController.java",
+        "ResultUtil.java"
+      ],
+      [
+        "ExceptionHandleController.java",
+        "ZhydException.java"
+      ],
+      [
+        "FreeMarkerConfig.java",
+        "CustomTagDirective.java"
+      ],
+      [
+        "PassportController.java",
+        "ResponseVO.java"
+      ],
+      [
+        "PassportController.java",
+        "ResultUtil.java"
+      ],
+      [
+        "PasswordUtil.java",
+        "CommonConst.java"
+      ],
+      [
+        "RememberAuthenticationInterceptor.java",
+        "PasswordUtil.java"
+      ],
+      [
+        "RememberAuthenticationInterceptor.java",
+        "SessionConst.java"
+      ],
+      [
+        "RememberAuthenticationInterceptor.java",
+        "SysUserService.java"
+      ],
+      [
+        "RememberAuthenticationInterceptor.java",
+        "User.java"
+      ],
+      [
+        "RenderController.java",
+        "ResultUtil.java"
+      ],
+      [
+        "ResourceConditionVO.java",
+        "BaseConditionVO.java"
+      ],
+      [
+        "Resources.java",
+        "ResourceTypeEnum.java"
+      ],
+      [
+        "Resources.java",
+        "SysResources.java"
+      ],
+      [
+        "ResponseVO.java",
+        "ResponseStatus.java"
+      ],
+      [
+        "RestDeptController.java",
+        "Dept.java"
+      ],
+      [
+        "RestDeptController.java",
+        "DeptConditionVO.java"
+      ],
+      [
+        "RestDeptController.java",
+        "ExcelUtils.java"
+      ],
+      [
+        "RestDeptController.java",
+        "PageResult.java"
+      ],
+      [
+        "RestDeptController.java",
+        "ResponseStatus.java"
+      ],
+      [
+        "RestDeptController.java",
+        "ResponseVO.java"
+      ],
+      [
+        "RestDeptController.java",
+        "ResultUtil.java"
+      ],
+      [
+        "RestDeptController.java",
+        "SpringContextUtil.java"
+      ],
+      [
+        "RestDeptController.java",
+        "SysDept.java"
+      ],
+      [
+        "RestDeptController.java",
+        "SysDeptService.java"
+      ],
+      [
+        "RestDeptController.java",
+        "SysUser.java"
+      ],
+      [
+        "RestDeptController.java",
+        "SysUserService.java"
+      ],
+      [
+        "RestDeptController.java",
+        "User.java"
+      ],
+      [
+        "RestDeptController.java",
+        "UserConditionVO.java"
+      ],
+      [
+        "RestDeptController.java",
+        "UserRole.java"
+      ],
+      [
+        "RestEmployeeController.java",
+        "Employee.java"
+      ],
+      [
+        "RestEmployeeController.java",
+        "EmployeeConditionVO.java"
+      ],
+      [
+        "RestEmployeeController.java",
+        "ExcelUtils.java"
+      ],
+      [
+        "RestEmployeeController.java",
+        "PageResult.java"
+      ],
+      [
+        "RestEmployeeController.java",
+        "ResponseVO.java"
+      ],
+      [
+        "RestEmployeeController.java",
+        "ResultUtil.java"
+      ],
+      [
+        "RestEmployeeController.java",
+        "SpringContextUtil.java"
+      ],
+      [
+        "RestEmployeeController.java",
+        "SysEmployee.java"
+      ],
+      [
+        "RestEmployeeController.java",
+        "SysEmployeeService.java"
+      ],
+      [
+        "RestResourcesController.java",
+        "ExcelUtils.java"
+      ],
+      [
+        "RestResourcesController.java",
+        "PageResult.java"
+      ],
+      [
+        "RestResourcesController.java",
+        "ResourceConditionVO.java"
+      ],
+      [
+        "RestResourcesController.java",
+        "Resources.java"
+      ],
+      [
+        "RestResourcesController.java",
+        "ResponseStatus.java"
+      ],
+      [
+        "RestResourcesController.java",
+        "ResponseVO.java"
+      ],
+      [
+        "RestResourcesController.java",
+        "ResultUtil.java"
+      ],
+      [
+        "RestResourcesController.java",
+        "ShiroService.java"
+      ],
+      [
+        "RestResourcesController.java",
+        "SpringContextUtil.java"
+      ],
+      [
+        "RestResourcesController.java",
+        "SysResources.java"
+      ],
+      [
+        "RestResourcesController.java",
+        "SysResourcesService.java"
+      ],
+      [
+        "RestRoleController.java",
+        "ExcelUtils.java"
+      ],
+      [
+        "RestRoleController.java",
+        "PageResult.java"
+      ],
+      [
+        "RestRoleController.java",
+        "ResponseStatus.java"
+      ],
+      [
+        "RestRoleController.java",
+        "ResponseVO.java"
+      ],
+      [
+        "RestRoleController.java",
+        "ResultUtil.java"
+      ],
+      [
+        "RestRoleController.java",
+        "Role.java"
+      ],
+      [
+        "RestRoleController.java",
+        "RoleConditionVO.java"
+      ],
+      [
+        "RestRoleController.java",
+        "ShiroService.java"
+      ],
+      [
+        "RestRoleController.java",
+        "SpringContextUtil.java"
+      ],
+      [
+        "RestRoleController.java",
+        "SysRole.java"
+      ],
+      [
+        "RestRoleController.java",
+        "SysRoleResourcesService.java"
+      ],
+      [
+        "RestRoleController.java",
+        "SysRoleService.java"
+      ],
+      [
+        "RestUserController.java",
+        "ExcelUtils.java"
+      ],
+      [
+        "RestUserController.java",
+        "PageResult.java"
+      ],
+      [
+        "RestUserController.java",
+        "PasswordUtil.java"
+      ],
+      [
+        "RestUserController.java",
+        "ResponseStatus.java"
+      ],
+      [
+        "RestUserController.java",
+        "ResponseVO.java"
+      ],
+      [
+        "RestUserController.java",
+        "ResultUtil.java"
+      ],
+      [
+        "RestUserController.java",
+        "SpringContextUtil.java"
+      ],
+      [
+        "RestUserController.java",
+        "SysUser.java"
+      ],
+      [
+        "RestUserController.java",
+        "SysUserRoleService.java"
+      ],
+      [
+        "RestUserController.java",
+        "SysUserService.java"
+      ],
+      [
+        "RestUserController.java",
+        "User.java"
+      ],
+      [
+        "RestUserController.java",
+        "UserConditionVO.java"
+      ],
+      [
+        "ResultUtil.java",
+        "CommonConst.java"
+      ],
+      [
+        "ResultUtil.java",
+        "PageResult.java"
+      ],
+      [
+        "ResultUtil.java",
+        "ResponseStatus.java"
+      ],
+      [
+        "ResultUtil.java",
+        "ResponseVO.java"
+      ],
+      [
+        "RetryLimitCredentialsMatcher.java",
+        "SessionConst.java"
+      ],
+      [
+        "RetryLimitCredentialsMatcher.java",
+        "SysUserService.java"
+      ],
+      [
+        "RetryLimitCredentialsMatcher.java",
+        "User.java"
+      ],
+      [
+        "Role.java",
+        "SysRole.java"
+      ],
+      [
+        "RoleConditionVO.java",
+        "BaseConditionVO.java"
+      ],
+      [
+        "RoleConditionVO.java",
+        "Role.java"
+      ],
+      [
+        "RoleResources.java",
+        "SysRoleResources.java"
+      ],
+      [
+        "SessionUtil.java",
+        "RequestHolder.java"
+      ],
+      [
+        "SessionUtil.java",
+        "SessionConst.java"
+      ],
+      [
+        "SessionUtil.java",
+        "User.java"
+      ],
+      [
+        "ShiroConfig.java",
+        "CustomRedisManager.java"
+      ],
+      [
+        "ShiroConfig.java",
+        "RedisProperties.java"
+      ],
+      [
+        "ShiroConfig.java",
+        "RetryLimitCredentialsMatcher.java"
+      ],
+      [
+        "ShiroConfig.java",
+        "ShiroRealm.java"
+      ],
+      [
+        "ShiroConfig.java",
+        "ShiroService.java"
+      ],
+      [
+        "ShiroRealm.java",
+        "Resources.java"
+      ],
+      [
+        "ShiroRealm.java",
+        "Role.java"
+      ],
+      [
+        "ShiroRealm.java",
+        "SysResourcesService.java"
+      ],
+      [
+        "ShiroRealm.java",
+        "SysRoleService.java"
+      ],
+      [
+        "ShiroRealm.java",
+        "SysUserService.java"
+      ],
+      [
+        "ShiroRealm.java",
+        "User.java"
+      ],
+      [
+        "ShiroRealm.java",
+        "UserStatusEnum.java"
+      ],
+      [
+        "ShiroRealm.java",
+        "UserTypeEnum.java"
+      ],
+      [
+        "ShiroService.java",
+        "User.java"
+      ],
+      [
+        "ShiroServiceImpl.java",
+        "Resources.java"
+      ],
+      [
+        "ShiroServiceImpl.java",
+        "ShiroRealm.java"
+      ],
+      [
+        "ShiroServiceImpl.java",
+        "ShiroService.java"
+      ],
+      [
+        "ShiroServiceImpl.java",
+        "SpringContextHolder.java"
+      ],
+      [
+        "ShiroServiceImpl.java",
+        "SysResourcesService.java"
+      ],
+      [
+        "ShiroServiceImpl.java",
+        "SysUserService.java"
+      ],
+      [
+        "ShiroServiceImpl.java",
+        "User.java"
+      ],
+      [
+        "SysDept.java",
+        "AbstractDO.java"
+      ],
+      [
+        "SysDept.java",
+        "Excel.java"
+      ],
+      [
+        "SysDeptMapper.java",
+        "BaseMapper.java"
+      ],
+      [
+        "SysDeptMapper.java",
+        "Dept.java"
+      ],
+      [
+        "SysDeptMapper.java",
+        "DeptConditionVO.java"
+      ],
+      [
+        "SysDeptMapper.java",
+        "SysDept.java"
+      ],
+      [
+        "SysDeptService.java",
+        "AbstractService.java"
+      ],
+      [
+        "SysDeptService.java",
+        "Dept.java"
+      ],
+      [
+        "SysDeptService.java",
+        "DeptConditionVO.java"
+      ],
+      [
+        "SysDeptService.java",
+        "SysDept.java"
+      ],
+      [
+        "SysDeptServiceImpl.java",
+        "Dept.java"
+      ],
+      [
+        "SysDeptServiceImpl.java",
+        "DeptConditionVO.java"
+      ],
+      [
+        "SysDeptServiceImpl.java",
+        "SysDept.java"
+      ],
+      [
+        "SysDeptServiceImpl.java",
+        "SysDeptMapper.java"
+      ],
+      [
+        "SysDeptServiceImpl.java",
+        "SysDeptService.java"
+      ],
+      [
+        "SysEmployee.java",
+        "Excel.java"
+      ],
+      [
+        "SysEmployeeMapper.java",
+        "BaseMapper.java"
+      ],
+      [
+        "SysEmployeeMapper.java",
+        "EmployeeConditionVO.java"
+      ],
+      [
+        "SysEmployeeMapper.java",
+        "SysEmployee.java"
+      ],
+      [
+        "SysEmployeeService.java",
+        "AbstractService.java"
+      ],
+      [
+        "SysEmployeeService.java",
+        "Employee.java"
+      ],
+      [
+        "SysEmployeeService.java",
+        "EmployeeConditionVO.java"
+      ],
+      [
+        "SysEmployeeServiceImpl.java",
+        "Employee.java"
+      ],
+      [
+        "SysEmployeeServiceImpl.java",
+        "EmployeeConditionVO.java"
+      ],
+      [
+        "SysEmployeeServiceImpl.java",
+        "SysEmployee.java"
+      ],
+      [
+        "SysEmployeeServiceImpl.java",
+        "SysEmployeeMapper.java"
+      ],
+      [
+        "SysEmployeeServiceImpl.java",
+        "SysEmployeeService.java"
+      ],
+      [
+        "SysResourceMapper.java",
+        "BaseMapper.java"
+      ],
+      [
+        "SysResourceMapper.java",
+        "ResourceConditionVO.java"
+      ],
+      [
+        "SysResourceMapper.java",
+        "SysResources.java"
+      ],
+      [
+        "SysResources.java",
+        "AbstractDO.java"
+      ],
+      [
+        "SysResources.java",
+        "Excel.java"
+      ],
+      [
+        "SysResourcesService.java",
+        "AbstractService.java"
+      ],
+      [
+        "SysResourcesService.java",
+        "ResourceConditionVO.java"
+      ],
+      [
+        "SysResourcesService.java",
+        "Resources.java"
+      ],
+      [
+        "SysResourcesService.java",
+        "SysResources.java"
+      ],
+      [
+        "SysResourcesServiceImpl.java",
+        "ResourceConditionVO.java"
+      ],
+      [
+        "SysResourcesServiceImpl.java",
+        "Resources.java"
+      ],
+      [
+        "SysResourcesServiceImpl.java",
+        "SysResourceMapper.java"
+      ],
+      [
+        "SysResourcesServiceImpl.java",
+        "SysResources.java"
+      ],
+      [
+        "SysResourcesServiceImpl.java",
+        "SysResourcesService.java"
+      ],
+      [
+        "SysRole.java",
+        "AbstractDO.java"
+      ],
+      [
+        "SysRole.java",
+        "Excel.java"
+      ],
+      [
+        "SysRoleMapper.java",
+        "BaseMapper.java"
+      ],
+      [
+        "SysRoleMapper.java",
+        "RoleConditionVO.java"
+      ],
+      [
+        "SysRoleMapper.java",
+        "SysRole.java"
+      ],
+      [
+        "SysRoleResources.java",
+        "AbstractDO.java"
+      ],
+      [
+        "SysRoleResourcesMapper.java",
+        "BaseMapper.java"
+      ],
+      [
+        "SysRoleResourcesMapper.java",
+        "SysRoleResources.java"
+      ],
+      [
+        "SysRoleResourcesService.java",
+        "AbstractService.java"
+      ],
+      [
+        "SysRoleResourcesService.java",
+        "RoleResources.java"
+      ],
+      [
+        "SysRoleResourcesServiceImpl.java",
+        "RoleResources.java"
+      ],
+      [
+        "SysRoleResourcesServiceImpl.java",
+        "SysRoleResources.java"
+      ],
+      [
+        "SysRoleResourcesServiceImpl.java",
+        "SysRoleResourcesMapper.java"
+      ],
+      [
+        "SysRoleResourcesServiceImpl.java",
+        "SysRoleResourcesService.java"
+      ],
+      [
+        "SysRoleService.java",
+        "AbstractService.java"
+      ],
+      [
+        "SysRoleService.java",
+        "Role.java"
+      ],
+      [
+        "SysRoleService.java",
+        "RoleConditionVO.java"
+      ],
+      [
+        "SysRoleService.java",
+        "SysRole.java"
+      ],
+      [
+        "SysRoleServiceImpl.java",
+        "Role.java"
+      ],
+      [
+        "SysRoleServiceImpl.java",
+        "RoleConditionVO.java"
+      ],
+      [
+        "SysRoleServiceImpl.java",
+        "SysRole.java"
+      ],
+      [
+        "SysRoleServiceImpl.java",
+        "SysRoleMapper.java"
+      ],
+      [
+        "SysRoleServiceImpl.java",
+        "SysRoleService.java"
+      ],
+      [
+        "SysUser.java",
+        "AbstractDO.java"
+      ],
+      [
+        "SysUser.java",
+        "Excel.java"
+      ],
+      [
+        "SysUserMapper.java",
+        "BaseMapper.java"
+      ],
+      [
+        "SysUserMapper.java",
+        "SysUser.java"
+      ],
+      [
+        "SysUserMapper.java",
+        "User.java"
+      ],
+      [
+        "SysUserMapper.java",
+        "UserConditionVO.java"
+      ],
+      [
+        "SysUserRole.java",
+        "AbstractDO.java"
+      ],
+      [
+        "SysUserRoleMapper.java",
+        "BaseMapper.java"
+      ],
+      [
+        "SysUserRoleMapper.java",
+        "SysUserRole.java"
+      ],
+      [
+        "SysUserRoleService.java",
+        "AbstractService.java"
+      ],
+      [
+        "SysUserRoleService.java",
+        "UserRole.java"
+      ],
+      [
+        "SysUserRoleServiceImpl.java",
+        "SysUserRole.java"
+      ],
+      [
+        "SysUserRoleServiceImpl.java",
+        "SysUserRoleMapper.java"
+      ],
+      [
+        "SysUserRoleServiceImpl.java",
+        "SysUserRoleService.java"
+      ],
+      [
+        "SysUserRoleServiceImpl.java",
+        "UserRole.java"
+      ],
+      [
+        "SysUserService.java",
+        "AbstractService.java"
+      ],
+      [
+        "SysUserService.java",
+        "SysUser.java"
+      ],
+      [
+        "SysUserService.java",
+        "User.java"
+      ],
+      [
+        "SysUserService.java",
+        "UserConditionVO.java"
+      ],
+      [
+        "SysUserServiceImpl.java",
+        "IpUtil.java"
+      ],
+      [
+        "SysUserServiceImpl.java",
+        "PasswordUtil.java"
+      ],
+      [
+        "SysUserServiceImpl.java",
+        "RequestHolder.java"
+      ],
+      [
+        "SysUserServiceImpl.java",
+        "SysRoleService.java"
+      ],
+      [
+        "SysUserServiceImpl.java",
+        "SysUser.java"
+      ],
+      [
+        "SysUserServiceImpl.java",
+        "SysUserMapper.java"
+      ],
+      [
+        "SysUserServiceImpl.java",
+        "SysUserService.java"
+      ],
+      [
+        "SysUserServiceImpl.java",
+        "User.java"
+      ],
+      [
+        "SysUserServiceImpl.java",
+        "UserConditionVO.java"
+      ],
+      [
+        "SysUserServiceImpl.java",
+        "UserStatusEnum.java"
+      ],
+      [
+        "SysUserServiceImpl.java",
+        "ZhydException.java"
+      ],
+      [
+        "User.java",
+        "AbstractBO.java"
+      ],
+      [
+        "User.java",
+        "PasswordUtil.java"
+      ],
+      [
+        "User.java",
+        "SysUser.java"
+      ],
+      [
+        "User.java",
+        "UserGenderEnum.java"
+      ],
+      [
+        "User.java",
+        "UserStatusEnum.java"
+      ],
+      [
+        "User.java",
+        "UserTypeEnum.java"
+      ],
+      [
+        "UserConditionVO.java",
+        "BaseConditionVO.java"
+      ],
+      [
+        "UserConditionVO.java",
+        "User.java"
+      ],
+      [
+        "UserRole.java",
+        "SysUserRole.java"
+      ],
+      [
+        "WebMvcConfig.java",
+        "RememberAuthenticationInterceptor.java"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {},
+    "deep_read_count": 0,
+    "total_files": 102,
+    "cost_saved_ratio": 1.0
+  }
+}

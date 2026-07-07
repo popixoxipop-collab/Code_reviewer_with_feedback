@@ -1,0 +1,1928 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmpdhua18b2/off-coupon",
+  "total_source_files": 188,
+  "tier_a_structural": {
+    "fan_in": {
+      "locustfile-sync-issue.py": 0,
+      "locustfile-async-issue.py": 0,
+      "locustfile-hello.py": 0,
+      "OffcouponApplicationTests.java": 0,
+      "TimeZoneTest.java": 0,
+      "QueryTest.java": 0,
+      "IssueRequestParameterTest.java": 0,
+      "OrderProductRequestTest.java": 0,
+      "MemberRepositoryTest.java": 0,
+      "BCryptPasswordEncryptorTest.java": 0,
+      "SecurityTest.java": 0,
+      "SetupInitializer.java": 9,
+      "DistributeLockExecutorWithRedissonTest.java": 0,
+      "DistributeLockExecutorWithNamedLockTest.java": 0,
+      "DistributeLockExecutorWithLettuceTest.java": 0,
+      "MemberControllerTest.java": 0,
+      "CouponIssueControllerTest.java": 0,
+      "PositiveLongTest.java": 0,
+      "MemberServiceTest.java": 0,
+      "StatisticsServiceTest.java": 0,
+      "CouponIssueRequestServiceTest.java": 0,
+      "AsyncCouponIssueServiceTest.java": 0,
+      "CouponIssueRedisServiceTest.java": 0,
+      "LettuceLockCouponIssueConcurrencyTest.java": 0,
+      "NamedLockCouponIssueConcurrencyTest.java": 0,
+      "RedissonLockCouponIssueConcurrencyTest.java": 0,
+      "PessimisticLockCouponIssueConcurrencyTest.java": 0,
+      "DefaultCouponIssueServiceTest.java": 0,
+      "LettuceLockCouponIssueTest.java": 0,
+      "NamedLockCouponIssueTest.java": 0,
+      "RedissonLockCouponIssueTest.java": 0,
+      "PessimisticLockCouponIssueTest.java": 0,
+      "OrderServiceTest.java": 0,
+      "OrderServiceFixtures.java": 0,
+      "IssueRequestKeyTest.java": 0,
+      "CouponRedisEntityTest.java": 0,
+      "EventRedisEntityTest.java": 0,
+      "OrderCouponTest.java": 0,
+      "ProductTest.java": 0,
+      "OrderDetailTest.java": 0,
+      "EventTest.java": 0,
+      "CouponTest.java": 0,
+      "OffcouponApplication.java": 0,
+      "AllCouponsByMemberIdResponse.java": 2,
+      "AvailableCouponsByMemberIdResponse.java": 3,
+      "SignupMemberResponseDto.java": 1,
+      "MonthlyOrderStatistics.java": 3,
+      "OrderProductRequest.java": 4,
+      "StatisticsRequest.java": 3,
+      "IssueRequestParameter.java": 21,
+      "SignupMemberRequestDto.java": 6,
+      "CouponIssueMessageForQueue.java": 3,
+      "LettuceLockRepository.java": 2,
+      "RedisRepository.java": 6,
+      "OrderDetailRepository.java": 0,
+      "ProductRepository.java": 0,
+      "CouponIssueRepository.java": 11,
+      "EventRepository.java": 9,
+      "MemberRepository.java": 5,
+      "CouponRepository.java": 17,
+      "NamedLockRepository.java": 2,
+      "StatisticsRepository.java": 2,
+      "OrderCouponRepository.java": 0,
+      "CouponRabbitMQConstants.java": 0,
+      "LockMagicNumberConstants.java": 0,
+      "ResponseDTO.java": 36,
+      "DiscountUtils.java": 2,
+      "DateTimeUtils.java": 5,
+      "RedisKeyUtils.java": 0,
+      "BCryptPasswordEncryptor.java": 1,
+      "DatabaseConfig.java": 0,
+      "CustomAccessDeniedHandler.java": 0,
+      "CustomAuthenticationSuccessHandler.java": 0,
+      "CustomAuthenticationFailureHandler.java": 0,
+      "CustomAuthenticationProvider.java": 0,
+      "SecurityConfig.java": 0,
+      "MemberContext.java": 1,
+      "CustomUserDetailsService.java": 0,
+      "SessionConfig.java": 0,
+      "CacheConfig.java": 0,
+      "RabbitMqConfig.java": 0,
+      "RedisPublisher.java": 1,
+      "DistributeLockExecutorWithLettuce.java": 2,
+      "DistributeLockExecutorWithNamedLock.java": 2,
+      "DistributeLockExecutorWithRedisson.java": 3,
+      "ScheduleRunner.java": 1,
+      "DynamicScheduler.java": 2,
+      "ConsumeMqScheduler.java": 1,
+      "UpdateTotalCouponIssueCntScheduler.java": 1,
+      "MessageQueueCountChecker.java": 1,
+      "Producer.java": 1,
+      "CouponIssueController.java": 0,
+      "MyPageController.java": 0,
+      "OrderController.java": 0,
+      "MemberController.java": 0,
+      "HomeController.java": 0,
+      "SseApiController.java": 0,
+      "StatisticsController.java": 0,
+      "StrictPositiveBigDecimal.java": 1,
+      "PositiveLong.java": 23,
+      "PositiveBigDecimal.java": 2,
+      "StatisticsService.java": 1,
+      "MemberService.java": 4,
+      "SseApiService.java": 1,
+      "CouponCacheServiceImpl.java": 0,
+      "CouponCacheService.java": 1,
+      "EventCacheService.java": 2,
+      "MyPageService.java": 1,
+      "CouponIssueRequestService.java": 2,
+      "AsyncCouponIssueService.java": 1,
+      "CouponIssueRedisService.java": 0,
+      "EventAndCouponCache.java": 2,
+      "CouponIssueConsumer.java": 2,
+      "CouponIssueMessageHandler.java": 0,
+      "RedissonLockHandler.java": 0,
+      "NamedLockCouponIssue.java": 1,
+      "LettuceLockCouponIssue.java": 1,
+      "PessimisticLockCouponIssue.java": 1,
+      "RedissonLockCouponIssue.java": 1,
+      "CouponIssueFacade.java": 0,
+      "CouponIssueTransactionalService.java": 0,
+      "DefaultCouponIssueService.java": 0,
+      "OrderService.java": 1,
+      "MonthlyOrderStatisticsVo.java": 4,
+      "MonthlyStatisticsParameterVo.java": 2,
+      "CouponIssuesAreActiveVo.java": 4,
+      "CouponValidationPeriodVo.java": 4,
+      "MemberIdProductIdNowVo.java": 3,
+      "AvailableCouponsByMemberIdVo.java": 5,
+      "CountByCouponIdVo.java": 2,
+      "UpdateTotalIssuedQuantityVo.java": 2,
+      "CouponIssueCheckVo.java": 3,
+      "AllCouponsByMemberIdVo.java": 2,
+      "SseMessage.java": 1,
+      "SseConnectionPool.java": 1,
+      "IssueRequestKey.java": 1,
+      "CouponRedisEntity.java": 4,
+      "EventRedisEntity.java": 4,
+      "CouponType.java": 2,
+      "Product.java": 3,
+      "CouponIssue.java": 5,
+      "DiscountType.java": 7,
+      "OrderDetail.java": 2,
+      "Event.java": 4,
+      "Coupon.java": 14,
+      "Member.java": 6,
+      "CouponStatus.java": 6,
+      "Role.java": 4,
+      "OrderCoupon.java": 1,
+      "TimeParams.java": 5,
+      "DiscountParams.java": 2,
+      "CouponParams.java": 2,
+      "EventPeriodAndTimeParams.java": 2,
+      "AppliedCouponInfo.java": 4,
+      "OrderInfo.java": 3,
+      "AvailableCouponInfo.java": 2,
+      "SseEmitterException.java": 1,
+      "RabbitMqException.java": 1,
+      "GlobalExceptionHandler.java": 0,
+      "CustomException.java": 13,
+      "JsonParsingException.java": 1,
+      "StatisticsErrorMessage.java": 0,
+      "LocalDateBadRequestException.java": 2,
+      "StatisticsExceptionHandler.java": 0,
+      "MemberErrorMessage.java": 0,
+      "MemberNotFoundException.java": 2,
+      "MemberExceptionHandler.java": 0,
+      "MemberBadRequestException.java": 2,
+      "CouponErrorMessage.java": 0,
+      "CouponNotFoundException.java": 10,
+      "DuplicatedCouponException.java": 5,
+      "CouponExceptionHandler.java": 1,
+      "CouponQuantityException.java": 4,
+      "CouponIssueException.java": 1,
+      "CouponUsageInvalidPeriodException.java": 2,
+      "CouponStatusException.java": 2,
+      "ProductNotFoundException.java": 2,
+      "ProductExceptionHandler.java": 0,
+      "ProductErrorMessage.java": 0,
+      "NonPositiveValueException.java": 11,
+      "InvalidDiscountAmountException.java": 2,
+      "EventNotFoundException.java": 7,
+      "EventPeriodException.java": 3,
+      "EventErrorMessage.java": 0,
+      "EventExceptionHandler.java": 1,
+      "EventTimeException.java": 3,
+      "PasswordValidator.java": 0,
+      "Password.java": 1
+    },
+    "zero_fan_in_files": [
+      "locustfile-sync-issue.py",
+      "locustfile-async-issue.py",
+      "locustfile-hello.py",
+      "OffcouponApplicationTests.java",
+      "TimeZoneTest.java",
+      "QueryTest.java",
+      "IssueRequestParameterTest.java",
+      "OrderProductRequestTest.java",
+      "MemberRepositoryTest.java",
+      "BCryptPasswordEncryptorTest.java",
+      "SecurityTest.java",
+      "DistributeLockExecutorWithRedissonTest.java",
+      "DistributeLockExecutorWithNamedLockTest.java",
+      "DistributeLockExecutorWithLettuceTest.java",
+      "MemberControllerTest.java",
+      "CouponIssueControllerTest.java",
+      "PositiveLongTest.java",
+      "MemberServiceTest.java",
+      "StatisticsServiceTest.java",
+      "CouponIssueRequestServiceTest.java",
+      "AsyncCouponIssueServiceTest.java",
+      "CouponIssueRedisServiceTest.java",
+      "LettuceLockCouponIssueConcurrencyTest.java",
+      "NamedLockCouponIssueConcurrencyTest.java",
+      "RedissonLockCouponIssueConcurrencyTest.java",
+      "PessimisticLockCouponIssueConcurrencyTest.java",
+      "DefaultCouponIssueServiceTest.java",
+      "LettuceLockCouponIssueTest.java",
+      "NamedLockCouponIssueTest.java",
+      "RedissonLockCouponIssueTest.java",
+      "PessimisticLockCouponIssueTest.java",
+      "OrderServiceTest.java",
+      "OrderServiceFixtures.java",
+      "IssueRequestKeyTest.java",
+      "CouponRedisEntityTest.java",
+      "EventRedisEntityTest.java",
+      "OrderCouponTest.java",
+      "ProductTest.java",
+      "OrderDetailTest.java",
+      "EventTest.java",
+      "CouponTest.java",
+      "OffcouponApplication.java",
+      "OrderDetailRepository.java",
+      "ProductRepository.java",
+      "OrderCouponRepository.java",
+      "CouponRabbitMQConstants.java",
+      "LockMagicNumberConstants.java",
+      "RedisKeyUtils.java",
+      "DatabaseConfig.java",
+      "CustomAccessDeniedHandler.java",
+      "CustomAuthenticationSuccessHandler.java",
+      "CustomAuthenticationFailureHandler.java",
+      "CustomAuthenticationProvider.java",
+      "SecurityConfig.java",
+      "CustomUserDetailsService.java",
+      "SessionConfig.java",
+      "CacheConfig.java",
+      "RabbitMqConfig.java",
+      "CouponIssueController.java",
+      "MyPageController.java",
+      "OrderController.java",
+      "MemberController.java",
+      "HomeController.java",
+      "SseApiController.java",
+      "StatisticsController.java",
+      "CouponCacheServiceImpl.java",
+      "CouponIssueRedisService.java",
+      "CouponIssueMessageHandler.java",
+      "RedissonLockHandler.java",
+      "CouponIssueFacade.java",
+      "CouponIssueTransactionalService.java",
+      "DefaultCouponIssueService.java",
+      "GlobalExceptionHandler.java",
+      "StatisticsErrorMessage.java",
+      "StatisticsExceptionHandler.java",
+      "MemberErrorMessage.java",
+      "MemberExceptionHandler.java",
+      "CouponErrorMessage.java",
+      "ProductExceptionHandler.java",
+      "ProductErrorMessage.java",
+      "EventErrorMessage.java",
+      "PasswordValidator.java"
+    ],
+    "edges": [
+      [
+        "AllCouponsByMemberIdResponse.java",
+        "AllCouponsByMemberIdVo.java"
+      ],
+      [
+        "AllCouponsByMemberIdResponse.java",
+        "CouponStatus.java"
+      ],
+      [
+        "AllCouponsByMemberIdResponse.java",
+        "DiscountUtils.java"
+      ],
+      [
+        "AllCouponsByMemberIdVo.java",
+        "CouponStatus.java"
+      ],
+      [
+        "AllCouponsByMemberIdVo.java",
+        "DiscountType.java"
+      ],
+      [
+        "AppliedCouponInfo.java",
+        "Coupon.java"
+      ],
+      [
+        "AppliedCouponInfo.java",
+        "InvalidDiscountAmountException.java"
+      ],
+      [
+        "AppliedCouponInfo.java",
+        "PositiveLong.java"
+      ],
+      [
+        "AppliedCouponInfo.java",
+        "Product.java"
+      ],
+      [
+        "AsyncCouponIssueService.java",
+        "CouponCacheService.java"
+      ],
+      [
+        "AsyncCouponIssueService.java",
+        "CouponIssueMessageForQueue.java"
+      ],
+      [
+        "AsyncCouponIssueService.java",
+        "CouponRedisEntity.java"
+      ],
+      [
+        "AsyncCouponIssueService.java",
+        "EventAndCouponCache.java"
+      ],
+      [
+        "AsyncCouponIssueService.java",
+        "EventCacheService.java"
+      ],
+      [
+        "AsyncCouponIssueService.java",
+        "EventRedisEntity.java"
+      ],
+      [
+        "AsyncCouponIssueService.java",
+        "IssueRequestKey.java"
+      ],
+      [
+        "AsyncCouponIssueService.java",
+        "IssueRequestParameter.java"
+      ],
+      [
+        "AsyncCouponIssueService.java",
+        "PositiveLong.java"
+      ],
+      [
+        "AsyncCouponIssueService.java",
+        "Producer.java"
+      ],
+      [
+        "AsyncCouponIssueService.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "AsyncCouponIssueServiceTest.java",
+        "CouponIssueRepository.java"
+      ],
+      [
+        "AsyncCouponIssueServiceTest.java",
+        "CouponNotFoundException.java"
+      ],
+      [
+        "AsyncCouponIssueServiceTest.java",
+        "CouponQuantityException.java"
+      ],
+      [
+        "AsyncCouponIssueServiceTest.java",
+        "CouponRepository.java"
+      ],
+      [
+        "AsyncCouponIssueServiceTest.java",
+        "DuplicatedCouponException.java"
+      ],
+      [
+        "AsyncCouponIssueServiceTest.java",
+        "EventRepository.java"
+      ],
+      [
+        "AsyncCouponIssueServiceTest.java",
+        "IssueRequestParameter.java"
+      ],
+      [
+        "AsyncCouponIssueServiceTest.java",
+        "PositiveLong.java"
+      ],
+      [
+        "AsyncCouponIssueServiceTest.java",
+        "RedisRepository.java"
+      ],
+      [
+        "AsyncCouponIssueServiceTest.java",
+        "SetupInitializer.java"
+      ],
+      [
+        "AvailableCouponInfo.java",
+        "AvailableCouponsByMemberIdVo.java"
+      ],
+      [
+        "AvailableCouponInfo.java",
+        "CouponStatus.java"
+      ],
+      [
+        "AvailableCouponInfo.java",
+        "DiscountType.java"
+      ],
+      [
+        "AvailableCouponInfo.java",
+        "DiscountUtils.java"
+      ],
+      [
+        "AvailableCouponsByMemberIdResponse.java",
+        "AvailableCouponInfo.java"
+      ],
+      [
+        "AvailableCouponsByMemberIdResponse.java",
+        "CouponStatus.java"
+      ],
+      [
+        "AvailableCouponsByMemberIdVo.java",
+        "CouponStatus.java"
+      ],
+      [
+        "AvailableCouponsByMemberIdVo.java",
+        "DiscountType.java"
+      ],
+      [
+        "ConsumeMqScheduler.java",
+        "CouponIssueConsumer.java"
+      ],
+      [
+        "ConsumeMqScheduler.java",
+        "DynamicScheduler.java"
+      ],
+      [
+        "Coupon.java",
+        "CouponParams.java"
+      ],
+      [
+        "Coupon.java",
+        "CouponQuantityException.java"
+      ],
+      [
+        "Coupon.java",
+        "DiscountParams.java"
+      ],
+      [
+        "Coupon.java",
+        "TimeParams.java"
+      ],
+      [
+        "CouponCacheService.java",
+        "CouponRedisEntity.java"
+      ],
+      [
+        "CouponCacheServiceImpl.java",
+        "Coupon.java"
+      ],
+      [
+        "CouponCacheServiceImpl.java",
+        "CouponNotFoundException.java"
+      ],
+      [
+        "CouponCacheServiceImpl.java",
+        "CouponRedisEntity.java"
+      ],
+      [
+        "CouponCacheServiceImpl.java",
+        "CouponRepository.java"
+      ],
+      [
+        "CouponExceptionHandler.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "CouponIssue.java",
+        "DateTimeUtils.java"
+      ],
+      [
+        "CouponIssueConsumer.java",
+        "CouponIssueMessageForQueue.java"
+      ],
+      [
+        "CouponIssueConsumer.java",
+        "MessageQueueCountChecker.java"
+      ],
+      [
+        "CouponIssueConsumer.java",
+        "RedisPublisher.java"
+      ],
+      [
+        "CouponIssueConsumer.java",
+        "SseMessage.java"
+      ],
+      [
+        "CouponIssueController.java",
+        "CouponIssueRequestService.java"
+      ],
+      [
+        "CouponIssueController.java",
+        "IssueRequestParameter.java"
+      ],
+      [
+        "CouponIssueController.java",
+        "PositiveLong.java"
+      ],
+      [
+        "CouponIssueController.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "CouponIssueControllerTest.java",
+        "CouponExceptionHandler.java"
+      ],
+      [
+        "CouponIssueControllerTest.java",
+        "CouponIssueRequestService.java"
+      ],
+      [
+        "CouponIssueControllerTest.java",
+        "CouponNotFoundException.java"
+      ],
+      [
+        "CouponIssueControllerTest.java",
+        "EventExceptionHandler.java"
+      ],
+      [
+        "CouponIssueControllerTest.java",
+        "EventNotFoundException.java"
+      ],
+      [
+        "CouponIssueControllerTest.java",
+        "EventPeriodException.java"
+      ],
+      [
+        "CouponIssueControllerTest.java",
+        "EventTimeException.java"
+      ],
+      [
+        "CouponIssueControllerTest.java",
+        "IssueRequestParameter.java"
+      ],
+      [
+        "CouponIssueControllerTest.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "CouponIssueException.java",
+        "CustomException.java"
+      ],
+      [
+        "CouponIssueFacade.java",
+        "IssueRequestParameter.java"
+      ],
+      [
+        "CouponIssueFacade.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "CouponIssueMessageHandler.java",
+        "CountByCouponIdVo.java"
+      ],
+      [
+        "CouponIssueMessageHandler.java",
+        "Coupon.java"
+      ],
+      [
+        "CouponIssueMessageHandler.java",
+        "CouponIssue.java"
+      ],
+      [
+        "CouponIssueMessageHandler.java",
+        "CouponIssueException.java"
+      ],
+      [
+        "CouponIssueMessageHandler.java",
+        "CouponIssueMessageForQueue.java"
+      ],
+      [
+        "CouponIssueMessageHandler.java",
+        "CouponIssueRepository.java"
+      ],
+      [
+        "CouponIssueMessageHandler.java",
+        "CouponRepository.java"
+      ],
+      [
+        "CouponIssueMessageHandler.java",
+        "UpdateTotalIssuedQuantityVo.java"
+      ],
+      [
+        "CouponIssueRedisService.java",
+        "CouponQuantityException.java"
+      ],
+      [
+        "CouponIssueRedisService.java",
+        "DuplicatedCouponException.java"
+      ],
+      [
+        "CouponIssueRedisService.java",
+        "EventAndCouponCache.java"
+      ],
+      [
+        "CouponIssueRedisService.java",
+        "RedisRepository.java"
+      ],
+      [
+        "CouponIssueRedisServiceTest.java",
+        "RedisRepository.java"
+      ],
+      [
+        "CouponIssueRepository.java",
+        "AllCouponsByMemberIdVo.java"
+      ],
+      [
+        "CouponIssueRepository.java",
+        "AvailableCouponsByMemberIdVo.java"
+      ],
+      [
+        "CouponIssueRepository.java",
+        "CountByCouponIdVo.java"
+      ],
+      [
+        "CouponIssueRepository.java",
+        "CouponIssue.java"
+      ],
+      [
+        "CouponIssueRepository.java",
+        "CouponIssueCheckVo.java"
+      ],
+      [
+        "CouponIssueRepository.java",
+        "CouponIssuesAreActiveVo.java"
+      ],
+      [
+        "CouponIssueRepository.java",
+        "MemberIdProductIdNowVo.java"
+      ],
+      [
+        "CouponIssueRequestService.java",
+        "AsyncCouponIssueService.java"
+      ],
+      [
+        "CouponIssueRequestService.java",
+        "IssueRequestParameter.java"
+      ],
+      [
+        "CouponIssueRequestService.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "CouponIssueRequestServiceTest.java",
+        "CouponIssueRepository.java"
+      ],
+      [
+        "CouponIssueRequestServiceTest.java",
+        "CouponRepository.java"
+      ],
+      [
+        "CouponIssueRequestServiceTest.java",
+        "EventRepository.java"
+      ],
+      [
+        "CouponIssueRequestServiceTest.java",
+        "IssueRequestParameter.java"
+      ],
+      [
+        "CouponIssueRequestServiceTest.java",
+        "PositiveLong.java"
+      ],
+      [
+        "CouponIssueRequestServiceTest.java",
+        "RedisRepository.java"
+      ],
+      [
+        "CouponIssueRequestServiceTest.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "CouponIssueRequestServiceTest.java",
+        "SetupInitializer.java"
+      ],
+      [
+        "CouponIssueTransactionalService.java",
+        "Coupon.java"
+      ],
+      [
+        "CouponIssueTransactionalService.java",
+        "CouponIssue.java"
+      ],
+      [
+        "CouponIssueTransactionalService.java",
+        "CouponIssueCheckVo.java"
+      ],
+      [
+        "CouponIssueTransactionalService.java",
+        "CouponIssueRepository.java"
+      ],
+      [
+        "CouponIssueTransactionalService.java",
+        "CouponRepository.java"
+      ],
+      [
+        "CouponIssueTransactionalService.java",
+        "DuplicatedCouponException.java"
+      ],
+      [
+        "CouponNotFoundException.java",
+        "CustomException.java"
+      ],
+      [
+        "CouponParams.java",
+        "CouponType.java"
+      ],
+      [
+        "CouponQuantityException.java",
+        "CustomException.java"
+      ],
+      [
+        "CouponRedisEntity.java",
+        "Coupon.java"
+      ],
+      [
+        "CouponRedisEntityTest.java",
+        "Coupon.java"
+      ],
+      [
+        "CouponRedisEntityTest.java",
+        "CouponType.java"
+      ],
+      [
+        "CouponRedisEntityTest.java",
+        "DiscountType.java"
+      ],
+      [
+        "CouponRepository.java",
+        "Coupon.java"
+      ],
+      [
+        "CouponRepository.java",
+        "CouponNotFoundException.java"
+      ],
+      [
+        "CouponRepository.java",
+        "CouponValidationPeriodVo.java"
+      ],
+      [
+        "CouponRepository.java",
+        "UpdateTotalIssuedQuantityVo.java"
+      ],
+      [
+        "CouponStatusException.java",
+        "CustomException.java"
+      ],
+      [
+        "CouponTest.java",
+        "CouponParams.java"
+      ],
+      [
+        "CouponTest.java",
+        "CouponQuantityException.java"
+      ],
+      [
+        "CouponTest.java",
+        "DiscountParams.java"
+      ],
+      [
+        "CouponUsageInvalidPeriodException.java",
+        "CustomException.java"
+      ],
+      [
+        "CustomAccessDeniedHandler.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "CustomAuthenticationFailureHandler.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "CustomAuthenticationProvider.java",
+        "MemberContext.java"
+      ],
+      [
+        "CustomAuthenticationSuccessHandler.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "CustomUserDetailsService.java",
+        "Member.java"
+      ],
+      [
+        "CustomUserDetailsService.java",
+        "MemberRepository.java"
+      ],
+      [
+        "DefaultCouponIssueService.java",
+        "Coupon.java"
+      ],
+      [
+        "DefaultCouponIssueService.java",
+        "CouponIssue.java"
+      ],
+      [
+        "DefaultCouponIssueService.java",
+        "CouponIssueCheckVo.java"
+      ],
+      [
+        "DefaultCouponIssueService.java",
+        "CouponIssueRepository.java"
+      ],
+      [
+        "DefaultCouponIssueService.java",
+        "CouponRepository.java"
+      ],
+      [
+        "DefaultCouponIssueService.java",
+        "DuplicatedCouponException.java"
+      ],
+      [
+        "DefaultCouponIssueService.java",
+        "EventCacheService.java"
+      ],
+      [
+        "DefaultCouponIssueService.java",
+        "EventRedisEntity.java"
+      ],
+      [
+        "DefaultCouponIssueService.java",
+        "IssueRequestParameter.java"
+      ],
+      [
+        "DefaultCouponIssueService.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "DefaultCouponIssueServiceTest.java",
+        "CouponIssue.java"
+      ],
+      [
+        "DefaultCouponIssueServiceTest.java",
+        "CouponIssueRepository.java"
+      ],
+      [
+        "DefaultCouponIssueServiceTest.java",
+        "CouponNotFoundException.java"
+      ],
+      [
+        "DefaultCouponIssueServiceTest.java",
+        "CouponRepository.java"
+      ],
+      [
+        "DefaultCouponIssueServiceTest.java",
+        "DuplicatedCouponException.java"
+      ],
+      [
+        "DefaultCouponIssueServiceTest.java",
+        "EventNotFoundException.java"
+      ],
+      [
+        "DefaultCouponIssueServiceTest.java",
+        "EventRepository.java"
+      ],
+      [
+        "DefaultCouponIssueServiceTest.java",
+        "IssueRequestParameter.java"
+      ],
+      [
+        "DefaultCouponIssueServiceTest.java",
+        "PositiveLong.java"
+      ],
+      [
+        "DefaultCouponIssueServiceTest.java",
+        "RedisRepository.java"
+      ],
+      [
+        "DefaultCouponIssueServiceTest.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "DefaultCouponIssueServiceTest.java",
+        "SetupInitializer.java"
+      ],
+      [
+        "DiscountParams.java",
+        "DiscountType.java"
+      ],
+      [
+        "DiscountUtils.java",
+        "DiscountType.java"
+      ],
+      [
+        "DistributeLockExecutorWithLettuce.java",
+        "LettuceLockRepository.java"
+      ],
+      [
+        "DistributeLockExecutorWithLettuceTest.java",
+        "DistributeLockExecutorWithLettuce.java"
+      ],
+      [
+        "DistributeLockExecutorWithLettuceTest.java",
+        "LettuceLockRepository.java"
+      ],
+      [
+        "DistributeLockExecutorWithNamedLock.java",
+        "NamedLockRepository.java"
+      ],
+      [
+        "DistributeLockExecutorWithNamedLockTest.java",
+        "DistributeLockExecutorWithNamedLock.java"
+      ],
+      [
+        "DistributeLockExecutorWithNamedLockTest.java",
+        "NamedLockRepository.java"
+      ],
+      [
+        "DistributeLockExecutorWithRedissonTest.java",
+        "DistributeLockExecutorWithRedisson.java"
+      ],
+      [
+        "DuplicatedCouponException.java",
+        "CustomException.java"
+      ],
+      [
+        "Event.java",
+        "DateTimeUtils.java"
+      ],
+      [
+        "Event.java",
+        "EventPeriodAndTimeParams.java"
+      ],
+      [
+        "Event.java",
+        "TimeParams.java"
+      ],
+      [
+        "EventAndCouponCache.java",
+        "CouponRedisEntity.java"
+      ],
+      [
+        "EventAndCouponCache.java",
+        "EventRedisEntity.java"
+      ],
+      [
+        "EventCacheService.java",
+        "Event.java"
+      ],
+      [
+        "EventCacheService.java",
+        "EventNotFoundException.java"
+      ],
+      [
+        "EventCacheService.java",
+        "EventRedisEntity.java"
+      ],
+      [
+        "EventCacheService.java",
+        "EventRepository.java"
+      ],
+      [
+        "EventExceptionHandler.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "EventNotFoundException.java",
+        "CustomException.java"
+      ],
+      [
+        "EventPeriodException.java",
+        "CustomException.java"
+      ],
+      [
+        "EventRedisEntity.java",
+        "Event.java"
+      ],
+      [
+        "EventRedisEntity.java",
+        "EventPeriodException.java"
+      ],
+      [
+        "EventRedisEntity.java",
+        "EventTimeException.java"
+      ],
+      [
+        "EventRedisEntityTest.java",
+        "Event.java"
+      ],
+      [
+        "EventRedisEntityTest.java",
+        "EventPeriodException.java"
+      ],
+      [
+        "EventRedisEntityTest.java",
+        "EventTimeException.java"
+      ],
+      [
+        "EventRepository.java",
+        "Event.java"
+      ],
+      [
+        "EventTest.java",
+        "EventPeriodAndTimeParams.java"
+      ],
+      [
+        "EventTimeException.java",
+        "CustomException.java"
+      ],
+      [
+        "GlobalExceptionHandler.java",
+        "NonPositiveValueException.java"
+      ],
+      [
+        "GlobalExceptionHandler.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "IssueRequestKey.java",
+        "PositiveLong.java"
+      ],
+      [
+        "IssueRequestKeyTest.java",
+        "NonPositiveValueException.java"
+      ],
+      [
+        "IssueRequestKeyTest.java",
+        "PositiveLong.java"
+      ],
+      [
+        "IssueRequestParameter.java",
+        "PositiveLong.java"
+      ],
+      [
+        "IssueRequestParameterTest.java",
+        "NonPositiveValueException.java"
+      ],
+      [
+        "IssueRequestParameterTest.java",
+        "PositiveLong.java"
+      ],
+      [
+        "LettuceLockCouponIssue.java",
+        "DistributeLockExecutorWithLettuce.java"
+      ],
+      [
+        "LettuceLockCouponIssue.java",
+        "IssueRequestParameter.java"
+      ],
+      [
+        "LettuceLockCouponIssue.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "LettuceLockCouponIssueConcurrencyTest.java",
+        "Coupon.java"
+      ],
+      [
+        "LettuceLockCouponIssueConcurrencyTest.java",
+        "CouponRepository.java"
+      ],
+      [
+        "LettuceLockCouponIssueConcurrencyTest.java",
+        "IssueRequestParameter.java"
+      ],
+      [
+        "LettuceLockCouponIssueConcurrencyTest.java",
+        "LettuceLockCouponIssue.java"
+      ],
+      [
+        "LettuceLockCouponIssueConcurrencyTest.java",
+        "PositiveLong.java"
+      ],
+      [
+        "LettuceLockCouponIssueTest.java",
+        "CouponIssueRepository.java"
+      ],
+      [
+        "LettuceLockCouponIssueTest.java",
+        "CouponNotFoundException.java"
+      ],
+      [
+        "LettuceLockCouponIssueTest.java",
+        "CouponRepository.java"
+      ],
+      [
+        "LettuceLockCouponIssueTest.java",
+        "EventNotFoundException.java"
+      ],
+      [
+        "LettuceLockCouponIssueTest.java",
+        "EventRepository.java"
+      ],
+      [
+        "LettuceLockCouponIssueTest.java",
+        "IssueRequestParameter.java"
+      ],
+      [
+        "LettuceLockCouponIssueTest.java",
+        "PositiveLong.java"
+      ],
+      [
+        "LettuceLockCouponIssueTest.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "LettuceLockCouponIssueTest.java",
+        "SetupInitializer.java"
+      ],
+      [
+        "LocalDateBadRequestException.java",
+        "CustomException.java"
+      ],
+      [
+        "Member.java",
+        "DateTimeUtils.java"
+      ],
+      [
+        "Member.java",
+        "TimeParams.java"
+      ],
+      [
+        "MemberBadRequestException.java",
+        "CustomException.java"
+      ],
+      [
+        "MemberContext.java",
+        "Member.java"
+      ],
+      [
+        "MemberController.java",
+        "MemberService.java"
+      ],
+      [
+        "MemberController.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "MemberController.java",
+        "SignupMemberRequestDto.java"
+      ],
+      [
+        "MemberControllerTest.java",
+        "MemberService.java"
+      ],
+      [
+        "MemberControllerTest.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "MemberControllerTest.java",
+        "Role.java"
+      ],
+      [
+        "MemberControllerTest.java",
+        "SignupMemberRequestDto.java"
+      ],
+      [
+        "MemberExceptionHandler.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "MemberNotFoundException.java",
+        "CustomException.java"
+      ],
+      [
+        "MemberRepository.java",
+        "Member.java"
+      ],
+      [
+        "MemberRepository.java",
+        "MemberNotFoundException.java"
+      ],
+      [
+        "MemberRepositoryTest.java",
+        "Member.java"
+      ],
+      [
+        "MemberRepositoryTest.java",
+        "MemberRepository.java"
+      ],
+      [
+        "MemberRepositoryTest.java",
+        "Role.java"
+      ],
+      [
+        "MemberRepositoryTest.java",
+        "SetupInitializer.java"
+      ],
+      [
+        "MemberRepositoryTest.java",
+        "SignupMemberRequestDto.java"
+      ],
+      [
+        "MemberService.java",
+        "Member.java"
+      ],
+      [
+        "MemberService.java",
+        "MemberBadRequestException.java"
+      ],
+      [
+        "MemberService.java",
+        "MemberRepository.java"
+      ],
+      [
+        "MemberService.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "MemberService.java",
+        "SignupMemberRequestDto.java"
+      ],
+      [
+        "MemberService.java",
+        "SignupMemberResponseDto.java"
+      ],
+      [
+        "MemberServiceTest.java",
+        "MemberBadRequestException.java"
+      ],
+      [
+        "MemberServiceTest.java",
+        "MemberRepository.java"
+      ],
+      [
+        "MemberServiceTest.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "MemberServiceTest.java",
+        "Role.java"
+      ],
+      [
+        "MemberServiceTest.java",
+        "SignupMemberRequestDto.java"
+      ],
+      [
+        "MessageQueueCountChecker.java",
+        "RabbitMqException.java"
+      ],
+      [
+        "MonthlyOrderStatistics.java",
+        "MonthlyOrderStatisticsVo.java"
+      ],
+      [
+        "MyPageController.java",
+        "AllCouponsByMemberIdResponse.java"
+      ],
+      [
+        "MyPageController.java",
+        "MyPageService.java"
+      ],
+      [
+        "MyPageController.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "MyPageService.java",
+        "AllCouponsByMemberIdResponse.java"
+      ],
+      [
+        "MyPageService.java",
+        "CouponIssueRepository.java"
+      ],
+      [
+        "MyPageService.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "NamedLockCouponIssue.java",
+        "DistributeLockExecutorWithNamedLock.java"
+      ],
+      [
+        "NamedLockCouponIssue.java",
+        "IssueRequestParameter.java"
+      ],
+      [
+        "NamedLockCouponIssue.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "NamedLockCouponIssueConcurrencyTest.java",
+        "Coupon.java"
+      ],
+      [
+        "NamedLockCouponIssueConcurrencyTest.java",
+        "CouponRepository.java"
+      ],
+      [
+        "NamedLockCouponIssueConcurrencyTest.java",
+        "IssueRequestParameter.java"
+      ],
+      [
+        "NamedLockCouponIssueConcurrencyTest.java",
+        "NamedLockCouponIssue.java"
+      ],
+      [
+        "NamedLockCouponIssueConcurrencyTest.java",
+        "PositiveLong.java"
+      ],
+      [
+        "NamedLockCouponIssueTest.java",
+        "CouponIssueRepository.java"
+      ],
+      [
+        "NamedLockCouponIssueTest.java",
+        "CouponNotFoundException.java"
+      ],
+      [
+        "NamedLockCouponIssueTest.java",
+        "CouponRepository.java"
+      ],
+      [
+        "NamedLockCouponIssueTest.java",
+        "EventNotFoundException.java"
+      ],
+      [
+        "NamedLockCouponIssueTest.java",
+        "EventRepository.java"
+      ],
+      [
+        "NamedLockCouponIssueTest.java",
+        "IssueRequestParameter.java"
+      ],
+      [
+        "NamedLockCouponIssueTest.java",
+        "PositiveLong.java"
+      ],
+      [
+        "NamedLockCouponIssueTest.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "NamedLockCouponIssueTest.java",
+        "SetupInitializer.java"
+      ],
+      [
+        "OffcouponApplication.java",
+        "ScheduleRunner.java"
+      ],
+      [
+        "OrderController.java",
+        "AvailableCouponsByMemberIdResponse.java"
+      ],
+      [
+        "OrderController.java",
+        "OrderProductRequest.java"
+      ],
+      [
+        "OrderController.java",
+        "OrderService.java"
+      ],
+      [
+        "OrderController.java",
+        "PositiveLong.java"
+      ],
+      [
+        "OrderController.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "OrderCoupon.java",
+        "AppliedCouponInfo.java"
+      ],
+      [
+        "OrderCoupon.java",
+        "PositiveLong.java"
+      ],
+      [
+        "OrderCoupon.java",
+        "TimeParams.java"
+      ],
+      [
+        "OrderCouponRepository.java",
+        "OrderCoupon.java"
+      ],
+      [
+        "OrderCouponTest.java",
+        "AppliedCouponInfo.java"
+      ],
+      [
+        "OrderCouponTest.java",
+        "InvalidDiscountAmountException.java"
+      ],
+      [
+        "OrderCouponTest.java",
+        "NonPositiveValueException.java"
+      ],
+      [
+        "OrderDetail.java",
+        "DateTimeUtils.java"
+      ],
+      [
+        "OrderDetail.java",
+        "OrderInfo.java"
+      ],
+      [
+        "OrderDetail.java",
+        "PositiveBigDecimal.java"
+      ],
+      [
+        "OrderDetail.java",
+        "PositiveLong.java"
+      ],
+      [
+        "OrderDetail.java",
+        "TimeParams.java"
+      ],
+      [
+        "OrderDetailRepository.java",
+        "OrderDetail.java"
+      ],
+      [
+        "OrderDetailTest.java",
+        "AppliedCouponInfo.java"
+      ],
+      [
+        "OrderDetailTest.java",
+        "NonPositiveValueException.java"
+      ],
+      [
+        "OrderDetailTest.java",
+        "OrderInfo.java"
+      ],
+      [
+        "OrderInfo.java",
+        "Coupon.java"
+      ],
+      [
+        "OrderInfo.java",
+        "Product.java"
+      ],
+      [
+        "OrderProductRequest.java",
+        "PositiveLong.java"
+      ],
+      [
+        "OrderProductRequestTest.java",
+        "NonPositiveValueException.java"
+      ],
+      [
+        "OrderService.java",
+        "AppliedCouponInfo.java"
+      ],
+      [
+        "OrderService.java",
+        "AvailableCouponInfo.java"
+      ],
+      [
+        "OrderService.java",
+        "AvailableCouponsByMemberIdResponse.java"
+      ],
+      [
+        "OrderService.java",
+        "AvailableCouponsByMemberIdVo.java"
+      ],
+      [
+        "OrderService.java",
+        "CouponIssuesAreActiveVo.java"
+      ],
+      [
+        "OrderService.java",
+        "CouponStatusException.java"
+      ],
+      [
+        "OrderService.java",
+        "CouponUsageInvalidPeriodException.java"
+      ],
+      [
+        "OrderService.java",
+        "CouponValidationPeriodVo.java"
+      ],
+      [
+        "OrderService.java",
+        "MemberIdProductIdNowVo.java"
+      ],
+      [
+        "OrderService.java",
+        "OrderDetail.java"
+      ],
+      [
+        "OrderService.java",
+        "OrderInfo.java"
+      ],
+      [
+        "OrderService.java",
+        "OrderProductRequest.java"
+      ],
+      [
+        "OrderService.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "OrderServiceFixtures.java",
+        "AvailableCouponsByMemberIdVo.java"
+      ],
+      [
+        "OrderServiceFixtures.java",
+        "CouponIssuesAreActiveVo.java"
+      ],
+      [
+        "OrderServiceFixtures.java",
+        "CouponStatus.java"
+      ],
+      [
+        "OrderServiceFixtures.java",
+        "CouponValidationPeriodVo.java"
+      ],
+      [
+        "OrderServiceFixtures.java",
+        "DiscountType.java"
+      ],
+      [
+        "OrderServiceFixtures.java",
+        "OrderProductRequest.java"
+      ],
+      [
+        "OrderServiceTest.java",
+        "AvailableCouponsByMemberIdResponse.java"
+      ],
+      [
+        "OrderServiceTest.java",
+        "AvailableCouponsByMemberIdVo.java"
+      ],
+      [
+        "OrderServiceTest.java",
+        "CouponIssuesAreActiveVo.java"
+      ],
+      [
+        "OrderServiceTest.java",
+        "CouponStatusException.java"
+      ],
+      [
+        "OrderServiceTest.java",
+        "CouponUsageInvalidPeriodException.java"
+      ],
+      [
+        "OrderServiceTest.java",
+        "CouponValidationPeriodVo.java"
+      ],
+      [
+        "OrderServiceTest.java",
+        "MemberIdProductIdNowVo.java"
+      ],
+      [
+        "OrderServiceTest.java",
+        "MemberNotFoundException.java"
+      ],
+      [
+        "OrderServiceTest.java",
+        "OrderProductRequest.java"
+      ],
+      [
+        "OrderServiceTest.java",
+        "ProductNotFoundException.java"
+      ],
+      [
+        "OrderServiceTest.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "PessimisticLockCouponIssue.java",
+        "Coupon.java"
+      ],
+      [
+        "PessimisticLockCouponIssue.java",
+        "CouponNotFoundException.java"
+      ],
+      [
+        "PessimisticLockCouponIssue.java",
+        "CouponRepository.java"
+      ],
+      [
+        "PessimisticLockCouponIssue.java",
+        "IssueRequestParameter.java"
+      ],
+      [
+        "PessimisticLockCouponIssue.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "PessimisticLockCouponIssueConcurrencyTest.java",
+        "Coupon.java"
+      ],
+      [
+        "PessimisticLockCouponIssueConcurrencyTest.java",
+        "CouponRepository.java"
+      ],
+      [
+        "PessimisticLockCouponIssueConcurrencyTest.java",
+        "IssueRequestParameter.java"
+      ],
+      [
+        "PessimisticLockCouponIssueConcurrencyTest.java",
+        "PessimisticLockCouponIssue.java"
+      ],
+      [
+        "PessimisticLockCouponIssueConcurrencyTest.java",
+        "PositiveLong.java"
+      ],
+      [
+        "PessimisticLockCouponIssueTest.java",
+        "CouponIssueRepository.java"
+      ],
+      [
+        "PessimisticLockCouponIssueTest.java",
+        "CouponNotFoundException.java"
+      ],
+      [
+        "PessimisticLockCouponIssueTest.java",
+        "CouponRepository.java"
+      ],
+      [
+        "PessimisticLockCouponIssueTest.java",
+        "EventNotFoundException.java"
+      ],
+      [
+        "PessimisticLockCouponIssueTest.java",
+        "EventRepository.java"
+      ],
+      [
+        "PessimisticLockCouponIssueTest.java",
+        "IssueRequestParameter.java"
+      ],
+      [
+        "PessimisticLockCouponIssueTest.java",
+        "PositiveLong.java"
+      ],
+      [
+        "PessimisticLockCouponIssueTest.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "PessimisticLockCouponIssueTest.java",
+        "SetupInitializer.java"
+      ],
+      [
+        "PositiveBigDecimal.java",
+        "NonPositiveValueException.java"
+      ],
+      [
+        "PositiveLong.java",
+        "NonPositiveValueException.java"
+      ],
+      [
+        "PositiveLongTest.java",
+        "NonPositiveValueException.java"
+      ],
+      [
+        "Product.java",
+        "PositiveBigDecimal.java"
+      ],
+      [
+        "Product.java",
+        "PositiveLong.java"
+      ],
+      [
+        "Product.java",
+        "StrictPositiveBigDecimal.java"
+      ],
+      [
+        "ProductExceptionHandler.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "ProductNotFoundException.java",
+        "CustomException.java"
+      ],
+      [
+        "ProductRepository.java",
+        "Product.java"
+      ],
+      [
+        "ProductRepository.java",
+        "ProductNotFoundException.java"
+      ],
+      [
+        "ProductTest.java",
+        "NonPositiveValueException.java"
+      ],
+      [
+        "RedisPublisher.java",
+        "RedisRepository.java"
+      ],
+      [
+        "RedissonLockCouponIssue.java",
+        "DistributeLockExecutorWithRedisson.java"
+      ],
+      [
+        "RedissonLockCouponIssue.java",
+        "IssueRequestParameter.java"
+      ],
+      [
+        "RedissonLockCouponIssue.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "RedissonLockCouponIssueConcurrencyTest.java",
+        "Coupon.java"
+      ],
+      [
+        "RedissonLockCouponIssueConcurrencyTest.java",
+        "CouponRepository.java"
+      ],
+      [
+        "RedissonLockCouponIssueConcurrencyTest.java",
+        "IssueRequestParameter.java"
+      ],
+      [
+        "RedissonLockCouponIssueConcurrencyTest.java",
+        "PositiveLong.java"
+      ],
+      [
+        "RedissonLockCouponIssueConcurrencyTest.java",
+        "RedissonLockCouponIssue.java"
+      ],
+      [
+        "RedissonLockCouponIssueTest.java",
+        "CouponIssueRepository.java"
+      ],
+      [
+        "RedissonLockCouponIssueTest.java",
+        "CouponNotFoundException.java"
+      ],
+      [
+        "RedissonLockCouponIssueTest.java",
+        "CouponRepository.java"
+      ],
+      [
+        "RedissonLockCouponIssueTest.java",
+        "EventNotFoundException.java"
+      ],
+      [
+        "RedissonLockCouponIssueTest.java",
+        "EventRepository.java"
+      ],
+      [
+        "RedissonLockCouponIssueTest.java",
+        "IssueRequestParameter.java"
+      ],
+      [
+        "RedissonLockCouponIssueTest.java",
+        "PositiveLong.java"
+      ],
+      [
+        "RedissonLockCouponIssueTest.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "RedissonLockCouponIssueTest.java",
+        "SetupInitializer.java"
+      ],
+      [
+        "RedissonLockHandler.java",
+        "DistributeLockExecutorWithRedisson.java"
+      ],
+      [
+        "ScheduleRunner.java",
+        "ConsumeMqScheduler.java"
+      ],
+      [
+        "ScheduleRunner.java",
+        "UpdateTotalCouponIssueCntScheduler.java"
+      ],
+      [
+        "SecurityConfig.java",
+        "BCryptPasswordEncryptor.java"
+      ],
+      [
+        "SecurityTest.java",
+        "MemberService.java"
+      ],
+      [
+        "SecurityTest.java",
+        "SetupInitializer.java"
+      ],
+      [
+        "SetupInitializer.java",
+        "CouponRepository.java"
+      ],
+      [
+        "SetupInitializer.java",
+        "EventRepository.java"
+      ],
+      [
+        "SetupInitializer.java",
+        "MemberRepository.java"
+      ],
+      [
+        "SetupInitializer.java",
+        "MemberService.java"
+      ],
+      [
+        "SetupInitializer.java",
+        "SignupMemberRequestDto.java"
+      ],
+      [
+        "SignupMemberRequestDto.java",
+        "Password.java"
+      ],
+      [
+        "SignupMemberRequestDto.java",
+        "Role.java"
+      ],
+      [
+        "SignupMemberResponseDto.java",
+        "Member.java"
+      ],
+      [
+        "SseApiController.java",
+        "SseApiService.java"
+      ],
+      [
+        "SseApiService.java",
+        "SseConnectionPool.java"
+      ],
+      [
+        "SseConnectionPool.java",
+        "JsonParsingException.java"
+      ],
+      [
+        "SseConnectionPool.java",
+        "SseEmitterException.java"
+      ],
+      [
+        "StatisticsController.java",
+        "MonthlyOrderStatistics.java"
+      ],
+      [
+        "StatisticsController.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "StatisticsController.java",
+        "StatisticsRequest.java"
+      ],
+      [
+        "StatisticsController.java",
+        "StatisticsService.java"
+      ],
+      [
+        "StatisticsExceptionHandler.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "StatisticsRepository.java",
+        "MonthlyOrderStatisticsVo.java"
+      ],
+      [
+        "StatisticsRepository.java",
+        "MonthlyStatisticsParameterVo.java"
+      ],
+      [
+        "StatisticsService.java",
+        "LocalDateBadRequestException.java"
+      ],
+      [
+        "StatisticsService.java",
+        "MonthlyOrderStatistics.java"
+      ],
+      [
+        "StatisticsService.java",
+        "MonthlyOrderStatisticsVo.java"
+      ],
+      [
+        "StatisticsService.java",
+        "MonthlyStatisticsParameterVo.java"
+      ],
+      [
+        "StatisticsService.java",
+        "ResponseDTO.java"
+      ],
+      [
+        "StatisticsService.java",
+        "StatisticsRepository.java"
+      ],
+      [
+        "StatisticsService.java",
+        "StatisticsRequest.java"
+      ],
+      [
+        "StatisticsServiceTest.java",
+        "LocalDateBadRequestException.java"
+      ],
+      [
+        "StatisticsServiceTest.java",
+        "MonthlyOrderStatistics.java"
+      ],
+      [
+        "StatisticsServiceTest.java",
+        "MonthlyOrderStatisticsVo.java"
+      ],
+      [
+        "StatisticsServiceTest.java",
+        "StatisticsRepository.java"
+      ],
+      [
+        "StatisticsServiceTest.java",
+        "StatisticsRequest.java"
+      ],
+      [
+        "StrictPositiveBigDecimal.java",
+        "NonPositiveValueException.java"
+      ],
+      [
+        "TimeZoneTest.java",
+        "DateTimeUtils.java"
+      ],
+      [
+        "UpdateTotalCouponIssueCntScheduler.java",
+        "CouponIssueConsumer.java"
+      ],
+      [
+        "UpdateTotalCouponIssueCntScheduler.java",
+        "DynamicScheduler.java"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {},
+    "deep_read_count": 0,
+    "total_files": 188,
+    "cost_saved_ratio": 1.0
+  }
+}

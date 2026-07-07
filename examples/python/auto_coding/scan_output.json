@@ -1,0 +1,56 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmpb1kxh7o_/auto_coding",
+  "total_source_files": 7,
+  "tier_a_structural": {
+    "fan_in": {
+      "model.py": 2,
+      "train.py": 0,
+      "evaluate.py": 1,
+      "trainer.py": 1,
+      "interact.py": 0,
+      "data.py": 3,
+      "convert.py": 0
+    },
+    "zero_fan_in_files": [
+      "train.py",
+      "interact.py",
+      "convert.py"
+    ],
+    "edges": [
+      [
+        "evaluate.py",
+        "data.py"
+      ],
+      [
+        "train.py",
+        "data.py"
+      ],
+      [
+        "train.py",
+        "evaluate.py"
+      ],
+      [
+        "train.py",
+        "model.py"
+      ],
+      [
+        "train.py",
+        "trainer.py"
+      ],
+      [
+        "trainer.py",
+        "data.py"
+      ],
+      [
+        "trainer.py",
+        "model.py"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {},
+    "deep_read_count": 0,
+    "total_files": 7,
+    "cost_saved_ratio": 1.0
+  }
+}

@@ -1,0 +1,668 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmp0cvivb5f/loki",
+  "total_source_files": 128,
+  "tier_a_structural": {
+    "fan_in": {
+      "main.cpp": 0,
+      "ThreadPool.hpp": 2,
+      "MultiThreadTests.cpp": 0,
+      "Thing.hpp": 3,
+      "Thing.cpp": 0,
+      "ThreadPool.cpp": 0,
+      "MultiThreadTests.hpp": 2,
+      "main2.cpp": 0,
+      "CachedFactoryTest.cpp": 0,
+      "Thread.h": 1,
+      "foo.cpp": 0,
+      "singletondll.h": 2,
+      "client.cpp": 0,
+      "foo_export.h": 1,
+      "singletondll_export.h": 1,
+      "singletondll.cpp": 0,
+      "foo.h": 3,
+      "DeletableSingleton.cpp": 0,
+      "FunctionTest.cpp": 0,
+      "classlist.h": 3,
+      "SafeBitTest.cpp": 0,
+      "TypeTraitsTest2.h": 1,
+      "TypeTraitsTest.h": 1,
+      "TypeManipTest.h": 1,
+      "SequenceTest.h": 1,
+      "Test.cpp": 0,
+      "UnitTest.h": 7,
+      "SingletonTest.h": 1,
+      "AssocVectorTest.h": 1,
+      "DataGeneratorsTest.h": 1,
+      "AbstractFactoryTest.h": 1,
+      "SmartPtrTest.h": 1,
+      "FactoryParmTest.h": 1,
+      "FactoryTest.h": 1,
+      "SmallObjectTest.h": 1,
+      "FunctorTest.h": 1,
+      "ThreadsTest.h": 1,
+      "TypelistTest.h": 1,
+      "strong.cpp": 0,
+      "LockTest.cpp": 0,
+      "colvin_gibbons_trick.cpp": 0,
+      "base.h": 2,
+      "Dependencies.cpp": 0,
+      "Phoenix.cpp": 0,
+      "type.h": 1,
+      "type2.h": 1,
+      "DefaultAlloc.cpp": 0,
+      "timer.h": 2,
+      "SmallObjBench.cpp": 0,
+      "SmallObjSingleton.cpp": 0,
+      "Factory.cpp": 0,
+      "HierarchyGenerators.h": 3,
+      "LockingPtr.h": 0,
+      "SPCachedFactory.h": 0,
+      "AssocVector.h": 2,
+      "LokiExport.h": 4,
+      "EmptyType.h": 2,
+      "OrderedStatic.h": 0,
+      "TypeTraits.h": 2,
+      "ScopeGuard.h": 0,
+      "SafeFormat.h": 0,
+      "Singleton.h": 2,
+      "Key.h": 0,
+      "SmartPtr.h": 0,
+      "SafeBits.h": 0,
+      "Threads.h": 2,
+      "MultiMethods.h": 0,
+      "DataGenerators.h": 0,
+      "Visitor.h": 0,
+      "ConstPolicy.h": 1,
+      "Checker.h": 1,
+      "Functor.h": 2,
+      "LevelMutex.h": 1,
+      "Allocator.h": 0,
+      "Sequence.h": 5,
+      "Typelist.h": 10,
+      "TypeManip.h": 5,
+      "RefToValue.h": 1,
+      "SmallObj.h": 3,
+      "Pimpl.h": 0,
+      "Tuple.h": 0,
+      "static_check.h": 1,
+      "CheckReturn.h": 0,
+      "CachedFactory.h": 0,
+      "AbstractFactory.h": 0,
+      "NullType.h": 1,
+      "LokiTypeInfo.h": 2,
+      "Register.h": 0,
+      "Function.h": 0,
+      "TypelistMacros.h": 1,
+      "Factory.h": 0,
+      "StrongPtr.h": 0,
+      "yasli_vector.h": 0,
+      "yasli_fill_iterator.h": 1,
+      "yasli_memory.h": 2,
+      "yasli_protocols.h": 2,
+      "platform.h": 1,
+      "random.h": 0,
+      "yasli_traits.h": 2,
+      "cowstringopt.h": 1,
+      "simplestringstorage.h": 2,
+      "vectorstringstorage.h": 1,
+      "allocatorstringstorage.h": 1,
+      "smallstringopt.h": 1,
+      "flex_string_details.h": 4,
+      "flex_string.h": 1,
+      "flex_string_shell.h": 1,
+      "OrderedStatic.cpp": 0,
+      "Singleton.cpp": 1,
+      "LevelMutex.cpp": 0,
+      "SmallObj.cpp": 0,
+      "SmartPtr.cpp": 0,
+      "StrongPtr.cpp": 0,
+      "SafeFormat.cpp": 0
+    },
+    "zero_fan_in_files": [
+      "main.cpp",
+      "main.cpp",
+      "main.cpp",
+      "MultiThreadTests.cpp",
+      "Thing.cpp",
+      "ThreadPool.cpp",
+      "main.cpp",
+      "main.cpp",
+      "main2.cpp",
+      "main.cpp",
+      "CachedFactoryTest.cpp",
+      "main.cpp",
+      "foo.cpp",
+      "client.cpp",
+      "singletondll.cpp",
+      "DeletableSingleton.cpp",
+      "main.cpp",
+      "FunctionTest.cpp",
+      "main.cpp",
+      "foo.cpp",
+      "main.cpp",
+      "SafeBitTest.cpp",
+      "Test.cpp",
+      "main.cpp",
+      "strong.cpp",
+      "LockTest.cpp",
+      "colvin_gibbons_trick.cpp",
+      "main.cpp",
+      "Dependencies.cpp",
+      "Phoenix.cpp",
+      "main.cpp",
+      "DefaultAlloc.cpp",
+      "SmallObjBench.cpp",
+      "SmallObjSingleton.cpp",
+      "Factory.cpp",
+      "LockingPtr.h",
+      "SPCachedFactory.h",
+      "OrderedStatic.h",
+      "ScopeGuard.h",
+      "SafeFormat.h",
+      "Key.h",
+      "SmartPtr.h",
+      "SafeBits.h",
+      "MultiMethods.h",
+      "DataGenerators.h",
+      "Visitor.h",
+      "Allocator.h",
+      "Pimpl.h",
+      "Tuple.h",
+      "CheckReturn.h",
+      "CachedFactory.h",
+      "AbstractFactory.h",
+      "Register.h",
+      "Function.h",
+      "Factory.h",
+      "StrongPtr.h",
+      "yasli_vector.h",
+      "random.h",
+      "OrderedStatic.cpp",
+      "LevelMutex.cpp",
+      "SmallObj.cpp",
+      "SmartPtr.cpp",
+      "StrongPtr.cpp",
+      "SafeFormat.cpp"
+    ],
+    "edges": [
+      [
+        "AbstractFactory.h",
+        "HierarchyGenerators.h"
+      ],
+      [
+        "AbstractFactory.h",
+        "Sequence.h"
+      ],
+      [
+        "AbstractFactory.h",
+        "TypeManip.h"
+      ],
+      [
+        "AbstractFactory.h",
+        "Typelist.h"
+      ],
+      [
+        "AssocVectorTest.h",
+        "UnitTest.h"
+      ],
+      [
+        "DataGenerators.h",
+        "Typelist.h"
+      ],
+      [
+        "Factory.h",
+        "AssocVector.h"
+      ],
+      [
+        "Factory.h",
+        "Functor.h"
+      ],
+      [
+        "Factory.h",
+        "LokiTypeInfo.h"
+      ],
+      [
+        "Factory.h",
+        "Sequence.h"
+      ],
+      [
+        "Factory.h",
+        "SmallObj.h"
+      ],
+      [
+        "Functor.h",
+        "EmptyType.h"
+      ],
+      [
+        "Functor.h",
+        "Sequence.h"
+      ],
+      [
+        "Functor.h",
+        "SmallObj.h"
+      ],
+      [
+        "Functor.h",
+        "TypeTraits.h"
+      ],
+      [
+        "Functor.h",
+        "Typelist.h"
+      ],
+      [
+        "HierarchyGenerators.h",
+        "EmptyType.h"
+      ],
+      [
+        "HierarchyGenerators.h",
+        "TypeTraits.h"
+      ],
+      [
+        "HierarchyGenerators.h",
+        "Typelist.h"
+      ],
+      [
+        "LokiTypeInfo.h",
+        "Typelist.h"
+      ],
+      [
+        "MultiMethods.h",
+        "AssocVector.h"
+      ],
+      [
+        "MultiMethods.h",
+        "Functor.h"
+      ],
+      [
+        "MultiMethods.h",
+        "LokiTypeInfo.h"
+      ],
+      [
+        "MultiMethods.h",
+        "Typelist.h"
+      ],
+      [
+        "MultiThreadTests.cpp",
+        "MultiThreadTests.hpp"
+      ],
+      [
+        "MultiThreadTests.cpp",
+        "Thing.hpp"
+      ],
+      [
+        "MultiThreadTests.cpp",
+        "ThreadPool.hpp"
+      ],
+      [
+        "OrderedStatic.h",
+        "LokiExport.h"
+      ],
+      [
+        "OrderedStatic.h",
+        "Sequence.h"
+      ],
+      [
+        "OrderedStatic.h",
+        "Singleton.h"
+      ],
+      [
+        "OrderedStatic.h",
+        "Typelist.h"
+      ],
+      [
+        "Register.h",
+        "HierarchyGenerators.h"
+      ],
+      [
+        "Register.h",
+        "TypeManip.h"
+      ],
+      [
+        "Sequence.h",
+        "Typelist.h"
+      ],
+      [
+        "Singleton.h",
+        "LokiExport.h"
+      ],
+      [
+        "Singleton.h",
+        "Threads.h"
+      ],
+      [
+        "SingletonTest.h",
+        "Singleton.cpp"
+      ],
+      [
+        "SingletonTest.h",
+        "UnitTest.h"
+      ],
+      [
+        "SmallObj.h",
+        "LokiExport.h"
+      ],
+      [
+        "SmallObj.h",
+        "Singleton.h"
+      ],
+      [
+        "SmallObj.h",
+        "Threads.h"
+      ],
+      [
+        "SmallObjBench.cpp",
+        "timer.h"
+      ],
+      [
+        "SmallObjectTest.h",
+        "UnitTest.h"
+      ],
+      [
+        "SmartPtr.h",
+        "ConstPolicy.h"
+      ],
+      [
+        "SmartPtr.h",
+        "LokiExport.h"
+      ],
+      [
+        "SmartPtr.h",
+        "RefToValue.h"
+      ],
+      [
+        "SmartPtr.h",
+        "SmallObj.h"
+      ],
+      [
+        "SmartPtr.h",
+        "TypeManip.h"
+      ],
+      [
+        "SmartPtr.h",
+        "static_check.h"
+      ],
+      [
+        "SmartPtrTest.h",
+        "UnitTest.h"
+      ],
+      [
+        "Test.cpp",
+        "AbstractFactoryTest.h"
+      ],
+      [
+        "Test.cpp",
+        "AssocVectorTest.h"
+      ],
+      [
+        "Test.cpp",
+        "DataGeneratorsTest.h"
+      ],
+      [
+        "Test.cpp",
+        "FactoryParmTest.h"
+      ],
+      [
+        "Test.cpp",
+        "FactoryTest.h"
+      ],
+      [
+        "Test.cpp",
+        "FunctorTest.h"
+      ],
+      [
+        "Test.cpp",
+        "SequenceTest.h"
+      ],
+      [
+        "Test.cpp",
+        "SingletonTest.h"
+      ],
+      [
+        "Test.cpp",
+        "SmallObjectTest.h"
+      ],
+      [
+        "Test.cpp",
+        "SmartPtrTest.h"
+      ],
+      [
+        "Test.cpp",
+        "ThreadsTest.h"
+      ],
+      [
+        "Test.cpp",
+        "TypeManipTest.h"
+      ],
+      [
+        "Test.cpp",
+        "TypeTraitsTest.h"
+      ],
+      [
+        "Test.cpp",
+        "TypeTraitsTest2.h"
+      ],
+      [
+        "Test.cpp",
+        "TypelistTest.h"
+      ],
+      [
+        "Test.cpp",
+        "UnitTest.h"
+      ],
+      [
+        "Thing.cpp",
+        "Thing.hpp"
+      ],
+      [
+        "ThreadPool.cpp",
+        "ThreadPool.hpp"
+      ],
+      [
+        "ThreadsTest.h",
+        "UnitTest.h"
+      ],
+      [
+        "TypeManipTest.h",
+        "UnitTest.h"
+      ],
+      [
+        "TypeTraits.h",
+        "Sequence.h"
+      ],
+      [
+        "TypeTraits.h",
+        "Typelist.h"
+      ],
+      [
+        "Typelist.h",
+        "NullType.h"
+      ],
+      [
+        "Typelist.h",
+        "TypeManip.h"
+      ],
+      [
+        "Typelist.h",
+        "TypelistMacros.h"
+      ],
+      [
+        "Visitor.h",
+        "HierarchyGenerators.h"
+      ],
+      [
+        "Visitor.h",
+        "Typelist.h"
+      ],
+      [
+        "allocatorstringstorage.h",
+        "flex_string_details.h"
+      ],
+      [
+        "allocatorstringstorage.h",
+        "simplestringstorage.h"
+      ],
+      [
+        "client.cpp",
+        "foo.h"
+      ],
+      [
+        "client.cpp",
+        "singletondll.h"
+      ],
+      [
+        "cowstringopt.h",
+        "flex_string_details.h"
+      ],
+      [
+        "flex_string.h",
+        "allocatorstringstorage.h"
+      ],
+      [
+        "flex_string.h",
+        "cowstringopt.h"
+      ],
+      [
+        "flex_string.h",
+        "flex_string_shell.h"
+      ],
+      [
+        "flex_string.h",
+        "simplestringstorage.h"
+      ],
+      [
+        "flex_string.h",
+        "smallstringopt.h"
+      ],
+      [
+        "flex_string.h",
+        "vectorstringstorage.h"
+      ],
+      [
+        "flex_string_shell.h",
+        "flex_string_details.h"
+      ],
+      [
+        "foo.cpp",
+        "classlist.h"
+      ],
+      [
+        "foo.cpp",
+        "foo.h"
+      ],
+      [
+        "foo.h",
+        "classlist.h"
+      ],
+      [
+        "foo.h",
+        "foo_export.h"
+      ],
+      [
+        "main.cpp",
+        "Checker.h"
+      ],
+      [
+        "main.cpp",
+        "LevelMutex.h"
+      ],
+      [
+        "main.cpp",
+        "MultiThreadTests.hpp"
+      ],
+      [
+        "main.cpp",
+        "Thing.hpp"
+      ],
+      [
+        "main.cpp",
+        "Thread.h"
+      ],
+      [
+        "main.cpp",
+        "base.h"
+      ],
+      [
+        "main.cpp",
+        "classlist.h"
+      ],
+      [
+        "main.cpp",
+        "flex_string.h"
+      ],
+      [
+        "main.cpp",
+        "timer.h"
+      ],
+      [
+        "main.cpp",
+        "type.h"
+      ],
+      [
+        "main.cpp",
+        "type2.h"
+      ],
+      [
+        "singletondll.cpp",
+        "foo.h"
+      ],
+      [
+        "singletondll.cpp",
+        "singletondll.h"
+      ],
+      [
+        "singletondll.h",
+        "singletondll_export.h"
+      ],
+      [
+        "smallstringopt.h",
+        "flex_string_details.h"
+      ],
+      [
+        "strong.cpp",
+        "base.h"
+      ],
+      [
+        "yasli_memory.h",
+        "yasli_protocols.h"
+      ],
+      [
+        "yasli_memory.h",
+        "yasli_traits.h"
+      ],
+      [
+        "yasli_protocols.h",
+        "yasli_memory.h"
+      ],
+      [
+        "yasli_vector.h",
+        "TypeManip.h"
+      ],
+      [
+        "yasli_vector.h",
+        "platform.h"
+      ],
+      [
+        "yasli_vector.h",
+        "yasli_fill_iterator.h"
+      ],
+      [
+        "yasli_vector.h",
+        "yasli_memory.h"
+      ],
+      [
+        "yasli_vector.h",
+        "yasli_protocols.h"
+      ],
+      [
+        "yasli_vector.h",
+        "yasli_traits.h"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {},
+    "deep_read_count": 0,
+    "total_files": 128,
+    "cost_saved_ratio": 1.0
+  }
+}

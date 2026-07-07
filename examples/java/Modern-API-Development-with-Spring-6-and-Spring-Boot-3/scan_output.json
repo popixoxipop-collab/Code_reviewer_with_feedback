@@ -1,0 +1,1303 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmpe821qh5f/Modern-API-Development-with-Spring-6-and-Spring-Boot-3",
+  "total_source_files": 500,
+  "tier_a_structural": {
+    "fan_in": {
+      "TestConfig.java": 0,
+      "ECommerceAppTests.java": 0,
+      "H2ConsoleComponent.java": 0,
+      "ECommerceApp.java": 0,
+      "AppConfig.java": 2,
+      "TagRepository.java": 1,
+      "OrderRepository.java": 2,
+      "ProductRepository.java": 1,
+      "AuthorizationRepository.java": 0,
+      "CartRepository.java": 1,
+      "AddressRepository.java": 4,
+      "ShipmentRepository.java": 2,
+      "UserRepository.java": 5,
+      "OrderRepositoryExtImpl.java": 0,
+      "ItemRepository.java": 2,
+      "OrderItemRepository.java": 0,
+      "PaymentRepository.java": 1,
+      "OrderRepositoryExt.java": 0,
+      "CardRepository.java": 2,
+      "UserAddressEntity.java": 0,
+      "ProductEntity.java": 6,
+      "AddressEntity.java": 9,
+      "OrderItemEntity.java": 3,
+      "CartEntity.java": 9,
+      "AuthorizationEntity.java": 3,
+      "UserEntity.java": 9,
+      "ShipmentEntity.java": 5,
+      "PaymentEntity.java": 2,
+      "OrderEntity.java": 8,
+      "ItemEntity.java": 8,
+      "CardEntity.java": 8,
+      "TagEntity.java": 3,
+      "ProductController.java": 1,
+      "OrderController.java": 1,
+      "CustomerController.java": 1,
+      "CartsController.java": 1,
+      "AddressController.java": 1,
+      "ShipmentController.java": 1,
+      "CardController.java": 1,
+      "PaymentController.java": 1,
+      "ItemServiceImpl.java": 0,
+      "CardService.java": 1,
+      "UserService.java": 3,
+      "OrderServiceImpl.java": 0,
+      "CartServiceImpl.java": 0,
+      "CartService.java": 1,
+      "ProductService.java": 5,
+      "AddressServiceImpl.java": 0,
+      "ShipmentService.java": 2,
+      "OrderService.java": 1,
+      "ShipmentServiceImpl.java": 0,
+      "PaymentService.java": 1,
+      "CardServiceImpl.java": 0,
+      "UserServiceImpl.java": 0,
+      "AddressService.java": 2,
+      "ProductServiceImpl.java": 0,
+      "PaymentServiceImpl.java": 0,
+      "ItemService.java": 3,
+      "CartRepresentationModelAssembler.java": 1,
+      "UserRepresentationModelAssembler.java": 1,
+      "PaymentRepresentationModelAssembler.java": 1,
+      "ShipmentRepresentationModelAssembler.java": 2,
+      "OrderRepresentationModelAssembler.java": 1,
+      "CardRepresentationModelAssembler.java": 2,
+      "ProductRepresentationModelAssembler.java": 2,
+      "AddressRepresentationModelAssembler.java": 3,
+      "HateoasSupport.java": 0,
+      "ErrorCode.java": 0,
+      "ResourceNotFoundException.java": 8,
+      "ApiErrorAttributes.java": 0,
+      "GenericAlreadyExistsException.java": 2,
+      "ItemNotFoundException.java": 1,
+      "CardAlreadyExistsException.java": 1,
+      "ErrorUtils.java": 0,
+      "CustomerNotFoundException.java": 2,
+      "ApiErrorWebExceptionHandler.java": 0,
+      "Error.java": 0,
+      "AopDemoApplicationTests.java": 0,
+      "SortUtil.java": 0,
+      "AopDemoApplication.java": 0,
+      "TimeMonitorAspect.java": 0,
+      "TimeMonitor.java": 1,
+      "eCommerceAppTests.java": 0,
+      "eCommerceApp.java": 0,
+      "RestApiErrorHandler.java": 3,
+      "OrderRepositoryImpl.java": 0,
+      "ServerAppTests.java": 0,
+      "ServerApp.java": 0,
+      "GrpcServer.java": 1,
+      "GrpcServerRunner.java": 1,
+      "SourceRepositoryImpl.java": 0,
+      "ChargeRepository.java": 1,
+      "ChargeRepositoryImpl.java": 0,
+      "DbStore.java": 0,
+      "SourceRepository.java": 1,
+      "ChargeService.java": 2,
+      "SourceService.java": 2,
+      "ExceptionUtils.java": 2,
+      "ExceptionInterceptor.java": 2,
+      "ChargeServiceGrpc.java": 1,
+      "SourceServiceGrpc.java": 2,
+      "ClientAppTests.java": 0,
+      "ClientApp.java": 0,
+      "ChargeController.java": 0,
+      "GrpcClient.java": 2,
+      "GrpcClientRunner.java": 1,
+      "AddressControllerTest.java": 0,
+      "ShipmentControllerTest.java": 0,
+      "ProductControllerTest.java": 0,
+      "AddressServiceTest.java": 0,
+      "AuthClient.java": 1,
+      "TestUtils.java": 1,
+      "AddressControllerIT.java": 0,
+      "UserTokenRepository.java": 1,
+      "SecurityConfig.java": 0,
+      "JwtManager.java": 1,
+      "Constants.java": 0,
+      "UserTokenEntity.java": 2,
+      "RoleEnum.java": 1,
+      "AuthController.java": 0,
+      "UserDetailServiceImpl.java": 0,
+      "InvalidRefreshTokenException.java": 2,
+      "ServerTest.java": 0,
+      "tailwind.config.js": 0,
+      "reportWebVitals.js": 1,
+      "index.js": 0,
+      "App.test.js": 0,
+      "setupTests.js": 0,
+      "App.js": 2,
+      "NotFound.js": 1,
+      "ProductCard.js": 1,
+      "Orders.js": 1,
+      "Products.js": 1,
+      "Cart.js": 3,
+      "CartItem.js": 1,
+      "ProductDetail.js": 1,
+      "Header.js": 1,
+      "Login.js": 1,
+      "ProductList.js": 1,
+      "Button.js": 1,
+      "Footer.js": 1,
+      "CartContext.js": 5,
+      "useToken.js": 1,
+      "Auth.js": 1,
+      "CustomerClient.js": 1,
+      "Config.js": 5,
+      "CartClient.js": 4,
+      "ProductClient.js": 2,
+      "OrderClient.js": 2,
+      "ProductDatafetcherTest.java": 0,
+      "Chapter14App.java": 0,
+      "InMemRepository.java": 1,
+      "Repository.java": 8,
+      "TagDataloader.java": 0,
+      "TagsDataloaderWithContext.java": 1,
+      "DemoInstrumentation.java": 0,
+      "InstrumentationConfig.java": 0,
+      "ProductDatafetcher.java": 0,
+      "ProductsDatafetcher.java": 0,
+      "BigDecimalScalar.java": 1,
+      "DateTimeScalar.java": 0,
+      "TagService.java": 4,
+      "TagServiceImpl.java": 0,
+      "Config.java": 5
+    },
+    "zero_fan_in_files": [
+      "TestConfig.java",
+      "ECommerceAppTests.java",
+      "H2ConsoleComponent.java",
+      "ECommerceApp.java",
+      "AuthorizationRepository.java",
+      "OrderRepositoryExtImpl.java",
+      "OrderItemRepository.java",
+      "OrderRepositoryExt.java",
+      "UserAddressEntity.java",
+      "ItemServiceImpl.java",
+      "OrderServiceImpl.java",
+      "CartServiceImpl.java",
+      "AddressServiceImpl.java",
+      "ShipmentServiceImpl.java",
+      "CardServiceImpl.java",
+      "UserServiceImpl.java",
+      "ProductServiceImpl.java",
+      "PaymentServiceImpl.java",
+      "HateoasSupport.java",
+      "ErrorCode.java",
+      "ApiErrorAttributes.java",
+      "ErrorUtils.java",
+      "ApiErrorWebExceptionHandler.java",
+      "Error.java",
+      "AopDemoApplicationTests.java",
+      "SortUtil.java",
+      "AopDemoApplication.java",
+      "TimeMonitorAspect.java",
+      "eCommerceAppTests.java",
+      "eCommerceApp.java",
+      "ErrorCode.java",
+      "ErrorUtils.java",
+      "Error.java",
+      "eCommerceAppTests.java",
+      "eCommerceApp.java",
+      "AuthorizationRepository.java",
+      "OrderRepositoryImpl.java",
+      "OrderItemRepository.java",
+      "OrderRepositoryExt.java",
+      "ItemServiceImpl.java",
+      "OrderServiceImpl.java",
+      "CartServiceImpl.java",
+      "AddressServiceImpl.java",
+      "ShipmentServiceImpl.java",
+      "CardServiceImpl.java",
+      "UserServiceImpl.java",
+      "ProductServiceImpl.java",
+      "PaymentServiceImpl.java",
+      "ErrorCode.java",
+      "ErrorUtils.java",
+      "Error.java",
+      "ServerAppTests.java",
+      "ServerApp.java",
+      "SourceRepositoryImpl.java",
+      "ChargeRepositoryImpl.java",
+      "DbStore.java",
+      "ClientAppTests.java",
+      "ClientApp.java",
+      "ChargeController.java",
+      "eCommerceAppTests.java",
+      "AddressControllerTest.java",
+      "ShipmentControllerTest.java",
+      "ProductControllerTest.java",
+      "AddressServiceTest.java",
+      "AddressControllerIT.java",
+      "eCommerceApp.java",
+      "AuthorizationRepository.java",
+      "OrderRepositoryImpl.java",
+      "OrderItemRepository.java",
+      "OrderRepositoryExt.java",
+      "SecurityConfig.java",
+      "Constants.java",
+      "AuthController.java",
+      "ItemServiceImpl.java",
+      "OrderServiceImpl.java",
+      "CartServiceImpl.java",
+      "AddressServiceImpl.java",
+      "ShipmentServiceImpl.java",
+      "CardServiceImpl.java",
+      "UserDetailServiceImpl.java",
+      "UserServiceImpl.java",
+      "ProductServiceImpl.java",
+      "PaymentServiceImpl.java",
+      "ErrorCode.java",
+      "ErrorUtils.java",
+      "Error.java",
+      "eCommerceAppTests.java",
+      "ServerTest.java",
+      "eCommerceApp.java",
+      "AuthorizationRepository.java",
+      "OrderRepositoryImpl.java",
+      "OrderItemRepository.java",
+      "OrderRepositoryExt.java",
+      "SecurityConfig.java",
+      "Constants.java",
+      "AuthController.java",
+      "ItemServiceImpl.java",
+      "OrderServiceImpl.java",
+      "CartServiceImpl.java",
+      "AddressServiceImpl.java",
+      "ShipmentServiceImpl.java",
+      "CardServiceImpl.java",
+      "UserDetailServiceImpl.java",
+      "UserServiceImpl.java",
+      "ProductServiceImpl.java",
+      "PaymentServiceImpl.java",
+      "ErrorCode.java",
+      "ErrorUtils.java",
+      "Error.java",
+      "tailwind.config.js",
+      "index.js",
+      "App.test.js",
+      "setupTests.js",
+      "eCommerceAppTests.java",
+      "AddressControllerTest.java",
+      "ShipmentControllerTest.java",
+      "ProductControllerTest.java",
+      "AddressServiceTest.java",
+      "AddressControllerIT.java",
+      "eCommerceApp.java",
+      "AuthorizationRepository.java",
+      "OrderRepositoryImpl.java",
+      "OrderItemRepository.java",
+      "OrderRepositoryExt.java",
+      "SecurityConfig.java",
+      "Constants.java",
+      "AuthController.java",
+      "ItemServiceImpl.java",
+      "OrderServiceImpl.java",
+      "CartServiceImpl.java",
+      "AddressServiceImpl.java",
+      "ShipmentServiceImpl.java",
+      "CardServiceImpl.java",
+      "UserDetailServiceImpl.java",
+      "UserServiceImpl.java",
+      "ProductServiceImpl.java",
+      "PaymentServiceImpl.java",
+      "ErrorCode.java",
+      "ErrorUtils.java",
+      "Error.java",
+      "ProductDatafetcherTest.java",
+      "Chapter14App.java",
+      "TagDataloader.java",
+      "DemoInstrumentation.java",
+      "InstrumentationConfig.java",
+      "ProductDatafetcher.java",
+      "ProductsDatafetcher.java",
+      "DateTimeScalar.java",
+      "ProductServiceImpl.java",
+      "TagServiceImpl.java",
+      "ServerAppTests.java",
+      "ServerApp.java",
+      "SourceRepositoryImpl.java",
+      "ChargeRepositoryImpl.java",
+      "DbStore.java",
+      "ClientAppTests.java",
+      "ClientApp.java",
+      "ChargeController.java"
+    ],
+    "edges": [
+      [
+        "AddressController.java",
+        "AddressRepresentationModelAssembler.java"
+      ],
+      [
+        "AddressController.java",
+        "AddressService.java"
+      ],
+      [
+        "AddressControllerIT.java",
+        "AddressRepository.java"
+      ],
+      [
+        "AddressControllerIT.java",
+        "AuthClient.java"
+      ],
+      [
+        "AddressControllerIT.java",
+        "TestUtils.java"
+      ],
+      [
+        "AddressControllerTest.java",
+        "AddressEntity.java"
+      ],
+      [
+        "AddressControllerTest.java",
+        "AddressRepresentationModelAssembler.java"
+      ],
+      [
+        "AddressControllerTest.java",
+        "AddressService.java"
+      ],
+      [
+        "AddressControllerTest.java",
+        "AppConfig.java"
+      ],
+      [
+        "AddressControllerTest.java",
+        "ResourceNotFoundException.java"
+      ],
+      [
+        "AddressControllerTest.java",
+        "RestApiErrorHandler.java"
+      ],
+      [
+        "AddressRepository.java",
+        "AddressEntity.java"
+      ],
+      [
+        "AddressRepository.java",
+        "Repository.java"
+      ],
+      [
+        "AddressRepresentationModelAssembler.java",
+        "AddressController.java"
+      ],
+      [
+        "AddressRepresentationModelAssembler.java",
+        "AddressEntity.java"
+      ],
+      [
+        "AddressService.java",
+        "AddressEntity.java"
+      ],
+      [
+        "AddressServiceImpl.java",
+        "AddressEntity.java"
+      ],
+      [
+        "AddressServiceImpl.java",
+        "AddressRepository.java"
+      ],
+      [
+        "AddressServiceImpl.java",
+        "ResourceNotFoundException.java"
+      ],
+      [
+        "AddressServiceTest.java",
+        "AddressEntity.java"
+      ],
+      [
+        "AddressServiceTest.java",
+        "AddressRepository.java"
+      ],
+      [
+        "AddressServiceTest.java",
+        "ResourceNotFoundException.java"
+      ],
+      [
+        "App.js",
+        "Auth.js"
+      ],
+      [
+        "App.js",
+        "Cart.js"
+      ],
+      [
+        "App.js",
+        "CartContext.js"
+      ],
+      [
+        "App.js",
+        "Footer.js"
+      ],
+      [
+        "App.js",
+        "Header.js"
+      ],
+      [
+        "App.js",
+        "Login.js"
+      ],
+      [
+        "App.js",
+        "NotFound.js"
+      ],
+      [
+        "App.js",
+        "Orders.js"
+      ],
+      [
+        "App.js",
+        "ProductDetail.js"
+      ],
+      [
+        "App.js",
+        "ProductList.js"
+      ],
+      [
+        "App.js",
+        "useToken.js"
+      ],
+      [
+        "App.test.js",
+        "App.js"
+      ],
+      [
+        "Auth.js",
+        "Config.java"
+      ],
+      [
+        "Auth.js",
+        "Config.js"
+      ],
+      [
+        "AuthController.java",
+        "InvalidRefreshTokenException.java"
+      ],
+      [
+        "AuthController.java",
+        "UserEntity.java"
+      ],
+      [
+        "AuthController.java",
+        "UserService.java"
+      ],
+      [
+        "AuthorizationRepository.java",
+        "AuthorizationEntity.java"
+      ],
+      [
+        "CardController.java",
+        "CardAlreadyExistsException.java"
+      ],
+      [
+        "CardController.java",
+        "CardRepresentationModelAssembler.java"
+      ],
+      [
+        "CardController.java",
+        "CardService.java"
+      ],
+      [
+        "CardController.java",
+        "CustomerNotFoundException.java"
+      ],
+      [
+        "CardController.java",
+        "UserEntity.java"
+      ],
+      [
+        "CardController.java",
+        "UserService.java"
+      ],
+      [
+        "CardRepository.java",
+        "CardEntity.java"
+      ],
+      [
+        "CardRepresentationModelAssembler.java",
+        "CardController.java"
+      ],
+      [
+        "CardRepresentationModelAssembler.java",
+        "CardEntity.java"
+      ],
+      [
+        "CardService.java",
+        "CardEntity.java"
+      ],
+      [
+        "CardServiceImpl.java",
+        "CardEntity.java"
+      ],
+      [
+        "CardServiceImpl.java",
+        "CardRepository.java"
+      ],
+      [
+        "CardServiceImpl.java",
+        "UserEntity.java"
+      ],
+      [
+        "CardServiceImpl.java",
+        "UserRepository.java"
+      ],
+      [
+        "Cart.js",
+        "CartClient.js"
+      ],
+      [
+        "Cart.js",
+        "CartContext.js"
+      ],
+      [
+        "Cart.js",
+        "CartItem.js"
+      ],
+      [
+        "Cart.js",
+        "CustomerClient.js"
+      ],
+      [
+        "Cart.js",
+        "OrderClient.js"
+      ],
+      [
+        "CartClient.js",
+        "Config.java"
+      ],
+      [
+        "CartClient.js",
+        "Config.js"
+      ],
+      [
+        "CartRepository.java",
+        "CartEntity.java"
+      ],
+      [
+        "CartRepresentationModelAssembler.java",
+        "Cart.js"
+      ],
+      [
+        "CartRepresentationModelAssembler.java",
+        "CartEntity.java"
+      ],
+      [
+        "CartRepresentationModelAssembler.java",
+        "CartsController.java"
+      ],
+      [
+        "CartRepresentationModelAssembler.java",
+        "ItemEntity.java"
+      ],
+      [
+        "CartRepresentationModelAssembler.java",
+        "ItemService.java"
+      ],
+      [
+        "CartService.java",
+        "CartEntity.java"
+      ],
+      [
+        "CartServiceImpl.java",
+        "CartEntity.java"
+      ],
+      [
+        "CartServiceImpl.java",
+        "CartRepository.java"
+      ],
+      [
+        "CartServiceImpl.java",
+        "CustomerNotFoundException.java"
+      ],
+      [
+        "CartServiceImpl.java",
+        "GenericAlreadyExistsException.java"
+      ],
+      [
+        "CartServiceImpl.java",
+        "ItemEntity.java"
+      ],
+      [
+        "CartServiceImpl.java",
+        "ItemNotFoundException.java"
+      ],
+      [
+        "CartServiceImpl.java",
+        "ItemRepository.java"
+      ],
+      [
+        "CartServiceImpl.java",
+        "ResourceNotFoundException.java"
+      ],
+      [
+        "CartServiceImpl.java",
+        "UserEntity.java"
+      ],
+      [
+        "CartServiceImpl.java",
+        "UserRepository.java"
+      ],
+      [
+        "CartsController.java",
+        "Cart.js"
+      ],
+      [
+        "CartsController.java",
+        "CartRepresentationModelAssembler.java"
+      ],
+      [
+        "CartsController.java",
+        "CartService.java"
+      ],
+      [
+        "ChargeController.java",
+        "GrpcClient.java"
+      ],
+      [
+        "ChargeRepositoryImpl.java",
+        "Repository.java"
+      ],
+      [
+        "ChargeService.java",
+        "ChargeRepository.java"
+      ],
+      [
+        "ClientAppTests.java",
+        "GrpcClient.java"
+      ],
+      [
+        "ClientAppTests.java",
+        "GrpcClientRunner.java"
+      ],
+      [
+        "CustomerClient.js",
+        "Config.java"
+      ],
+      [
+        "CustomerClient.js",
+        "Config.js"
+      ],
+      [
+        "CustomerController.java",
+        "AddressRepresentationModelAssembler.java"
+      ],
+      [
+        "CustomerController.java",
+        "CardRepresentationModelAssembler.java"
+      ],
+      [
+        "CustomerController.java",
+        "ResourceNotFoundException.java"
+      ],
+      [
+        "CustomerController.java",
+        "UserRepresentationModelAssembler.java"
+      ],
+      [
+        "CustomerController.java",
+        "UserService.java"
+      ],
+      [
+        "ExceptionInterceptor.java",
+        "ExceptionUtils.java"
+      ],
+      [
+        "GrpcClient.java",
+        "ChargeServiceGrpc.java"
+      ],
+      [
+        "GrpcClient.java",
+        "SourceServiceGrpc.java"
+      ],
+      [
+        "GrpcServer.java",
+        "ChargeService.java"
+      ],
+      [
+        "GrpcServer.java",
+        "ExceptionInterceptor.java"
+      ],
+      [
+        "GrpcServer.java",
+        "SourceService.java"
+      ],
+      [
+        "Header.js",
+        "Button.js"
+      ],
+      [
+        "ItemRepository.java",
+        "CartEntity.java"
+      ],
+      [
+        "ItemRepository.java",
+        "ItemEntity.java"
+      ],
+      [
+        "ItemService.java",
+        "CartEntity.java"
+      ],
+      [
+        "ItemService.java",
+        "ItemEntity.java"
+      ],
+      [
+        "ItemServiceImpl.java",
+        "CartEntity.java"
+      ],
+      [
+        "ItemServiceImpl.java",
+        "ItemEntity.java"
+      ],
+      [
+        "ItemServiceImpl.java",
+        "ProductEntity.java"
+      ],
+      [
+        "OrderClient.js",
+        "Config.java"
+      ],
+      [
+        "OrderClient.js",
+        "Config.js"
+      ],
+      [
+        "OrderController.java",
+        "OrderRepresentationModelAssembler.java"
+      ],
+      [
+        "OrderController.java",
+        "OrderService.java"
+      ],
+      [
+        "OrderItemRepository.java",
+        "OrderItemEntity.java"
+      ],
+      [
+        "OrderRepository.java",
+        "OrderEntity.java"
+      ],
+      [
+        "OrderRepository.java",
+        "Repository.java"
+      ],
+      [
+        "OrderRepositoryExt.java",
+        "OrderEntity.java"
+      ],
+      [
+        "OrderRepositoryExtImpl.java",
+        "CartEntity.java"
+      ],
+      [
+        "OrderRepositoryExtImpl.java",
+        "ItemEntity.java"
+      ],
+      [
+        "OrderRepositoryExtImpl.java",
+        "OrderEntity.java"
+      ],
+      [
+        "OrderRepositoryExtImpl.java",
+        "OrderItemEntity.java"
+      ],
+      [
+        "OrderRepositoryExtImpl.java",
+        "Repository.java"
+      ],
+      [
+        "OrderRepositoryExtImpl.java",
+        "ResourceNotFoundException.java"
+      ],
+      [
+        "OrderRepositoryImpl.java",
+        "CartEntity.java"
+      ],
+      [
+        "OrderRepositoryImpl.java",
+        "ItemEntity.java"
+      ],
+      [
+        "OrderRepositoryImpl.java",
+        "ItemService.java"
+      ],
+      [
+        "OrderRepositoryImpl.java",
+        "OrderEntity.java"
+      ],
+      [
+        "OrderRepositoryImpl.java",
+        "OrderItemEntity.java"
+      ],
+      [
+        "OrderRepositoryImpl.java",
+        "Repository.java"
+      ],
+      [
+        "OrderRepositoryImpl.java",
+        "ResourceNotFoundException.java"
+      ],
+      [
+        "OrderRepresentationModelAssembler.java",
+        "ItemService.java"
+      ],
+      [
+        "OrderRepresentationModelAssembler.java",
+        "OrderController.java"
+      ],
+      [
+        "OrderRepresentationModelAssembler.java",
+        "OrderEntity.java"
+      ],
+      [
+        "OrderService.java",
+        "OrderEntity.java"
+      ],
+      [
+        "OrderServiceImpl.java",
+        "AddressRepository.java"
+      ],
+      [
+        "OrderServiceImpl.java",
+        "CardEntity.java"
+      ],
+      [
+        "OrderServiceImpl.java",
+        "CardRepository.java"
+      ],
+      [
+        "OrderServiceImpl.java",
+        "ItemEntity.java"
+      ],
+      [
+        "OrderServiceImpl.java",
+        "ItemRepository.java"
+      ],
+      [
+        "OrderServiceImpl.java",
+        "OrderEntity.java"
+      ],
+      [
+        "OrderServiceImpl.java",
+        "OrderRepository.java"
+      ],
+      [
+        "OrderServiceImpl.java",
+        "ResourceNotFoundException.java"
+      ],
+      [
+        "OrderServiceImpl.java",
+        "ShipmentRepository.java"
+      ],
+      [
+        "OrderServiceImpl.java",
+        "UserRepository.java"
+      ],
+      [
+        "Orders.js",
+        "OrderClient.js"
+      ],
+      [
+        "PaymentController.java",
+        "PaymentRepresentationModelAssembler.java"
+      ],
+      [
+        "PaymentController.java",
+        "PaymentService.java"
+      ],
+      [
+        "PaymentRepository.java",
+        "PaymentEntity.java"
+      ],
+      [
+        "PaymentRepresentationModelAssembler.java",
+        "PaymentController.java"
+      ],
+      [
+        "PaymentRepresentationModelAssembler.java",
+        "PaymentEntity.java"
+      ],
+      [
+        "PaymentService.java",
+        "AuthorizationEntity.java"
+      ],
+      [
+        "PaymentServiceImpl.java",
+        "AuthorizationEntity.java"
+      ],
+      [
+        "PaymentServiceImpl.java",
+        "OrderEntity.java"
+      ],
+      [
+        "PaymentServiceImpl.java",
+        "OrderRepository.java"
+      ],
+      [
+        "PaymentServiceImpl.java",
+        "PaymentRepository.java"
+      ],
+      [
+        "ProductCard.js",
+        "CartClient.js"
+      ],
+      [
+        "ProductCard.js",
+        "CartContext.js"
+      ],
+      [
+        "ProductClient.js",
+        "Config.java"
+      ],
+      [
+        "ProductClient.js",
+        "Config.js"
+      ],
+      [
+        "ProductController.java",
+        "ProductRepresentationModelAssembler.java"
+      ],
+      [
+        "ProductController.java",
+        "ProductService.java"
+      ],
+      [
+        "ProductControllerTest.java",
+        "ProductEntity.java"
+      ],
+      [
+        "ProductControllerTest.java",
+        "ProductRepresentationModelAssembler.java"
+      ],
+      [
+        "ProductControllerTest.java",
+        "ProductService.java"
+      ],
+      [
+        "ProductControllerTest.java",
+        "RestApiErrorHandler.java"
+      ],
+      [
+        "ProductDatafetcher.java",
+        "ProductService.java"
+      ],
+      [
+        "ProductDatafetcher.java",
+        "TagService.java"
+      ],
+      [
+        "ProductDatafetcherTest.java",
+        "BigDecimalScalar.java"
+      ],
+      [
+        "ProductDatafetcherTest.java",
+        "InMemRepository.java"
+      ],
+      [
+        "ProductDatafetcherTest.java",
+        "ProductService.java"
+      ],
+      [
+        "ProductDatafetcherTest.java",
+        "TagService.java"
+      ],
+      [
+        "ProductDetail.js",
+        "CartClient.js"
+      ],
+      [
+        "ProductDetail.js",
+        "CartContext.js"
+      ],
+      [
+        "ProductDetail.js",
+        "ProductClient.js"
+      ],
+      [
+        "ProductList.js",
+        "CartClient.js"
+      ],
+      [
+        "ProductList.js",
+        "CartContext.js"
+      ],
+      [
+        "ProductList.js",
+        "ProductClient.js"
+      ],
+      [
+        "ProductList.js",
+        "Products.js"
+      ],
+      [
+        "ProductRepository.java",
+        "ProductEntity.java"
+      ],
+      [
+        "ProductRepresentationModelAssembler.java",
+        "ProductController.java"
+      ],
+      [
+        "ProductRepresentationModelAssembler.java",
+        "ProductEntity.java"
+      ],
+      [
+        "ProductRepresentationModelAssembler.java",
+        "TagEntity.java"
+      ],
+      [
+        "ProductService.java",
+        "ProductEntity.java"
+      ],
+      [
+        "ProductServiceImpl.java",
+        "ProductEntity.java"
+      ],
+      [
+        "ProductServiceImpl.java",
+        "ProductRepository.java"
+      ],
+      [
+        "ProductServiceImpl.java",
+        "Repository.java"
+      ],
+      [
+        "ProductServiceImpl.java",
+        "TagEntity.java"
+      ],
+      [
+        "ProductServiceImpl.java",
+        "TagRepository.java"
+      ],
+      [
+        "Products.js",
+        "ProductCard.js"
+      ],
+      [
+        "ProductsDatafetcher.java",
+        "ProductService.java"
+      ],
+      [
+        "ProductsDatafetcher.java",
+        "TagsDataloaderWithContext.java"
+      ],
+      [
+        "SecurityConfig.java",
+        "RoleEnum.java"
+      ],
+      [
+        "ServerAppTests.java",
+        "ChargeService.java"
+      ],
+      [
+        "ServerAppTests.java",
+        "ExceptionInterceptor.java"
+      ],
+      [
+        "ServerAppTests.java",
+        "GrpcServer.java"
+      ],
+      [
+        "ServerAppTests.java",
+        "GrpcServerRunner.java"
+      ],
+      [
+        "ServerAppTests.java",
+        "SourceService.java"
+      ],
+      [
+        "ServerAppTests.java",
+        "SourceServiceGrpc.java"
+      ],
+      [
+        "ShipmentController.java",
+        "ShipmentRepresentationModelAssembler.java"
+      ],
+      [
+        "ShipmentController.java",
+        "ShipmentService.java"
+      ],
+      [
+        "ShipmentControllerTest.java",
+        "AppConfig.java"
+      ],
+      [
+        "ShipmentControllerTest.java",
+        "RestApiErrorHandler.java"
+      ],
+      [
+        "ShipmentControllerTest.java",
+        "ShipmentEntity.java"
+      ],
+      [
+        "ShipmentControllerTest.java",
+        "ShipmentRepresentationModelAssembler.java"
+      ],
+      [
+        "ShipmentControllerTest.java",
+        "ShipmentService.java"
+      ],
+      [
+        "ShipmentRepository.java",
+        "ShipmentEntity.java"
+      ],
+      [
+        "ShipmentRepresentationModelAssembler.java",
+        "ShipmentController.java"
+      ],
+      [
+        "ShipmentRepresentationModelAssembler.java",
+        "ShipmentEntity.java"
+      ],
+      [
+        "ShipmentService.java",
+        "ShipmentEntity.java"
+      ],
+      [
+        "ShipmentServiceImpl.java",
+        "ShipmentEntity.java"
+      ],
+      [
+        "ShipmentServiceImpl.java",
+        "ShipmentRepository.java"
+      ],
+      [
+        "SortUtil.java",
+        "TimeMonitor.java"
+      ],
+      [
+        "SourceRepositoryImpl.java",
+        "Repository.java"
+      ],
+      [
+        "SourceService.java",
+        "ExceptionUtils.java"
+      ],
+      [
+        "SourceService.java",
+        "SourceRepository.java"
+      ],
+      [
+        "TagDataloader.java",
+        "TagService.java"
+      ],
+      [
+        "TagRepository.java",
+        "TagEntity.java"
+      ],
+      [
+        "TagServiceImpl.java",
+        "Repository.java"
+      ],
+      [
+        "TagsDataloaderWithContext.java",
+        "TagService.java"
+      ],
+      [
+        "UserDetailServiceImpl.java",
+        "UserEntity.java"
+      ],
+      [
+        "UserDetailServiceImpl.java",
+        "UserRepository.java"
+      ],
+      [
+        "UserRepository.java",
+        "AddressEntity.java"
+      ],
+      [
+        "UserRepository.java",
+        "CardEntity.java"
+      ],
+      [
+        "UserRepository.java",
+        "UserEntity.java"
+      ],
+      [
+        "UserRepresentationModelAssembler.java",
+        "CustomerController.java"
+      ],
+      [
+        "UserRepresentationModelAssembler.java",
+        "UserEntity.java"
+      ],
+      [
+        "UserService.java",
+        "AddressEntity.java"
+      ],
+      [
+        "UserService.java",
+        "CardEntity.java"
+      ],
+      [
+        "UserService.java",
+        "UserEntity.java"
+      ],
+      [
+        "UserServiceImpl.java",
+        "AddressEntity.java"
+      ],
+      [
+        "UserServiceImpl.java",
+        "CardEntity.java"
+      ],
+      [
+        "UserServiceImpl.java",
+        "GenericAlreadyExistsException.java"
+      ],
+      [
+        "UserServiceImpl.java",
+        "InvalidRefreshTokenException.java"
+      ],
+      [
+        "UserServiceImpl.java",
+        "JwtManager.java"
+      ],
+      [
+        "UserServiceImpl.java",
+        "UserEntity.java"
+      ],
+      [
+        "UserServiceImpl.java",
+        "UserRepository.java"
+      ],
+      [
+        "UserServiceImpl.java",
+        "UserTokenEntity.java"
+      ],
+      [
+        "UserServiceImpl.java",
+        "UserTokenRepository.java"
+      ],
+      [
+        "UserTokenRepository.java",
+        "UserTokenEntity.java"
+      ],
+      [
+        "index.js",
+        "App.js"
+      ],
+      [
+        "index.js",
+        "reportWebVitals.js"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {
+      "Auth.js": [
+        {
+          "trigger": "auth_info_leak_via_thrown_error",
+          "matched_text": "token"
+        }
+      ]
+    },
+    "deep_read_count": 1,
+    "total_files": 500,
+    "cost_saved_ratio": 0.998
+  }
+}

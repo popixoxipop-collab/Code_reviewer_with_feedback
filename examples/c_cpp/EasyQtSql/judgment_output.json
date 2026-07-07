@@ -1,0 +1,690 @@
+{
+  "hub": "EasyQtSql.h",
+  "findings": [
+    {
+      "id": "cognition-isolation:EasyQtSql_DBException.h",
+      "file": "EasyQtSql_DBException.h",
+      "finding": "EasyQtSql_DBException.h — 허브 모듈(EasyQtSql.h)로 가는 edge 없음. fan_in=2만 보면 정상으로 보임",
+      "priority": "최우선",
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 1
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 8
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 2
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 11
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 1,
+            "exposure_scope": 1,
+            "scenario_specificity": 0,
+            "spread_scope": 0
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 2
+        }
+      },
+      "lang": "cpp"
+    },
+    {
+      "id": "cognition-isolation:EasyQtSql_DeleteQuery.h",
+      "file": "EasyQtSql_DeleteQuery.h",
+      "finding": "EasyQtSql_DeleteQuery.h — 허브 모듈(EasyQtSql.h)로 가는 edge 없음. fan_in=2만 보면 정상으로 보임",
+      "priority": "최우선",
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 1
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 8
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 2
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 11
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 1,
+            "exposure_scope": 1,
+            "scenario_specificity": 0,
+            "spread_scope": 0
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 2
+        }
+      },
+      "lang": "cpp"
+    },
+    {
+      "id": "cognition-isolation:EasyQtSql_InsertQuery.h",
+      "file": "EasyQtSql_InsertQuery.h",
+      "finding": "EasyQtSql_InsertQuery.h — 허브 모듈(EasyQtSql.h)로 가는 edge 없음. fan_in=2만 보면 정상으로 보임",
+      "priority": "최우선",
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 1
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 8
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 2
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 11
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 1,
+            "exposure_scope": 1,
+            "scenario_specificity": 0,
+            "spread_scope": 0
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 2
+        }
+      },
+      "lang": "cpp"
+    },
+    {
+      "id": "cognition-isolation:EasyQtSql_NonQueryResult.h",
+      "file": "EasyQtSql_NonQueryResult.h",
+      "finding": "EasyQtSql_NonQueryResult.h — 허브 모듈(EasyQtSql.h)로 가는 edge 없음. fan_in=6만 보면 정상으로 보임",
+      "priority": "최우선",
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 1
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 8
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 3
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 12
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 1,
+            "exposure_scope": 1,
+            "scenario_specificity": 0,
+            "spread_scope": 0
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 2
+        }
+      },
+      "lang": "cpp"
+    },
+    {
+      "id": "cognition-isolation:EasyQtSql_ParamDirectionWrapper.h",
+      "file": "EasyQtSql_ParamDirectionWrapper.h",
+      "finding": "EasyQtSql_ParamDirectionWrapper.h — 허브 모듈(EasyQtSql.h)로 가는 edge 없음. fan_in=2만 보면 정상으로 보임",
+      "priority": "최우선",
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 1
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 8
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 2
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 11
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 1,
+            "exposure_scope": 1,
+            "scenario_specificity": 0,
+            "spread_scope": 0
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 2
+        }
+      },
+      "lang": "c"
+    },
+    {
+      "id": "cognition-isolation:EasyQtSql_PreparedQuery.h",
+      "file": "EasyQtSql_PreparedQuery.h",
+      "finding": "EasyQtSql_PreparedQuery.h — 허브 모듈(EasyQtSql.h)로 가는 edge 없음. fan_in=2만 보면 정상으로 보임",
+      "priority": "최우선",
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 1
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 8
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 2
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 11
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 1,
+            "exposure_scope": 1,
+            "scenario_specificity": 0,
+            "spread_scope": 0
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 2
+        }
+      },
+      "lang": "cpp"
+    },
+    {
+      "id": "cognition-isolation:EasyQtSql_QueryResult.h",
+      "file": "EasyQtSql_QueryResult.h",
+      "finding": "EasyQtSql_QueryResult.h — 허브 모듈(EasyQtSql.h)로 가는 edge 없음. fan_in=3만 보면 정상으로 보임",
+      "priority": "최우선",
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 0,
+            "mitigation_present": 1
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 7
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 3
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 12
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 1,
+            "exposure_scope": 1,
+            "scenario_specificity": 0,
+            "spread_scope": 0
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 2
+        }
+      },
+      "lang": "cpp"
+    },
+    {
+      "id": "cognition-isolation:EasyQtSql_SqlFactory.h",
+      "file": "EasyQtSql_SqlFactory.h",
+      "finding": "EasyQtSql_SqlFactory.h — 허브 모듈(EasyQtSql.h)로 가는 edge 없음. fan_in=1만 보면 정상으로 보임",
+      "priority": "최우선",
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 1
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 8
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 1
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 10
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 1,
+            "exposure_scope": 1,
+            "scenario_specificity": 0,
+            "spread_scope": 0
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 2
+        }
+      },
+      "lang": "cpp"
+    },
+    {
+      "id": "cognition-isolation:EasyQtSql_Transaction.h",
+      "file": "EasyQtSql_Transaction.h",
+      "finding": "EasyQtSql_Transaction.h — 허브 모듈(EasyQtSql.h)로 가는 edge 없음. fan_in=1만 보면 정상으로 보임",
+      "priority": "최우선",
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 1
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 8
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 1
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 10
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 1,
+            "exposure_scope": 1,
+            "scenario_specificity": 0,
+            "spread_scope": 0
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 2
+        }
+      },
+      "lang": "cpp"
+    },
+    {
+      "id": "cognition-isolation:EasyQtSql_UpdateQuery.h",
+      "file": "EasyQtSql_UpdateQuery.h",
+      "finding": "EasyQtSql_UpdateQuery.h — 허브 모듈(EasyQtSql.h)로 가는 edge 없음. fan_in=2만 보면 정상으로 보임",
+      "priority": "최우선",
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 1
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 8
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 2
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 11
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 1,
+            "exposure_scope": 1,
+            "scenario_specificity": 0,
+            "spread_scope": 0
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 2
+        }
+      },
+      "lang": "cpp"
+    },
+    {
+      "id": "architecture-diffusion:EasyQtSql_NonQueryResult.h",
+      "file": "EasyQtSql_NonQueryResult.h",
+      "pattern_key": null,
+      "finding": "EasyQtSql_NonQueryResult.h — 허브 다음으로 fan_in=6, 여러 컴포넌트가 공유",
+      "priority": "질문 대상",
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 1
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 8
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 3
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 12
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 1,
+            "exposure_scope": 1,
+            "scenario_specificity": 0,
+            "spread_scope": 0
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 2
+        }
+      },
+      "lang": "cpp"
+    },
+    {
+      "id": "tier-b-risk:navtree.js:dangerous-html",
+      "file": "navtree.js",
+      "finding": "navtree.js — 위험한 동적 실행/HTML 삽입 패턴 matched_text='eval(' (XSS 등 위험 가능, 입력 출처 확인 필요)",
+      "priority": "Important(🔴)",
+      "design_intent": "하",
+      "question_value": "상",
+      "risk": "상",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 0,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 0
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 4
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 2
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 11
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 3,
+            "exposure_scope": 3,
+            "scenario_specificity": 3,
+            "spread_scope": 0
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 9
+        }
+      },
+      "lang": "javascript"
+    }
+  ]
+}

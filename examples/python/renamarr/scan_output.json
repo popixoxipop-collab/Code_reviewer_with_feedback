@@ -1,0 +1,182 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmpv3vrxvc0/renamarr",
+  "total_source_files": 32,
+  "tier_a_structural": {
+    "fan_in": {
+      "test_sonarr_renamarr.py": 0,
+      "conftest.py": 1,
+      "test_radarr_renamarr.py": 0,
+      "test_radarr_analyze_files.py": 0,
+      "test_config_schema.py": 0,
+      "test_sonarr_series_folder_rename.py": 0,
+      "test_sonarr_series_scanner.py": 0,
+      "test_radarr_movie_rename.py": 0,
+      "test_radarr_movie_folder_rename.py": 0,
+      "test_sonarr_series_rename.py": 0,
+      "test_main.py": 0,
+      "test_sonarr_analyze_files.py": 0,
+      "test_radarr_movie_rename_plan.py": 0,
+      "test_sonarr_episode_rename_plan.py": 0,
+      "test_radarr_folder_rename_plan.py": 0,
+      "test_sonarr_folder_rename_plan.py": 0,
+      "config_schema.py": 3,
+      "main.py": 1,
+      "movie_rename_plan.py": 2,
+      "folder_rename_plan.py": 4,
+      "analyze_files.py": 3,
+      "renamarr.py": 3,
+      "movie_folder_rename.py": 2,
+      "movie_rename.py": 2,
+      "episode_rename_plan.py": 2,
+      "episode_rename.py": 1,
+      "series_rename.py": 2,
+      "series_folder_rename.py": 2,
+      "series_scanner.py": 2
+    },
+    "zero_fan_in_files": [
+      "test_sonarr_renamarr.py",
+      "test_radarr_renamarr.py",
+      "test_radarr_analyze_files.py",
+      "test_config_schema.py",
+      "test_sonarr_series_folder_rename.py",
+      "test_sonarr_series_scanner.py",
+      "test_radarr_movie_rename.py",
+      "test_radarr_movie_folder_rename.py",
+      "test_sonarr_series_rename.py",
+      "test_main.py",
+      "test_sonarr_analyze_files.py",
+      "test_radarr_movie_rename_plan.py",
+      "test_sonarr_episode_rename_plan.py",
+      "test_radarr_folder_rename_plan.py",
+      "test_sonarr_folder_rename_plan.py"
+    ],
+    "edges": [
+      [
+        "episode_rename_plan.py",
+        "episode_rename.py"
+      ],
+      [
+        "main.py",
+        "config_schema.py"
+      ],
+      [
+        "main.py",
+        "renamarr.py"
+      ],
+      [
+        "main.py",
+        "series_scanner.py"
+      ],
+      [
+        "movie_folder_rename.py",
+        "folder_rename_plan.py"
+      ],
+      [
+        "movie_rename.py",
+        "movie_rename_plan.py"
+      ],
+      [
+        "renamarr.py",
+        "analyze_files.py"
+      ],
+      [
+        "renamarr.py",
+        "movie_folder_rename.py"
+      ],
+      [
+        "renamarr.py",
+        "movie_rename.py"
+      ],
+      [
+        "renamarr.py",
+        "series_folder_rename.py"
+      ],
+      [
+        "renamarr.py",
+        "series_rename.py"
+      ],
+      [
+        "series_folder_rename.py",
+        "folder_rename_plan.py"
+      ],
+      [
+        "series_rename.py",
+        "episode_rename_plan.py"
+      ],
+      [
+        "test_config_schema.py",
+        "config_schema.py"
+      ],
+      [
+        "test_main.py",
+        "config_schema.py"
+      ],
+      [
+        "test_main.py",
+        "main.py"
+      ],
+      [
+        "test_radarr_analyze_files.py",
+        "analyze_files.py"
+      ],
+      [
+        "test_radarr_folder_rename_plan.py",
+        "folder_rename_plan.py"
+      ],
+      [
+        "test_radarr_movie_folder_rename.py",
+        "movie_folder_rename.py"
+      ],
+      [
+        "test_radarr_movie_rename.py",
+        "movie_rename.py"
+      ],
+      [
+        "test_radarr_movie_rename_plan.py",
+        "movie_rename_plan.py"
+      ],
+      [
+        "test_radarr_renamarr.py",
+        "renamarr.py"
+      ],
+      [
+        "test_sonarr_analyze_files.py",
+        "analyze_files.py"
+      ],
+      [
+        "test_sonarr_episode_rename_plan.py",
+        "episode_rename_plan.py"
+      ],
+      [
+        "test_sonarr_folder_rename_plan.py",
+        "folder_rename_plan.py"
+      ],
+      [
+        "test_sonarr_renamarr.py",
+        "renamarr.py"
+      ],
+      [
+        "test_sonarr_series_folder_rename.py",
+        "series_folder_rename.py"
+      ],
+      [
+        "test_sonarr_series_rename.py",
+        "series_rename.py"
+      ],
+      [
+        "test_sonarr_series_scanner.py",
+        "conftest.py"
+      ],
+      [
+        "test_sonarr_series_scanner.py",
+        "series_scanner.py"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {},
+    "deep_read_count": 0,
+    "total_files": 32,
+    "cost_saved_ratio": 1.0
+  }
+}

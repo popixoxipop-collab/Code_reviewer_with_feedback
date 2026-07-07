@@ -1,0 +1,63 @@
+{
+  "hub": "libv4lconvert-priv.h",
+  "findings": [
+    {
+      "id": "architecture-diffusion:libv4lsyscall-priv.h",
+      "file": "libv4lsyscall-priv.h",
+      "pattern_key": null,
+      "finding": "libv4lsyscall-priv.h — 허브 다음으로 fan_in=11, 여러 컴포넌트가 공유",
+      "priority": "질문 대상",
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 1
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 8
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 3
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 12
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 1,
+            "exposure_scope": 1,
+            "scenario_specificity": 0,
+            "spread_scope": 0
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 2
+        }
+      },
+      "lang": "c"
+    }
+  ]
+}

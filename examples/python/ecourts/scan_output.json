@@ -1,0 +1,241 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmpwejlvn7l/ecourts",
+  "total_source_files": 29,
+  "tier_a_structural": {
+    "fan_in": {
+      "test_parsers.py": 0,
+      "test_entities.py": 0,
+      "test_ecourt.py": 0,
+      "test_storage.py": 0,
+      "test_captcha.py": 0,
+      "ecourt.py": 2,
+      "__init__.py": 0,
+      "captcha.py": 3,
+      "storage.py": 2,
+      "options.py": 2,
+      "hearing_details.py": 2,
+      "orders.py": 1,
+      "cases.py": 3,
+      "utils.py": 5,
+      "cause_lists.py": 2,
+      "case_details.py": 2,
+      "hearing.py": 5,
+      "court.py": 4,
+      "order.py": 2,
+      "cause_list.py": 2,
+      "objection.py": 2,
+      "case_type.py": 1,
+      "act_type.py": 1,
+      "case.py": 1,
+      "fir.py": 2,
+      "party.py": 3
+    },
+    "zero_fan_in_files": [
+      "test_parsers.py",
+      "test_entities.py",
+      "test_ecourt.py",
+      "test_storage.py",
+      "test_captcha.py",
+      "__init__.py",
+      "__init__.py",
+      "__init__.py",
+      "__init__.py"
+    ],
+    "edges": [
+      [
+        "__init__.py",
+        "act_type.py"
+      ],
+      [
+        "__init__.py",
+        "case.py"
+      ],
+      [
+        "__init__.py",
+        "case_type.py"
+      ],
+      [
+        "__init__.py",
+        "cases.py"
+      ],
+      [
+        "__init__.py",
+        "cause_list.py"
+      ],
+      [
+        "__init__.py",
+        "cause_lists.py"
+      ],
+      [
+        "__init__.py",
+        "court.py"
+      ],
+      [
+        "__init__.py",
+        "ecourt.py"
+      ],
+      [
+        "__init__.py",
+        "fir.py"
+      ],
+      [
+        "__init__.py",
+        "hearing.py"
+      ],
+      [
+        "__init__.py",
+        "hearing_details.py"
+      ],
+      [
+        "__init__.py",
+        "objection.py"
+      ],
+      [
+        "__init__.py",
+        "options.py"
+      ],
+      [
+        "__init__.py",
+        "order.py"
+      ],
+      [
+        "__init__.py",
+        "party.py"
+      ],
+      [
+        "__init__.py",
+        "storage.py"
+      ],
+      [
+        "act_type.py",
+        "court.py"
+      ],
+      [
+        "case.py",
+        "fir.py"
+      ],
+      [
+        "case.py",
+        "hearing.py"
+      ],
+      [
+        "case.py",
+        "objection.py"
+      ],
+      [
+        "case.py",
+        "order.py"
+      ],
+      [
+        "case.py",
+        "party.py"
+      ],
+      [
+        "case.py",
+        "utils.py"
+      ],
+      [
+        "case_details.py",
+        "utils.py"
+      ],
+      [
+        "case_type.py",
+        "court.py"
+      ],
+      [
+        "cases.py",
+        "captcha.py"
+      ],
+      [
+        "cases.py",
+        "party.py"
+      ],
+      [
+        "cause_lists.py",
+        "cause_list.py"
+      ],
+      [
+        "ecourt.py",
+        "captcha.py"
+      ],
+      [
+        "ecourt.py",
+        "case_details.py"
+      ],
+      [
+        "ecourt.py",
+        "cases.py"
+      ],
+      [
+        "ecourt.py",
+        "cause_lists.py"
+      ],
+      [
+        "ecourt.py",
+        "hearing.py"
+      ],
+      [
+        "ecourt.py",
+        "hearing_details.py"
+      ],
+      [
+        "ecourt.py",
+        "options.py"
+      ],
+      [
+        "ecourt.py",
+        "orders.py"
+      ],
+      [
+        "hearing.py",
+        "utils.py"
+      ],
+      [
+        "hearing_details.py",
+        "hearing.py"
+      ],
+      [
+        "objection.py",
+        "utils.py"
+      ],
+      [
+        "order.py",
+        "court.py"
+      ],
+      [
+        "order.py",
+        "utils.py"
+      ],
+      [
+        "test_captcha.py",
+        "captcha.py"
+      ],
+      [
+        "test_ecourt.py",
+        "ecourt.py"
+      ],
+      [
+        "test_ecourt.py",
+        "hearing.py"
+      ],
+      [
+        "test_parsers.py",
+        "case_details.py"
+      ],
+      [
+        "test_parsers.py",
+        "cases.py"
+      ],
+      [
+        "test_storage.py",
+        "storage.py"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {},
+    "deep_read_count": 0,
+    "total_files": 29,
+    "cost_saved_ratio": 1.0
+  }
+}

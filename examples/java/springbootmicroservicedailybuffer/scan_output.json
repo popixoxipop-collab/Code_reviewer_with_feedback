@@ -1,0 +1,740 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmpw2p7ldrt/springbootmicroservicedailybuffer",
+  "total_source_files": 121,
+  "tier_a_structural": {
+    "fan_in": {
+      "ProductServiceApplicationTests.java": 0,
+      "LoginRequest.java": 1,
+      "JWTResponse.java": 4,
+      "ProductControllerTest.java": 0,
+      "ProductServiceImplTest.java": 0,
+      "ProductServiceApplication.java": 0,
+      "JwtAuthenticationEntryPoint.java": 1,
+      "JwtUtils.java": 6,
+      "JWTAccessDeniedHandler.java": 1,
+      "JwtAuthenticationFilter.java": 2,
+      "ProductRepository.java": 3,
+      "SecurityConfig.java": 0,
+      "Product.java": 4,
+      "ProductResponse.java": 7,
+      "ErrorResponse.java": 2,
+      "ProductRequest.java": 5,
+      "ProductController.java": 0,
+      "ProductService.java": 5,
+      "ProductServiceImpl.java": 1,
+      "ProductServiceCustomException.java": 2,
+      "RestResponseEntityExceptionHandler.java": 0,
+      "ConfigServerApplicationTests.java": 0,
+      "ConfigServerApplication.java": 0,
+      "PaymentserviceApplicationTests.java": 0,
+      "PaymentControllerTest.java": 0,
+      "PaymentServiceImplTest.java": 0,
+      "PaymentserviceApplication.java": 0,
+      "TransactionDetailsRepository.java": 3,
+      "PaymentResponse.java": 7,
+      "PaymentRequest.java": 7,
+      "PaymentMode.java": 9,
+      "PaymentController.java": 0,
+      "TransactionDetails.java": 4,
+      "PaymentService.java": 4,
+      "PaymentServiceImpl.java": 0,
+      "PaymentServiceCustomException.java": 2,
+      "ServiceRegistryApplicationTests.java": 0,
+      "ServiceRegistryApplication.java": 0,
+      "AuthServiceApplicationTests.java": 0,
+      "AuthServiceApplication.java": 0,
+      "AuthTokenFilter.java": 1,
+      "RefreshTokenRepository.java": 1,
+      "RoleRepository.java": 1,
+      "UserRepository.java": 1,
+      "CustomUserDetails.java": 2,
+      "CustomUserDetailsService.java": 3,
+      "TokenRefreshResponse.java": 1,
+      "MessageResponse.java": 1,
+      "SignUpRequest.java": 1,
+      "TokenRefreshRequest.java": 1,
+      "AuthController.java": 0,
+      "IdBasedEntity.java": 0,
+      "RefreshToken.java": 3,
+      "User.java": 5,
+      "ERole.java": 3,
+      "Role.java": 4,
+      "UserService.java": 2,
+      "RoleService.java": 1,
+      "RefreshTokenService.java": 1,
+      "UserNotFoundException.java": 2,
+      "RoleException.java": 2,
+      "RefreshTokenException.java": 2,
+      "GlobalExceptionHandler.java": 0,
+      "ApiError.java": 0,
+      "OrderServiceApplicationTests.java": 0,
+      "OrderServiceConfig.java": 1,
+      "TestServiceInstanceListSupplier.java": 0,
+      "OrderControllerTest.java": 0,
+      "OrderServiceImplTest.java": 0,
+      "OrderServiceApplication.java": 0,
+      "OrderRepository.java": 3,
+      "FeignConfig.java": 0,
+      "OrderResponse.java": 5,
+      "OrderRequest.java": 5,
+      "PaymentDetails.java": 0,
+      "ProductDetails.java": 0,
+      "OrderController.java": 0,
+      "Order.java": 4,
+      "CustomErrorDecoder.java": 1,
+      "OrderService.java": 3,
+      "OrderServiceImpl.java": 1,
+      "CustomException.java": 5,
+      "ApigatewayApplicationTests.java": 0,
+      "ApigatewayApplication.java": 0,
+      "GatewayConfig.java": 0,
+      "FallbackController.java": 0,
+      "JwtTokenMissingException.java": 1,
+      "JwtTokenMalformedException.java": 1
+    },
+    "zero_fan_in_files": [
+      "ProductServiceApplicationTests.java",
+      "ProductControllerTest.java",
+      "ProductServiceImplTest.java",
+      "ProductServiceApplication.java",
+      "SecurityConfig.java",
+      "ProductController.java",
+      "RestResponseEntityExceptionHandler.java",
+      "ConfigServerApplicationTests.java",
+      "ConfigServerApplication.java",
+      "PaymentserviceApplicationTests.java",
+      "PaymentControllerTest.java",
+      "PaymentServiceImplTest.java",
+      "PaymentserviceApplication.java",
+      "SecurityConfig.java",
+      "PaymentController.java",
+      "PaymentServiceImpl.java",
+      "RestResponseEntityExceptionHandler.java",
+      "ServiceRegistryApplicationTests.java",
+      "ServiceRegistryApplication.java",
+      "AuthServiceApplicationTests.java",
+      "AuthServiceApplication.java",
+      "SecurityConfig.java",
+      "AuthController.java",
+      "IdBasedEntity.java",
+      "GlobalExceptionHandler.java",
+      "ApiError.java",
+      "OrderServiceApplicationTests.java",
+      "TestServiceInstanceListSupplier.java",
+      "OrderControllerTest.java",
+      "OrderServiceImplTest.java",
+      "OrderServiceApplication.java",
+      "SecurityConfig.java",
+      "FeignConfig.java",
+      "PaymentDetails.java",
+      "ProductDetails.java",
+      "OrderController.java",
+      "RestResponseEntityExceptionHandler.java",
+      "ApigatewayApplicationTests.java",
+      "ApigatewayApplication.java",
+      "SecurityConfig.java",
+      "GatewayConfig.java",
+      "FallbackController.java"
+    ],
+    "edges": [
+      [
+        "AuthController.java",
+        "CustomUserDetails.java"
+      ],
+      [
+        "AuthController.java",
+        "ERole.java"
+      ],
+      [
+        "AuthController.java",
+        "JWTResponse.java"
+      ],
+      [
+        "AuthController.java",
+        "JwtUtils.java"
+      ],
+      [
+        "AuthController.java",
+        "LoginRequest.java"
+      ],
+      [
+        "AuthController.java",
+        "MessageResponse.java"
+      ],
+      [
+        "AuthController.java",
+        "RefreshToken.java"
+      ],
+      [
+        "AuthController.java",
+        "RefreshTokenException.java"
+      ],
+      [
+        "AuthController.java",
+        "RefreshTokenService.java"
+      ],
+      [
+        "AuthController.java",
+        "Role.java"
+      ],
+      [
+        "AuthController.java",
+        "RoleException.java"
+      ],
+      [
+        "AuthController.java",
+        "RoleService.java"
+      ],
+      [
+        "AuthController.java",
+        "SignUpRequest.java"
+      ],
+      [
+        "AuthController.java",
+        "TokenRefreshRequest.java"
+      ],
+      [
+        "AuthController.java",
+        "TokenRefreshResponse.java"
+      ],
+      [
+        "AuthController.java",
+        "User.java"
+      ],
+      [
+        "AuthController.java",
+        "UserService.java"
+      ],
+      [
+        "AuthTokenFilter.java",
+        "CustomUserDetailsService.java"
+      ],
+      [
+        "CustomErrorDecoder.java",
+        "CustomException.java"
+      ],
+      [
+        "CustomErrorDecoder.java",
+        "ErrorResponse.java"
+      ],
+      [
+        "CustomUserDetails.java",
+        "Role.java"
+      ],
+      [
+        "CustomUserDetails.java",
+        "User.java"
+      ],
+      [
+        "CustomUserDetailsService.java",
+        "User.java"
+      ],
+      [
+        "CustomUserDetailsService.java",
+        "UserNotFoundException.java"
+      ],
+      [
+        "CustomUserDetailsService.java",
+        "UserService.java"
+      ],
+      [
+        "FeignConfig.java",
+        "CustomErrorDecoder.java"
+      ],
+      [
+        "GatewayConfig.java",
+        "JwtAuthenticationFilter.java"
+      ],
+      [
+        "GlobalExceptionHandler.java",
+        "RefreshTokenException.java"
+      ],
+      [
+        "GlobalExceptionHandler.java",
+        "RoleException.java"
+      ],
+      [
+        "GlobalExceptionHandler.java",
+        "UserNotFoundException.java"
+      ],
+      [
+        "JwtAuthenticationFilter.java",
+        "JwtTokenMalformedException.java"
+      ],
+      [
+        "JwtAuthenticationFilter.java",
+        "JwtTokenMissingException.java"
+      ],
+      [
+        "JwtAuthenticationFilter.java",
+        "JwtUtils.java"
+      ],
+      [
+        "JwtUtils.java",
+        "CustomUserDetails.java"
+      ],
+      [
+        "JwtUtils.java",
+        "CustomUserDetailsService.java"
+      ],
+      [
+        "OrderController.java",
+        "OrderRequest.java"
+      ],
+      [
+        "OrderController.java",
+        "OrderResponse.java"
+      ],
+      [
+        "OrderController.java",
+        "OrderService.java"
+      ],
+      [
+        "OrderControllerTest.java",
+        "JWTResponse.java"
+      ],
+      [
+        "OrderControllerTest.java",
+        "JwtUtils.java"
+      ],
+      [
+        "OrderControllerTest.java",
+        "Order.java"
+      ],
+      [
+        "OrderControllerTest.java",
+        "OrderRepository.java"
+      ],
+      [
+        "OrderControllerTest.java",
+        "OrderRequest.java"
+      ],
+      [
+        "OrderControllerTest.java",
+        "OrderResponse.java"
+      ],
+      [
+        "OrderControllerTest.java",
+        "OrderService.java"
+      ],
+      [
+        "OrderControllerTest.java",
+        "OrderServiceConfig.java"
+      ],
+      [
+        "OrderControllerTest.java",
+        "PaymentMode.java"
+      ],
+      [
+        "OrderRepository.java",
+        "Order.java"
+      ],
+      [
+        "OrderRequest.java",
+        "PaymentMode.java"
+      ],
+      [
+        "OrderResponse.java",
+        "PaymentMode.java"
+      ],
+      [
+        "OrderService.java",
+        "OrderRequest.java"
+      ],
+      [
+        "OrderService.java",
+        "OrderResponse.java"
+      ],
+      [
+        "OrderServiceImpl.java",
+        "CustomException.java"
+      ],
+      [
+        "OrderServiceImpl.java",
+        "Order.java"
+      ],
+      [
+        "OrderServiceImpl.java",
+        "OrderRepository.java"
+      ],
+      [
+        "OrderServiceImpl.java",
+        "OrderRequest.java"
+      ],
+      [
+        "OrderServiceImpl.java",
+        "OrderResponse.java"
+      ],
+      [
+        "OrderServiceImpl.java",
+        "OrderService.java"
+      ],
+      [
+        "OrderServiceImpl.java",
+        "PaymentRequest.java"
+      ],
+      [
+        "OrderServiceImpl.java",
+        "PaymentResponse.java"
+      ],
+      [
+        "OrderServiceImpl.java",
+        "PaymentService.java"
+      ],
+      [
+        "OrderServiceImpl.java",
+        "ProductResponse.java"
+      ],
+      [
+        "OrderServiceImpl.java",
+        "ProductService.java"
+      ],
+      [
+        "OrderServiceImplTest.java",
+        "CustomException.java"
+      ],
+      [
+        "OrderServiceImplTest.java",
+        "Order.java"
+      ],
+      [
+        "OrderServiceImplTest.java",
+        "OrderRepository.java"
+      ],
+      [
+        "OrderServiceImplTest.java",
+        "OrderRequest.java"
+      ],
+      [
+        "OrderServiceImplTest.java",
+        "OrderResponse.java"
+      ],
+      [
+        "OrderServiceImplTest.java",
+        "OrderServiceImpl.java"
+      ],
+      [
+        "OrderServiceImplTest.java",
+        "PaymentMode.java"
+      ],
+      [
+        "OrderServiceImplTest.java",
+        "PaymentRequest.java"
+      ],
+      [
+        "OrderServiceImplTest.java",
+        "PaymentResponse.java"
+      ],
+      [
+        "OrderServiceImplTest.java",
+        "PaymentService.java"
+      ],
+      [
+        "OrderServiceImplTest.java",
+        "ProductResponse.java"
+      ],
+      [
+        "OrderServiceImplTest.java",
+        "ProductService.java"
+      ],
+      [
+        "PaymentController.java",
+        "PaymentRequest.java"
+      ],
+      [
+        "PaymentController.java",
+        "PaymentResponse.java"
+      ],
+      [
+        "PaymentController.java",
+        "PaymentService.java"
+      ],
+      [
+        "PaymentControllerTest.java",
+        "JWTResponse.java"
+      ],
+      [
+        "PaymentControllerTest.java",
+        "JwtUtils.java"
+      ],
+      [
+        "PaymentControllerTest.java",
+        "PaymentMode.java"
+      ],
+      [
+        "PaymentControllerTest.java",
+        "PaymentRequest.java"
+      ],
+      [
+        "PaymentControllerTest.java",
+        "PaymentResponse.java"
+      ],
+      [
+        "PaymentControllerTest.java",
+        "PaymentService.java"
+      ],
+      [
+        "PaymentControllerTest.java",
+        "TransactionDetails.java"
+      ],
+      [
+        "PaymentControllerTest.java",
+        "TransactionDetailsRepository.java"
+      ],
+      [
+        "PaymentRequest.java",
+        "PaymentMode.java"
+      ],
+      [
+        "PaymentResponse.java",
+        "PaymentMode.java"
+      ],
+      [
+        "PaymentService.java",
+        "CustomException.java"
+      ],
+      [
+        "PaymentService.java",
+        "PaymentRequest.java"
+      ],
+      [
+        "PaymentService.java",
+        "PaymentResponse.java"
+      ],
+      [
+        "PaymentServiceImpl.java",
+        "PaymentMode.java"
+      ],
+      [
+        "PaymentServiceImpl.java",
+        "PaymentRequest.java"
+      ],
+      [
+        "PaymentServiceImpl.java",
+        "PaymentResponse.java"
+      ],
+      [
+        "PaymentServiceImpl.java",
+        "PaymentServiceCustomException.java"
+      ],
+      [
+        "PaymentServiceImpl.java",
+        "TransactionDetails.java"
+      ],
+      [
+        "PaymentServiceImpl.java",
+        "TransactionDetailsRepository.java"
+      ],
+      [
+        "PaymentServiceImplTest.java",
+        "PaymentMode.java"
+      ],
+      [
+        "PaymentServiceImplTest.java",
+        "PaymentRequest.java"
+      ],
+      [
+        "PaymentServiceImplTest.java",
+        "PaymentResponse.java"
+      ],
+      [
+        "PaymentServiceImplTest.java",
+        "PaymentServiceCustomException.java"
+      ],
+      [
+        "PaymentServiceImplTest.java",
+        "TransactionDetails.java"
+      ],
+      [
+        "PaymentServiceImplTest.java",
+        "TransactionDetailsRepository.java"
+      ],
+      [
+        "ProductController.java",
+        "ProductRequest.java"
+      ],
+      [
+        "ProductController.java",
+        "ProductResponse.java"
+      ],
+      [
+        "ProductController.java",
+        "ProductService.java"
+      ],
+      [
+        "ProductControllerTest.java",
+        "JWTResponse.java"
+      ],
+      [
+        "ProductControllerTest.java",
+        "JwtUtils.java"
+      ],
+      [
+        "ProductControllerTest.java",
+        "Product.java"
+      ],
+      [
+        "ProductControllerTest.java",
+        "ProductRepository.java"
+      ],
+      [
+        "ProductControllerTest.java",
+        "ProductRequest.java"
+      ],
+      [
+        "ProductControllerTest.java",
+        "ProductResponse.java"
+      ],
+      [
+        "ProductControllerTest.java",
+        "ProductService.java"
+      ],
+      [
+        "ProductRepository.java",
+        "Product.java"
+      ],
+      [
+        "ProductService.java",
+        "CustomException.java"
+      ],
+      [
+        "ProductService.java",
+        "ProductRequest.java"
+      ],
+      [
+        "ProductService.java",
+        "ProductResponse.java"
+      ],
+      [
+        "ProductServiceImpl.java",
+        "Product.java"
+      ],
+      [
+        "ProductServiceImpl.java",
+        "ProductRepository.java"
+      ],
+      [
+        "ProductServiceImpl.java",
+        "ProductRequest.java"
+      ],
+      [
+        "ProductServiceImpl.java",
+        "ProductResponse.java"
+      ],
+      [
+        "ProductServiceImpl.java",
+        "ProductService.java"
+      ],
+      [
+        "ProductServiceImpl.java",
+        "ProductServiceCustomException.java"
+      ],
+      [
+        "ProductServiceImplTest.java",
+        "Product.java"
+      ],
+      [
+        "ProductServiceImplTest.java",
+        "ProductRepository.java"
+      ],
+      [
+        "ProductServiceImplTest.java",
+        "ProductRequest.java"
+      ],
+      [
+        "ProductServiceImplTest.java",
+        "ProductResponse.java"
+      ],
+      [
+        "ProductServiceImplTest.java",
+        "ProductServiceCustomException.java"
+      ],
+      [
+        "ProductServiceImplTest.java",
+        "ProductServiceImpl.java"
+      ],
+      [
+        "RefreshTokenRepository.java",
+        "RefreshToken.java"
+      ],
+      [
+        "RefreshTokenService.java",
+        "RefreshToken.java"
+      ],
+      [
+        "RefreshTokenService.java",
+        "RefreshTokenRepository.java"
+      ],
+      [
+        "RestResponseEntityExceptionHandler.java",
+        "ErrorResponse.java"
+      ],
+      [
+        "RoleRepository.java",
+        "ERole.java"
+      ],
+      [
+        "RoleRepository.java",
+        "Role.java"
+      ],
+      [
+        "RoleService.java",
+        "ERole.java"
+      ],
+      [
+        "RoleService.java",
+        "Role.java"
+      ],
+      [
+        "RoleService.java",
+        "RoleRepository.java"
+      ],
+      [
+        "SecurityConfig.java",
+        "AuthTokenFilter.java"
+      ],
+      [
+        "SecurityConfig.java",
+        "CustomUserDetailsService.java"
+      ],
+      [
+        "SecurityConfig.java",
+        "JWTAccessDeniedHandler.java"
+      ],
+      [
+        "SecurityConfig.java",
+        "JwtAuthenticationEntryPoint.java"
+      ],
+      [
+        "SecurityConfig.java",
+        "JwtAuthenticationFilter.java"
+      ],
+      [
+        "SecurityConfig.java",
+        "JwtUtils.java"
+      ],
+      [
+        "TransactionDetailsRepository.java",
+        "TransactionDetails.java"
+      ],
+      [
+        "UserRepository.java",
+        "User.java"
+      ],
+      [
+        "UserService.java",
+        "User.java"
+      ],
+      [
+        "UserService.java",
+        "UserRepository.java"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {},
+    "deep_read_count": 0,
+    "total_files": 121,
+    "cost_saved_ratio": 1.0
+  }
+}

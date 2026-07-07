@@ -4,7 +4,7 @@ import re
 import sys
 
 sys.path.insert(0, os.path.dirname(__file__))
-from idiom_filter import apply_idiom_filter  # noqa: E402
+from idiom_filter import apply_idiom_filter, resolve_lang, _find_file_content  # noqa: E402
 from tier_b_suppression_filter import apply_tier_b_suppression  # noqa: E402
 from subrubric import apply_subrubric, idiom_evidence, rationale_signal  # noqa: E402
 
@@ -16,7 +16,11 @@ ALL_SRC_EXTS = (
     ".ts", ".tsx", ".js", ".jsx", ".py", ".java",
     ".c", ".h", ".cpp", ".cc", ".cxx", ".hpp", ".swift",
 )
-SKIP_DIRS = {"node_modules", ".git", "dist", "build", "__pycache__", ".venv", "venv"}
+# D76: cognition/two_tier_scan.py와 동일하게 static/vendor류 보강(D74/D75 실측 근거는 그쪽 파일 참고)
+SKIP_DIRS = {
+    "node_modules", ".git", "dist", "build", "__pycache__", ".venv", "venv",
+    "static", "vendor", "vendored",
+}
 
 # D3: 판단 블록 = 규칙 기반 정성 채점(상/중/하), ML 아님
 #   WHY: 사례가 적고(4건) 기준이 명확해 규칙 기반이 더 투명하고 디버깅 가능 —
@@ -365,7 +369,35 @@ def score(scan_result, repo_root):
             findings.append(finding)
 
     findings = apply_idiom_filter(findings, repo_root=repo_root)
+    _tag_lang(findings, repo_root)
     return {"hub": hub, "findings": findings}
+
+
+# D76: 각 finding에 실제 파일 언어를 스키마 필드로 박아넣음 (D75가 dataset/corpus_report.py에서
+#   사후 계산으로 우회했던 것을 스키마 자체에 반영)
+#   WHY: repo 하나를 하나의 언어로 태깅하는 소비자(dataset/mine_repo.py 등)가 있으면, 그 repo
+#        안에 섞인 다른 언어 파일(D75 실측: Django repo의 static/js/ 번들, Java repo의 React
+#        프론트엔드)의 finding이 잘못된 언어로 집계된다. finding 자체가 자기 언어를 알면 이
+#        문제는 소비자마다 재발명할 필요 없이 한 번에 해소된다. `apply_idiom_filter`가 이미
+#        pattern_key 있는 finding만 국한해 lang을 계산하므로(idiom_filter.py:98) 재사용 불가 —
+#        모든 finding에 대해 별도로 계산한다. `.h` 파일은 idiom_filter와 동일하게 내용 기반
+#        c/cpp 재판정(D15)을 적용해 일관성을 유지한다.
+#   COST: `file`이 None인 finding(예: repeated-pattern은 여러 파일에 걸침, D74 확인)은
+#        `lang`도 None — 이건 정보 손실이 아니라 애초에 단일 파일에 귀속 안 되는 finding이라
+#        None이 정확한 값이다. `.h` 파일 재판정을 위해 각 finding마다 repo_root를 다시
+#        walk하므로(`_find_file_content`), finding 수가 아주 많은 repo에서는 약간의 중복
+#        I/O가 생긴다(이미 D15/apply_idiom_filter가 architecture-diffusion finding에 대해
+#        같은 비용을 지불하고 있었으므로 새로운 종류의 비용은 아님).
+#   EXIT: repo_root가 없어 파일을 못 찾으면(예: scan_output.json만 따로 재채점하는 경우)
+#        확장자만으로 판정 -- .h는 이 경우 idiom_filter와 동일하게 "c"로 보수적 기본값 처리.
+def _tag_lang(findings, repo_root):
+    for finding in findings:
+        file = finding.get("file")
+        if not file:
+            finding["lang"] = None
+            continue
+        content = _find_file_content(repo_root, file) if (repo_root and file.endswith(".h")) else None
+        finding["lang"] = resolve_lang(file, content)
 
 
 def main():

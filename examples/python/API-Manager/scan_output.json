@@ -1,0 +1,211 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmp3gug4lqq/API-Manager",
+  "total_source_files": 167,
+  "tier_a_structural": {
+    "fan_in": {
+      "gunicorn.conf.py": 0,
+      "manage.py": 0,
+      "__init__.py": 0,
+      "apps.py": 0,
+      "forms.py": 1,
+      "urls.py": 2,
+      "views.py": 1,
+      "authenticator.py": 5,
+      "api.py": 4,
+      "directlogin.py": 1,
+      "gatewaylogin.py": 1,
+      "oauth.py": 1,
+      "generatePo.py": 0,
+      "deepl_translation_function.py": 1,
+      "models.py": 1,
+      "admin.py": 0,
+      "tests.py": 0,
+      "settings.py": 3,
+      "wsgi.py": 0,
+      "context_processors.py": 0,
+      "utils.py": 1,
+      "filters.py": 1,
+      "local_settings_container.py": 0
+    },
+    "zero_fan_in_files": [
+      "gunicorn.conf.py",
+      "manage.py",
+      "__init__.py",
+      "apps.py",
+      "__init__.py",
+      "apps.py",
+      "__init__.py",
+      "apps.py",
+      "__init__.py",
+      "apps.py",
+      "generatePo.py",
+      "__init__.py",
+      "apps.py",
+      "admin.py",
+      "tests.py",
+      "__init__.py",
+      "apps.py",
+      "admin.py",
+      "tests.py",
+      "__init__.py",
+      "apps.py",
+      "__init__.py",
+      "apps.py",
+      "__init__.py",
+      "apps.py",
+      "admin.py",
+      "tests.py",
+      "__init__.py",
+      "apps.py",
+      "admin.py",
+      "tests.py",
+      "__init__.py",
+      "wsgi.py",
+      "__init__.py",
+      "apps.py",
+      "__init__.py",
+      "apps.py",
+      "admin.py",
+      "tests.py",
+      "__init__.py",
+      "apps.py",
+      "admin.py",
+      "tests.py",
+      "__init__.py",
+      "apps.py",
+      "tests.py",
+      "__init__.py",
+      "apps.py",
+      "__init__.py",
+      "apps.py",
+      "__init__.py",
+      "apps.py",
+      "__init__.py",
+      "apps.py",
+      "admin.py",
+      "tests.py",
+      "__init__.py",
+      "apps.py",
+      "__init__.py",
+      "apps.py",
+      "admin.py",
+      "tests.py",
+      "__init__.py",
+      "apps.py",
+      "__init__.py",
+      "apps.py",
+      "__init__.py",
+      "apps.py",
+      "admin.py",
+      "tests.py",
+      "__init__.py",
+      "apps.py",
+      "tests.py",
+      "__init__.py",
+      "apps.py",
+      "context_processors.py",
+      "local_settings_container.py",
+      "gunicorn.conf.py"
+    ],
+    "edges": [
+      [
+        "context_processors.py",
+        "api.py"
+      ],
+      [
+        "directlogin.py",
+        "authenticator.py"
+      ],
+      [
+        "forms.py",
+        "api.py"
+      ],
+      [
+        "forms.py",
+        "authenticator.py"
+      ],
+      [
+        "forms.py",
+        "directlogin.py"
+      ],
+      [
+        "forms.py",
+        "gatewaylogin.py"
+      ],
+      [
+        "forms.py",
+        "settings.py"
+      ],
+      [
+        "gatewaylogin.py",
+        "authenticator.py"
+      ],
+      [
+        "generatePo.py",
+        "deepl_translation_function.py"
+      ],
+      [
+        "oauth.py",
+        "authenticator.py"
+      ],
+      [
+        "settings.py",
+        "urls.py"
+      ],
+      [
+        "urls.py",
+        "views.py"
+      ],
+      [
+        "utils.py",
+        "api.py"
+      ],
+      [
+        "utils.py",
+        "settings.py"
+      ],
+      [
+        "views.py",
+        "api.py"
+      ],
+      [
+        "views.py",
+        "authenticator.py"
+      ],
+      [
+        "views.py",
+        "filters.py"
+      ],
+      [
+        "views.py",
+        "forms.py"
+      ],
+      [
+        "views.py",
+        "models.py"
+      ],
+      [
+        "views.py",
+        "oauth.py"
+      ],
+      [
+        "views.py",
+        "settings.py"
+      ],
+      [
+        "views.py",
+        "urls.py"
+      ],
+      [
+        "views.py",
+        "utils.py"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {},
+    "deep_read_count": 0,
+    "total_files": 167,
+    "cost_saved_ratio": 1.0
+  }
+}

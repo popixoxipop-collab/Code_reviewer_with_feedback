@@ -1,0 +1,620 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmpl83p1ley/FarmAssist",
+  "total_source_files": 67,
+  "tier_a_structural": {
+    "fan_in": {
+      "tailwind.config.js": 0,
+      "postcss.config.js": 0,
+      "Routes.jsx": 2,
+      "App.jsx": 1,
+      "index.jsx": 0,
+      "LanguageContext.jsx": 5,
+      "cn.js": 4,
+      "VoiceAssistant.jsx": 2,
+      "LanguageSelector.jsx": 1,
+      "AppIcon.jsx": 43,
+      "AppImage.jsx": 8,
+      "ErrorBoundary.jsx": 0,
+      "ScrollToTop.jsx": 0,
+      "VoiceAssistant-spec.jsx": 0,
+      "Header.jsx": 1,
+      "Input.jsx": 3,
+      "Select.jsx": 5,
+      "Checkbox.jsx": 0,
+      "Button.jsx": 12,
+      "translations.js": 2,
+      "useTranslation.js": 2,
+      "NotFound.jsx": 0,
+      "PriceTracker.jsx": 1,
+      "TreatmentRankingCard.jsx": 1,
+      "TreatmentCategoryTabs.jsx": 1,
+      "ExpertRecommendations.jsx": 1,
+      "ComparisonModal.jsx": 1,
+      "ROICalculator.jsx": 1,
+      "RegionalLeaderboard.jsx": 1,
+      "CropComparisonModal.jsx": 1,
+      "SeasonalTournament.jsx": 1,
+      "MobileCropCards.jsx": 1,
+      "CropRankingTable.jsx": 1,
+      "FilterPanel.jsx": 1,
+      "SuccessProbabilityCalculator.jsx": 1,
+      "ClimateAdaptedRankings.jsx": 1,
+      "GovernmentSchemeIntegration.jsx": 1,
+      "RegionalSuccessStories.jsx": 1,
+      "RegionalMap.jsx": 1,
+      "SoilSpecificGuidance.jsx": 1,
+      "LocalExpertNetwork.jsx": 1,
+      "ProcessBreakdown.jsx": 1,
+      "AlgorithmInAction.jsx": 1,
+      "AccuracyComparison.jsx": 1,
+      "TrustBuilding.jsx": 1,
+      "CropGrowthSimulation.jsx": 1,
+      "ScientificValidation.jsx": 1,
+      "HeroVisualization.jsx": 1,
+      "InteractiveSliders.jsx": 1,
+      "HeroSection.jsx": 1,
+      "Footer.jsx": 1,
+      "ValuePropositions.jsx": 1,
+      "TrustIndicators.jsx": 1,
+      "TrendingRankings.jsx": 1,
+      "SuccessStories.jsx": 1,
+      "AchievementBadge.jsx": 1,
+      "ChallengeCard.jsx": 1,
+      "LeaderboardCard.jsx": 1,
+      "SuccessStoryCard.jsx": 1,
+      "ComparisonTool.jsx": 1,
+      "ProgressTracker.jsx": 1
+    },
+    "zero_fan_in_files": [
+      "tailwind.config.js",
+      "postcss.config.js",
+      "index.jsx",
+      "ErrorBoundary.jsx",
+      "ScrollToTop.jsx",
+      "VoiceAssistant-spec.jsx",
+      "Checkbox.jsx",
+      "NotFound.jsx",
+      "index.jsx",
+      "index.jsx",
+      "index.jsx",
+      "index.jsx",
+      "index.jsx",
+      "index.jsx"
+    ],
+    "edges": [
+      [
+        "AccuracyComparison.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "AchievementBadge.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "AlgorithmInAction.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "App.jsx",
+        "LanguageContext.jsx"
+      ],
+      [
+        "App.jsx",
+        "Routes.jsx"
+      ],
+      [
+        "App.jsx",
+        "VoiceAssistant.jsx"
+      ],
+      [
+        "Button.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "Button.jsx",
+        "cn.js"
+      ],
+      [
+        "ChallengeCard.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "ChallengeCard.jsx",
+        "Button.jsx"
+      ],
+      [
+        "Checkbox.jsx",
+        "cn.js"
+      ],
+      [
+        "ClimateAdaptedRankings.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "ComparisonModal.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "ComparisonModal.jsx",
+        "Button.jsx"
+      ],
+      [
+        "ComparisonTool.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "ComparisonTool.jsx",
+        "Select.jsx"
+      ],
+      [
+        "CropComparisonModal.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "CropComparisonModal.jsx",
+        "Button.jsx"
+      ],
+      [
+        "CropGrowthSimulation.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "CropGrowthSimulation.jsx",
+        "Button.jsx"
+      ],
+      [
+        "CropRankingTable.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "ErrorBoundary.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "ExpertRecommendations.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "ExpertRecommendations.jsx",
+        "AppImage.jsx"
+      ],
+      [
+        "FilterPanel.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "FilterPanel.jsx",
+        "Select.jsx"
+      ],
+      [
+        "Footer.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "GovernmentSchemeIntegration.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "Header.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "Header.jsx",
+        "Button.jsx"
+      ],
+      [
+        "Header.jsx",
+        "LanguageSelector.jsx"
+      ],
+      [
+        "HeroSection.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "HeroSection.jsx",
+        "Button.jsx"
+      ],
+      [
+        "HeroSection.jsx",
+        "useTranslation.js"
+      ],
+      [
+        "HeroVisualization.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "Input.jsx",
+        "cn.js"
+      ],
+      [
+        "InteractiveSliders.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "LanguageSelector.jsx",
+        "LanguageContext.jsx"
+      ],
+      [
+        "LeaderboardCard.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "LeaderboardCard.jsx",
+        "AppImage.jsx"
+      ],
+      [
+        "LocalExpertNetwork.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "LocalExpertNetwork.jsx",
+        "AppImage.jsx"
+      ],
+      [
+        "MobileCropCards.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "PriceTracker.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "PriceTracker.jsx",
+        "Button.jsx"
+      ],
+      [
+        "ProcessBreakdown.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "ProgressTracker.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "ROICalculator.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "ROICalculator.jsx",
+        "Button.jsx"
+      ],
+      [
+        "ROICalculator.jsx",
+        "Input.jsx"
+      ],
+      [
+        "ROICalculator.jsx",
+        "Select.jsx"
+      ],
+      [
+        "RegionalLeaderboard.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "RegionalMap.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "RegionalSuccessStories.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "RegionalSuccessStories.jsx",
+        "AppImage.jsx"
+      ],
+      [
+        "ScientificValidation.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "ScientificValidation.jsx",
+        "AppImage.jsx"
+      ],
+      [
+        "SeasonalTournament.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "Select.jsx",
+        "Button.jsx"
+      ],
+      [
+        "Select.jsx",
+        "Input.jsx"
+      ],
+      [
+        "Select.jsx",
+        "cn.js"
+      ],
+      [
+        "SoilSpecificGuidance.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "SuccessProbabilityCalculator.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "SuccessProbabilityCalculator.jsx",
+        "Button.jsx"
+      ],
+      [
+        "SuccessProbabilityCalculator.jsx",
+        "Select.jsx"
+      ],
+      [
+        "SuccessStories.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "SuccessStories.jsx",
+        "AppImage.jsx"
+      ],
+      [
+        "SuccessStoryCard.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "SuccessStoryCard.jsx",
+        "AppImage.jsx"
+      ],
+      [
+        "TreatmentCategoryTabs.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "TreatmentRankingCard.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "TreatmentRankingCard.jsx",
+        "Button.jsx"
+      ],
+      [
+        "TrendingRankings.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "TrustBuilding.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "TrustIndicators.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "TrustIndicators.jsx",
+        "AppImage.jsx"
+      ],
+      [
+        "ValuePropositions.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "VoiceAssistant-spec.jsx",
+        "LanguageContext.jsx"
+      ],
+      [
+        "VoiceAssistant-spec.jsx",
+        "Routes.jsx"
+      ],
+      [
+        "VoiceAssistant-spec.jsx",
+        "VoiceAssistant.jsx"
+      ],
+      [
+        "VoiceAssistant-spec.jsx",
+        "translations.js"
+      ],
+      [
+        "VoiceAssistant-spec.jsx",
+        "useTranslation.js"
+      ],
+      [
+        "VoiceAssistant.jsx",
+        "LanguageContext.jsx"
+      ],
+      [
+        "index.jsx",
+        "AccuracyComparison.jsx"
+      ],
+      [
+        "index.jsx",
+        "AchievementBadge.jsx"
+      ],
+      [
+        "index.jsx",
+        "AlgorithmInAction.jsx"
+      ],
+      [
+        "index.jsx",
+        "App.jsx"
+      ],
+      [
+        "index.jsx",
+        "AppIcon.jsx"
+      ],
+      [
+        "index.jsx",
+        "Button.jsx"
+      ],
+      [
+        "index.jsx",
+        "ChallengeCard.jsx"
+      ],
+      [
+        "index.jsx",
+        "ClimateAdaptedRankings.jsx"
+      ],
+      [
+        "index.jsx",
+        "ComparisonModal.jsx"
+      ],
+      [
+        "index.jsx",
+        "ComparisonTool.jsx"
+      ],
+      [
+        "index.jsx",
+        "CropComparisonModal.jsx"
+      ],
+      [
+        "index.jsx",
+        "CropGrowthSimulation.jsx"
+      ],
+      [
+        "index.jsx",
+        "CropRankingTable.jsx"
+      ],
+      [
+        "index.jsx",
+        "ExpertRecommendations.jsx"
+      ],
+      [
+        "index.jsx",
+        "FilterPanel.jsx"
+      ],
+      [
+        "index.jsx",
+        "Footer.jsx"
+      ],
+      [
+        "index.jsx",
+        "GovernmentSchemeIntegration.jsx"
+      ],
+      [
+        "index.jsx",
+        "Header.jsx"
+      ],
+      [
+        "index.jsx",
+        "HeroSection.jsx"
+      ],
+      [
+        "index.jsx",
+        "HeroVisualization.jsx"
+      ],
+      [
+        "index.jsx",
+        "Input.jsx"
+      ],
+      [
+        "index.jsx",
+        "InteractiveSliders.jsx"
+      ],
+      [
+        "index.jsx",
+        "LeaderboardCard.jsx"
+      ],
+      [
+        "index.jsx",
+        "LocalExpertNetwork.jsx"
+      ],
+      [
+        "index.jsx",
+        "MobileCropCards.jsx"
+      ],
+      [
+        "index.jsx",
+        "PriceTracker.jsx"
+      ],
+      [
+        "index.jsx",
+        "ProcessBreakdown.jsx"
+      ],
+      [
+        "index.jsx",
+        "ProgressTracker.jsx"
+      ],
+      [
+        "index.jsx",
+        "ROICalculator.jsx"
+      ],
+      [
+        "index.jsx",
+        "RegionalLeaderboard.jsx"
+      ],
+      [
+        "index.jsx",
+        "RegionalMap.jsx"
+      ],
+      [
+        "index.jsx",
+        "RegionalSuccessStories.jsx"
+      ],
+      [
+        "index.jsx",
+        "ScientificValidation.jsx"
+      ],
+      [
+        "index.jsx",
+        "SeasonalTournament.jsx"
+      ],
+      [
+        "index.jsx",
+        "Select.jsx"
+      ],
+      [
+        "index.jsx",
+        "SoilSpecificGuidance.jsx"
+      ],
+      [
+        "index.jsx",
+        "SuccessProbabilityCalculator.jsx"
+      ],
+      [
+        "index.jsx",
+        "SuccessStories.jsx"
+      ],
+      [
+        "index.jsx",
+        "SuccessStoryCard.jsx"
+      ],
+      [
+        "index.jsx",
+        "TreatmentCategoryTabs.jsx"
+      ],
+      [
+        "index.jsx",
+        "TreatmentRankingCard.jsx"
+      ],
+      [
+        "index.jsx",
+        "TrendingRankings.jsx"
+      ],
+      [
+        "index.jsx",
+        "TrustBuilding.jsx"
+      ],
+      [
+        "index.jsx",
+        "TrustIndicators.jsx"
+      ],
+      [
+        "index.jsx",
+        "ValuePropositions.jsx"
+      ],
+      [
+        "useTranslation.js",
+        "LanguageContext.jsx"
+      ],
+      [
+        "useTranslation.js",
+        "translations.js"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {
+      "VoiceAssistant-spec.jsx": [
+        {
+          "trigger": "auth_info_leak_via_thrown_error",
+          "matched_text": "token"
+        }
+      ]
+    },
+    "deep_read_count": 1,
+    "total_files": 67,
+    "cost_saved_ratio": 0.985
+  }
+}

@@ -1,0 +1,252 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmptfqzffxf/springboot_security_restful_api",
+  "total_source_files": 66,
+  "tier_a_structural": {
+    "fan_in": {
+      "config-overrides.js": 0,
+      "index.tsx": 0,
+      "reportWebVitals.ts": 1,
+      "react-app-env.d.ts": 0,
+      "App.tsx": 0,
+      "utils.ts": 0,
+      "setup.ts": 0,
+      "hooks.ts": 0,
+      "store.ts": 2,
+      "slice.ts": 0,
+      "useSearch.ts": 0,
+      "UseResult.ts": 0,
+      "Pagination.tsx": 0,
+      "Checkbox.tsx": 0,
+      "Header.tsx": 0,
+      "NotFound.tsx": 0,
+      "container.tsx": 0,
+      "service.ts": 3,
+      "view-profile.tsx": 1,
+      "view-login.tsx": 1,
+      "MavenWrapperDownloader.java": 0,
+      "Application.java": 0,
+      "GsonIgnored.java": 2,
+      "GsonFactory.java": 0,
+      "GsonAdapter.java": 0,
+      "FormatUtils.java": 0,
+      "MyTimeUtils.java": 0,
+      "ThreadUtils.java": 0,
+      "ResultPage.java": 2,
+      "Logger.java": 1,
+      "SearchTask.java": 0,
+      "Result.java": 2,
+      "JmsLogger.java": 2,
+      "JmsBind.java": 1,
+      "JmsSender.java": 2,
+      "JmsAuto.java": 0,
+      "JmsEnums.java": 1,
+      "PageController.java": 2,
+      "BaseSupport.java": 2,
+      "BaseEntity.java": 3,
+      "BaseController.java": 1,
+      "EncodeUtils.java": 0,
+      "ModifyUtils.java": 0,
+      "ChecksUtils.java": 0,
+      "SecurityConfig.java": 0,
+      "CsrfBindingFilter.java": 0,
+      "UserDetailsImpl.java": 1,
+      "SecurityHandler.java": 0,
+      "Message.java": 0,
+      "MessageListener.java": 0,
+      "MessageRepository.java": 0,
+      "MessageController.java": 0,
+      "RememberRepository.java": 0,
+      "SessionService.java": 0,
+      "Remember.java": 0,
+      "UserService.java": 1,
+      "User.java": 1,
+      "SessionUtils.java": 0,
+      "UserRepository.java": 0,
+      "Session.java": 0,
+      "SessionController.java": 0,
+      "UserController.java": 0
+    },
+    "zero_fan_in_files": [
+      "config-overrides.js",
+      "index.tsx",
+      "react-app-env.d.ts",
+      "App.tsx",
+      "utils.ts",
+      "setup.ts",
+      "hooks.ts",
+      "slice.ts",
+      "useSearch.ts",
+      "UseResult.ts",
+      "Pagination.tsx",
+      "Checkbox.tsx",
+      "Header.tsx",
+      "NotFound.tsx",
+      "container.tsx",
+      "container.tsx",
+      "container.tsx",
+      "MavenWrapperDownloader.java",
+      "Application.java",
+      "GsonFactory.java",
+      "GsonAdapter.java",
+      "FormatUtils.java",
+      "MyTimeUtils.java",
+      "ThreadUtils.java",
+      "SearchTask.java",
+      "JmsAuto.java",
+      "EncodeUtils.java",
+      "ModifyUtils.java",
+      "ChecksUtils.java",
+      "SecurityConfig.java",
+      "CsrfBindingFilter.java",
+      "SecurityHandler.java",
+      "Message.java",
+      "MessageListener.java",
+      "MessageRepository.java",
+      "MessageController.java",
+      "RememberRepository.java",
+      "SessionService.java",
+      "Remember.java",
+      "SessionUtils.java",
+      "UserRepository.java",
+      "Session.java",
+      "SessionController.java",
+      "UserController.java"
+    ],
+    "edges": [
+      [
+        "App.tsx",
+        "store.ts"
+      ],
+      [
+        "Application.java",
+        "JmsSender.java"
+      ],
+      [
+        "BaseController.java",
+        "Result.java"
+      ],
+      [
+        "BaseController.java",
+        "ResultPage.java"
+      ],
+      [
+        "BaseEntity.java",
+        "GsonIgnored.java"
+      ],
+      [
+        "BaseSupport.java",
+        "JmsLogger.java"
+      ],
+      [
+        "BaseSupport.java",
+        "JmsSender.java"
+      ],
+      [
+        "BaseSupport.java",
+        "Result.java"
+      ],
+      [
+        "JmsAuto.java",
+        "BaseSupport.java"
+      ],
+      [
+        "JmsSender.java",
+        "Logger.java"
+      ],
+      [
+        "Message.java",
+        "BaseEntity.java"
+      ],
+      [
+        "MessageController.java",
+        "PageController.java"
+      ],
+      [
+        "MessageListener.java",
+        "BaseSupport.java"
+      ],
+      [
+        "MessageRepository.java",
+        "JmsEnums.java"
+      ],
+      [
+        "PageController.java",
+        "ResultPage.java"
+      ],
+      [
+        "Remember.java",
+        "BaseEntity.java"
+      ],
+      [
+        "SecurityConfig.java",
+        "UserService.java"
+      ],
+      [
+        "SessionController.java",
+        "BaseController.java"
+      ],
+      [
+        "SessionUtils.java",
+        "UserDetailsImpl.java"
+      ],
+      [
+        "ThreadUtils.java",
+        "JmsLogger.java"
+      ],
+      [
+        "User.java",
+        "BaseEntity.java"
+      ],
+      [
+        "User.java",
+        "GsonIgnored.java"
+      ],
+      [
+        "UserController.java",
+        "JmsBind.java"
+      ],
+      [
+        "UserController.java",
+        "PageController.java"
+      ],
+      [
+        "UserDetailsImpl.java",
+        "User.java"
+      ],
+      [
+        "container.tsx",
+        "service.ts"
+      ],
+      [
+        "container.tsx",
+        "view-login.tsx"
+      ],
+      [
+        "container.tsx",
+        "view-profile.tsx"
+      ],
+      [
+        "hooks.ts",
+        "store.ts"
+      ],
+      [
+        "index.tsx",
+        "reportWebVitals.ts"
+      ],
+      [
+        "view-login.tsx",
+        "service.ts"
+      ],
+      [
+        "view-profile.tsx",
+        "service.ts"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {},
+    "deep_read_count": 0,
+    "total_files": 66,
+    "cost_saved_ratio": 1.0
+  }
+}

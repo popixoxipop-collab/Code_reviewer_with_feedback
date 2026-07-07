@@ -1,0 +1,54 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmp01wks_wb/httpbin",
+  "total_source_files": 8,
+  "tier_a_structural": {
+    "fan_in": {
+      "setup.py": 0,
+      "test_httpbin.py": 0,
+      "__init__.py": 0,
+      "core.py": 1,
+      "utils.py": 1,
+      "structures.py": 2,
+      "helpers.py": 2,
+      "filters.py": 0
+    },
+    "zero_fan_in_files": [
+      "setup.py",
+      "test_httpbin.py",
+      "__init__.py",
+      "filters.py"
+    ],
+    "edges": [
+      [
+        "__init__.py",
+        "core.py"
+      ],
+      [
+        "core.py",
+        "helpers.py"
+      ],
+      [
+        "core.py",
+        "structures.py"
+      ],
+      [
+        "core.py",
+        "utils.py"
+      ],
+      [
+        "helpers.py",
+        "structures.py"
+      ],
+      [
+        "test_httpbin.py",
+        "helpers.py"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {},
+    "deep_read_count": 0,
+    "total_files": 8,
+    "cost_saved_ratio": 1.0
+  }
+}

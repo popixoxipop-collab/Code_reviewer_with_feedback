@@ -1,0 +1,298 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmp9zwg5scc/reveldb",
+  "total_source_files": 57,
+  "tier_a_structural": {
+    "fan_in": {
+      "rest.h": 0,
+      "rpc.h": 0,
+      "reveldb.h": 0,
+      "evthr.h": 0,
+      "evhttpx.h": 0,
+      "http-parser.h": 0,
+      "xconfig.h": 0,
+      "rbtree.h": 1,
+      "xleveldb.h": 0,
+      "log.c": 0,
+      "rbtree.c": 0,
+      "splaytree.c": 0,
+      "tstring.h": 4,
+      "vasprintf.h": 2,
+      "rpc.c": 0,
+      "xmalloc.h": 0,
+      "iter.h": 3,
+      "cJSON.h": 4,
+      "utility.c": 0,
+      "writebatch.c": 0,
+      "zmalloc.h": 1,
+      "reveldb.c": 0,
+      "server.c": 0,
+      "snapshot.c": 0,
+      "vasprintf.c": 0,
+      "tstring.c": 0,
+      "splaytree.h": 1,
+      "rest.c": 0,
+      "log.h": 5,
+      "xconfig.c": 0,
+      "cJSON.c": 0,
+      "iter.c": 0,
+      "xmalloc.c": 0,
+      "zmalloc.c": 0,
+      "writebatch.h": 3,
+      "utility.h": 4,
+      "snapshot.h": 3,
+      "server.h": 2,
+      "rbtree-demo.c": 0,
+      "evhttpx.c": 0,
+      "evthr.c": 0,
+      "http-parser.c": 0,
+      "config.h": 2,
+      "regexec.c": 1,
+      "regex.h": 1,
+      "regcomp.c": 1,
+      "regex_internal.c": 1,
+      "regex_internal.h": 1,
+      "regex.c": 0,
+      "uuid.h": 3,
+      "arc4random.h": 2,
+      "uuid.c": 0,
+      "arc4random.c": 0,
+      "xleveldb.c": 0,
+      "nedmalloc.h": 1,
+      "malloc.c.h": 1,
+      "nedmalloc.c": 0
+    },
+    "zero_fan_in_files": [
+      "rest.h",
+      "rpc.h",
+      "reveldb.h",
+      "evthr.h",
+      "evhttpx.h",
+      "http-parser.h",
+      "xconfig.h",
+      "xleveldb.h",
+      "log.c",
+      "rbtree.c",
+      "splaytree.c",
+      "rpc.c",
+      "xmalloc.h",
+      "utility.c",
+      "writebatch.c",
+      "reveldb.c",
+      "server.c",
+      "snapshot.c",
+      "vasprintf.c",
+      "tstring.c",
+      "rest.c",
+      "xconfig.c",
+      "cJSON.c",
+      "iter.c",
+      "xmalloc.c",
+      "zmalloc.c",
+      "rbtree-demo.c",
+      "evhttpx.c",
+      "evthr.c",
+      "http-parser.c",
+      "regex.c",
+      "uuid.c",
+      "arc4random.c",
+      "xleveldb.c",
+      "nedmalloc.c"
+    ],
+    "edges": [
+      [
+        "arc4random.c",
+        "arc4random.h"
+      ],
+      [
+        "cJSON.c",
+        "cJSON.h"
+      ],
+      [
+        "iter.c",
+        "iter.h"
+      ],
+      [
+        "log.c",
+        "log.h"
+      ],
+      [
+        "nedmalloc.c",
+        "malloc.c.h"
+      ],
+      [
+        "nedmalloc.c",
+        "nedmalloc.h"
+      ],
+      [
+        "rbtree-demo.c",
+        "rbtree.h"
+      ],
+      [
+        "regex.c",
+        "config.h"
+      ],
+      [
+        "regex.c",
+        "regcomp.c"
+      ],
+      [
+        "regex.c",
+        "regex.h"
+      ],
+      [
+        "regex.c",
+        "regex_internal.c"
+      ],
+      [
+        "regex.c",
+        "regex_internal.h"
+      ],
+      [
+        "regex.c",
+        "regexec.c"
+      ],
+      [
+        "rest.c",
+        "cJSON.h"
+      ],
+      [
+        "rest.c",
+        "iter.h"
+      ],
+      [
+        "rest.c",
+        "log.h"
+      ],
+      [
+        "rest.c",
+        "server.h"
+      ],
+      [
+        "rest.c",
+        "snapshot.h"
+      ],
+      [
+        "rest.c",
+        "tstring.h"
+      ],
+      [
+        "rest.c",
+        "utility.h"
+      ],
+      [
+        "rest.c",
+        "uuid.h"
+      ],
+      [
+        "rest.c",
+        "writebatch.h"
+      ],
+      [
+        "reveldb.c",
+        "tstring.h"
+      ],
+      [
+        "rpc.c",
+        "cJSON.h"
+      ],
+      [
+        "rpc.c",
+        "iter.h"
+      ],
+      [
+        "rpc.c",
+        "log.h"
+      ],
+      [
+        "rpc.c",
+        "server.h"
+      ],
+      [
+        "rpc.c",
+        "snapshot.h"
+      ],
+      [
+        "rpc.c",
+        "tstring.h"
+      ],
+      [
+        "rpc.c",
+        "utility.h"
+      ],
+      [
+        "rpc.c",
+        "uuid.h"
+      ],
+      [
+        "rpc.c",
+        "writebatch.h"
+      ],
+      [
+        "server.c",
+        "log.h"
+      ],
+      [
+        "server.c",
+        "utility.h"
+      ],
+      [
+        "snapshot.c",
+        "snapshot.h"
+      ],
+      [
+        "splaytree.c",
+        "splaytree.h"
+      ],
+      [
+        "tstring.c",
+        "tstring.h"
+      ],
+      [
+        "tstring.c",
+        "vasprintf.h"
+      ],
+      [
+        "utility.c",
+        "utility.h"
+      ],
+      [
+        "uuid.c",
+        "arc4random.h"
+      ],
+      [
+        "uuid.c",
+        "uuid.h"
+      ],
+      [
+        "vasprintf.c",
+        "vasprintf.h"
+      ],
+      [
+        "writebatch.c",
+        "writebatch.h"
+      ],
+      [
+        "xconfig.c",
+        "cJSON.h"
+      ],
+      [
+        "xconfig.c",
+        "log.h"
+      ],
+      [
+        "zmalloc.c",
+        "config.h"
+      ],
+      [
+        "zmalloc.c",
+        "zmalloc.h"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {},
+    "deep_read_count": 0,
+    "total_files": 57,
+    "cost_saved_ratio": 1.0
+  }
+}

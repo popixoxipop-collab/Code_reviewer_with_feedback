@@ -1,0 +1,118 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmpvjuyuvqh/mathopd",
+  "total_source_files": 17,
+  "tier_a_structural": {
+    "fan_in": {
+      "log.c": 0,
+      "request.c": 0,
+      "util.c": 0,
+      "addr.c": 0,
+      "cgi.c": 0,
+      "stub.c": 0,
+      "poll-emul.c": 0,
+      "core.c": 0,
+      "dump.c": 0,
+      "sendfile.c": 0,
+      "main.c": 0,
+      "redirect.c": 0,
+      "base64.c": 0,
+      "config.c": 0,
+      "imap.c": 0,
+      "poll-emul.h": 3,
+      "mathopd.h": 14
+    },
+    "zero_fan_in_files": [
+      "log.c",
+      "request.c",
+      "util.c",
+      "addr.c",
+      "cgi.c",
+      "stub.c",
+      "poll-emul.c",
+      "core.c",
+      "dump.c",
+      "sendfile.c",
+      "main.c",
+      "redirect.c",
+      "base64.c",
+      "config.c",
+      "imap.c"
+    ],
+    "edges": [
+      [
+        "addr.c",
+        "mathopd.h"
+      ],
+      [
+        "base64.c",
+        "mathopd.h"
+      ],
+      [
+        "cgi.c",
+        "mathopd.h"
+      ],
+      [
+        "config.c",
+        "mathopd.h"
+      ],
+      [
+        "core.c",
+        "mathopd.h"
+      ],
+      [
+        "core.c",
+        "poll-emul.h"
+      ],
+      [
+        "dump.c",
+        "mathopd.h"
+      ],
+      [
+        "imap.c",
+        "mathopd.h"
+      ],
+      [
+        "log.c",
+        "mathopd.h"
+      ],
+      [
+        "main.c",
+        "mathopd.h"
+      ],
+      [
+        "poll-emul.c",
+        "poll-emul.h"
+      ],
+      [
+        "redirect.c",
+        "mathopd.h"
+      ],
+      [
+        "request.c",
+        "mathopd.h"
+      ],
+      [
+        "sendfile.c",
+        "mathopd.h"
+      ],
+      [
+        "stub.c",
+        "mathopd.h"
+      ],
+      [
+        "stub.c",
+        "poll-emul.h"
+      ],
+      [
+        "util.c",
+        "mathopd.h"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {},
+    "deep_read_count": 0,
+    "total_files": 17,
+    "cost_saved_ratio": 1.0
+  }
+}

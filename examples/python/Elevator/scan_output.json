@@ -1,0 +1,398 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmpy66rpzw8/Elevator",
+  "total_source_files": 98,
+  "tier_a_structural": {
+    "fan_in": {
+      "setup.py": 0,
+      "db.py": 7,
+      "server.py": 0,
+      "backend.py": 1,
+      "env.py": 4,
+      "conf.py": 0,
+      "constants.py": 12,
+      "frontend.py": 1,
+      "__init__.py": 0,
+      "message.py": 6,
+      "api.py": 4,
+      "patterns.py": 6,
+      "snippets.py": 5,
+      "daemon.py": 1,
+      "decorators.py": 0,
+      "internals.py": 2,
+      "fakers.py": 4,
+      "message_tests.py": 0,
+      "db_tests.py": 0,
+      "utils.py": 1,
+      "api_tests.py": 0,
+      "test_worker.py": 0,
+      "test_supervisor.py": 0,
+      "test_atm.py": 0,
+      "client_tests.py": 0,
+      "io_tests.py": 0,
+      "client.py": 1,
+      "io.py": 2,
+      "args.py": 1,
+      "errors.py": 1,
+      "main.py": 0,
+      "helpers.py": 2,
+      "install.py": 1,
+      "bench_elevator.py": 0,
+      "config.py": 2,
+      "log.py": 1,
+      "worker.py": 2,
+      "supervisor.py": 3,
+      "protocol.py": 3,
+      "atm.py": 2
+    },
+    "zero_fan_in_files": [
+      "setup.py",
+      "server.py",
+      "conf.py",
+      "__init__.py",
+      "__init__.py",
+      "decorators.py",
+      "__init__.py",
+      "server.py",
+      "conf.py",
+      "__init__.py",
+      "__init__.py",
+      "decorators.py",
+      "__init__.py",
+      "server.py",
+      "conf.py",
+      "__init__.py",
+      "__init__.py",
+      "decorators.py",
+      "__init__.py",
+      "message_tests.py",
+      "__init__.py",
+      "db_tests.py",
+      "api_tests.py",
+      "__init__.py",
+      "test_worker.py",
+      "test_supervisor.py",
+      "test_atm.py",
+      "client_tests.py",
+      "io_tests.py",
+      "__init__.py",
+      "main.py",
+      "conf.py",
+      "__init__.py",
+      "bench_elevator.py",
+      "server.py",
+      "__init__.py",
+      "__init__.py",
+      "decorators.py",
+      "__init__.py",
+      "__init__.py"
+    ],
+    "edges": [
+      [
+        "__init__.py",
+        "atm.py"
+      ],
+      [
+        "__init__.py",
+        "install.py"
+      ],
+      [
+        "__init__.py",
+        "supervisor.py"
+      ],
+      [
+        "api.py",
+        "constants.py"
+      ],
+      [
+        "api.py",
+        "db.py"
+      ],
+      [
+        "api.py",
+        "internals.py"
+      ],
+      [
+        "api.py",
+        "message.py"
+      ],
+      [
+        "api.py",
+        "patterns.py"
+      ],
+      [
+        "api_tests.py",
+        "api.py"
+      ],
+      [
+        "api_tests.py",
+        "constants.py"
+      ],
+      [
+        "api_tests.py",
+        "db.py"
+      ],
+      [
+        "api_tests.py",
+        "fakers.py"
+      ],
+      [
+        "api_tests.py",
+        "message.py"
+      ],
+      [
+        "backend.py",
+        "api.py"
+      ],
+      [
+        "backend.py",
+        "constants.py"
+      ],
+      [
+        "backend.py",
+        "db.py"
+      ],
+      [
+        "backend.py",
+        "env.py"
+      ],
+      [
+        "backend.py",
+        "message.py"
+      ],
+      [
+        "backend.py",
+        "patterns.py"
+      ],
+      [
+        "client.py",
+        "constants.py"
+      ],
+      [
+        "client.py",
+        "errors.py"
+      ],
+      [
+        "client.py",
+        "helpers.py"
+      ],
+      [
+        "client.py",
+        "io.py"
+      ],
+      [
+        "client.py",
+        "message.py"
+      ],
+      [
+        "config.py",
+        "snippets.py"
+      ],
+      [
+        "db.py",
+        "constants.py"
+      ],
+      [
+        "db.py",
+        "env.py"
+      ],
+      [
+        "db.py",
+        "internals.py"
+      ],
+      [
+        "db.py",
+        "patterns.py"
+      ],
+      [
+        "db.py",
+        "snippets.py"
+      ],
+      [
+        "db_tests.py",
+        "constants.py"
+      ],
+      [
+        "db_tests.py",
+        "db.py"
+      ],
+      [
+        "db_tests.py",
+        "fakers.py"
+      ],
+      [
+        "db_tests.py",
+        "snippets.py"
+      ],
+      [
+        "db_tests.py",
+        "utils.py"
+      ],
+      [
+        "env.py",
+        "patterns.py"
+      ],
+      [
+        "env.py",
+        "snippets.py"
+      ],
+      [
+        "errors.py",
+        "constants.py"
+      ],
+      [
+        "fakers.py",
+        "config.py"
+      ],
+      [
+        "frontend.py",
+        "env.py"
+      ],
+      [
+        "helpers.py",
+        "constants.py"
+      ],
+      [
+        "install.py",
+        "api.py"
+      ],
+      [
+        "internals.py",
+        "constants.py"
+      ],
+      [
+        "io.py",
+        "helpers.py"
+      ],
+      [
+        "io.py",
+        "patterns.py"
+      ],
+      [
+        "main.py",
+        "args.py"
+      ],
+      [
+        "main.py",
+        "client.py"
+      ],
+      [
+        "main.py",
+        "io.py"
+      ],
+      [
+        "message.py",
+        "constants.py"
+      ],
+      [
+        "message_tests.py",
+        "constants.py"
+      ],
+      [
+        "message_tests.py",
+        "message.py"
+      ],
+      [
+        "server.py",
+        "backend.py"
+      ],
+      [
+        "server.py",
+        "config.py"
+      ],
+      [
+        "server.py",
+        "daemon.py"
+      ],
+      [
+        "server.py",
+        "db.py"
+      ],
+      [
+        "server.py",
+        "env.py"
+      ],
+      [
+        "server.py",
+        "frontend.py"
+      ],
+      [
+        "server.py",
+        "log.py"
+      ],
+      [
+        "supervisor.py",
+        "protocol.py"
+      ],
+      [
+        "supervisor.py",
+        "snippets.py"
+      ],
+      [
+        "supervisor.py",
+        "worker.py"
+      ],
+      [
+        "test_atm.py",
+        "atm.py"
+      ],
+      [
+        "test_atm.py",
+        "db.py"
+      ],
+      [
+        "test_atm.py",
+        "fakers.py"
+      ],
+      [
+        "test_atm.py",
+        "supervisor.py"
+      ],
+      [
+        "test_supervisor.py",
+        "db.py"
+      ],
+      [
+        "test_supervisor.py",
+        "fakers.py"
+      ],
+      [
+        "test_supervisor.py",
+        "protocol.py"
+      ],
+      [
+        "test_supervisor.py",
+        "supervisor.py"
+      ],
+      [
+        "test_supervisor.py",
+        "worker.py"
+      ],
+      [
+        "worker.py",
+        "api.py"
+      ],
+      [
+        "worker.py",
+        "constants.py"
+      ],
+      [
+        "worker.py",
+        "message.py"
+      ],
+      [
+        "worker.py",
+        "patterns.py"
+      ],
+      [
+        "worker.py",
+        "protocol.py"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {},
+    "deep_read_count": 0,
+    "total_files": 98,
+    "cost_saved_ratio": 1.0
+  }
+}

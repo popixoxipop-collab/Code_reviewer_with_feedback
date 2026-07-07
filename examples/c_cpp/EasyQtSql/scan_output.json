@@ -1,0 +1,475 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmpeme6vam0/EasyQtSql",
+  "total_source_files": 156,
+  "tier_a_structural": {
+    "fan_in": {
+      "TestObject.cpp": 0,
+      "TestObject.h": 2,
+      "main.cpp": 0,
+      "tst_testddl.cpp": 0,
+      "tst_testinsert.cpp": 0,
+      "Shared.h": 4,
+      "tst_testupdate.cpp": 0,
+      "tst_testdelete.cpp": 0,
+      "tst_testselect.cpp": 0,
+      "struct_out.js": 0,
+      "_easy_qt_sql___update_query_8h.js": 0,
+      "_easy_qt_sql___param_direction_wrapper_8h.js": 0,
+      "annotated_dup.js": 0,
+      "_easy_qt_sql___transaction_8h.js": 0,
+      "class_easy_qt_sql_1_1_sql_factory.js": 0,
+      "_easy_qt_sql___prepared_query_8h.js": 0,
+      "struct_easy_qt_sql_1_1_out.js": 0,
+      "class_insert_query.js": 0,
+      "class_easy_qt_sql_1_1_prepared_query.js": 0,
+      "class_easy_qt_sql_1_1_query_result.js": 0,
+      "hierarchy.js": 0,
+      "class_easy_qt_sql_1_1_sql_factory_1_1_thread_d_b_pool.js": 0,
+      "class_easy_qt_sql_1_1_update_query.js": 0,
+      "struct_sql_factory_1_1_d_b_setting.js": 0,
+      "_easy_qt_sql___insert_query_8h.js": 0,
+      "class_easy_qt_sql_1_1_database.js": 0,
+      "dummy_8cpp.js": 0,
+      "struct_easy_qt_sql_1_1_param_direction_wrapper.js": 0,
+      "struct_easy_qt_sql_1_1_in_out.js": 0,
+      "struct_param_direction_wrapper.js": 0,
+      "struct_easy_qt_sql_1_1_in.js": 0,
+      "class_sql_factory.js": 0,
+      "_easy_qt_sql___util_8h.js": 0,
+      "class_easy_qt_sql_1_1_d_b_exception.js": 0,
+      "class_easy_qt_sql_1_1_delete_query.js": 0,
+      "functions_func.js": 0,
+      "_easy_qt_sql___delete_query_8h.js": 0,
+      "navtree.js": 0,
+      "class_d_b_exception.js": 0,
+      "class_non_query_result.js": 0,
+      "navtreeindex0.js": 0,
+      "functions_dup.js": 0,
+      "class_prepared_query.js": 0,
+      "class_update_query.js": 0,
+      "_easy_qt_sql___non_query_result_8h.js": 0,
+      "navtreeindex1.js": 0,
+      "namespaces_dup.js": 0,
+      "_easy_qt_sql___d_b_exception_8h.js": 0,
+      "class_query_result.js": 0,
+      "struct_in_out.js": 0,
+      "class_easy_qt_sql_1_1_insert_query.js": 0,
+      "class_transaction.js": 0,
+      "_easy_qt_sql___query_result_8h.js": 0,
+      "class_sql_factory_1_1_thread_d_b_pool.js": 0,
+      "struct_in.js": 0,
+      "menudata.js": 0,
+      "dir_ccd1b38e141953c502dde9cd8646e4d8.js": 0,
+      "class_easy_qt_sql_1_1_transaction.js": 0,
+      "resize.js": 0,
+      "menu.js": 0,
+      "namespace_easy_qt_sql.js": 0,
+      "_easy_qt_sql_8h.js": 0,
+      "navtreedata.js": 0,
+      "class_database.js": 0,
+      "class_delete_query.js": 0,
+      "class_easy_qt_sql_1_1_non_query_result.js": 0,
+      "struct_easy_qt_sql_1_1_sql_factory_1_1_d_b_setting.js": 0,
+      "files_dup.js": 0,
+      "dynsections.js": 0,
+      "_easy_qt_sql___sql_factory_8h.js": 0,
+      "jquery.js": 0,
+      "functions_3.js": 0,
+      "searchdata.js": 0,
+      "all_6.js": 0,
+      "functions_11.js": 0,
+      "functions_d.js": 0,
+      "all_a.js": 0,
+      "functions_7.js": 0,
+      "variables_3.js": 0,
+      "all_2.js": 0,
+      "all_e.js": 0,
+      "functions_6.js": 0,
+      "variables_2.js": 0,
+      "functions_14.js": 0,
+      "all_3.js": 0,
+      "functions_a.js": 0,
+      "all_d.js": 0,
+      "functions_2.js": 0,
+      "all_7.js": 0,
+      "functions_10.js": 0,
+      "functions_e.js": 0,
+      "classes_1.js": 0,
+      "functions_9.js": 0,
+      "related_1.js": 0,
+      "classes_5.js": 0,
+      "all_8.js": 0,
+      "all_13.js": 0,
+      "classes_4.js": 0,
+      "all_9.js": 0,
+      "all_12.js": 0,
+      "related_4.js": 0,
+      "classes_0.js": 0,
+      "functions_8.js": 0,
+      "related_0.js": 0,
+      "files_2.js": 0,
+      "classes_7.js": 0,
+      "all_11.js": 0,
+      "typedefs_1.js": 0,
+      "classes_3.js": 0,
+      "all_15.js": 0,
+      "defines_0.js": 0,
+      "files_1.js": 0,
+      "related_3.js": 0,
+      "classes_2.js": 0,
+      "all_14.js": 0,
+      "defines_1.js": 0,
+      "files_0.js": 0,
+      "related_2.js": 0,
+      "classes_6.js": 0,
+      "all_10.js": 0,
+      "typedefs_0.js": 0,
+      "namespaces_0.js": 0,
+      "functions_5.js": 0,
+      "variables_1.js": 0,
+      "all_0.js": 0,
+      "functions_b.js": 0,
+      "functions_1.js": 0,
+      "pages_0.js": 0,
+      "functions_13.js": 0,
+      "all_4.js": 0,
+      "functions_f.js": 0,
+      "all_c.js": 0,
+      "search.js": 0,
+      "functions_0.js": 0,
+      "functions_12.js": 0,
+      "all_5.js": 0,
+      "classes_8.js": 0,
+      "all_b.js": 0,
+      "functions_4.js": 0,
+      "variables_0.js": 0,
+      "all_1.js": 0,
+      "functions_c.js": 0,
+      "all_f.js": 0,
+      "EasyQtSql_Transaction.h": 1,
+      "EasyQtSql_ParamDirectionWrapper.h": 2,
+      "EasyQtSql_QueryResult.h": 3,
+      "EasyQtSql_NonQueryResult.h": 6,
+      "EasyQtSql_SqlFactory.h": 1,
+      "dummy.cpp": 0,
+      "EasyQtSql_UpdateQuery.h": 2,
+      "EasyQtSql_DeleteQuery.h": 2,
+      "EasyQtSql_PreparedQuery.h": 2,
+      "EasyQtSql_DBException.h": 2,
+      "EasyQtSql_InsertQuery.h": 2,
+      "EasyQtSql_Util.h": 1,
+      "EasyQtSql.h": 8
+    },
+    "zero_fan_in_files": [
+      "TestObject.cpp",
+      "main.cpp",
+      "tst_testddl.cpp",
+      "tst_testinsert.cpp",
+      "tst_testupdate.cpp",
+      "tst_testdelete.cpp",
+      "tst_testselect.cpp",
+      "struct_out.js",
+      "_easy_qt_sql___update_query_8h.js",
+      "_easy_qt_sql___param_direction_wrapper_8h.js",
+      "annotated_dup.js",
+      "_easy_qt_sql___transaction_8h.js",
+      "class_easy_qt_sql_1_1_sql_factory.js",
+      "_easy_qt_sql___prepared_query_8h.js",
+      "struct_easy_qt_sql_1_1_out.js",
+      "class_insert_query.js",
+      "class_easy_qt_sql_1_1_prepared_query.js",
+      "class_easy_qt_sql_1_1_query_result.js",
+      "hierarchy.js",
+      "class_easy_qt_sql_1_1_sql_factory_1_1_thread_d_b_pool.js",
+      "class_easy_qt_sql_1_1_update_query.js",
+      "struct_sql_factory_1_1_d_b_setting.js",
+      "_easy_qt_sql___insert_query_8h.js",
+      "class_easy_qt_sql_1_1_database.js",
+      "dummy_8cpp.js",
+      "struct_easy_qt_sql_1_1_param_direction_wrapper.js",
+      "struct_easy_qt_sql_1_1_in_out.js",
+      "struct_param_direction_wrapper.js",
+      "struct_easy_qt_sql_1_1_in.js",
+      "class_sql_factory.js",
+      "_easy_qt_sql___util_8h.js",
+      "class_easy_qt_sql_1_1_d_b_exception.js",
+      "class_easy_qt_sql_1_1_delete_query.js",
+      "functions_func.js",
+      "_easy_qt_sql___delete_query_8h.js",
+      "navtree.js",
+      "class_d_b_exception.js",
+      "class_non_query_result.js",
+      "navtreeindex0.js",
+      "functions_dup.js",
+      "class_prepared_query.js",
+      "class_update_query.js",
+      "_easy_qt_sql___non_query_result_8h.js",
+      "navtreeindex1.js",
+      "namespaces_dup.js",
+      "_easy_qt_sql___d_b_exception_8h.js",
+      "class_query_result.js",
+      "struct_in_out.js",
+      "class_easy_qt_sql_1_1_insert_query.js",
+      "class_transaction.js",
+      "_easy_qt_sql___query_result_8h.js",
+      "class_sql_factory_1_1_thread_d_b_pool.js",
+      "struct_in.js",
+      "menudata.js",
+      "dir_ccd1b38e141953c502dde9cd8646e4d8.js",
+      "class_easy_qt_sql_1_1_transaction.js",
+      "resize.js",
+      "menu.js",
+      "namespace_easy_qt_sql.js",
+      "_easy_qt_sql_8h.js",
+      "navtreedata.js",
+      "class_database.js",
+      "class_delete_query.js",
+      "class_easy_qt_sql_1_1_non_query_result.js",
+      "struct_easy_qt_sql_1_1_sql_factory_1_1_d_b_setting.js",
+      "files_dup.js",
+      "dynsections.js",
+      "_easy_qt_sql___sql_factory_8h.js",
+      "jquery.js",
+      "functions_3.js",
+      "searchdata.js",
+      "all_6.js",
+      "functions_11.js",
+      "functions_d.js",
+      "all_a.js",
+      "functions_7.js",
+      "variables_3.js",
+      "all_2.js",
+      "all_e.js",
+      "functions_6.js",
+      "variables_2.js",
+      "functions_14.js",
+      "all_3.js",
+      "functions_a.js",
+      "all_d.js",
+      "functions_2.js",
+      "all_7.js",
+      "functions_10.js",
+      "functions_e.js",
+      "classes_1.js",
+      "functions_9.js",
+      "related_1.js",
+      "classes_5.js",
+      "all_8.js",
+      "all_13.js",
+      "classes_4.js",
+      "all_9.js",
+      "all_12.js",
+      "related_4.js",
+      "classes_0.js",
+      "functions_8.js",
+      "related_0.js",
+      "files_2.js",
+      "classes_7.js",
+      "all_11.js",
+      "typedefs_1.js",
+      "classes_3.js",
+      "all_15.js",
+      "defines_0.js",
+      "files_1.js",
+      "related_3.js",
+      "classes_2.js",
+      "all_14.js",
+      "defines_1.js",
+      "files_0.js",
+      "related_2.js",
+      "classes_6.js",
+      "all_10.js",
+      "typedefs_0.js",
+      "namespaces_0.js",
+      "functions_5.js",
+      "variables_1.js",
+      "all_0.js",
+      "functions_b.js",
+      "functions_1.js",
+      "pages_0.js",
+      "functions_13.js",
+      "all_4.js",
+      "functions_f.js",
+      "all_c.js",
+      "search.js",
+      "functions_0.js",
+      "functions_12.js",
+      "all_5.js",
+      "classes_8.js",
+      "all_b.js",
+      "functions_4.js",
+      "variables_0.js",
+      "all_1.js",
+      "functions_c.js",
+      "all_f.js",
+      "dummy.cpp"
+    ],
+    "edges": [
+      [
+        "EasyQtSql.h",
+        "EasyQtSql_DBException.h"
+      ],
+      [
+        "EasyQtSql.h",
+        "EasyQtSql_DeleteQuery.h"
+      ],
+      [
+        "EasyQtSql.h",
+        "EasyQtSql_InsertQuery.h"
+      ],
+      [
+        "EasyQtSql.h",
+        "EasyQtSql_NonQueryResult.h"
+      ],
+      [
+        "EasyQtSql.h",
+        "EasyQtSql_ParamDirectionWrapper.h"
+      ],
+      [
+        "EasyQtSql.h",
+        "EasyQtSql_PreparedQuery.h"
+      ],
+      [
+        "EasyQtSql.h",
+        "EasyQtSql_QueryResult.h"
+      ],
+      [
+        "EasyQtSql.h",
+        "EasyQtSql_SqlFactory.h"
+      ],
+      [
+        "EasyQtSql.h",
+        "EasyQtSql_Transaction.h"
+      ],
+      [
+        "EasyQtSql.h",
+        "EasyQtSql_UpdateQuery.h"
+      ],
+      [
+        "EasyQtSql_DeleteQuery.h",
+        "EasyQtSql_NonQueryResult.h"
+      ],
+      [
+        "EasyQtSql_InsertQuery.h",
+        "EasyQtSql_NonQueryResult.h"
+      ],
+      [
+        "EasyQtSql_PreparedQuery.h",
+        "EasyQtSql_ParamDirectionWrapper.h"
+      ],
+      [
+        "EasyQtSql_PreparedQuery.h",
+        "EasyQtSql_QueryResult.h"
+      ],
+      [
+        "EasyQtSql_QueryResult.h",
+        "EasyQtSql_NonQueryResult.h"
+      ],
+      [
+        "EasyQtSql_Transaction.h",
+        "EasyQtSql_DBException.h"
+      ],
+      [
+        "EasyQtSql_Transaction.h",
+        "EasyQtSql_DeleteQuery.h"
+      ],
+      [
+        "EasyQtSql_Transaction.h",
+        "EasyQtSql_InsertQuery.h"
+      ],
+      [
+        "EasyQtSql_Transaction.h",
+        "EasyQtSql_NonQueryResult.h"
+      ],
+      [
+        "EasyQtSql_Transaction.h",
+        "EasyQtSql_PreparedQuery.h"
+      ],
+      [
+        "EasyQtSql_Transaction.h",
+        "EasyQtSql_UpdateQuery.h"
+      ],
+      [
+        "EasyQtSql_Transaction.h",
+        "EasyQtSql_Util.h"
+      ],
+      [
+        "EasyQtSql_UpdateQuery.h",
+        "EasyQtSql_NonQueryResult.h"
+      ],
+      [
+        "EasyQtSql_Util.h",
+        "EasyQtSql_QueryResult.h"
+      ],
+      [
+        "TestObject.cpp",
+        "EasyQtSql.h"
+      ],
+      [
+        "TestObject.cpp",
+        "TestObject.h"
+      ],
+      [
+        "dummy.cpp",
+        "EasyQtSql.h"
+      ],
+      [
+        "main.cpp",
+        "EasyQtSql.h"
+      ],
+      [
+        "main.cpp",
+        "TestObject.h"
+      ],
+      [
+        "tst_testddl.cpp",
+        "EasyQtSql.h"
+      ],
+      [
+        "tst_testdelete.cpp",
+        "EasyQtSql.h"
+      ],
+      [
+        "tst_testdelete.cpp",
+        "Shared.h"
+      ],
+      [
+        "tst_testinsert.cpp",
+        "EasyQtSql.h"
+      ],
+      [
+        "tst_testinsert.cpp",
+        "Shared.h"
+      ],
+      [
+        "tst_testselect.cpp",
+        "EasyQtSql.h"
+      ],
+      [
+        "tst_testselect.cpp",
+        "Shared.h"
+      ],
+      [
+        "tst_testupdate.cpp",
+        "EasyQtSql.h"
+      ],
+      [
+        "tst_testupdate.cpp",
+        "Shared.h"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {
+      "navtree.js": [
+        {
+          "trigger": "eval_or_dangerous_html",
+          "matched_text": "eval("
+        }
+      ]
+    },
+    "deep_read_count": 1,
+    "total_files": 156,
+    "cost_saved_ratio": 0.994
+  }
+}

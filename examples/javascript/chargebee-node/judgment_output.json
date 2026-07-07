@@ -1,0 +1,290 @@
+{
+  "hub": "axiosHttpClient.ts",
+  "findings": [
+    {
+      "id": "tier-b-risk:requestWrapper.test.ts",
+      "file": "requestWrapper.test.ts",
+      "finding": "requestWrapper.test.ts — 인증정보(uid/email 등)가 JSON.stringify되어 throw된 Error에 담김",
+      "priority": "Important(🔴)",
+      "design_intent": "상",
+      "question_value": "상",
+      "risk": "상",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 3
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 10
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 1
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 10
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 3,
+            "exposure_scope": 3,
+            "scenario_specificity": 3,
+            "spread_scope": 3
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 12
+        }
+      },
+      "lang": "javascript"
+    },
+    {
+      "id": "tier-b-risk:webhook.test.ts",
+      "file": "webhook.test.ts",
+      "finding": "webhook.test.ts — 인증정보(uid/email 등)가 JSON.stringify되어 throw된 Error에 담김",
+      "priority": "Important(🔴)",
+      "design_intent": "상",
+      "question_value": "상",
+      "risk": "상",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 3
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 10
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 1
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 10
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 3,
+            "exposure_scope": 3,
+            "scenario_specificity": 3,
+            "spread_scope": 3
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 12
+        }
+      },
+      "lang": "javascript"
+    },
+    {
+      "id": "tier-b-risk:validation.test.ts",
+      "file": "validation.test.ts",
+      "finding": "validation.test.ts — 인증정보(uid/email 등)가 JSON.stringify되어 throw된 Error에 담김",
+      "priority": "Important(🔴)",
+      "design_intent": "상",
+      "question_value": "상",
+      "risk": "상",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 3
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 10
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 1
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 10
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 3,
+            "exposure_scope": 3,
+            "scenario_specificity": 3,
+            "spread_scope": 3
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 12
+        }
+      },
+      "lang": "javascript"
+    },
+    {
+      "id": "tier-b-risk:RequestWrapper.ts",
+      "file": "RequestWrapper.ts",
+      "finding": "RequestWrapper.ts — 인증정보(uid/email 등)가 JSON.stringify되어 throw된 Error에 담김",
+      "priority": "Important(🔴)",
+      "design_intent": "상",
+      "question_value": "상",
+      "risk": "상",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 3
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 10
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 1
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 10
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 3,
+            "exposure_scope": 3,
+            "scenario_specificity": 3,
+            "spread_scope": 3
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 12
+        }
+      },
+      "lang": "javascript"
+    },
+    {
+      "id": "tier-b-risk:util.ts",
+      "file": "util.ts",
+      "finding": "util.ts — 인증정보(uid/email 등)가 JSON.stringify되어 throw된 Error에 담김",
+      "priority": "Important(🔴)",
+      "design_intent": "상",
+      "question_value": "상",
+      "risk": "상",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 3
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 10
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 1
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 10
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 3,
+            "exposure_scope": 3,
+            "scenario_specificity": 3,
+            "spread_scope": 3
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 12
+        }
+      },
+      "lang": "javascript"
+    }
+  ]
+}

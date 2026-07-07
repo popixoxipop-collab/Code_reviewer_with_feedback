@@ -1,0 +1,104 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmpwx8t7sbu/libofx",
+  "total_source_files": 32,
+  "tier_a_structural": {
+    "fan_in": {
+      "getopt1.c": 0,
+      "getopt.h": 2,
+      "getopt.c": 0,
+      "ofx2qif.c": 0,
+      "ofxdump.cpp": 0,
+      "cmdline.h": 3,
+      "cmdline.c": 0,
+      "nodeparser.h": 2,
+      "nodeparser.cpp": 0,
+      "ofxconnect.cpp": 0,
+      "ofx_container_statement.cpp": 0,
+      "file_preproc.cpp": 0,
+      "ofx_preproc.cpp": 0,
+      "messages.cpp": 0,
+      "ofx_container_position.cpp": 0,
+      "context.cpp": 0,
+      "ofc_sgml.cpp": 0,
+      "win32.cpp": 0,
+      "ofx_container_account.cpp": 0,
+      "ofx_container_transaction.cpp": 0,
+      "ofx_request_accountinfo.cpp": 0,
+      "ofx_request.cpp": 0,
+      "ofx_container_main.cpp": 0,
+      "ofx_sgml.cpp": 0,
+      "ofx_containers_misc.cpp": 0,
+      "ofx_request_statement.cpp": 0,
+      "ofx_container_security.cpp": 0,
+      "ofx_container_generic.cpp": 0,
+      "ofx_utilities.cpp": 0,
+      "main_doc.c": 0
+    },
+    "zero_fan_in_files": [
+      "getopt1.c",
+      "getopt.c",
+      "ofx2qif.c",
+      "ofxdump.cpp",
+      "cmdline.c",
+      "nodeparser.cpp",
+      "ofxconnect.cpp",
+      "cmdline.c",
+      "ofx_container_statement.cpp",
+      "file_preproc.cpp",
+      "ofx_preproc.cpp",
+      "messages.cpp",
+      "ofx_container_position.cpp",
+      "context.cpp",
+      "ofc_sgml.cpp",
+      "win32.cpp",
+      "ofx_container_account.cpp",
+      "ofx_container_transaction.cpp",
+      "ofx_request_accountinfo.cpp",
+      "ofx_request.cpp",
+      "ofx_container_main.cpp",
+      "ofx_sgml.cpp",
+      "ofx_containers_misc.cpp",
+      "ofx_request_statement.cpp",
+      "ofx_container_security.cpp",
+      "ofx_container_generic.cpp",
+      "ofx_utilities.cpp",
+      "main_doc.c"
+    ],
+    "edges": [
+      [
+        "cmdline.c",
+        "cmdline.h"
+      ],
+      [
+        "getopt.c",
+        "getopt.h"
+      ],
+      [
+        "getopt1.c",
+        "getopt.h"
+      ],
+      [
+        "nodeparser.cpp",
+        "nodeparser.h"
+      ],
+      [
+        "ofxconnect.cpp",
+        "cmdline.h"
+      ],
+      [
+        "ofxconnect.cpp",
+        "nodeparser.h"
+      ],
+      [
+        "ofxdump.cpp",
+        "cmdline.h"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {},
+    "deep_read_count": 0,
+    "total_files": 32,
+    "cost_saved_ratio": 1.0
+  }
+}

@@ -1,0 +1,373 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmpj2n3p3fk/libinotify-kqueue",
+  "total_source_files": 52,
+  "tier_a_structural": {
+    "fan_in": {
+      "worker-thread.c": 0,
+      "utils.h": 8,
+      "controller.c": 0,
+      "worker.c": 0,
+      "dep-list.c": 0,
+      "inotify-test.c": 0,
+      "event-queue.c": 0,
+      "inotify-watch.h": 6,
+      "watch-set.h": 3,
+      "watch.c": 0,
+      "worker.h": 6,
+      "kqueue-test.c": 0,
+      "utils.c": 0,
+      "worker-thread.h": 1,
+      "inotify-watch.c": 0,
+      "event-queue.h": 3,
+      "compat.h": 19,
+      "dep-list.h": 4,
+      "watch.h": 5,
+      "watch-set.c": 0,
+      "ik_atomic.h": 1,
+      "fstatat.c": 0,
+      "pthread_barrier.c": 0,
+      "openat.c": 0,
+      "tree.h": 1,
+      "fdopendir.c": 0,
+      "ik_atomic.c": 0,
+      "atfuncs.c": 0,
+      "fdclosedir.c": 0,
+      "stdatomic.h": 1,
+      "start_stop_test.cc": 0,
+      "tests.cc": 0,
+      "symlink_test.cc": 0,
+      "update_flags_dir_test.cc": 0,
+      "start_stop_dir_test.cc": 0,
+      "open_close_test.cc": 0,
+      "notifications_dir_test.cc": 0,
+      "update_flags_test.cc": 0,
+      "fail_test.cc": 0,
+      "notifications_test.cc": 0,
+      "event_queue_test.cc": 0,
+      "bugs_test.cc": 0,
+      "consumer.cc": 0,
+      "test.cc": 0,
+      "action.cc": 0,
+      "request.cc": 0,
+      "response.cc": 0,
+      "inotify_client.cc": 0,
+      "event.cc": 0,
+      "log.cc": 0,
+      "journal.cc": 0,
+      "inotify.h": 8
+    },
+    "zero_fan_in_files": [
+      "worker-thread.c",
+      "controller.c",
+      "worker.c",
+      "dep-list.c",
+      "inotify-test.c",
+      "event-queue.c",
+      "watch.c",
+      "kqueue-test.c",
+      "utils.c",
+      "inotify-watch.c",
+      "watch-set.c",
+      "fstatat.c",
+      "pthread_barrier.c",
+      "openat.c",
+      "fdopendir.c",
+      "ik_atomic.c",
+      "atfuncs.c",
+      "fdclosedir.c",
+      "start_stop_test.cc",
+      "tests.cc",
+      "symlink_test.cc",
+      "update_flags_dir_test.cc",
+      "start_stop_dir_test.cc",
+      "open_close_test.cc",
+      "notifications_dir_test.cc",
+      "update_flags_test.cc",
+      "fail_test.cc",
+      "notifications_test.cc",
+      "event_queue_test.cc",
+      "bugs_test.cc",
+      "consumer.cc",
+      "test.cc",
+      "action.cc",
+      "request.cc",
+      "response.cc",
+      "inotify_client.cc",
+      "event.cc",
+      "log.cc",
+      "journal.cc"
+    ],
+    "edges": [
+      [
+        "atfuncs.c",
+        "compat.h"
+      ],
+      [
+        "compat.h",
+        "ik_atomic.h"
+      ],
+      [
+        "compat.h",
+        "stdatomic.h"
+      ],
+      [
+        "compat.h",
+        "tree.h"
+      ],
+      [
+        "controller.c",
+        "compat.h"
+      ],
+      [
+        "controller.c",
+        "inotify.h"
+      ],
+      [
+        "controller.c",
+        "utils.h"
+      ],
+      [
+        "controller.c",
+        "worker.h"
+      ],
+      [
+        "dep-list.c",
+        "compat.h"
+      ],
+      [
+        "dep-list.c",
+        "dep-list.h"
+      ],
+      [
+        "dep-list.c",
+        "utils.h"
+      ],
+      [
+        "dep-list.h",
+        "compat.h"
+      ],
+      [
+        "event-queue.c",
+        "compat.h"
+      ],
+      [
+        "event-queue.c",
+        "event-queue.h"
+      ],
+      [
+        "event-queue.c",
+        "inotify.h"
+      ],
+      [
+        "event-queue.c",
+        "utils.h"
+      ],
+      [
+        "event-queue.c",
+        "worker.h"
+      ],
+      [
+        "event-queue.h",
+        "inotify.h"
+      ],
+      [
+        "fdopendir.c",
+        "compat.h"
+      ],
+      [
+        "fstatat.c",
+        "compat.h"
+      ],
+      [
+        "inotify-watch.c",
+        "compat.h"
+      ],
+      [
+        "inotify-watch.c",
+        "inotify-watch.h"
+      ],
+      [
+        "inotify-watch.c",
+        "inotify.h"
+      ],
+      [
+        "inotify-watch.c",
+        "utils.h"
+      ],
+      [
+        "inotify-watch.c",
+        "watch-set.h"
+      ],
+      [
+        "inotify-watch.c",
+        "watch.h"
+      ],
+      [
+        "inotify-watch.c",
+        "worker.h"
+      ],
+      [
+        "inotify-watch.h",
+        "compat.h"
+      ],
+      [
+        "inotify-watch.h",
+        "dep-list.h"
+      ],
+      [
+        "openat.c",
+        "compat.h"
+      ],
+      [
+        "pthread_barrier.c",
+        "compat.h"
+      ],
+      [
+        "utils.c",
+        "compat.h"
+      ],
+      [
+        "utils.c",
+        "inotify.h"
+      ],
+      [
+        "utils.c",
+        "utils.h"
+      ],
+      [
+        "watch-set.c",
+        "compat.h"
+      ],
+      [
+        "watch-set.c",
+        "inotify-watch.h"
+      ],
+      [
+        "watch-set.c",
+        "watch-set.h"
+      ],
+      [
+        "watch-set.c",
+        "watch.h"
+      ],
+      [
+        "watch-set.h",
+        "compat.h"
+      ],
+      [
+        "watch.c",
+        "compat.h"
+      ],
+      [
+        "watch.c",
+        "inotify.h"
+      ],
+      [
+        "watch.c",
+        "utils.h"
+      ],
+      [
+        "watch.c",
+        "watch.h"
+      ],
+      [
+        "watch.c",
+        "worker.h"
+      ],
+      [
+        "watch.h",
+        "compat.h"
+      ],
+      [
+        "watch.h",
+        "dep-list.h"
+      ],
+      [
+        "watch.h",
+        "inotify-watch.h"
+      ],
+      [
+        "worker-thread.c",
+        "compat.h"
+      ],
+      [
+        "worker-thread.c",
+        "dep-list.h"
+      ],
+      [
+        "worker-thread.c",
+        "inotify-watch.h"
+      ],
+      [
+        "worker-thread.c",
+        "inotify.h"
+      ],
+      [
+        "worker-thread.c",
+        "utils.h"
+      ],
+      [
+        "worker-thread.c",
+        "watch.h"
+      ],
+      [
+        "worker-thread.c",
+        "worker.h"
+      ],
+      [
+        "worker.c",
+        "compat.h"
+      ],
+      [
+        "worker.c",
+        "event-queue.h"
+      ],
+      [
+        "worker.c",
+        "inotify-watch.h"
+      ],
+      [
+        "worker.c",
+        "inotify.h"
+      ],
+      [
+        "worker.c",
+        "utils.h"
+      ],
+      [
+        "worker.c",
+        "watch.h"
+      ],
+      [
+        "worker.c",
+        "worker-thread.h"
+      ],
+      [
+        "worker.c",
+        "worker.h"
+      ],
+      [
+        "worker.h",
+        "compat.h"
+      ],
+      [
+        "worker.h",
+        "event-queue.h"
+      ],
+      [
+        "worker.h",
+        "inotify-watch.h"
+      ],
+      [
+        "worker.h",
+        "watch-set.h"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {},
+    "deep_read_count": 0,
+    "total_files": 52,
+    "cost_saved_ratio": 1.0
+  }
+}

@@ -1,0 +1,348 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmpm83cbjnb/whoogle-search",
+  "total_source_files": 39,
+  "tier_a_structural": {
+    "fan_in": {
+      "update-translations.py": 0,
+      "check_google_user_agents.py": 0,
+      "replit.py": 0,
+      "generate_uas.py": 0,
+      "version.py": 1,
+      "request.py": 7,
+      "__init__.py": 0,
+      "filter.py": 5,
+      "__main__.py": 0,
+      "routes.py": 1,
+      "misc.py": 7,
+      "results.py": 3,
+      "session.py": 6,
+      "bangs.py": 2,
+      "widgets.py": 1,
+      "ua_generator.py": 3,
+      "search.py": 1,
+      "config.py": 10,
+      "g_classes.py": 1,
+      "endpoint.py": 9,
+      "provider.py": 2,
+      "http_client.py": 3,
+      "cse_client.py": 2,
+      "test_autocomplete.py": 0,
+      "conftest.py": 2,
+      "test_results.py": 0,
+      "test_misc.py": 0,
+      "test_autocomplete_xml.py": 0,
+      "mock_google.py": 1,
+      "test_routes.py": 0,
+      "test_http_client.py": 0,
+      "test_routes_json.py": 0,
+      "test_alts.py": 0,
+      "test_json.py": 0,
+      "test_tor.py": 0
+    },
+    "zero_fan_in_files": [
+      "update-translations.py",
+      "check_google_user_agents.py",
+      "replit.py",
+      "generate_uas.py",
+      "__init__.py",
+      "__main__.py",
+      "__init__.py",
+      "__init__.py",
+      "__init__.py",
+      "test_autocomplete.py",
+      "test_results.py",
+      "test_misc.py",
+      "test_autocomplete_xml.py",
+      "__init__.py",
+      "test_routes.py",
+      "test_http_client.py",
+      "test_routes_json.py",
+      "test_alts.py",
+      "test_json.py",
+      "test_tor.py"
+    ],
+    "edges": [
+      [
+        "__init__.py",
+        "bangs.py"
+      ],
+      [
+        "__init__.py",
+        "config.py"
+      ],
+      [
+        "__init__.py",
+        "filter.py"
+      ],
+      [
+        "__init__.py",
+        "http_client.py"
+      ],
+      [
+        "__init__.py",
+        "misc.py"
+      ],
+      [
+        "__init__.py",
+        "provider.py"
+      ],
+      [
+        "__init__.py",
+        "request.py"
+      ],
+      [
+        "__init__.py",
+        "session.py"
+      ],
+      [
+        "__init__.py",
+        "ua_generator.py"
+      ],
+      [
+        "__init__.py",
+        "version.py"
+      ],
+      [
+        "__main__.py",
+        "routes.py"
+      ],
+      [
+        "config.py",
+        "misc.py"
+      ],
+      [
+        "conftest.py",
+        "mock_google.py"
+      ],
+      [
+        "conftest.py",
+        "request.py"
+      ],
+      [
+        "conftest.py",
+        "session.py"
+      ],
+      [
+        "filter.py",
+        "config.py"
+      ],
+      [
+        "filter.py",
+        "endpoint.py"
+      ],
+      [
+        "filter.py",
+        "g_classes.py"
+      ],
+      [
+        "filter.py",
+        "misc.py"
+      ],
+      [
+        "filter.py",
+        "request.py"
+      ],
+      [
+        "filter.py",
+        "results.py"
+      ],
+      [
+        "generate_uas.py",
+        "ua_generator.py"
+      ],
+      [
+        "mock_google.py",
+        "config.py"
+      ],
+      [
+        "provider.py",
+        "http_client.py"
+      ],
+      [
+        "request.py",
+        "config.py"
+      ],
+      [
+        "request.py",
+        "misc.py"
+      ],
+      [
+        "request.py",
+        "provider.py"
+      ],
+      [
+        "request.py",
+        "ua_generator.py"
+      ],
+      [
+        "results.py",
+        "config.py"
+      ],
+      [
+        "results.py",
+        "endpoint.py"
+      ],
+      [
+        "results.py",
+        "misc.py"
+      ],
+      [
+        "routes.py",
+        "bangs.py"
+      ],
+      [
+        "routes.py",
+        "config.py"
+      ],
+      [
+        "routes.py",
+        "cse_client.py"
+      ],
+      [
+        "routes.py",
+        "endpoint.py"
+      ],
+      [
+        "routes.py",
+        "filter.py"
+      ],
+      [
+        "routes.py",
+        "misc.py"
+      ],
+      [
+        "routes.py",
+        "request.py"
+      ],
+      [
+        "routes.py",
+        "results.py"
+      ],
+      [
+        "routes.py",
+        "search.py"
+      ],
+      [
+        "routes.py",
+        "session.py"
+      ],
+      [
+        "routes.py",
+        "widgets.py"
+      ],
+      [
+        "search.py",
+        "cse_client.py"
+      ],
+      [
+        "search.py",
+        "filter.py"
+      ],
+      [
+        "search.py",
+        "misc.py"
+      ],
+      [
+        "search.py",
+        "request.py"
+      ],
+      [
+        "search.py",
+        "results.py"
+      ],
+      [
+        "test_alts.py",
+        "config.py"
+      ],
+      [
+        "test_alts.py",
+        "filter.py"
+      ],
+      [
+        "test_alts.py",
+        "session.py"
+      ],
+      [
+        "test_autocomplete.py",
+        "endpoint.py"
+      ],
+      [
+        "test_autocomplete_xml.py",
+        "config.py"
+      ],
+      [
+        "test_autocomplete_xml.py",
+        "request.py"
+      ],
+      [
+        "test_http_client.py",
+        "http_client.py"
+      ],
+      [
+        "test_json.py",
+        "endpoint.py"
+      ],
+      [
+        "test_misc.py",
+        "endpoint.py"
+      ],
+      [
+        "test_misc.py",
+        "session.py"
+      ],
+      [
+        "test_results.py",
+        "config.py"
+      ],
+      [
+        "test_results.py",
+        "conftest.py"
+      ],
+      [
+        "test_results.py",
+        "endpoint.py"
+      ],
+      [
+        "test_results.py",
+        "filter.py"
+      ],
+      [
+        "test_results.py",
+        "session.py"
+      ],
+      [
+        "test_routes.py",
+        "conftest.py"
+      ],
+      [
+        "test_routes.py",
+        "endpoint.py"
+      ],
+      [
+        "test_routes_json.py",
+        "endpoint.py"
+      ],
+      [
+        "test_tor.py",
+        "config.py"
+      ],
+      [
+        "test_tor.py",
+        "request.py"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {
+      "cse_client.py": [
+        {
+          "trigger": "hardcoded_secret_pattern",
+          "matched_text": "api_key='your-key'"
+        }
+      ]
+    },
+    "deep_read_count": 1,
+    "total_files": 39,
+    "cost_saved_ratio": 0.974
+  }
+}

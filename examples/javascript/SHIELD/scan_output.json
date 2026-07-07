@@ -1,0 +1,191 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmpskbx581o/SHIELD",
+  "total_source_files": 41,
+  "tier_a_structural": {
+    "fan_in": {
+      "jest.config.js": 0,
+      ".eslintrc.js": 0,
+      "husky.config.js": 0,
+      "index.test.ts": 0,
+      "checker.ts": 1,
+      "snarkjs.ts": 2,
+      "utils.ts": 5,
+      "wasm.ts": 2,
+      "logger.ts": 9,
+      "witness.ts": 2,
+      "error.ts": 1,
+      "cmd.ts": 1,
+      "packageInfo.ts": 3,
+      "postinstall.js": 0,
+      "shield.config.js": 0,
+      "hardhat.config.ts": 0,
+      "Multiplier.ts": 0,
+      "index.ts": 0,
+      "deploy.ts": 0,
+      "hardhat.config.js": 0,
+      "Multiplier.js": 1,
+      "index.js": 0,
+      "deploy.js": 0,
+      "init.ts": 1,
+      "debug.ts": 1,
+      "compile.ts": 1
+    },
+    "zero_fan_in_files": [
+      "jest.config.js",
+      ".eslintrc.js",
+      "husky.config.js",
+      "index.test.ts",
+      "postinstall.js",
+      "shield.config.js",
+      "shield.config.js",
+      "hardhat.config.ts",
+      "Multiplier.ts",
+      "index.ts",
+      "deploy.ts",
+      "shield.config.js",
+      "hardhat.config.ts",
+      "Multiplier.ts",
+      "index.ts",
+      "deploy.ts",
+      "shield.config.js",
+      "hardhat.config.js",
+      "index.js",
+      "deploy.js",
+      "shield.config.js",
+      "hardhat.config.js",
+      "index.js",
+      "deploy.js",
+      "index.ts",
+      "index.ts",
+      "index.ts"
+    ],
+    "edges": [
+      [
+        "Multiplier.ts",
+        "Multiplier.js"
+      ],
+      [
+        "checker.ts",
+        "logger.ts"
+      ],
+      [
+        "cmd.ts",
+        "logger.ts"
+      ],
+      [
+        "compile.ts",
+        "logger.ts"
+      ],
+      [
+        "compile.ts",
+        "snarkjs.ts"
+      ],
+      [
+        "compile.ts",
+        "wasm.ts"
+      ],
+      [
+        "debug.ts",
+        "checker.ts"
+      ],
+      [
+        "debug.ts",
+        "logger.ts"
+      ],
+      [
+        "debug.ts",
+        "snarkjs.ts"
+      ],
+      [
+        "debug.ts",
+        "utils.ts"
+      ],
+      [
+        "debug.ts",
+        "wasm.ts"
+      ],
+      [
+        "error.ts",
+        "logger.ts"
+      ],
+      [
+        "index.test.ts",
+        "cmd.ts"
+      ],
+      [
+        "index.test.ts",
+        "packageInfo.ts"
+      ],
+      [
+        "index.test.ts",
+        "utils.ts"
+      ],
+      [
+        "index.ts",
+        "compile.ts"
+      ],
+      [
+        "index.ts",
+        "debug.ts"
+      ],
+      [
+        "index.ts",
+        "init.ts"
+      ],
+      [
+        "index.ts",
+        "packageInfo.ts"
+      ],
+      [
+        "init.ts",
+        "error.ts"
+      ],
+      [
+        "init.ts",
+        "logger.ts"
+      ],
+      [
+        "init.ts",
+        "packageInfo.ts"
+      ],
+      [
+        "init.ts",
+        "utils.ts"
+      ],
+      [
+        "logger.ts",
+        "utils.ts"
+      ],
+      [
+        "logger.ts",
+        "witness.ts"
+      ],
+      [
+        "snarkjs.ts",
+        "logger.ts"
+      ],
+      [
+        "snarkjs.ts",
+        "utils.ts"
+      ],
+      [
+        "snarkjs.ts",
+        "witness.ts"
+      ],
+      [
+        "utils.ts",
+        "logger.ts"
+      ],
+      [
+        "witness.ts",
+        "logger.ts"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {},
+    "deep_read_count": 0,
+    "total_files": 41,
+    "cost_saved_ratio": 1.0
+  }
+}

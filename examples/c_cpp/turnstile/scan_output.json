@@ -1,0 +1,57 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmpb2z0vzms/turnstile",
+  "total_source_files": 12,
+  "tier_a_structural": {
+    "fan_in": {
+      "turnstile.h": 0,
+      "lib_backend_none.h": 0,
+      "lib_api.c": 0,
+      "turnstiled.cc": 0,
+      "utils.cc": 0,
+      "fs_utils.cc": 0,
+      "lib_backend_turnstile.c": 0,
+      "cfg_utils.cc": 0,
+      "lib_api.h": 4,
+      "exec_utils.cc": 0,
+      "lib_backend_none.c": 0,
+      "pam_turnstile.cc": 0
+    },
+    "zero_fan_in_files": [
+      "turnstile.h",
+      "lib_backend_none.h",
+      "lib_api.c",
+      "turnstiled.cc",
+      "utils.cc",
+      "fs_utils.cc",
+      "lib_backend_turnstile.c",
+      "cfg_utils.cc",
+      "exec_utils.cc",
+      "lib_backend_none.c",
+      "pam_turnstile.cc"
+    ],
+    "edges": [
+      [
+        "lib_api.c",
+        "lib_api.h"
+      ],
+      [
+        "lib_backend_none.c",
+        "lib_api.h"
+      ],
+      [
+        "lib_backend_none.h",
+        "lib_api.h"
+      ],
+      [
+        "lib_backend_turnstile.c",
+        "lib_api.h"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {},
+    "deep_read_count": 0,
+    "total_files": 12,
+    "cost_saved_ratio": 1.0
+  }
+}

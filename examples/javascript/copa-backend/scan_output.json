@@ -1,0 +1,272 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmphrgcnvrn/copa-backend",
+  "total_source_files": 84,
+  "tier_a_structural": {
+    "fan_in": {
+      "jest.config.js": 0,
+      ".eslintrc.js": 0,
+      "ormconfig.js": 0,
+      "banner.ts": 1,
+      "main.ts": 0,
+      "app.module.ts": 0,
+      "bootstrap.ts": 1,
+      "database.module.ts": 0,
+      "1560002707776-CreateGameTable.ts": 0,
+      "1559394836884-CreateTournamentTable.ts": 0,
+      "1560002699025-CreateTeamTable.ts": 0,
+      "create-playable-tournament.seed.ts": 0,
+      "create-open-tournament.seed.ts": 0,
+      "game.factory.ts": 0,
+      "team.factory.ts": 0,
+      "tournament.factory.ts": 0,
+      "config.module.ts": 0,
+      "database.config.ts": 0,
+      "app.config.ts": 0,
+      "mail.config.ts": 0,
+      "mail.module.ts": 0,
+      "mail.type.ts": 0,
+      "mail.service.ts": 0,
+      "template.service.ts": 0,
+      "api.module.ts": 0,
+      "api.controller.ts": 0,
+      "api-information.dto.ts": 0,
+      "ranking.module.ts": 0,
+      "ranking.ts": 1,
+      "ranking.controller.ts": 0,
+      "ranking.dto.ts": 0,
+      "ranking.service.ts": 0,
+      "tournament-created.mail.ts": 0,
+      "tournament.repository.ts": 0,
+      "tournament.service.test.ts": 0,
+      "tournament.entity.ts": 0,
+      "tournament.controller.ts": 0,
+      "tournament.service.ts": 0,
+      "tournament-state.ts": 12,
+      "tournament.module.ts": 0,
+      "update-tournament.dto.ts": 0,
+      "create-tournament.dto.ts": 0,
+      "created-tournament.dto.ts": 0,
+      "tournament.dto.ts": 0,
+      "shared.module.ts": 0,
+      "pageable.ts": 1,
+      "page.ts": 0,
+      "pagination-params.dto.ts": 0,
+      "pagable.dto.ts": 0,
+      "parameters.swagger.ts": 0,
+      "date-audit.entity.ts": 0,
+      "logger.middleware.ts": 0,
+      "ilegal-tournament-state.exception.ts": 0,
+      "team-name-unique.exception.ts": 0,
+      "game.service.test.ts": 0,
+      "game.controller.ts": 0,
+      "game.entity.ts": 0,
+      "game.module.ts": 0,
+      "game.service.ts": 0,
+      "game.repository.ts": 0,
+      "update-game.dto.ts": 0,
+      "create-game.dto.ts": 0,
+      "game.dto.ts": 0,
+      "paring-table-generator.ts": 2,
+      "paring-table.service.ts": 0,
+      "generator.service.ts": 0,
+      "generator.module.ts": 0,
+      "generator.controller.ts": 0,
+      "paring-table-generator.test.ts": 0,
+      "paring-table-generation-options.ts": 1,
+      "round.ts": 1,
+      "paring-table.ts": 3,
+      "fixture.ts": 1,
+      "team.service.test.ts": 0,
+      "team.repository.ts": 0,
+      "team.controller.ts": 0,
+      "team.entity.ts": 0,
+      "team.module.ts": 0,
+      "team.service.ts": 0,
+      "create-team.dto.ts": 0,
+      "update-team.dto.ts": 0,
+      "team.dto.ts": 0,
+      "roles.guard.ts": 0,
+      "roles.decorator.ts": 0
+    },
+    "zero_fan_in_files": [
+      "jest.config.js",
+      ".eslintrc.js",
+      "ormconfig.js",
+      "main.ts",
+      "app.module.ts",
+      "database.module.ts",
+      "1560002707776-CreateGameTable.ts",
+      "1559394836884-CreateTournamentTable.ts",
+      "1560002699025-CreateTeamTable.ts",
+      "create-playable-tournament.seed.ts",
+      "create-open-tournament.seed.ts",
+      "game.factory.ts",
+      "team.factory.ts",
+      "tournament.factory.ts",
+      "config.module.ts",
+      "database.config.ts",
+      "app.config.ts",
+      "mail.config.ts",
+      "mail.module.ts",
+      "mail.type.ts",
+      "mail.service.ts",
+      "template.service.ts",
+      "api.module.ts",
+      "api.controller.ts",
+      "api-information.dto.ts",
+      "ranking.module.ts",
+      "ranking.controller.ts",
+      "ranking.dto.ts",
+      "ranking.service.ts",
+      "tournament-created.mail.ts",
+      "tournament.repository.ts",
+      "tournament.service.test.ts",
+      "tournament.entity.ts",
+      "tournament.controller.ts",
+      "tournament.service.ts",
+      "tournament.module.ts",
+      "update-tournament.dto.ts",
+      "create-tournament.dto.ts",
+      "created-tournament.dto.ts",
+      "tournament.dto.ts",
+      "shared.module.ts",
+      "page.ts",
+      "pagination-params.dto.ts",
+      "pagable.dto.ts",
+      "parameters.swagger.ts",
+      "date-audit.entity.ts",
+      "logger.middleware.ts",
+      "ilegal-tournament-state.exception.ts",
+      "team-name-unique.exception.ts",
+      "game.service.test.ts",
+      "game.controller.ts",
+      "game.entity.ts",
+      "game.module.ts",
+      "game.service.ts",
+      "game.repository.ts",
+      "update-game.dto.ts",
+      "create-game.dto.ts",
+      "game.dto.ts",
+      "paring-table.service.ts",
+      "generator.service.ts",
+      "generator.module.ts",
+      "generator.controller.ts",
+      "paring-table-generator.test.ts",
+      "team.service.test.ts",
+      "team.repository.ts",
+      "team.controller.ts",
+      "team.entity.ts",
+      "team.module.ts",
+      "team.service.ts",
+      "create-team.dto.ts",
+      "update-team.dto.ts",
+      "team.dto.ts",
+      "roles.guard.ts",
+      "roles.decorator.ts"
+    ],
+    "edges": [
+      [
+        "create-playable-tournament.seed.ts",
+        "tournament-state.ts"
+      ],
+      [
+        "game.service.test.ts",
+        "tournament-state.ts"
+      ],
+      [
+        "game.service.ts",
+        "tournament-state.ts"
+      ],
+      [
+        "generator.service.ts",
+        "tournament-state.ts"
+      ],
+      [
+        "main.ts",
+        "banner.ts"
+      ],
+      [
+        "main.ts",
+        "bootstrap.ts"
+      ],
+      [
+        "page.ts",
+        "pageable.ts"
+      ],
+      [
+        "paring-table-generator.test.ts",
+        "paring-table-generator.ts"
+      ],
+      [
+        "paring-table-generator.test.ts",
+        "paring-table.ts"
+      ],
+      [
+        "paring-table-generator.ts",
+        "paring-table.ts"
+      ],
+      [
+        "paring-table.service.ts",
+        "paring-table-generation-options.ts"
+      ],
+      [
+        "paring-table.service.ts",
+        "paring-table-generator.ts"
+      ],
+      [
+        "paring-table.service.ts",
+        "paring-table.ts"
+      ],
+      [
+        "paring-table.ts",
+        "round.ts"
+      ],
+      [
+        "ranking.service.ts",
+        "ranking.ts"
+      ],
+      [
+        "round.ts",
+        "fixture.ts"
+      ],
+      [
+        "team.service.test.ts",
+        "tournament-state.ts"
+      ],
+      [
+        "team.service.ts",
+        "tournament-state.ts"
+      ],
+      [
+        "tournament.dto.ts",
+        "tournament-state.ts"
+      ],
+      [
+        "tournament.entity.ts",
+        "tournament-state.ts"
+      ],
+      [
+        "tournament.factory.ts",
+        "tournament-state.ts"
+      ],
+      [
+        "tournament.service.test.ts",
+        "tournament-state.ts"
+      ],
+      [
+        "tournament.service.ts",
+        "tournament-state.ts"
+      ],
+      [
+        "update-tournament.dto.ts",
+        "tournament-state.ts"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {},
+    "deep_read_count": 0,
+    "total_files": 84,
+    "cost_saved_ratio": 1.0
+  }
+}

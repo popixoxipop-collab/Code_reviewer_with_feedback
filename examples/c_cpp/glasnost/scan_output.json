@@ -1,0 +1,136 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmptsfv9mm7/glasnost",
+  "total_source_files": 25,
+  "tier_a_structural": {
+    "fan_in": {
+      "iptoas.py": 0,
+      "__init__.py": 0,
+      "settings.py": 2,
+      "manage.py": 0,
+      "urls.py": 0,
+      "models.py": 1,
+      "glasParser_logv1.py": 1,
+      "glasParser.py": 1,
+      "glasMeasure.py": 2,
+      "views.py": 0,
+      "glasAnalyzer.py": 1,
+      "geoasn.py": 0,
+      "gserver.cc": 0,
+      "glasnost_parser.h": 4,
+      "script_validator.cc": 0,
+      "glasnost_replayer.h": 2,
+      "tools.cc": 0,
+      "glasnost_replayer.cc": 0,
+      "http_server.cc": 0,
+      "tools.h": 6,
+      "glasnost_parser.cc": 0,
+      "GlasnostReplayer.java": 0
+    },
+    "zero_fan_in_files": [
+      "iptoas.py",
+      "__init__.py",
+      "manage.py",
+      "urls.py",
+      "__init__.py",
+      "urls.py",
+      "views.py",
+      "__init__.py",
+      "geoasn.py",
+      "gserver.cc",
+      "script_validator.cc",
+      "tools.cc",
+      "glasnost_replayer.cc",
+      "http_server.cc",
+      "glasnost_parser.cc",
+      "GlasnostReplayer.java"
+    ],
+    "edges": [
+      [
+        "glasParser.py",
+        "glasMeasure.py"
+      ],
+      [
+        "glasParser_logv1.py",
+        "glasMeasure.py"
+      ],
+      [
+        "glasnost_parser.cc",
+        "glasnost_parser.h"
+      ],
+      [
+        "glasnost_parser.cc",
+        "tools.h"
+      ],
+      [
+        "glasnost_replayer.cc",
+        "glasnost_replayer.h"
+      ],
+      [
+        "glasnost_replayer.cc",
+        "tools.h"
+      ],
+      [
+        "glasnost_replayer.h",
+        "glasnost_parser.h"
+      ],
+      [
+        "gserver.cc",
+        "glasnost_replayer.h"
+      ],
+      [
+        "gserver.cc",
+        "tools.h"
+      ],
+      [
+        "http_server.cc",
+        "glasnost_parser.h"
+      ],
+      [
+        "http_server.cc",
+        "tools.h"
+      ],
+      [
+        "manage.py",
+        "settings.py"
+      ],
+      [
+        "script_validator.cc",
+        "glasnost_parser.h"
+      ],
+      [
+        "script_validator.cc",
+        "tools.h"
+      ],
+      [
+        "tools.cc",
+        "tools.h"
+      ],
+      [
+        "views.py",
+        "glasAnalyzer.py"
+      ],
+      [
+        "views.py",
+        "glasParser.py"
+      ],
+      [
+        "views.py",
+        "glasParser_logv1.py"
+      ],
+      [
+        "views.py",
+        "models.py"
+      ],
+      [
+        "views.py",
+        "settings.py"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {},
+    "deep_read_count": 0,
+    "total_files": 25,
+    "cost_saved_ratio": 1.0
+  }
+}

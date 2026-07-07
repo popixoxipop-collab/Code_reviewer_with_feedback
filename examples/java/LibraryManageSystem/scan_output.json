@@ -1,0 +1,387 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmpbi1x3yp9/LibraryManageSystem",
+  "total_source_files": 25,
+  "tier_a_structural": {
+    "fan_in": {
+      "ReaderInfo_JFrame.java": 2,
+      "AlterPassword_JDialog.java": 1,
+      "BorrowInfo_JFrame.java": 1,
+      "leaderBoard_JFrame.java": 1,
+      "ReaderBorrowBook_JFrame.java": 1,
+      "ReaderReturnBook_JFrame.java": 1,
+      "ReaderFunction_Interface.java": 2,
+      "Reader.java": 2,
+      "Student.java": 9,
+      "Teacher.java": 3,
+      "ConnectDatabase.java": 11,
+      "JtableUpdate.java": 9,
+      "ImageIO.java": 5,
+      "Model.java": 12,
+      "ReturnBook_JFrame.java": 1,
+      "BookInfo_JFrame.java": 2,
+      "AlterBook_JDialog.java": 1,
+      "AddBook_JDialog.java": 1,
+      "Interface_manager.java": 1,
+      "Manager.java": 5,
+      "Book.java": 5,
+      "Login_JDialog.java": 0,
+      "main.java": 9,
+      "SelectSeat_JFrame.java": 1
+    },
+    "zero_fan_in_files": [
+      "Login_JDialog.java"
+    ],
+    "edges": [
+      [
+        "AddBook_JDialog.java",
+        "Book.java"
+      ],
+      [
+        "AddBook_JDialog.java",
+        "JtableUpdate.java"
+      ],
+      [
+        "AddBook_JDialog.java",
+        "Model.java"
+      ],
+      [
+        "AlterBook_JDialog.java",
+        "Book.java"
+      ],
+      [
+        "AlterBook_JDialog.java",
+        "ConnectDatabase.java"
+      ],
+      [
+        "AlterBook_JDialog.java",
+        "Manager.java"
+      ],
+      [
+        "AlterBook_JDialog.java",
+        "Model.java"
+      ],
+      [
+        "AlterPassword_JDialog.java",
+        "Student.java"
+      ],
+      [
+        "AlterPassword_JDialog.java",
+        "Teacher.java"
+      ],
+      [
+        "AlterPassword_JDialog.java",
+        "main.java"
+      ],
+      [
+        "BookInfo_JFrame.java",
+        "Book.java"
+      ],
+      [
+        "BookInfo_JFrame.java",
+        "JtableUpdate.java"
+      ],
+      [
+        "BookInfo_JFrame.java",
+        "Manager.java"
+      ],
+      [
+        "BookInfo_JFrame.java",
+        "Model.java"
+      ],
+      [
+        "BookInfo_JFrame.java",
+        "main.java"
+      ],
+      [
+        "BorrowInfo_JFrame.java",
+        "JtableUpdate.java"
+      ],
+      [
+        "BorrowInfo_JFrame.java",
+        "Model.java"
+      ],
+      [
+        "BorrowInfo_JFrame.java",
+        "main.java"
+      ],
+      [
+        "Interface_manager.java",
+        "Book.java"
+      ],
+      [
+        "Interface_manager.java",
+        "Model.java"
+      ],
+      [
+        "Interface_manager.java",
+        "Student.java"
+      ],
+      [
+        "Login_JDialog.java",
+        "ConnectDatabase.java"
+      ],
+      [
+        "Login_JDialog.java",
+        "ImageIO.java"
+      ],
+      [
+        "Login_JDialog.java",
+        "Manager.java"
+      ],
+      [
+        "Login_JDialog.java",
+        "Student.java"
+      ],
+      [
+        "Login_JDialog.java",
+        "Teacher.java"
+      ],
+      [
+        "Manager.java",
+        "AddBook_JDialog.java"
+      ],
+      [
+        "Manager.java",
+        "AlterBook_JDialog.java"
+      ],
+      [
+        "Manager.java",
+        "Book.java"
+      ],
+      [
+        "Manager.java",
+        "BookInfo_JFrame.java"
+      ],
+      [
+        "Manager.java",
+        "ConnectDatabase.java"
+      ],
+      [
+        "Manager.java",
+        "Interface_manager.java"
+      ],
+      [
+        "Manager.java",
+        "JtableUpdate.java"
+      ],
+      [
+        "Manager.java",
+        "Model.java"
+      ],
+      [
+        "Manager.java",
+        "ReaderInfo_JFrame.java"
+      ],
+      [
+        "Manager.java",
+        "Student.java"
+      ],
+      [
+        "Manager.java",
+        "main.java"
+      ],
+      [
+        "ReaderBorrowBook_JFrame.java",
+        "ConnectDatabase.java"
+      ],
+      [
+        "ReaderBorrowBook_JFrame.java",
+        "ImageIO.java"
+      ],
+      [
+        "ReaderBorrowBook_JFrame.java",
+        "JtableUpdate.java"
+      ],
+      [
+        "ReaderBorrowBook_JFrame.java",
+        "Model.java"
+      ],
+      [
+        "ReaderBorrowBook_JFrame.java",
+        "Student.java"
+      ],
+      [
+        "ReaderBorrowBook_JFrame.java",
+        "main.java"
+      ],
+      [
+        "ReaderFunction_Interface.java",
+        "Student.java"
+      ],
+      [
+        "ReaderInfo_JFrame.java",
+        "AlterPassword_JDialog.java"
+      ],
+      [
+        "ReaderInfo_JFrame.java",
+        "ConnectDatabase.java"
+      ],
+      [
+        "ReaderInfo_JFrame.java",
+        "ImageIO.java"
+      ],
+      [
+        "ReaderInfo_JFrame.java",
+        "JtableUpdate.java"
+      ],
+      [
+        "ReaderInfo_JFrame.java",
+        "Manager.java"
+      ],
+      [
+        "ReaderInfo_JFrame.java",
+        "Model.java"
+      ],
+      [
+        "ReaderInfo_JFrame.java",
+        "Student.java"
+      ],
+      [
+        "ReaderInfo_JFrame.java",
+        "main.java"
+      ],
+      [
+        "ReaderReturnBook_JFrame.java",
+        "ConnectDatabase.java"
+      ],
+      [
+        "ReaderReturnBook_JFrame.java",
+        "ImageIO.java"
+      ],
+      [
+        "ReaderReturnBook_JFrame.java",
+        "JtableUpdate.java"
+      ],
+      [
+        "ReaderReturnBook_JFrame.java",
+        "Model.java"
+      ],
+      [
+        "ReaderReturnBook_JFrame.java",
+        "Student.java"
+      ],
+      [
+        "ReaderReturnBook_JFrame.java",
+        "main.java"
+      ],
+      [
+        "ReturnBook_JFrame.java",
+        "ConnectDatabase.java"
+      ],
+      [
+        "ReturnBook_JFrame.java",
+        "JtableUpdate.java"
+      ],
+      [
+        "ReturnBook_JFrame.java",
+        "Model.java"
+      ],
+      [
+        "ReturnBook_JFrame.java",
+        "main.java"
+      ],
+      [
+        "SelectSeat_JFrame.java",
+        "ConnectDatabase.java"
+      ],
+      [
+        "SelectSeat_JFrame.java",
+        "main.java"
+      ],
+      [
+        "Student.java",
+        "ConnectDatabase.java"
+      ],
+      [
+        "Student.java",
+        "Reader.java"
+      ],
+      [
+        "Student.java",
+        "ReaderFunction_Interface.java"
+      ],
+      [
+        "Teacher.java",
+        "ConnectDatabase.java"
+      ],
+      [
+        "Teacher.java",
+        "Reader.java"
+      ],
+      [
+        "Teacher.java",
+        "ReaderFunction_Interface.java"
+      ],
+      [
+        "leaderBoard_JFrame.java",
+        "JtableUpdate.java"
+      ],
+      [
+        "leaderBoard_JFrame.java",
+        "Model.java"
+      ],
+      [
+        "main.java",
+        "BookInfo_JFrame.java"
+      ],
+      [
+        "main.java",
+        "BorrowInfo_JFrame.java"
+      ],
+      [
+        "main.java",
+        "ConnectDatabase.java"
+      ],
+      [
+        "main.java",
+        "ImageIO.java"
+      ],
+      [
+        "main.java",
+        "Manager.java"
+      ],
+      [
+        "main.java",
+        "Model.java"
+      ],
+      [
+        "main.java",
+        "ReaderBorrowBook_JFrame.java"
+      ],
+      [
+        "main.java",
+        "ReaderInfo_JFrame.java"
+      ],
+      [
+        "main.java",
+        "ReaderReturnBook_JFrame.java"
+      ],
+      [
+        "main.java",
+        "ReturnBook_JFrame.java"
+      ],
+      [
+        "main.java",
+        "SelectSeat_JFrame.java"
+      ],
+      [
+        "main.java",
+        "Student.java"
+      ],
+      [
+        "main.java",
+        "Teacher.java"
+      ],
+      [
+        "main.java",
+        "leaderBoard_JFrame.java"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {},
+    "deep_read_count": 0,
+    "total_files": 25,
+    "cost_saved_ratio": 1.0
+  }
+}

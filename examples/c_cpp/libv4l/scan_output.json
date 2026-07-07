@@ -1,0 +1,319 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmph211cnk6/libv4l",
+  "total_source_files": 44,
+  "tier_a_structural": {
+    "fan_in": {
+      "crop.c": 0,
+      "hm12.c": 0,
+      "ov511-decomp.c": 0,
+      "bayer.c": 0,
+      "spca561-decompress.c": 0,
+      "libv4lconvert-priv.h": 18,
+      "rgbyuv.c": 0,
+      "tinyjpeg-internal.h": 2,
+      "sn9c2028-decomp.c": 0,
+      "libv4lconvert.c": 0,
+      "tinyjpeg.h": 2,
+      "helper-funcs.h": 2,
+      "mr97310a.c": 0,
+      "helper.c": 0,
+      "flip.c": 0,
+      "ov518-decomp.c": 0,
+      "spca501.c": 0,
+      "sn9c20x.c": 0,
+      "pac207.c": 0,
+      "sq905c.c": 0,
+      "sn9c10x.c": 0,
+      "libv4lsyscall-priv.h": 11,
+      "tinyjpeg.c": 0,
+      "jidctflt.c": 0,
+      "gamma.c": 0,
+      "libv4lprocessing.c": 0,
+      "whitebalance.c": 0,
+      "autogain.c": 0,
+      "libv4lprocessing.h": 5,
+      "libv4lprocessing-priv.h": 4,
+      "libv4lcontrol-priv.h": 1,
+      "libv4lcontrol.h": 3,
+      "libv4lcontrol.c": 0,
+      "v4l2convert.c": 0,
+      "log.c": 0,
+      "libv4l2-priv.h": 2,
+      "libv4l2.c": 0,
+      "libv4l2.h": 2,
+      "libv4l1.h": 1,
+      "libv4lconvert.h": 2,
+      "libv4l1-priv.h": 2,
+      "v4l1compat.c": 0,
+      "libv4l1.c": 0
+    },
+    "zero_fan_in_files": [
+      "crop.c",
+      "hm12.c",
+      "ov511-decomp.c",
+      "bayer.c",
+      "spca561-decompress.c",
+      "rgbyuv.c",
+      "sn9c2028-decomp.c",
+      "libv4lconvert.c",
+      "mr97310a.c",
+      "helper.c",
+      "flip.c",
+      "ov518-decomp.c",
+      "spca501.c",
+      "sn9c20x.c",
+      "pac207.c",
+      "sq905c.c",
+      "sn9c10x.c",
+      "tinyjpeg.c",
+      "jidctflt.c",
+      "gamma.c",
+      "libv4lprocessing.c",
+      "whitebalance.c",
+      "autogain.c",
+      "libv4lcontrol.c",
+      "v4l2convert.c",
+      "log.c",
+      "libv4l2.c",
+      "log.c",
+      "v4l1compat.c",
+      "libv4l1.c"
+    ],
+    "edges": [
+      [
+        "autogain.c",
+        "libv4lconvert-priv.h"
+      ],
+      [
+        "autogain.c",
+        "libv4lprocessing-priv.h"
+      ],
+      [
+        "autogain.c",
+        "libv4lprocessing.h"
+      ],
+      [
+        "autogain.c",
+        "libv4lsyscall-priv.h"
+      ],
+      [
+        "bayer.c",
+        "libv4lconvert-priv.h"
+      ],
+      [
+        "crop.c",
+        "libv4lconvert-priv.h"
+      ],
+      [
+        "flip.c",
+        "libv4lconvert-priv.h"
+      ],
+      [
+        "gamma.c",
+        "libv4lprocessing-priv.h"
+      ],
+      [
+        "gamma.c",
+        "libv4lprocessing.h"
+      ],
+      [
+        "helper.c",
+        "libv4lconvert-priv.h"
+      ],
+      [
+        "hm12.c",
+        "libv4lconvert-priv.h"
+      ],
+      [
+        "jidctflt.c",
+        "tinyjpeg-internal.h"
+      ],
+      [
+        "libv4l1-priv.h",
+        "libv4lsyscall-priv.h"
+      ],
+      [
+        "libv4l1.c",
+        "libv4l1-priv.h"
+      ],
+      [
+        "libv4l1.c",
+        "libv4l1.h"
+      ],
+      [
+        "libv4l1.c",
+        "libv4lsyscall-priv.h"
+      ],
+      [
+        "libv4l2-priv.h",
+        "libv4lsyscall-priv.h"
+      ],
+      [
+        "libv4l2.c",
+        "libv4l2-priv.h"
+      ],
+      [
+        "libv4l2.c",
+        "libv4l2.h"
+      ],
+      [
+        "libv4lcontrol.c",
+        "libv4lcontrol-priv.h"
+      ],
+      [
+        "libv4lcontrol.c",
+        "libv4lcontrol.h"
+      ],
+      [
+        "libv4lcontrol.c",
+        "libv4lsyscall-priv.h"
+      ],
+      [
+        "libv4lconvert-priv.h",
+        "libv4lcontrol.h"
+      ],
+      [
+        "libv4lconvert-priv.h",
+        "libv4lconvert.h"
+      ],
+      [
+        "libv4lconvert-priv.h",
+        "libv4lprocessing.h"
+      ],
+      [
+        "libv4lconvert-priv.h",
+        "tinyjpeg.h"
+      ],
+      [
+        "libv4lconvert.c",
+        "libv4lconvert-priv.h"
+      ],
+      [
+        "libv4lconvert.c",
+        "libv4lconvert.h"
+      ],
+      [
+        "libv4lconvert.c",
+        "libv4lsyscall-priv.h"
+      ],
+      [
+        "libv4lprocessing-priv.h",
+        "libv4lcontrol.h"
+      ],
+      [
+        "libv4lprocessing-priv.h",
+        "libv4lsyscall-priv.h"
+      ],
+      [
+        "libv4lprocessing.c",
+        "libv4lconvert-priv.h"
+      ],
+      [
+        "libv4lprocessing.c",
+        "libv4lprocessing-priv.h"
+      ],
+      [
+        "libv4lprocessing.c",
+        "libv4lprocessing.h"
+      ],
+      [
+        "libv4lprocessing.h",
+        "libv4lsyscall-priv.h"
+      ],
+      [
+        "log.c",
+        "libv4l1-priv.h"
+      ],
+      [
+        "log.c",
+        "libv4l2-priv.h"
+      ],
+      [
+        "log.c",
+        "libv4l2.h"
+      ],
+      [
+        "log.c",
+        "libv4lsyscall-priv.h"
+      ],
+      [
+        "mr97310a.c",
+        "libv4lconvert-priv.h"
+      ],
+      [
+        "ov511-decomp.c",
+        "helper-funcs.h"
+      ],
+      [
+        "ov518-decomp.c",
+        "helper-funcs.h"
+      ],
+      [
+        "pac207.c",
+        "libv4lconvert-priv.h"
+      ],
+      [
+        "rgbyuv.c",
+        "libv4lconvert-priv.h"
+      ],
+      [
+        "sn9c10x.c",
+        "libv4lconvert-priv.h"
+      ],
+      [
+        "sn9c2028-decomp.c",
+        "libv4lconvert-priv.h"
+      ],
+      [
+        "sn9c20x.c",
+        "libv4lconvert-priv.h"
+      ],
+      [
+        "spca501.c",
+        "libv4lconvert-priv.h"
+      ],
+      [
+        "spca561-decompress.c",
+        "libv4lconvert-priv.h"
+      ],
+      [
+        "sq905c.c",
+        "libv4lconvert-priv.h"
+      ],
+      [
+        "tinyjpeg.c",
+        "tinyjpeg-internal.h"
+      ],
+      [
+        "tinyjpeg.c",
+        "tinyjpeg.h"
+      ],
+      [
+        "v4l1compat.c",
+        "libv4lsyscall-priv.h"
+      ],
+      [
+        "v4l2convert.c",
+        "libv4lsyscall-priv.h"
+      ],
+      [
+        "whitebalance.c",
+        "libv4lconvert-priv.h"
+      ],
+      [
+        "whitebalance.c",
+        "libv4lprocessing-priv.h"
+      ],
+      [
+        "whitebalance.c",
+        "libv4lprocessing.h"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {},
+    "deep_read_count": 0,
+    "total_files": 44,
+    "cost_saved_ratio": 1.0
+  }
+}

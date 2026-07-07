@@ -1,0 +1,747 @@
+{
+  "hub": "AddressEntity.java",
+  "findings": [
+    {
+      "id": "cognition-isolation:Auth.js",
+      "file": "Auth.js",
+      "finding": "Auth.js — 허브 모듈(AddressEntity.java)로 가는 edge 없음. fan_in=1만 보면 정상으로 보임",
+      "priority": "최우선",
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 1
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 8
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 1
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 10
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 1,
+            "exposure_scope": 1,
+            "scenario_specificity": 0,
+            "spread_scope": 0
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 2
+        }
+      },
+      "lang": "javascript"
+    },
+    {
+      "id": "cognition-isolation:Cart.js",
+      "file": "Cart.js",
+      "finding": "Cart.js — 허브 모듈(AddressEntity.java)로 가는 edge 없음. fan_in=3만 보면 정상으로 보임",
+      "priority": "최우선",
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 1
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 8
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 3
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 12
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 1,
+            "exposure_scope": 1,
+            "scenario_specificity": 0,
+            "spread_scope": 0
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 2
+        }
+      },
+      "lang": "javascript"
+    },
+    {
+      "id": "cognition-isolation:CartContext.js",
+      "file": "CartContext.js",
+      "finding": "CartContext.js — 허브 모듈(AddressEntity.java)로 가는 edge 없음. fan_in=5만 보면 정상으로 보임",
+      "priority": "최우선",
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 1
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 8
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 3
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 12
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 1,
+            "exposure_scope": 1,
+            "scenario_specificity": 0,
+            "spread_scope": 0
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 2
+        }
+      },
+      "lang": "javascript"
+    },
+    {
+      "id": "cognition-isolation:Footer.js",
+      "file": "Footer.js",
+      "finding": "Footer.js — 허브 모듈(AddressEntity.java)로 가는 edge 없음. fan_in=1만 보면 정상으로 보임",
+      "priority": "최우선",
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 1
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 8
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 1
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 10
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 1,
+            "exposure_scope": 1,
+            "scenario_specificity": 0,
+            "spread_scope": 0
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 2
+        }
+      },
+      "lang": "javascript"
+    },
+    {
+      "id": "cognition-isolation:Header.js",
+      "file": "Header.js",
+      "finding": "Header.js — 허브 모듈(AddressEntity.java)로 가는 edge 없음. fan_in=1만 보면 정상으로 보임",
+      "priority": "최우선",
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 1
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 8
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 1
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 10
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 1,
+            "exposure_scope": 1,
+            "scenario_specificity": 0,
+            "spread_scope": 0
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 2
+        }
+      },
+      "lang": "javascript"
+    },
+    {
+      "id": "cognition-isolation:Login.js",
+      "file": "Login.js",
+      "finding": "Login.js — 허브 모듈(AddressEntity.java)로 가는 edge 없음. fan_in=1만 보면 정상으로 보임",
+      "priority": "최우선",
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 1
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 8
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 1
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 10
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 1,
+            "exposure_scope": 1,
+            "scenario_specificity": 0,
+            "spread_scope": 0
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 2
+        }
+      },
+      "lang": "javascript"
+    },
+    {
+      "id": "cognition-isolation:NotFound.js",
+      "file": "NotFound.js",
+      "finding": "NotFound.js — 허브 모듈(AddressEntity.java)로 가는 edge 없음. fan_in=1만 보면 정상으로 보임",
+      "priority": "최우선",
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 1
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 8
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 1
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 10
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 1,
+            "exposure_scope": 1,
+            "scenario_specificity": 0,
+            "spread_scope": 0
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 2
+        }
+      },
+      "lang": "javascript"
+    },
+    {
+      "id": "cognition-isolation:Orders.js",
+      "file": "Orders.js",
+      "finding": "Orders.js — 허브 모듈(AddressEntity.java)로 가는 edge 없음. fan_in=1만 보면 정상으로 보임",
+      "priority": "최우선",
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 1
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 8
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 1
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 10
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 1,
+            "exposure_scope": 1,
+            "scenario_specificity": 0,
+            "spread_scope": 0
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 2
+        }
+      },
+      "lang": "javascript"
+    },
+    {
+      "id": "cognition-isolation:ProductDetail.js",
+      "file": "ProductDetail.js",
+      "finding": "ProductDetail.js — 허브 모듈(AddressEntity.java)로 가는 edge 없음. fan_in=1만 보면 정상으로 보임",
+      "priority": "최우선",
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 1
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 8
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 1
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 10
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 1,
+            "exposure_scope": 1,
+            "scenario_specificity": 0,
+            "spread_scope": 0
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 2
+        }
+      },
+      "lang": "javascript"
+    },
+    {
+      "id": "cognition-isolation:ProductList.js",
+      "file": "ProductList.js",
+      "finding": "ProductList.js — 허브 모듈(AddressEntity.java)로 가는 edge 없음. fan_in=1만 보면 정상으로 보임",
+      "priority": "최우선",
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 1
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 8
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 1
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 10
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 1,
+            "exposure_scope": 1,
+            "scenario_specificity": 0,
+            "spread_scope": 0
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 2
+        }
+      },
+      "lang": "javascript"
+    },
+    {
+      "id": "cognition-isolation:useToken.js",
+      "file": "useToken.js",
+      "finding": "useToken.js — 허브 모듈(AddressEntity.java)로 가는 edge 없음. fan_in=1만 보면 정상으로 보임",
+      "priority": "최우선",
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 1
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 8
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 1
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 10
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 1,
+            "exposure_scope": 1,
+            "scenario_specificity": 0,
+            "spread_scope": 0
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 2
+        }
+      },
+      "lang": "javascript"
+    },
+    {
+      "id": "architecture-diffusion:CartEntity.java",
+      "file": "CartEntity.java",
+      "pattern_key": null,
+      "finding": "CartEntity.java — 허브 다음으로 fan_in=9, 여러 컴포넌트가 공유",
+      "priority": "질문 대상",
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "하",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 3,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 1
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 8
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 3
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 12
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 1,
+            "exposure_scope": 1,
+            "scenario_specificity": 0,
+            "spread_scope": 0
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 2
+        }
+      },
+      "lang": "java"
+    },
+    {
+      "id": "tier-b-risk:Auth.js",
+      "file": "Auth.js",
+      "finding": "Auth.js — 인증정보(uid/email 등)가 JSON.stringify되어 throw된 Error에 담김",
+      "priority": "Important(🔴)",
+      "design_intent": "중",
+      "question_value": "상",
+      "risk": "상",
+      "subrubric": {
+        "design_intent": {
+          "sub": {
+            "repetition_consistency": 0,
+            "idiom_conformance_reverse": 3,
+            "rationale_signal": 1,
+            "mitigation_present": 3
+          },
+          "weights": {
+            "repetition_consistency": 1.0,
+            "idiom_conformance_reverse": 1.0,
+            "rationale_signal": 1.0,
+            "mitigation_present": 1.0
+          },
+          "total": 7
+        },
+        "question_value": {
+          "sub": {
+            "tradeoff_existence": 3,
+            "repo_specificity": 3,
+            "idiom_contamination_reverse": 3,
+            "ladder_richness": 1
+          },
+          "weights": {
+            "tradeoff_existence": 1.0,
+            "repo_specificity": 1.0,
+            "idiom_contamination_reverse": 1.0,
+            "ladder_richness": 1.0
+          },
+          "total": 10
+        },
+        "risk": {
+          "sub": {
+            "trigger_confidence": 3,
+            "exposure_scope": 3,
+            "scenario_specificity": 3,
+            "spread_scope": 0
+          },
+          "weights": {
+            "trigger_confidence": 1.0,
+            "exposure_scope": 1.0,
+            "scenario_specificity": 1.0,
+            "spread_scope": 1.0
+          },
+          "total": 9
+        }
+      },
+      "lang": "javascript"
+    }
+  ]
+}

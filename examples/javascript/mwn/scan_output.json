@@ -1,0 +1,251 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmps6qqwml1/mwn",
+  "total_source_files": 46,
+  "tier_a_structural": {
+    "fan_in": {
+      "babel.config.js": 0,
+      "docusaurus.config.js": 0,
+      "sidebars.js": 0,
+      "HomepageFeatures.js": 1,
+      "index.js": 0,
+      "batchOperations.bot.test.js": 0,
+      "page.test.js": 0,
+      "date.test.js": 0,
+      "oauth.test.js": 0,
+      "category.test.js": 0,
+      "title.test.js": 0,
+      "edit.bot.test.js": 0,
+      "oauth2.test.js": 0,
+      "user.test.js": 0,
+      "shutoff.test.js": 0,
+      "wikitext.test.js": 0,
+      "bot.test.js": 0,
+      "errors.test.js": 0,
+      "user.edit.test.js": 0,
+      "file.test.js": 0,
+      "static_utils.test.js": 0,
+      "core.test.js": 0,
+      "log.test.js": 0,
+      "suppl.bot.test.js": 0,
+      "login.bot.test.js": 0,
+      "loginCredentials.js": 0,
+      "bot.test.ts": 0,
+      "test_base.js": 0,
+      "test_wiki.js": 0,
+      "local_wiki.js": 0,
+      "server.js": 0,
+      "title.ts": 7,
+      "static_utils.ts": 1,
+      "category.ts": 1,
+      "date.ts": 1,
+      "api_response_types.ts": 3,
+      "wikitext.ts": 2,
+      "bot.ts": 7,
+      "utils.ts": 2,
+      "file.ts": 1,
+      "page.ts": 4,
+      "core.ts": 2,
+      "log.ts": 2,
+      "index.ts": 0,
+      "error.ts": 4,
+      "user.ts": 1
+    },
+    "zero_fan_in_files": [
+      "babel.config.js",
+      "docusaurus.config.js",
+      "sidebars.js",
+      "index.js",
+      "batchOperations.bot.test.js",
+      "page.test.js",
+      "date.test.js",
+      "oauth.test.js",
+      "category.test.js",
+      "title.test.js",
+      "edit.bot.test.js",
+      "oauth2.test.js",
+      "user.test.js",
+      "shutoff.test.js",
+      "wikitext.test.js",
+      "bot.test.js",
+      "errors.test.js",
+      "user.edit.test.js",
+      "file.test.js",
+      "static_utils.test.js",
+      "core.test.js",
+      "log.test.js",
+      "suppl.bot.test.js",
+      "login.bot.test.js",
+      "loginCredentials.js",
+      "bot.test.ts",
+      "test_base.js",
+      "test_wiki.js",
+      "local_wiki.js",
+      "server.js",
+      "index.ts"
+    ],
+    "edges": [
+      [
+        "bot.ts",
+        "category.ts"
+      ],
+      [
+        "bot.ts",
+        "core.ts"
+      ],
+      [
+        "bot.ts",
+        "date.ts"
+      ],
+      [
+        "bot.ts",
+        "error.ts"
+      ],
+      [
+        "bot.ts",
+        "file.ts"
+      ],
+      [
+        "bot.ts",
+        "log.ts"
+      ],
+      [
+        "bot.ts",
+        "page.ts"
+      ],
+      [
+        "bot.ts",
+        "static_utils.ts"
+      ],
+      [
+        "bot.ts",
+        "title.ts"
+      ],
+      [
+        "bot.ts",
+        "user.ts"
+      ],
+      [
+        "bot.ts",
+        "utils.ts"
+      ],
+      [
+        "bot.ts",
+        "wikitext.ts"
+      ],
+      [
+        "category.ts",
+        "bot.ts"
+      ],
+      [
+        "category.ts",
+        "page.ts"
+      ],
+      [
+        "category.ts",
+        "title.ts"
+      ],
+      [
+        "core.ts",
+        "api_response_types.ts"
+      ],
+      [
+        "core.ts",
+        "bot.ts"
+      ],
+      [
+        "core.ts",
+        "error.ts"
+      ],
+      [
+        "core.ts",
+        "log.ts"
+      ],
+      [
+        "core.ts",
+        "utils.ts"
+      ],
+      [
+        "date.ts",
+        "bot.ts"
+      ],
+      [
+        "date.ts",
+        "wikitext.ts"
+      ],
+      [
+        "error.ts",
+        "core.ts"
+      ],
+      [
+        "file.ts",
+        "api_response_types.ts"
+      ],
+      [
+        "file.ts",
+        "bot.ts"
+      ],
+      [
+        "file.ts",
+        "page.ts"
+      ],
+      [
+        "file.ts",
+        "title.ts"
+      ],
+      [
+        "index.js",
+        "HomepageFeatures.js"
+      ],
+      [
+        "page.ts",
+        "api_response_types.ts"
+      ],
+      [
+        "page.ts",
+        "bot.ts"
+      ],
+      [
+        "page.ts",
+        "error.ts"
+      ],
+      [
+        "page.ts",
+        "title.ts"
+      ],
+      [
+        "static_utils.ts",
+        "title.ts"
+      ],
+      [
+        "user.ts",
+        "bot.ts"
+      ],
+      [
+        "user.ts",
+        "error.ts"
+      ],
+      [
+        "user.ts",
+        "page.ts"
+      ],
+      [
+        "utils.ts",
+        "title.ts"
+      ],
+      [
+        "wikitext.ts",
+        "bot.ts"
+      ],
+      [
+        "wikitext.ts",
+        "title.ts"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {},
+    "deep_read_count": 0,
+    "total_files": 46,
+    "cost_saved_ratio": 1.0
+  }
+}

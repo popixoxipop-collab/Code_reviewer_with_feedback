@@ -1,0 +1,51 @@
+{
+  "qwen/qwen3-next-80b-a3b-instruct": {
+    "precision_compliance_rate": 1.0,
+    "reproducibility_full_reliability_rate": 1.0,
+    "avg_latency_s": 24.23,
+    "n_calls": 12,
+    "n_ok": 12
+  },
+  "stepfun-ai/step-3.5-flash": {
+    "precision_compliance_rate": 1.0,
+    "reproducibility_full_reliability_rate": 1.0,
+    "avg_latency_s": 6.11,
+    "n_calls": 12,
+    "n_ok": 12
+  },
+  "meta/llama-4-maverick-17b-128e-instruct": {
+    "precision_compliance_rate": 1.0,
+    "reproducibility_full_reliability_rate": 1.0,
+    "avg_latency_s": 4.33,
+    "n_calls": 12,
+    "n_ok": 12
+  },
+  "openai/gpt-oss-120b": {
+    "precision_compliance_rate": 1.0,
+    "reproducibility_full_reliability_rate": 1.0,
+    "avg_latency_s": 4.41,
+    "n_calls": 12,
+    "n_ok": 12
+  },
+  "mistralai/mistral-large-3-675b-instruct-2512": {
+    "precision_compliance_rate": 0.75,
+    "reproducibility_full_reliability_rate": 0.75,
+    "avg_latency_s": 5.21,
+    "n_calls": 12,
+    "n_ok": 9
+  },
+  "mistralai/mistral-nemotron": {
+    "precision_compliance_rate": 1.0,
+    "reproducibility_full_reliability_rate": 1.0,
+    "avg_latency_s": 6.54,
+    "n_calls": 12,
+    "n_ok": 12
+  },
+  "deepseek-ai/deepseek-v4-pro": {
+    "precision_compliance_rate": 1.0,
+    "reproducibility_full_reliability_rate": 1.0,
+    "avg_latency_s": 34.56,
+    "n_calls": 12,
+    "n_ok": 12
+  }
+}

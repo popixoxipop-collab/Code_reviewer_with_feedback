@@ -1,0 +1,255 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmpvdj4ruzw/janusQL",
+  "total_source_files": 40,
+  "tier_a_structural": {
+    "fan_in": {
+      "babel.config.js": 0,
+      ".eslintrc.js": 0,
+      "webpack.electron.config.js": 0,
+      "webpack.react.config.js": 0,
+      "jest.config.ts": 0,
+      "server.ts": 1,
+      "userModel.ts": 1,
+      "securityTestControllers.ts": 1,
+      "userControllers.ts": 1,
+      "performanceTestControllers.ts": 2,
+      "helper.ts": 2,
+      "api.ts": 1,
+      "userApi.ts": 1,
+      "performanceTesting.ts": 0,
+      "main.ts": 0,
+      "App.tsx": 0,
+      "Main.tsx": 1,
+      "reducerPattern.ts": 2,
+      "PerformanceContext.tsx": 11,
+      "Navbar.tsx": 1,
+      "QueryEditor.tsx": 1,
+      "Login.tsx": 2,
+      "GraphQLInput.tsx": 1,
+      "QueryResponseEditor.tsx": 1,
+      "Signup.tsx": 2,
+      "Dos.tsx": 1,
+      "HistoryPanel.tsx": 0,
+      "SecPanel.tsx": 1,
+      "LoadPanel.tsx": 1,
+      "ResPanel.tsx": 1,
+      "DataSizePanel.tsx": 1,
+      "Throughput.tsx": 1,
+      "Load.tsx": 1,
+      "Status.tsx": 1,
+      "ResponseTime.tsx": 1,
+      "AvgLoadTime.tsx": 1,
+      "DataSize.tsx": 1,
+      "DashboardContainer.tsx": 1,
+      "GraphContainer.tsx": 2,
+      "LoginContainer.tsx": 1
+    },
+    "zero_fan_in_files": [
+      "babel.config.js",
+      ".eslintrc.js",
+      "webpack.electron.config.js",
+      "webpack.react.config.js",
+      "jest.config.ts",
+      "performanceTesting.ts",
+      "main.ts",
+      "App.tsx",
+      "HistoryPanel.tsx"
+    ],
+    "edges": [
+      [
+        "App.tsx",
+        "Login.tsx"
+      ],
+      [
+        "App.tsx",
+        "Main.tsx"
+      ],
+      [
+        "App.tsx",
+        "PerformanceContext.tsx"
+      ],
+      [
+        "App.tsx",
+        "Signup.tsx"
+      ],
+      [
+        "AvgLoadTime.tsx",
+        "PerformanceContext.tsx"
+      ],
+      [
+        "DashboardContainer.tsx",
+        "GraphContainer.tsx"
+      ],
+      [
+        "DashboardContainer.tsx",
+        "GraphQLInput.tsx"
+      ],
+      [
+        "DashboardContainer.tsx",
+        "QueryEditor.tsx"
+      ],
+      [
+        "DashboardContainer.tsx",
+        "QueryResponseEditor.tsx"
+      ],
+      [
+        "DataSize.tsx",
+        "PerformanceContext.tsx"
+      ],
+      [
+        "DataSizePanel.tsx",
+        "DataSize.tsx"
+      ],
+      [
+        "Dos.tsx",
+        "PerformanceContext.tsx"
+      ],
+      [
+        "GraphContainer.tsx",
+        "DataSizePanel.tsx"
+      ],
+      [
+        "GraphContainer.tsx",
+        "LoadPanel.tsx"
+      ],
+      [
+        "GraphContainer.tsx",
+        "ResPanel.tsx"
+      ],
+      [
+        "GraphContainer.tsx",
+        "SecPanel.tsx"
+      ],
+      [
+        "GraphQLInput.tsx",
+        "PerformanceContext.tsx"
+      ],
+      [
+        "Load.tsx",
+        "PerformanceContext.tsx"
+      ],
+      [
+        "LoadPanel.tsx",
+        "AvgLoadTime.tsx"
+      ],
+      [
+        "LoadPanel.tsx",
+        "Load.tsx"
+      ],
+      [
+        "Login.tsx",
+        "reducerPattern.ts"
+      ],
+      [
+        "Main.tsx",
+        "DashboardContainer.tsx"
+      ],
+      [
+        "Main.tsx",
+        "GraphContainer.tsx"
+      ],
+      [
+        "Main.tsx",
+        "Login.tsx"
+      ],
+      [
+        "Main.tsx",
+        "LoginContainer.tsx"
+      ],
+      [
+        "Main.tsx",
+        "Navbar.tsx"
+      ],
+      [
+        "Main.tsx",
+        "Signup.tsx"
+      ],
+      [
+        "QueryEditor.tsx",
+        "PerformanceContext.tsx"
+      ],
+      [
+        "QueryResponseEditor.tsx",
+        "PerformanceContext.tsx"
+      ],
+      [
+        "ResPanel.tsx",
+        "ResponseTime.tsx"
+      ],
+      [
+        "ResPanel.tsx",
+        "Status.tsx"
+      ],
+      [
+        "ResPanel.tsx",
+        "Throughput.tsx"
+      ],
+      [
+        "ResponseTime.tsx",
+        "PerformanceContext.tsx"
+      ],
+      [
+        "SecPanel.tsx",
+        "Dos.tsx"
+      ],
+      [
+        "Signup.tsx",
+        "reducerPattern.ts"
+      ],
+      [
+        "Status.tsx",
+        "PerformanceContext.tsx"
+      ],
+      [
+        "Throughput.tsx",
+        "PerformanceContext.tsx"
+      ],
+      [
+        "api.ts",
+        "performanceTestControllers.ts"
+      ],
+      [
+        "api.ts",
+        "securityTestControllers.ts"
+      ],
+      [
+        "performanceTestControllers.ts",
+        "helper.ts"
+      ],
+      [
+        "performanceTesting.ts",
+        "performanceTestControllers.ts"
+      ],
+      [
+        "performanceTesting.ts",
+        "server.ts"
+      ],
+      [
+        "securityTestControllers.ts",
+        "helper.ts"
+      ],
+      [
+        "server.ts",
+        "api.ts"
+      ],
+      [
+        "server.ts",
+        "userApi.ts"
+      ],
+      [
+        "userApi.ts",
+        "userControllers.ts"
+      ],
+      [
+        "userControllers.ts",
+        "userModel.ts"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {},
+    "deep_read_count": 0,
+    "total_files": 40,
+    "cost_saved_ratio": 1.0
+  }
+}

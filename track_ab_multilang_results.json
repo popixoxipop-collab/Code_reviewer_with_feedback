@@ -1,0 +1,196 @@
+[
+  {
+    "track": "A",
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "lang": "java",
+    "finding_id": "architecture-diffusion:ChatRagProperties.java",
+    "repeat": 1,
+    "ok": true,
+    "elapsed_s": 68.05
+  },
+  {
+    "track": "A",
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "lang": "java",
+    "finding_id": "tier-b-risk:ImageSearchTool.java:secret",
+    "repeat": 1,
+    "ok": true,
+    "elapsed_s": 16.34
+  },
+  {
+    "track": "A",
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "lang": "java",
+    "finding_id": "tier-b-risk:ImageSearchTool.java:secret",
+    "repeat": 0,
+    "ok": true,
+    "elapsed_s": 103.28
+  },
+  {
+    "track": "A",
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "lang": "python",
+    "finding_id": "architecture-diffusion:endpoint.py",
+    "repeat": 0,
+    "ok": true,
+    "elapsed_s": 103.29
+  },
+  {
+    "track": "A",
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "lang": "java",
+    "finding_id": "architecture-diffusion:ChatRagProperties.java",
+    "repeat": 0,
+    "ok": true,
+    "elapsed_s": 103.3
+  },
+  {
+    "track": "A",
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "lang": "python",
+    "finding_id": "architecture-diffusion:endpoint.py",
+    "repeat": 2,
+    "ok": false,
+    "elapsed_s": 120.24,
+    "error": "The read operation timed out"
+  },
+  {
+    "track": "A",
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "lang": "python",
+    "finding_id": "architecture-diffusion:endpoint.py",
+    "repeat": 1,
+    "ok": false,
+    "elapsed_s": 120.25,
+    "error": "The read operation timed out"
+  },
+  {
+    "track": "A",
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "lang": "java",
+    "finding_id": "architecture-diffusion:ChatRagProperties.java",
+    "repeat": 2,
+    "ok": false,
+    "elapsed_s": 120.25,
+    "error": "The read operation timed out"
+  },
+  {
+    "track": "A",
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "lang": "python",
+    "finding_id": "tier-b-risk:cse_client.py:secret",
+    "repeat": 2,
+    "ok": false,
+    "elapsed_s": 120.25,
+    "error": "The read operation timed out"
+  },
+  {
+    "track": "A",
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "lang": "python",
+    "finding_id": "tier-b-risk:cse_client.py:secret",
+    "repeat": 1,
+    "ok": false,
+    "elapsed_s": 120.25,
+    "error": "The read operation timed out"
+  },
+  {
+    "track": "A",
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "lang": "python",
+    "finding_id": "tier-b-risk:cse_client.py:secret",
+    "repeat": 0,
+    "ok": false,
+    "elapsed_s": 120.25,
+    "error": "The read operation timed out"
+  },
+  {
+    "track": "A",
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "lang": "java",
+    "finding_id": "tier-b-risk:ImageSearchTool.java:secret",
+    "repeat": 2,
+    "ok": true,
+    "elapsed_s": 39.75
+  },
+  {
+    "track": "A",
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "lang": "javascript",
+    "finding_id": "architecture-diffusion:utils.ts",
+    "repeat": 1,
+    "ok": false,
+    "elapsed_s": 120.23,
+    "error": "The read operation timed out"
+  },
+  {
+    "track": "A",
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "lang": "javascript",
+    "finding_id": "architecture-diffusion:utils.ts",
+    "repeat": 0,
+    "ok": false,
+    "elapsed_s": 120.24,
+    "error": "The read operation timed out"
+  },
+  {
+    "track": "A",
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "lang": "javascript",
+    "finding_id": "architecture-diffusion:utils.ts",
+    "repeat": 2,
+    "ok": false,
+    "elapsed_s": 120.22,
+    "error": "The read operation timed out"
+  },
+  {
+    "track": "A",
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "lang": "javascript",
+    "finding_id": "tier-b-risk:requestWrapper.test.ts",
+    "repeat": 2,
+    "ok": false,
+    "elapsed_s": 120.14,
+    "error": "The read operation timed out"
+  },
+  {
+    "track": "A",
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "lang": "javascript",
+    "finding_id": "tier-b-risk:requestWrapper.test.ts",
+    "repeat": 0,
+    "ok": false,
+    "elapsed_s": 120.14,
+    "error": "The read operation timed out"
+  },
+  {
+    "track": "A",
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "lang": "c_cpp",
+    "finding_id": "architecture-diffusion:UnitTest.h",
+    "repeat": 0,
+    "ok": false,
+    "elapsed_s": 120.14,
+    "error": "The read operation timed out"
+  },
+  {
+    "track": "A",
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "lang": "c_cpp",
+    "finding_id": "architecture-diffusion:UnitTest.h",
+    "repeat": 2,
+    "ok": false,
+    "elapsed_s": 120.14,
+    "error": "The read operation timed out"
+  },
+  {
+    "track": "A",
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "lang": "javascript",
+    "finding_id": "tier-b-risk:requestWrapper.test.ts",
+    "repeat": 1,
+    "ok": false,
+    "elapsed_s": 120.14,
+    "error": "The read operation timed out"
+  }
+]

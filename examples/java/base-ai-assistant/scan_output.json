@@ -1,0 +1,2215 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmpm59ubcok/base-ai-assistant",
+  "total_source_files": 267,
+  "tier_a_structural": {
+    "fan_in": {
+      "RpcComponentConfig.java": 0,
+      "ApiResStatus.java": 3,
+      "ApiQaType.java": 3,
+      "DocumentActionType.java": 1,
+      "MessageType.java": 3,
+      "EnergyAiFeignService.java": 3,
+      "RpcConfigConstant.java": 1,
+      "KnowledgeDocRpcService.java": 2,
+      "KnowledgeDocumentStatusItem.java": 1,
+      "KnowledgeDocumentStatusRet.java": 1,
+      "KnowledgeDocumentMatchItem.java": 5,
+      "SimpleChatRet.java": 1,
+      "RagDocumentMatchRet.java": 1,
+      "RecordResponse.java": 1,
+      "KnowledgeDocumentMatchRet.java": 1,
+      "AIAnswerRet.java": 2,
+      "KnowledgeDocumentMatchParam.java": 1,
+      "KnowledgeDocumentActionParam.java": 1,
+      "KnowledgeAIQueryParam.java": 6,
+      "MediaAttachment.java": 5,
+      "SimpleChatParam.java": 1,
+      "KnowledgeDocumentParam.java": 1,
+      "RagDocumentMatchParam.java": 1,
+      "CommonReqMsgDTO.java": 0,
+      "BaseReqMsgDTO.java": 0,
+      "CommonResMsgDTO.java": 13,
+      "BaseResMsgDTO.java": 0,
+      "AIStreamResponse.java": 3,
+      "PgSqlDatabaseConfig.java": 0,
+      "PgVectorTypeHandler.java": 1,
+      "VectorDocumentMapper.java": 1,
+      "PrimaryDatabaseConfig.java": 0,
+      "ContextUserRecordMapper.java": 1,
+      "KnowledgeCategoryConfigMapper.java": 1,
+      "TokenUsageMapper.java": 1,
+      "KnowledgeDocumentMapper.java": 2,
+      "TokenUsageService.java": 2,
+      "KnowledgeDocumentService.java": 7,
+      "KnowledgeCategoryConfigService.java": 4,
+      "VectorStoreService.java": 8,
+      "ContextUserRecordService.java": 6,
+      "VectorStoreServiceImpl.java": 0,
+      "TokenUsageServiceImpl.java": 0,
+      "KnowledgeCategoryConfigServiceImpl.java": 0,
+      "KnowledgeDocumentServiceImpl.java": 0,
+      "ContextUserRecordServiceImpl.java": 0,
+      "TokenUsageConverter.java": 1,
+      "KnowledgeDocumentConverter.java": 2,
+      "ContextUserRecordConverter.java": 1,
+      "KnowledgeCategoryConfigConverter.java": 1,
+      "DocumentImportHelper.java": 1,
+      "ContextUserRecordDTO.java": 9,
+      "KnowledgeDocumentDTO.java": 9,
+      "TokenUsageDTO.java": 4,
+      "KnowledgeCategoryConfigDTO.java": 6,
+      "BatchImportResult.java": 4,
+      "DocumentQueryContext.java": 18,
+      "ContextUserRecord.java": 3,
+      "KnowledgeCategoryConfig.java": 3,
+      "TokenUsage.java": 3,
+      "KnowledgeDocument.java": 4,
+      "KnowledgeDocumentQueryParam.java": 4,
+      "UpdateEnabledRequest.java": 1,
+      "BatchImportRequest.java": 1,
+      "VectorDocumentQueryParam.java": 2,
+      "ContextUserRecordQueryParam.java": 3,
+      "TokenUsageQueryParam.java": 3,
+      "KnowledgeCategoryQueryParam.java": 3,
+      "VectorDocument.java": 8,
+      "AiApiApplication.java": 0,
+      "NameStrategyHandler.java": 1,
+      "NameSwitchStrategyHandler.java": 0,
+      "Bm25RetrievalAdvisor.java": 0,
+      "HybridVectorRetrievalAdvisor.java": 0,
+      "PromptLoggerAdvisor.java": 2,
+      "CustomAdvisorConfig.java": 0,
+      "ChatClientAdvisorFactory.java": 5,
+      "AiRagCloudAdvisorConfig.java": 0,
+      "HybridRetrievalAdvisor.java": 1,
+      "ReReadingAdvisor.java": 0,
+      "BaseDocumentRetriever.java": 2,
+      "Bm25DocumentRetriever.java": 0,
+      "QueryRewriteRetriever.java": 0,
+      "AdvisorRetrieverFactory.java": 1,
+      "LocalDocumentRetriever.java": 0,
+      "AliDocumentRetriever.java": 0,
+      "VectorDocumentRetriever.java": 1,
+      "TerminateTool.java": 0,
+      "FileOperationTool.java": 0,
+      "DeepSeekWebSearchTool.java": 2,
+      "GisGeoTool.java": 0,
+      "ToolRegistry.java": 0,
+      "ToolRegistration.java": 0,
+      "InnerTool.java": 2,
+      "SimpleWebSearchTool.java": 0,
+      "ToolCallbackBuilder.java": 0,
+      "TerminalOperationTool.java": 0,
+      "WebScrapingTool.java": 0,
+      "ResourceDownloadTool.java": 0,
+      "PDFGenerationTool.java": 0,
+      "AiMessageConsumer.java": 0,
+      "CaptchaMsgConsumerStrategy.java": 0,
+      "IAiMsgConsumerStrategy.java": 1,
+      "EnergyAiDocumentApp.java": 1,
+      "EnergyAiApp.java": 2,
+      "EnergyAiAliDashScopeApp.java": 1,
+      "EnergyAiToolsApp.java": 1,
+      "Skill.java": 0,
+      "SkillTool.java": 0,
+      "SkillManager.java": 0,
+      "DocumentConvertUtils.java": 6,
+      "UserChatPromptUtils.java": 2,
+      "CommonThreadUtils.java": 1,
+      "DocumentQueryUtils.java": 1,
+      "EnergyAiRabbitMqConfig.java": 0,
+      "ChatClientConfig.java": 0,
+      "AiWebSearchApiProperties.java": 2,
+      "ChatMemoryConfig.java": 0,
+      "XxlJobConfig.java": 0,
+      "DocumentKeywordEnricher.java": 1,
+      "ChatRagProperties.java": 19,
+      "WebConfig.java": 0,
+      "RestClientTimeoutConfig.java": 0,
+      "AiVectorStoreConfig.java": 0,
+      "DocumentTokenTextSplitter.java": 1,
+      "EnergyManus.java": 1,
+      "IntentAnalysisAgent.java": 1,
+      "BaseAgent.java": 0,
+      "SubAgentManager.java": 0,
+      "SubAgent.java": 0,
+      "ReActAgent.java": 0,
+      "ToolCallAgent.java": 0,
+      "AgentState.java": 2,
+      "IntentResult.java": 5,
+      "IntentResponse.java": 0,
+      "SmartChatMemory.java": 1,
+      "FileBasedChatMemory.java": 1,
+      "ChineseEnhancedTextSplitter.java": 1,
+      "QueryRewriter.java": 2,
+      "AnswerFactChecker.java": 0,
+      "DirectTextSimilarityService.java": 0,
+      "AiDocumentFileLoader.java": 1,
+      "VectorStoreFilterUtil.java": 2,
+      "DocumentController.java": 0,
+      "AiToolController.java": 0,
+      "CommandController.java": 0,
+      "TestEnergyAiFeignController.java": 0,
+      "AiController.java": 0,
+      "KnowledgeDocumentManager.java": 1,
+      "ChatHistoryService.java": 2,
+      "VectorStoreManager.java": 2,
+      "ObjectToTipsManager.java": 0,
+      "AiRequestManager.java": 0,
+      "EnergyAiConstant.java": 10,
+      "ExServiceJob.java": 0,
+      "CommandManager.java": 1,
+      "RecordFeignProcessor.java": 0,
+      "DocumentFeignProcessor.java": 0,
+      "EnergyAiFeignProcessor.java": 0,
+      "Test.java": 0,
+      "KnowledgeDocApiClient.java": 0,
+      "EnergyReport.java": 2,
+      "ChatConfigResult.java": 2,
+      "RequestRagContext.java": 7,
+      "GlobalExceptionHandler.java": 0,
+      "AuthException.java": 0,
+      "SimpleAuthInterceptor.java": 1,
+      "McpStreamAbleConnectionsProperties.java": 0,
+      "McpSseClientConfig.java": 0,
+      "McpSseConnectionsProperties.java": 0,
+      "McpConfig.java": 4,
+      "ElectricityPriceSearchTool.java": 2,
+      "ImageSearchTool.java": 1,
+      "UserInfoTool.java": 0,
+      "StationDeviceTool.java": 0,
+      "OrderQueryTool.java": 0,
+      "CommonServiceBeanConfig.java": 2,
+      "WebEncodingConfig.java": 0,
+      "ServletCorsConfig.java": 0,
+      "ApolloConfigService.java": 1,
+      "MybatisPlusFillHandler.java": 0,
+      "CommonMybatisPlusConfig.java": 0,
+      "CustomizedSqlInjector.java": 2,
+      "ApolloConfig.java": 0,
+      "ApplicationServletConfig.java": 0,
+      "RestClientConfig.java": 0,
+      "FastJsonRedisSerializer.java": 0,
+      "RedisConfig.java": 0,
+      "StringRedisSerializer.java": 0,
+      "RabbitMqConfig.java": 0,
+      "AliyunCredentialsProvider.java": 0,
+      "RabbitMqCallback.java": 0,
+      "DataScopeEnum.java": 1,
+      "LogActionType.java": 5,
+      "LogReqRes.java": 5,
+      "AccessCount.java": 0,
+      "LogRecord.java": 6,
+      "Limit.java": 1,
+      "Query.java": 16,
+      "Tips.java": 1,
+      "ConvertUtil.java": 1,
+      "SpringContextHolder.java": 1,
+      "ThrowableUtil.java": 1,
+      "ValidationUtil.java": 1,
+      "PageUtil.java": 5,
+      "SecurityUtils.java": 1,
+      "QueryHelpMybatisPlus.java": 6,
+      "CallBack.java": 0,
+      "RequestHolder.java": 2,
+      "RedisManager.java": 0,
+      "FileConstant.java": 4,
+      "BusinessConstant.java": 1,
+      "GlobalConstant.java": 3,
+      "MQConstant.java": 3,
+      "LimitType.java": 1,
+      "LogReqResAspect.java": 0,
+      "LimitAspect.java": 0,
+      "TaskRunnable.java": 0,
+      "MdcScheduleThreadPoolTaskExecutor.java": 0,
+      "ThreadScopeCleanerDecorator.java": 1,
+      "MdcMultipleThreadPoolTaskExecutor.java": 1,
+      "ServiceThreadExecutor.java": 0,
+      "CoException.java": 6,
+      "OptimisticLockException.java": 0,
+      "BadRequestException.java": 2,
+      "LogService.java": 3,
+      "LogQueryParam.java": 3,
+      "LogSmallDTO.java": 2,
+      "LogErrorDTO.java": 1,
+      "LogServiceImpl.java": 0,
+      "LogMapper.java": 1,
+      "Log.java": 5,
+      "PageInfo.java": 22,
+      "CommonMapper.java": 5,
+      "BaseQueryParam.java": 4,
+      "BaseService.java": 2,
+      "BaseServiceImpl.java": 1,
+      "KnowledgeScopeTypeEnum.java": 5,
+      "KnowledgeContentTypeEnum.java": 1,
+      "MqMsgTypeEnum.java": 1,
+      "DocSourceTypeEnum.java": 4,
+      "KnowledgeBusinessTypeEnum.java": 5,
+      "PossibleSourceTypeEnum.java": 4,
+      "ObjectConvertConstant.java": 1,
+      "ExMqMsgRequest.java": 2,
+      "BaseMqMsgRequest.java": 3,
+      "QuestionFormatParam.java": 1,
+      "AdminApiApplication.java": 0,
+      "AdminRabbitMqConfig.java": 0,
+      "KnowledgeDocumentController.java": 0,
+      "TestDocumentController.java": 0,
+      "KnowledgeCategoryConfigController.java": 0,
+      "ContextUserRecordController.java": 0,
+      "TokenUsageController.java": 0,
+      "LogController.java": 0,
+      "TestEnergyAiController.java": 0,
+      "AdminConstant.java": 0,
+      "LogAspect.java": 0,
+      "KnowledgeDocRpcProcessor.java": 0,
+      "EnergyAiFeignClient.java": 1
+    },
+    "zero_fan_in_files": [
+      "RpcComponentConfig.java",
+      "CommonReqMsgDTO.java",
+      "BaseReqMsgDTO.java",
+      "BaseResMsgDTO.java",
+      "PgSqlDatabaseConfig.java",
+      "PrimaryDatabaseConfig.java",
+      "VectorStoreServiceImpl.java",
+      "TokenUsageServiceImpl.java",
+      "KnowledgeCategoryConfigServiceImpl.java",
+      "KnowledgeDocumentServiceImpl.java",
+      "ContextUserRecordServiceImpl.java",
+      "AiApiApplication.java",
+      "NameSwitchStrategyHandler.java",
+      "Bm25RetrievalAdvisor.java",
+      "HybridVectorRetrievalAdvisor.java",
+      "CustomAdvisorConfig.java",
+      "AiRagCloudAdvisorConfig.java",
+      "ReReadingAdvisor.java",
+      "Bm25DocumentRetriever.java",
+      "QueryRewriteRetriever.java",
+      "LocalDocumentRetriever.java",
+      "AliDocumentRetriever.java",
+      "TerminateTool.java",
+      "FileOperationTool.java",
+      "GisGeoTool.java",
+      "ToolRegistry.java",
+      "ToolRegistration.java",
+      "SimpleWebSearchTool.java",
+      "ToolCallbackBuilder.java",
+      "TerminalOperationTool.java",
+      "WebScrapingTool.java",
+      "ResourceDownloadTool.java",
+      "PDFGenerationTool.java",
+      "AiMessageConsumer.java",
+      "CaptchaMsgConsumerStrategy.java",
+      "Skill.java",
+      "SkillTool.java",
+      "SkillManager.java",
+      "EnergyAiRabbitMqConfig.java",
+      "ChatClientConfig.java",
+      "ChatMemoryConfig.java",
+      "XxlJobConfig.java",
+      "WebConfig.java",
+      "RestClientTimeoutConfig.java",
+      "AiVectorStoreConfig.java",
+      "BaseAgent.java",
+      "SubAgentManager.java",
+      "SubAgent.java",
+      "ReActAgent.java",
+      "ToolCallAgent.java",
+      "IntentResponse.java",
+      "AnswerFactChecker.java",
+      "DirectTextSimilarityService.java",
+      "DocumentController.java",
+      "AiToolController.java",
+      "CommandController.java",
+      "TestEnergyAiFeignController.java",
+      "AiController.java",
+      "ObjectToTipsManager.java",
+      "AiRequestManager.java",
+      "ExServiceJob.java",
+      "RecordFeignProcessor.java",
+      "DocumentFeignProcessor.java",
+      "EnergyAiFeignProcessor.java",
+      "Test.java",
+      "KnowledgeDocApiClient.java",
+      "GlobalExceptionHandler.java",
+      "AuthException.java",
+      "McpStreamAbleConnectionsProperties.java",
+      "McpSseClientConfig.java",
+      "McpSseConnectionsProperties.java",
+      "UserInfoTool.java",
+      "StationDeviceTool.java",
+      "OrderQueryTool.java",
+      "WebEncodingConfig.java",
+      "ServletCorsConfig.java",
+      "MybatisPlusFillHandler.java",
+      "CommonMybatisPlusConfig.java",
+      "ApolloConfig.java",
+      "ApplicationServletConfig.java",
+      "RestClientConfig.java",
+      "FastJsonRedisSerializer.java",
+      "RedisConfig.java",
+      "StringRedisSerializer.java",
+      "RabbitMqConfig.java",
+      "AliyunCredentialsProvider.java",
+      "RabbitMqCallback.java",
+      "AccessCount.java",
+      "CallBack.java",
+      "RedisManager.java",
+      "LogReqResAspect.java",
+      "LimitAspect.java",
+      "TaskRunnable.java",
+      "MdcScheduleThreadPoolTaskExecutor.java",
+      "ServiceThreadExecutor.java",
+      "OptimisticLockException.java",
+      "LogServiceImpl.java",
+      "AdminApiApplication.java",
+      "AiMessageConsumer.java",
+      "CaptchaMsgConsumerStrategy.java",
+      "AdminRabbitMqConfig.java",
+      "XxlJobConfig.java",
+      "WebConfig.java",
+      "KnowledgeDocumentController.java",
+      "TestDocumentController.java",
+      "KnowledgeCategoryConfigController.java",
+      "ContextUserRecordController.java",
+      "TokenUsageController.java",
+      "LogController.java",
+      "TestEnergyAiController.java",
+      "AdminConstant.java",
+      "ExServiceJob.java",
+      "LogAspect.java",
+      "KnowledgeDocRpcProcessor.java"
+    ],
+    "edges": [
+      [
+        "AIStreamResponse.java",
+        "MessageType.java"
+      ],
+      [
+        "AdminApiApplication.java",
+        "CommonServiceBeanConfig.java"
+      ],
+      [
+        "AdminRabbitMqConfig.java",
+        "MQConstant.java"
+      ],
+      [
+        "AdvisorRetrieverFactory.java",
+        "ChatRagProperties.java"
+      ],
+      [
+        "AdvisorRetrieverFactory.java",
+        "DocumentQueryContext.java"
+      ],
+      [
+        "AdvisorRetrieverFactory.java",
+        "IntentResult.java"
+      ],
+      [
+        "AdvisorRetrieverFactory.java",
+        "PossibleSourceTypeEnum.java"
+      ],
+      [
+        "AdvisorRetrieverFactory.java",
+        "VectorStoreService.java"
+      ],
+      [
+        "AiApiApplication.java",
+        "CommonServiceBeanConfig.java"
+      ],
+      [
+        "AiController.java",
+        "ApiQaType.java"
+      ],
+      [
+        "AiController.java",
+        "ChatClientAdvisorFactory.java"
+      ],
+      [
+        "AiController.java",
+        "EnergyAiAliDashScopeApp.java"
+      ],
+      [
+        "AiController.java",
+        "EnergyAiApp.java"
+      ],
+      [
+        "AiController.java",
+        "EnergyAiToolsApp.java"
+      ],
+      [
+        "AiController.java",
+        "EnergyManus.java"
+      ],
+      [
+        "AiController.java",
+        "EnergyReport.java"
+      ],
+      [
+        "AiController.java",
+        "KnowledgeAIQueryParam.java"
+      ],
+      [
+        "AiController.java",
+        "MediaAttachment.java"
+      ],
+      [
+        "AiController.java",
+        "RequestRagContext.java"
+      ],
+      [
+        "AiDocumentFileLoader.java",
+        "ChatRagProperties.java"
+      ],
+      [
+        "AiDocumentFileLoader.java",
+        "DocSourceTypeEnum.java"
+      ],
+      [
+        "AiDocumentFileLoader.java",
+        "FileConstant.java"
+      ],
+      [
+        "AiDocumentFileLoader.java",
+        "KnowledgeScopeTypeEnum.java"
+      ],
+      [
+        "AiMessageConsumer.java",
+        "BaseMqMsgRequest.java"
+      ],
+      [
+        "AiMessageConsumer.java",
+        "IAiMsgConsumerStrategy.java"
+      ],
+      [
+        "AiMessageConsumer.java",
+        "MQConstant.java"
+      ],
+      [
+        "AiRagCloudAdvisorConfig.java",
+        "ChatRagProperties.java"
+      ],
+      [
+        "AiRequestManager.java",
+        "AIAnswerRet.java"
+      ],
+      [
+        "AiRequestManager.java",
+        "AIStreamResponse.java"
+      ],
+      [
+        "AiRequestManager.java",
+        "ApiQaType.java"
+      ],
+      [
+        "AiRequestManager.java",
+        "ChatRagProperties.java"
+      ],
+      [
+        "AiRequestManager.java",
+        "CommonThreadUtils.java"
+      ],
+      [
+        "AiRequestManager.java",
+        "DocumentConvertUtils.java"
+      ],
+      [
+        "AiRequestManager.java",
+        "EnergyAiApp.java"
+      ],
+      [
+        "AiRequestManager.java",
+        "EnergyAiConstant.java"
+      ],
+      [
+        "AiRequestManager.java",
+        "EnergyAiDocumentApp.java"
+      ],
+      [
+        "AiRequestManager.java",
+        "KnowledgeAIQueryParam.java"
+      ],
+      [
+        "AiRequestManager.java",
+        "RagDocumentMatchParam.java"
+      ],
+      [
+        "AiRequestManager.java",
+        "RagDocumentMatchRet.java"
+      ],
+      [
+        "AiRequestManager.java",
+        "RequestRagContext.java"
+      ],
+      [
+        "AiRequestManager.java",
+        "SimpleChatParam.java"
+      ],
+      [
+        "AiRequestManager.java",
+        "SimpleChatRet.java"
+      ],
+      [
+        "AiRequestManager.java",
+        "VectorDocument.java"
+      ],
+      [
+        "AiRequestManager.java",
+        "VectorStoreService.java"
+      ],
+      [
+        "AiToolController.java",
+        "DeepSeekWebSearchTool.java"
+      ],
+      [
+        "AiToolController.java",
+        "QuestionFormatParam.java"
+      ],
+      [
+        "AliDocumentRetriever.java",
+        "ChatRagProperties.java"
+      ],
+      [
+        "AliDocumentRetriever.java",
+        "DocumentQueryContext.java"
+      ],
+      [
+        "AliDocumentRetriever.java",
+        "Query.java"
+      ],
+      [
+        "ApplicationServletConfig.java",
+        "SpringContextHolder.java"
+      ],
+      [
+        "AuthException.java",
+        "CoException.java"
+      ],
+      [
+        "BaseAgent.java",
+        "AgentState.java"
+      ],
+      [
+        "BaseDocumentRetriever.java",
+        "ChatRagProperties.java"
+      ],
+      [
+        "BaseDocumentRetriever.java",
+        "DocumentQueryContext.java"
+      ],
+      [
+        "BaseDocumentRetriever.java",
+        "DocumentQueryUtils.java"
+      ],
+      [
+        "BaseDocumentRetriever.java",
+        "Query.java"
+      ],
+      [
+        "BaseDocumentRetriever.java",
+        "VectorStoreFilterUtil.java"
+      ],
+      [
+        "BaseMqMsgRequest.java",
+        "MqMsgTypeEnum.java"
+      ],
+      [
+        "BaseResMsgDTO.java",
+        "ApiResStatus.java"
+      ],
+      [
+        "BaseServiceImpl.java",
+        "BaseService.java"
+      ],
+      [
+        "Bm25DocumentRetriever.java",
+        "ChatRagProperties.java"
+      ],
+      [
+        "Bm25DocumentRetriever.java",
+        "DocumentConvertUtils.java"
+      ],
+      [
+        "Bm25DocumentRetriever.java",
+        "DocumentQueryContext.java"
+      ],
+      [
+        "Bm25DocumentRetriever.java",
+        "Query.java"
+      ],
+      [
+        "Bm25DocumentRetriever.java",
+        "VectorDocument.java"
+      ],
+      [
+        "Bm25DocumentRetriever.java",
+        "VectorStoreService.java"
+      ],
+      [
+        "Bm25RetrievalAdvisor.java",
+        "ChatRagProperties.java"
+      ],
+      [
+        "Bm25RetrievalAdvisor.java",
+        "DocumentConvertUtils.java"
+      ],
+      [
+        "Bm25RetrievalAdvisor.java",
+        "DocumentQueryContext.java"
+      ],
+      [
+        "Bm25RetrievalAdvisor.java",
+        "EnergyAiConstant.java"
+      ],
+      [
+        "Bm25RetrievalAdvisor.java",
+        "Query.java"
+      ],
+      [
+        "Bm25RetrievalAdvisor.java",
+        "VectorDocument.java"
+      ],
+      [
+        "Bm25RetrievalAdvisor.java",
+        "VectorStoreService.java"
+      ],
+      [
+        "CaptchaMsgConsumerStrategy.java",
+        "ExMqMsgRequest.java"
+      ],
+      [
+        "ChatClientAdvisorFactory.java",
+        "AdvisorRetrieverFactory.java"
+      ],
+      [
+        "ChatClientAdvisorFactory.java",
+        "BaseDocumentRetriever.java"
+      ],
+      [
+        "ChatClientAdvisorFactory.java",
+        "ChatRagProperties.java"
+      ],
+      [
+        "ChatClientAdvisorFactory.java",
+        "DocumentQueryContext.java"
+      ],
+      [
+        "ChatClientAdvisorFactory.java",
+        "EnergyAiConstant.java"
+      ],
+      [
+        "ChatClientAdvisorFactory.java",
+        "IntentResult.java"
+      ],
+      [
+        "ChatClientAdvisorFactory.java",
+        "KnowledgeDocumentDTO.java"
+      ],
+      [
+        "ChatClientAdvisorFactory.java",
+        "RequestRagContext.java"
+      ],
+      [
+        "ChatClientAdvisorFactory.java",
+        "VectorStoreFilterUtil.java"
+      ],
+      [
+        "ChatClientAdvisorFactory.java",
+        "VectorStoreService.java"
+      ],
+      [
+        "ChatClientConfig.java",
+        "ChatClientAdvisorFactory.java"
+      ],
+      [
+        "ChatClientConfig.java",
+        "EnergyAiConstant.java"
+      ],
+      [
+        "ChatConfigResult.java",
+        "ContextUserRecordDTO.java"
+      ],
+      [
+        "ChatHistoryService.java",
+        "ContextUserRecordDTO.java"
+      ],
+      [
+        "ChatHistoryService.java",
+        "ContextUserRecordService.java"
+      ],
+      [
+        "ChatHistoryService.java",
+        "MediaAttachment.java"
+      ],
+      [
+        "ChatMemoryConfig.java",
+        "FileBasedChatMemory.java"
+      ],
+      [
+        "ChatMemoryConfig.java",
+        "SmartChatMemory.java"
+      ],
+      [
+        "CommandController.java",
+        "CommandManager.java"
+      ],
+      [
+        "CommonResMsgDTO.java",
+        "ApiResStatus.java"
+      ],
+      [
+        "CommonServiceBeanConfig.java",
+        "MdcMultipleThreadPoolTaskExecutor.java"
+      ],
+      [
+        "CommonServiceBeanConfig.java",
+        "ThreadScopeCleanerDecorator.java"
+      ],
+      [
+        "ContextUserRecordController.java",
+        "ContextUserRecordDTO.java"
+      ],
+      [
+        "ContextUserRecordController.java",
+        "ContextUserRecordQueryParam.java"
+      ],
+      [
+        "ContextUserRecordController.java",
+        "ContextUserRecordService.java"
+      ],
+      [
+        "ContextUserRecordController.java",
+        "LogActionType.java"
+      ],
+      [
+        "ContextUserRecordController.java",
+        "LogRecord.java"
+      ],
+      [
+        "ContextUserRecordController.java",
+        "PageInfo.java"
+      ],
+      [
+        "ContextUserRecordConverter.java",
+        "ContextUserRecord.java"
+      ],
+      [
+        "ContextUserRecordConverter.java",
+        "ContextUserRecordDTO.java"
+      ],
+      [
+        "ContextUserRecordConverter.java",
+        "PageInfo.java"
+      ],
+      [
+        "ContextUserRecordDTO.java",
+        "KnowledgeBusinessTypeEnum.java"
+      ],
+      [
+        "ContextUserRecordDTO.java",
+        "KnowledgeScopeTypeEnum.java"
+      ],
+      [
+        "ContextUserRecordMapper.java",
+        "CommonMapper.java"
+      ],
+      [
+        "ContextUserRecordMapper.java",
+        "ContextUserRecord.java"
+      ],
+      [
+        "ContextUserRecordQueryParam.java",
+        "BaseQueryParam.java"
+      ],
+      [
+        "ContextUserRecordQueryParam.java",
+        "Query.java"
+      ],
+      [
+        "ContextUserRecordService.java",
+        "ContextUserRecordDTO.java"
+      ],
+      [
+        "ContextUserRecordService.java",
+        "ContextUserRecordQueryParam.java"
+      ],
+      [
+        "ContextUserRecordService.java",
+        "PageInfo.java"
+      ],
+      [
+        "ContextUserRecordServiceImpl.java",
+        "ContextUserRecord.java"
+      ],
+      [
+        "ContextUserRecordServiceImpl.java",
+        "ContextUserRecordConverter.java"
+      ],
+      [
+        "ContextUserRecordServiceImpl.java",
+        "ContextUserRecordDTO.java"
+      ],
+      [
+        "ContextUserRecordServiceImpl.java",
+        "ContextUserRecordMapper.java"
+      ],
+      [
+        "ContextUserRecordServiceImpl.java",
+        "ContextUserRecordQueryParam.java"
+      ],
+      [
+        "ContextUserRecordServiceImpl.java",
+        "ContextUserRecordService.java"
+      ],
+      [
+        "ContextUserRecordServiceImpl.java",
+        "PageInfo.java"
+      ],
+      [
+        "ContextUserRecordServiceImpl.java",
+        "PageUtil.java"
+      ],
+      [
+        "ContextUserRecordServiceImpl.java",
+        "QueryHelpMybatisPlus.java"
+      ],
+      [
+        "ConvertUtil.java",
+        "PageInfo.java"
+      ],
+      [
+        "CustomAdvisorConfig.java",
+        "ChatRagProperties.java"
+      ],
+      [
+        "CustomAdvisorConfig.java",
+        "EnergyAiConstant.java"
+      ],
+      [
+        "DeepSeekWebSearchTool.java",
+        "AiWebSearchApiProperties.java"
+      ],
+      [
+        "DocumentController.java",
+        "VectorStoreManager.java"
+      ],
+      [
+        "DocumentConvertUtils.java",
+        "KnowledgeDocumentMatchItem.java"
+      ],
+      [
+        "DocumentConvertUtils.java",
+        "VectorDocument.java"
+      ],
+      [
+        "DocumentFeignProcessor.java",
+        "CommonResMsgDTO.java"
+      ],
+      [
+        "DocumentFeignProcessor.java",
+        "DocumentActionType.java"
+      ],
+      [
+        "DocumentFeignProcessor.java",
+        "DocumentQueryContext.java"
+      ],
+      [
+        "DocumentFeignProcessor.java",
+        "GlobalConstant.java"
+      ],
+      [
+        "DocumentFeignProcessor.java",
+        "KnowledgeDocumentActionParam.java"
+      ],
+      [
+        "DocumentFeignProcessor.java",
+        "KnowledgeDocumentDTO.java"
+      ],
+      [
+        "DocumentFeignProcessor.java",
+        "KnowledgeDocumentManager.java"
+      ],
+      [
+        "DocumentFeignProcessor.java",
+        "KnowledgeDocumentMatchItem.java"
+      ],
+      [
+        "DocumentFeignProcessor.java",
+        "KnowledgeDocumentMatchParam.java"
+      ],
+      [
+        "DocumentFeignProcessor.java",
+        "KnowledgeDocumentMatchRet.java"
+      ],
+      [
+        "DocumentFeignProcessor.java",
+        "KnowledgeDocumentParam.java"
+      ],
+      [
+        "DocumentFeignProcessor.java",
+        "KnowledgeDocumentService.java"
+      ],
+      [
+        "DocumentFeignProcessor.java",
+        "KnowledgeDocumentStatusItem.java"
+      ],
+      [
+        "DocumentFeignProcessor.java",
+        "KnowledgeDocumentStatusRet.java"
+      ],
+      [
+        "DocumentFeignProcessor.java",
+        "LogReqRes.java"
+      ],
+      [
+        "DocumentFeignProcessor.java",
+        "VectorStoreManager.java"
+      ],
+      [
+        "DocumentImportHelper.java",
+        "BatchImportResult.java"
+      ],
+      [
+        "DocumentImportHelper.java",
+        "DocSourceTypeEnum.java"
+      ],
+      [
+        "DocumentImportHelper.java",
+        "KnowledgeBusinessTypeEnum.java"
+      ],
+      [
+        "DocumentImportHelper.java",
+        "KnowledgeCategoryConfigDTO.java"
+      ],
+      [
+        "DocumentImportHelper.java",
+        "KnowledgeCategoryConfigService.java"
+      ],
+      [
+        "DocumentImportHelper.java",
+        "KnowledgeDocument.java"
+      ],
+      [
+        "DocumentImportHelper.java",
+        "KnowledgeDocumentConverter.java"
+      ],
+      [
+        "DocumentImportHelper.java",
+        "KnowledgeDocumentDTO.java"
+      ],
+      [
+        "DocumentImportHelper.java",
+        "KnowledgeDocumentMapper.java"
+      ],
+      [
+        "DocumentImportHelper.java",
+        "KnowledgeScopeTypeEnum.java"
+      ],
+      [
+        "DocumentQueryContext.java",
+        "DocSourceTypeEnum.java"
+      ],
+      [
+        "DocumentQueryContext.java",
+        "KnowledgeBusinessTypeEnum.java"
+      ],
+      [
+        "DocumentQueryContext.java",
+        "KnowledgeScopeTypeEnum.java"
+      ],
+      [
+        "DocumentQueryUtils.java",
+        "BusinessConstant.java"
+      ],
+      [
+        "DocumentQueryUtils.java",
+        "DocumentQueryContext.java"
+      ],
+      [
+        "DocumentTokenTextSplitter.java",
+        "ChineseEnhancedTextSplitter.java"
+      ],
+      [
+        "EnergyAiAliDashScopeApp.java",
+        "ChatRagProperties.java"
+      ],
+      [
+        "EnergyAiAliDashScopeApp.java",
+        "McpConfig.java"
+      ],
+      [
+        "EnergyAiApp.java",
+        "ChatClientAdvisorFactory.java"
+      ],
+      [
+        "EnergyAiApp.java",
+        "ChatConfigResult.java"
+      ],
+      [
+        "EnergyAiApp.java",
+        "ChatHistoryService.java"
+      ],
+      [
+        "EnergyAiApp.java",
+        "ChatRagProperties.java"
+      ],
+      [
+        "EnergyAiApp.java",
+        "ContextUserRecordDTO.java"
+      ],
+      [
+        "EnergyAiApp.java",
+        "ContextUserRecordService.java"
+      ],
+      [
+        "EnergyAiApp.java",
+        "DocumentQueryContext.java"
+      ],
+      [
+        "EnergyAiApp.java",
+        "HybridRetrievalAdvisor.java"
+      ],
+      [
+        "EnergyAiApp.java",
+        "IntentAnalysisAgent.java"
+      ],
+      [
+        "EnergyAiApp.java",
+        "IntentResult.java"
+      ],
+      [
+        "EnergyAiApp.java",
+        "KnowledgeAIQueryParam.java"
+      ],
+      [
+        "EnergyAiApp.java",
+        "McpConfig.java"
+      ],
+      [
+        "EnergyAiApp.java",
+        "MediaAttachment.java"
+      ],
+      [
+        "EnergyAiApp.java",
+        "PromptLoggerAdvisor.java"
+      ],
+      [
+        "EnergyAiApp.java",
+        "QueryRewriter.java"
+      ],
+      [
+        "EnergyAiApp.java",
+        "RequestRagContext.java"
+      ],
+      [
+        "EnergyAiApp.java",
+        "UserChatPromptUtils.java"
+      ],
+      [
+        "EnergyAiDocumentApp.java",
+        "AIStreamResponse.java"
+      ],
+      [
+        "EnergyAiDocumentApp.java",
+        "ApiQaType.java"
+      ],
+      [
+        "EnergyAiDocumentApp.java",
+        "ChatClientAdvisorFactory.java"
+      ],
+      [
+        "EnergyAiDocumentApp.java",
+        "ChatConfigResult.java"
+      ],
+      [
+        "EnergyAiDocumentApp.java",
+        "ChatHistoryService.java"
+      ],
+      [
+        "EnergyAiDocumentApp.java",
+        "CoException.java"
+      ],
+      [
+        "EnergyAiDocumentApp.java",
+        "ContextUserRecordDTO.java"
+      ],
+      [
+        "EnergyAiDocumentApp.java",
+        "ContextUserRecordService.java"
+      ],
+      [
+        "EnergyAiDocumentApp.java",
+        "DeepSeekWebSearchTool.java"
+      ],
+      [
+        "EnergyAiDocumentApp.java",
+        "DocumentConvertUtils.java"
+      ],
+      [
+        "EnergyAiDocumentApp.java",
+        "DocumentQueryContext.java"
+      ],
+      [
+        "EnergyAiDocumentApp.java",
+        "IntentResult.java"
+      ],
+      [
+        "EnergyAiDocumentApp.java",
+        "KnowledgeAIQueryParam.java"
+      ],
+      [
+        "EnergyAiDocumentApp.java",
+        "KnowledgeDocumentMatchItem.java"
+      ],
+      [
+        "EnergyAiDocumentApp.java",
+        "McpConfig.java"
+      ],
+      [
+        "EnergyAiDocumentApp.java",
+        "MediaAttachment.java"
+      ],
+      [
+        "EnergyAiDocumentApp.java",
+        "MessageType.java"
+      ],
+      [
+        "EnergyAiDocumentApp.java",
+        "PossibleSourceTypeEnum.java"
+      ],
+      [
+        "EnergyAiDocumentApp.java",
+        "PromptLoggerAdvisor.java"
+      ],
+      [
+        "EnergyAiDocumentApp.java",
+        "QueryRewriter.java"
+      ],
+      [
+        "EnergyAiDocumentApp.java",
+        "RequestRagContext.java"
+      ],
+      [
+        "EnergyAiDocumentApp.java",
+        "UserChatPromptUtils.java"
+      ],
+      [
+        "EnergyAiFeignClient.java",
+        "CommonResMsgDTO.java"
+      ],
+      [
+        "EnergyAiFeignClient.java",
+        "EnergyAiFeignService.java"
+      ],
+      [
+        "EnergyAiFeignProcessor.java",
+        "CommonResMsgDTO.java"
+      ],
+      [
+        "EnergyAiFeignProcessor.java",
+        "EnergyAiFeignService.java"
+      ],
+      [
+        "EnergyAiFeignProcessor.java",
+        "LogReqRes.java"
+      ],
+      [
+        "EnergyAiFeignService.java",
+        "CommonResMsgDTO.java"
+      ],
+      [
+        "EnergyAiRabbitMqConfig.java",
+        "MQConstant.java"
+      ],
+      [
+        "EnergyAiToolsApp.java",
+        "EnergyAiConstant.java"
+      ],
+      [
+        "EnergyAiToolsApp.java",
+        "EnergyReport.java"
+      ],
+      [
+        "EnergyAiToolsApp.java",
+        "McpConfig.java"
+      ],
+      [
+        "EnergyManus.java",
+        "ChatClientAdvisorFactory.java"
+      ],
+      [
+        "FileOperationTool.java",
+        "FileConstant.java"
+      ],
+      [
+        "GlobalExceptionHandler.java",
+        "CoException.java"
+      ],
+      [
+        "GlobalExceptionHandler.java",
+        "CommonResMsgDTO.java"
+      ],
+      [
+        "HybridRetrievalAdvisor.java",
+        "BaseDocumentRetriever.java"
+      ],
+      [
+        "HybridRetrievalAdvisor.java",
+        "ChatRagProperties.java"
+      ],
+      [
+        "HybridRetrievalAdvisor.java",
+        "EnergyAiConstant.java"
+      ],
+      [
+        "HybridRetrievalAdvisor.java",
+        "Query.java"
+      ],
+      [
+        "HybridRetrievalAdvisor.java",
+        "RequestRagContext.java"
+      ],
+      [
+        "HybridVectorRetrievalAdvisor.java",
+        "ChatRagProperties.java"
+      ],
+      [
+        "HybridVectorRetrievalAdvisor.java",
+        "DocumentConvertUtils.java"
+      ],
+      [
+        "HybridVectorRetrievalAdvisor.java",
+        "DocumentQueryContext.java"
+      ],
+      [
+        "HybridVectorRetrievalAdvisor.java",
+        "EnergyAiConstant.java"
+      ],
+      [
+        "HybridVectorRetrievalAdvisor.java",
+        "VectorDocument.java"
+      ],
+      [
+        "HybridVectorRetrievalAdvisor.java",
+        "VectorStoreService.java"
+      ],
+      [
+        "IAiMsgConsumerStrategy.java",
+        "BaseMqMsgRequest.java"
+      ],
+      [
+        "IntentAnalysisAgent.java",
+        "IntentResult.java"
+      ],
+      [
+        "IntentAnalysisAgent.java",
+        "KnowledgeBusinessTypeEnum.java"
+      ],
+      [
+        "IntentAnalysisAgent.java",
+        "KnowledgeCategoryConfigDTO.java"
+      ],
+      [
+        "IntentAnalysisAgent.java",
+        "KnowledgeCategoryConfigService.java"
+      ],
+      [
+        "IntentAnalysisAgent.java",
+        "PossibleSourceTypeEnum.java"
+      ],
+      [
+        "IntentResult.java",
+        "PossibleSourceTypeEnum.java"
+      ],
+      [
+        "KnowledgeCategoryConfigController.java",
+        "KnowledgeCategoryConfigDTO.java"
+      ],
+      [
+        "KnowledgeCategoryConfigController.java",
+        "KnowledgeCategoryConfigService.java"
+      ],
+      [
+        "KnowledgeCategoryConfigController.java",
+        "KnowledgeCategoryQueryParam.java"
+      ],
+      [
+        "KnowledgeCategoryConfigController.java",
+        "LogActionType.java"
+      ],
+      [
+        "KnowledgeCategoryConfigController.java",
+        "LogRecord.java"
+      ],
+      [
+        "KnowledgeCategoryConfigController.java",
+        "PageInfo.java"
+      ],
+      [
+        "KnowledgeCategoryConfigController.java",
+        "UpdateEnabledRequest.java"
+      ],
+      [
+        "KnowledgeCategoryConfigConverter.java",
+        "KnowledgeCategoryConfig.java"
+      ],
+      [
+        "KnowledgeCategoryConfigConverter.java",
+        "KnowledgeCategoryConfigDTO.java"
+      ],
+      [
+        "KnowledgeCategoryConfigConverter.java",
+        "PageInfo.java"
+      ],
+      [
+        "KnowledgeCategoryConfigMapper.java",
+        "CommonMapper.java"
+      ],
+      [
+        "KnowledgeCategoryConfigMapper.java",
+        "KnowledgeCategoryConfig.java"
+      ],
+      [
+        "KnowledgeCategoryConfigService.java",
+        "KnowledgeCategoryConfigDTO.java"
+      ],
+      [
+        "KnowledgeCategoryConfigService.java",
+        "KnowledgeCategoryQueryParam.java"
+      ],
+      [
+        "KnowledgeCategoryConfigService.java",
+        "PageInfo.java"
+      ],
+      [
+        "KnowledgeCategoryConfigServiceImpl.java",
+        "KnowledgeCategoryConfig.java"
+      ],
+      [
+        "KnowledgeCategoryConfigServiceImpl.java",
+        "KnowledgeCategoryConfigConverter.java"
+      ],
+      [
+        "KnowledgeCategoryConfigServiceImpl.java",
+        "KnowledgeCategoryConfigDTO.java"
+      ],
+      [
+        "KnowledgeCategoryConfigServiceImpl.java",
+        "KnowledgeCategoryConfigMapper.java"
+      ],
+      [
+        "KnowledgeCategoryConfigServiceImpl.java",
+        "KnowledgeCategoryConfigService.java"
+      ],
+      [
+        "KnowledgeCategoryConfigServiceImpl.java",
+        "KnowledgeCategoryQueryParam.java"
+      ],
+      [
+        "KnowledgeCategoryConfigServiceImpl.java",
+        "PageInfo.java"
+      ],
+      [
+        "KnowledgeCategoryConfigServiceImpl.java",
+        "PageUtil.java"
+      ],
+      [
+        "KnowledgeCategoryConfigServiceImpl.java",
+        "QueryHelpMybatisPlus.java"
+      ],
+      [
+        "KnowledgeCategoryQueryParam.java",
+        "BaseQueryParam.java"
+      ],
+      [
+        "KnowledgeCategoryQueryParam.java",
+        "Query.java"
+      ],
+      [
+        "KnowledgeDocApiClient.java",
+        "CommonResMsgDTO.java"
+      ],
+      [
+        "KnowledgeDocApiClient.java",
+        "KnowledgeDocRpcService.java"
+      ],
+      [
+        "KnowledgeDocRpcProcessor.java",
+        "CommonResMsgDTO.java"
+      ],
+      [
+        "KnowledgeDocRpcProcessor.java",
+        "KnowledgeDocRpcService.java"
+      ],
+      [
+        "KnowledgeDocRpcProcessor.java",
+        "KnowledgeDocumentService.java"
+      ],
+      [
+        "KnowledgeDocRpcProcessor.java",
+        "LogReqRes.java"
+      ],
+      [
+        "KnowledgeDocRpcService.java",
+        "CommonResMsgDTO.java"
+      ],
+      [
+        "KnowledgeDocumentController.java",
+        "BatchImportRequest.java"
+      ],
+      [
+        "KnowledgeDocumentController.java",
+        "BatchImportResult.java"
+      ],
+      [
+        "KnowledgeDocumentController.java",
+        "KnowledgeDocumentDTO.java"
+      ],
+      [
+        "KnowledgeDocumentController.java",
+        "KnowledgeDocumentQueryParam.java"
+      ],
+      [
+        "KnowledgeDocumentController.java",
+        "KnowledgeDocumentService.java"
+      ],
+      [
+        "KnowledgeDocumentController.java",
+        "LogActionType.java"
+      ],
+      [
+        "KnowledgeDocumentController.java",
+        "LogRecord.java"
+      ],
+      [
+        "KnowledgeDocumentController.java",
+        "PageInfo.java"
+      ],
+      [
+        "KnowledgeDocumentConverter.java",
+        "KnowledgeDocument.java"
+      ],
+      [
+        "KnowledgeDocumentConverter.java",
+        "KnowledgeDocumentDTO.java"
+      ],
+      [
+        "KnowledgeDocumentConverter.java",
+        "PageInfo.java"
+      ],
+      [
+        "KnowledgeDocumentDTO.java",
+        "DocSourceTypeEnum.java"
+      ],
+      [
+        "KnowledgeDocumentDTO.java",
+        "KnowledgeBusinessTypeEnum.java"
+      ],
+      [
+        "KnowledgeDocumentDTO.java",
+        "KnowledgeContentTypeEnum.java"
+      ],
+      [
+        "KnowledgeDocumentDTO.java",
+        "KnowledgeScopeTypeEnum.java"
+      ],
+      [
+        "KnowledgeDocumentManager.java",
+        "ChatRagProperties.java"
+      ],
+      [
+        "KnowledgeDocumentManager.java",
+        "DocumentConvertUtils.java"
+      ],
+      [
+        "KnowledgeDocumentManager.java",
+        "DocumentQueryContext.java"
+      ],
+      [
+        "KnowledgeDocumentManager.java",
+        "KnowledgeDocumentMatchItem.java"
+      ],
+      [
+        "KnowledgeDocumentManager.java",
+        "Query.java"
+      ],
+      [
+        "KnowledgeDocumentManager.java",
+        "VectorDocumentRetriever.java"
+      ],
+      [
+        "KnowledgeDocumentMapper.java",
+        "CommonMapper.java"
+      ],
+      [
+        "KnowledgeDocumentMapper.java",
+        "KnowledgeDocument.java"
+      ],
+      [
+        "KnowledgeDocumentQueryParam.java",
+        "BaseQueryParam.java"
+      ],
+      [
+        "KnowledgeDocumentQueryParam.java",
+        "Query.java"
+      ],
+      [
+        "KnowledgeDocumentService.java",
+        "BatchImportResult.java"
+      ],
+      [
+        "KnowledgeDocumentService.java",
+        "KnowledgeDocumentDTO.java"
+      ],
+      [
+        "KnowledgeDocumentService.java",
+        "KnowledgeDocumentQueryParam.java"
+      ],
+      [
+        "KnowledgeDocumentService.java",
+        "PageInfo.java"
+      ],
+      [
+        "KnowledgeDocumentServiceImpl.java",
+        "BatchImportResult.java"
+      ],
+      [
+        "KnowledgeDocumentServiceImpl.java",
+        "DocumentImportHelper.java"
+      ],
+      [
+        "KnowledgeDocumentServiceImpl.java",
+        "KnowledgeDocument.java"
+      ],
+      [
+        "KnowledgeDocumentServiceImpl.java",
+        "KnowledgeDocumentConverter.java"
+      ],
+      [
+        "KnowledgeDocumentServiceImpl.java",
+        "KnowledgeDocumentDTO.java"
+      ],
+      [
+        "KnowledgeDocumentServiceImpl.java",
+        "KnowledgeDocumentMapper.java"
+      ],
+      [
+        "KnowledgeDocumentServiceImpl.java",
+        "KnowledgeDocumentQueryParam.java"
+      ],
+      [
+        "KnowledgeDocumentServiceImpl.java",
+        "KnowledgeDocumentService.java"
+      ],
+      [
+        "KnowledgeDocumentServiceImpl.java",
+        "PageInfo.java"
+      ],
+      [
+        "KnowledgeDocumentServiceImpl.java",
+        "PageUtil.java"
+      ],
+      [
+        "KnowledgeDocumentServiceImpl.java",
+        "QueryHelpMybatisPlus.java"
+      ],
+      [
+        "Limit.java",
+        "LimitType.java"
+      ],
+      [
+        "LimitAspect.java",
+        "CoException.java"
+      ],
+      [
+        "LimitAspect.java",
+        "Limit.java"
+      ],
+      [
+        "LimitAspect.java",
+        "RequestHolder.java"
+      ],
+      [
+        "LocalDocumentRetriever.java",
+        "ChatRagProperties.java"
+      ],
+      [
+        "LocalDocumentRetriever.java",
+        "DocumentQueryContext.java"
+      ],
+      [
+        "LocalDocumentRetriever.java",
+        "Query.java"
+      ],
+      [
+        "LogAspect.java",
+        "CoException.java"
+      ],
+      [
+        "LogAspect.java",
+        "Log.java"
+      ],
+      [
+        "LogAspect.java",
+        "LogService.java"
+      ],
+      [
+        "LogAspect.java",
+        "RequestHolder.java"
+      ],
+      [
+        "LogAspect.java",
+        "SecurityUtils.java"
+      ],
+      [
+        "LogAspect.java",
+        "ThrowableUtil.java"
+      ],
+      [
+        "LogController.java",
+        "Log.java"
+      ],
+      [
+        "LogController.java",
+        "LogActionType.java"
+      ],
+      [
+        "LogController.java",
+        "LogQueryParam.java"
+      ],
+      [
+        "LogController.java",
+        "LogRecord.java"
+      ],
+      [
+        "LogController.java",
+        "LogService.java"
+      ],
+      [
+        "LogController.java",
+        "PageInfo.java"
+      ],
+      [
+        "LogMapper.java",
+        "CommonMapper.java"
+      ],
+      [
+        "LogMapper.java",
+        "Log.java"
+      ],
+      [
+        "LogQueryParam.java",
+        "Query.java"
+      ],
+      [
+        "LogRecord.java",
+        "LogActionType.java"
+      ],
+      [
+        "LogReqResAspect.java",
+        "ApolloConfigService.java"
+      ],
+      [
+        "LogReqResAspect.java",
+        "LogReqRes.java"
+      ],
+      [
+        "LogService.java",
+        "BaseService.java"
+      ],
+      [
+        "LogService.java",
+        "Log.java"
+      ],
+      [
+        "LogService.java",
+        "LogQueryParam.java"
+      ],
+      [
+        "LogService.java",
+        "LogSmallDTO.java"
+      ],
+      [
+        "LogService.java",
+        "PageInfo.java"
+      ],
+      [
+        "LogServiceImpl.java",
+        "BaseServiceImpl.java"
+      ],
+      [
+        "LogServiceImpl.java",
+        "ConvertUtil.java"
+      ],
+      [
+        "LogServiceImpl.java",
+        "Log.java"
+      ],
+      [
+        "LogServiceImpl.java",
+        "LogErrorDTO.java"
+      ],
+      [
+        "LogServiceImpl.java",
+        "LogMapper.java"
+      ],
+      [
+        "LogServiceImpl.java",
+        "LogQueryParam.java"
+      ],
+      [
+        "LogServiceImpl.java",
+        "LogRecord.java"
+      ],
+      [
+        "LogServiceImpl.java",
+        "LogService.java"
+      ],
+      [
+        "LogServiceImpl.java",
+        "LogSmallDTO.java"
+      ],
+      [
+        "LogServiceImpl.java",
+        "PageInfo.java"
+      ],
+      [
+        "LogServiceImpl.java",
+        "PageUtil.java"
+      ],
+      [
+        "LogServiceImpl.java",
+        "QueryHelpMybatisPlus.java"
+      ],
+      [
+        "LogServiceImpl.java",
+        "ValidationUtil.java"
+      ],
+      [
+        "McpConfig.java",
+        "ElectricityPriceSearchTool.java"
+      ],
+      [
+        "McpConfig.java",
+        "ImageSearchTool.java"
+      ],
+      [
+        "MqMsgTypeEnum.java",
+        "BaseMqMsgRequest.java"
+      ],
+      [
+        "MqMsgTypeEnum.java",
+        "ExMqMsgRequest.java"
+      ],
+      [
+        "NameSwitchStrategyHandler.java",
+        "KnowledgeDocumentService.java"
+      ],
+      [
+        "NameSwitchStrategyHandler.java",
+        "ObjectConvertConstant.java"
+      ],
+      [
+        "ObjectToTipsManager.java",
+        "NameStrategyHandler.java"
+      ],
+      [
+        "ObjectToTipsManager.java",
+        "Tips.java"
+      ],
+      [
+        "PDFGenerationTool.java",
+        "FileConstant.java"
+      ],
+      [
+        "PageUtil.java",
+        "PageInfo.java"
+      ],
+      [
+        "PgSqlDatabaseConfig.java",
+        "CustomizedSqlInjector.java"
+      ],
+      [
+        "PrimaryDatabaseConfig.java",
+        "CustomizedSqlInjector.java"
+      ],
+      [
+        "PromptLoggerAdvisor.java",
+        "EnergyAiConstant.java"
+      ],
+      [
+        "PromptLoggerAdvisor.java",
+        "RequestRagContext.java"
+      ],
+      [
+        "QueryHelpMybatisPlus.java",
+        "Query.java"
+      ],
+      [
+        "QueryRewriteRetriever.java",
+        "ChatRagProperties.java"
+      ],
+      [
+        "QueryRewriteRetriever.java",
+        "DocumentQueryContext.java"
+      ],
+      [
+        "QueryRewriteRetriever.java",
+        "Query.java"
+      ],
+      [
+        "QueryRewriter.java",
+        "Query.java"
+      ],
+      [
+        "ReReadingAdvisor.java",
+        "EnergyAiConstant.java"
+      ],
+      [
+        "RecordFeignProcessor.java",
+        "CommonResMsgDTO.java"
+      ],
+      [
+        "RecordFeignProcessor.java",
+        "ContextUserRecordDTO.java"
+      ],
+      [
+        "RecordFeignProcessor.java",
+        "ContextUserRecordService.java"
+      ],
+      [
+        "RecordFeignProcessor.java",
+        "LogReqRes.java"
+      ],
+      [
+        "RecordFeignProcessor.java",
+        "RecordResponse.java"
+      ],
+      [
+        "ResourceDownloadTool.java",
+        "FileConstant.java"
+      ],
+      [
+        "SecurityUtils.java",
+        "BadRequestException.java"
+      ],
+      [
+        "SecurityUtils.java",
+        "DataScopeEnum.java"
+      ],
+      [
+        "SimpleAuthInterceptor.java",
+        "RpcConfigConstant.java"
+      ],
+      [
+        "SkillTool.java",
+        "InnerTool.java"
+      ],
+      [
+        "SubAgentManager.java",
+        "InnerTool.java"
+      ],
+      [
+        "Test.java",
+        "AIAnswerRet.java"
+      ],
+      [
+        "Test.java",
+        "AIStreamResponse.java"
+      ],
+      [
+        "Test.java",
+        "CommonResMsgDTO.java"
+      ],
+      [
+        "Test.java",
+        "KnowledgeAIQueryParam.java"
+      ],
+      [
+        "Test.java",
+        "KnowledgeDocumentMatchItem.java"
+      ],
+      [
+        "Test.java",
+        "MessageType.java"
+      ],
+      [
+        "TestDocumentController.java",
+        "ApiResStatus.java"
+      ],
+      [
+        "TestDocumentController.java",
+        "CommonResMsgDTO.java"
+      ],
+      [
+        "TestDocumentController.java",
+        "KnowledgeDocumentDTO.java"
+      ],
+      [
+        "TestDocumentController.java",
+        "KnowledgeDocumentQueryParam.java"
+      ],
+      [
+        "TestDocumentController.java",
+        "KnowledgeDocumentService.java"
+      ],
+      [
+        "TestDocumentController.java",
+        "PageInfo.java"
+      ],
+      [
+        "TestEnergyAiController.java",
+        "CommonResMsgDTO.java"
+      ],
+      [
+        "TestEnergyAiController.java",
+        "EnergyAiFeignClient.java"
+      ],
+      [
+        "TestEnergyAiFeignController.java",
+        "CommonResMsgDTO.java"
+      ],
+      [
+        "TestEnergyAiFeignController.java",
+        "EnergyAiFeignService.java"
+      ],
+      [
+        "ThreadScopeCleanerDecorator.java",
+        "GlobalConstant.java"
+      ],
+      [
+        "TokenUsageController.java",
+        "LogRecord.java"
+      ],
+      [
+        "TokenUsageController.java",
+        "PageInfo.java"
+      ],
+      [
+        "TokenUsageController.java",
+        "TokenUsageDTO.java"
+      ],
+      [
+        "TokenUsageController.java",
+        "TokenUsageQueryParam.java"
+      ],
+      [
+        "TokenUsageController.java",
+        "TokenUsageService.java"
+      ],
+      [
+        "TokenUsageConverter.java",
+        "PageInfo.java"
+      ],
+      [
+        "TokenUsageConverter.java",
+        "TokenUsage.java"
+      ],
+      [
+        "TokenUsageConverter.java",
+        "TokenUsageDTO.java"
+      ],
+      [
+        "TokenUsageMapper.java",
+        "TokenUsage.java"
+      ],
+      [
+        "TokenUsageService.java",
+        "PageInfo.java"
+      ],
+      [
+        "TokenUsageService.java",
+        "TokenUsageDTO.java"
+      ],
+      [
+        "TokenUsageService.java",
+        "TokenUsageQueryParam.java"
+      ],
+      [
+        "TokenUsageServiceImpl.java",
+        "PageInfo.java"
+      ],
+      [
+        "TokenUsageServiceImpl.java",
+        "PageUtil.java"
+      ],
+      [
+        "TokenUsageServiceImpl.java",
+        "QueryHelpMybatisPlus.java"
+      ],
+      [
+        "TokenUsageServiceImpl.java",
+        "TokenUsage.java"
+      ],
+      [
+        "TokenUsageServiceImpl.java",
+        "TokenUsageConverter.java"
+      ],
+      [
+        "TokenUsageServiceImpl.java",
+        "TokenUsageDTO.java"
+      ],
+      [
+        "TokenUsageServiceImpl.java",
+        "TokenUsageMapper.java"
+      ],
+      [
+        "TokenUsageServiceImpl.java",
+        "TokenUsageQueryParam.java"
+      ],
+      [
+        "TokenUsageServiceImpl.java",
+        "TokenUsageService.java"
+      ],
+      [
+        "ToolCallAgent.java",
+        "AgentState.java"
+      ],
+      [
+        "ToolRegistration.java",
+        "AiWebSearchApiProperties.java"
+      ],
+      [
+        "ToolRegistration.java",
+        "ElectricityPriceSearchTool.java"
+      ],
+      [
+        "UserChatPromptUtils.java",
+        "KnowledgeAIQueryParam.java"
+      ],
+      [
+        "UserChatPromptUtils.java",
+        "MediaAttachment.java"
+      ],
+      [
+        "ValidationUtil.java",
+        "BadRequestException.java"
+      ],
+      [
+        "ValidationUtil.java",
+        "CoException.java"
+      ],
+      [
+        "VectorDocument.java",
+        "PgVectorTypeHandler.java"
+      ],
+      [
+        "VectorDocumentMapper.java",
+        "CommonMapper.java"
+      ],
+      [
+        "VectorDocumentMapper.java",
+        "DocumentQueryContext.java"
+      ],
+      [
+        "VectorDocumentMapper.java",
+        "VectorDocument.java"
+      ],
+      [
+        "VectorDocumentQueryParam.java",
+        "BaseQueryParam.java"
+      ],
+      [
+        "VectorDocumentQueryParam.java",
+        "Query.java"
+      ],
+      [
+        "VectorDocumentRetriever.java",
+        "ChatRagProperties.java"
+      ],
+      [
+        "VectorDocumentRetriever.java",
+        "DocumentQueryContext.java"
+      ],
+      [
+        "VectorDocumentRetriever.java",
+        "Query.java"
+      ],
+      [
+        "VectorStoreManager.java",
+        "AiDocumentFileLoader.java"
+      ],
+      [
+        "VectorStoreManager.java",
+        "ChatRagProperties.java"
+      ],
+      [
+        "VectorStoreManager.java",
+        "DocumentKeywordEnricher.java"
+      ],
+      [
+        "VectorStoreManager.java",
+        "DocumentTokenTextSplitter.java"
+      ],
+      [
+        "VectorStoreManager.java",
+        "GlobalConstant.java"
+      ],
+      [
+        "VectorStoreManager.java",
+        "KnowledgeDocumentDTO.java"
+      ],
+      [
+        "VectorStoreManager.java",
+        "KnowledgeDocumentService.java"
+      ],
+      [
+        "VectorStoreManager.java",
+        "VectorStoreService.java"
+      ],
+      [
+        "VectorStoreService.java",
+        "DocumentQueryContext.java"
+      ],
+      [
+        "VectorStoreService.java",
+        "VectorDocument.java"
+      ],
+      [
+        "VectorStoreService.java",
+        "VectorDocumentQueryParam.java"
+      ],
+      [
+        "VectorStoreServiceImpl.java",
+        "DocumentQueryContext.java"
+      ],
+      [
+        "VectorStoreServiceImpl.java",
+        "QueryHelpMybatisPlus.java"
+      ],
+      [
+        "VectorStoreServiceImpl.java",
+        "VectorDocument.java"
+      ],
+      [
+        "VectorStoreServiceImpl.java",
+        "VectorDocumentMapper.java"
+      ],
+      [
+        "VectorStoreServiceImpl.java",
+        "VectorDocumentQueryParam.java"
+      ],
+      [
+        "VectorStoreServiceImpl.java",
+        "VectorStoreService.java"
+      ],
+      [
+        "WebConfig.java",
+        "SimpleAuthInterceptor.java"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {
+      "ImageSearchTool.java": [
+        {
+          "trigger": "hardcoded_secret_pattern",
+          "matched_text": "API_KEY = \"pexels API Key\""
+        }
+      ]
+    },
+    "deep_read_count": 1,
+    "total_files": 267,
+    "cost_saved_ratio": 0.996
+  }
+}

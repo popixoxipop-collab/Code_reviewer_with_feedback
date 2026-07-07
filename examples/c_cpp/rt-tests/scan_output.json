@@ -1,0 +1,161 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmpl9h58a60/rt-tests",
+  "total_source_files": 26,
+  "tier_a_structural": {
+    "fan_in": {
+      "svsematest.c": 0,
+      "pmqtest.c": 0,
+      "signaltest.c": 0,
+      "version.h": 0,
+      "backfire.c": 0,
+      "sendme.c": 0,
+      "hackbench.c": 0,
+      "cyclictest.c": 0,
+      "rt_numa.h": 1,
+      "error.h": 7,
+      "rt-get_cpu.h": 6,
+      "rt-tests.h": 0,
+      "rt-utils.h": 9,
+      "pip_stress.h": 1,
+      "sigwaittest.c": 0,
+      "rt-migrate-test.c": 0,
+      "pi_stress.c": 0,
+      "pip_stress.c": 0,
+      "classic_pi.c": 0,
+      "tst-mutexpi10.c": 0,
+      "sigtest.c": 0,
+      "rt-utils.c": 0,
+      "error.c": 0,
+      "rt-get_cpu.c": 0,
+      "ptsematest.c": 0,
+      "hwlatdetect.py": 0
+    },
+    "zero_fan_in_files": [
+      "svsematest.c",
+      "pmqtest.c",
+      "signaltest.c",
+      "version.h",
+      "backfire.c",
+      "sendme.c",
+      "hackbench.c",
+      "cyclictest.c",
+      "rt-tests.h",
+      "sigwaittest.c",
+      "rt-migrate-test.c",
+      "pi_stress.c",
+      "pip_stress.c",
+      "classic_pi.c",
+      "tst-mutexpi10.c",
+      "sigtest.c",
+      "rt-utils.c",
+      "error.c",
+      "rt-get_cpu.c",
+      "ptsematest.c",
+      "hwlatdetect.py"
+    ],
+    "edges": [
+      [
+        "cyclictest.c",
+        "rt-utils.h"
+      ],
+      [
+        "cyclictest.c",
+        "rt_numa.h"
+      ],
+      [
+        "error.c",
+        "error.h"
+      ],
+      [
+        "pip_stress.c",
+        "pip_stress.h"
+      ],
+      [
+        "pip_stress.h",
+        "error.h"
+      ],
+      [
+        "pmqtest.c",
+        "error.h"
+      ],
+      [
+        "pmqtest.c",
+        "rt-get_cpu.h"
+      ],
+      [
+        "pmqtest.c",
+        "rt-utils.h"
+      ],
+      [
+        "ptsematest.c",
+        "error.h"
+      ],
+      [
+        "ptsematest.c",
+        "rt-get_cpu.h"
+      ],
+      [
+        "ptsematest.c",
+        "rt-utils.h"
+      ],
+      [
+        "rt-get_cpu.c",
+        "rt-get_cpu.h"
+      ],
+      [
+        "rt-utils.c",
+        "error.h"
+      ],
+      [
+        "rt-utils.c",
+        "rt-utils.h"
+      ],
+      [
+        "rt_numa.h",
+        "error.h"
+      ],
+      [
+        "rt_numa.h",
+        "rt-utils.h"
+      ],
+      [
+        "sendme.c",
+        "rt-get_cpu.h"
+      ],
+      [
+        "sendme.c",
+        "rt-utils.h"
+      ],
+      [
+        "signaltest.c",
+        "rt-utils.h"
+      ],
+      [
+        "sigwaittest.c",
+        "rt-get_cpu.h"
+      ],
+      [
+        "sigwaittest.c",
+        "rt-utils.h"
+      ],
+      [
+        "svsematest.c",
+        "error.h"
+      ],
+      [
+        "svsematest.c",
+        "rt-get_cpu.h"
+      ],
+      [
+        "svsematest.c",
+        "rt-utils.h"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {},
+    "deep_read_count": 0,
+    "total_files": 26,
+    "cost_saved_ratio": 1.0
+  }
+}

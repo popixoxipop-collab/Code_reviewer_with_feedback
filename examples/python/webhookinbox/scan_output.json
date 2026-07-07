@@ -1,0 +1,85 @@
+{
+  "repo": "/var/folders/kf/cwcb2fw96c3f74m20rgc2p6w0000gn/T/tmpm9c46v6_/webhookinbox",
+  "total_source_files": 29,
+  "tier_a_structural": {
+    "fan_in": {
+      "manage.py": 0,
+      "models.py": 0,
+      "__init__.py": 0,
+      "apps.py": 0,
+      "admin.py": 0,
+      "tests.py": 0,
+      "urls.py": 0,
+      "views.py": 0,
+      "conf.py": 5,
+      "hosts.py": 0,
+      "settings.py": 0,
+      "wsgi.py": 0,
+      "util.py": 1,
+      "redis_ops.py": 0,
+      "middleware.py": 0,
+      "cleanup.py": 0
+    },
+    "zero_fan_in_files": [
+      "manage.py",
+      "models.py",
+      "__init__.py",
+      "apps.py",
+      "admin.py",
+      "tests.py",
+      "urls.py",
+      "views.py",
+      "__init__.py",
+      "__init__.py",
+      "hosts.py",
+      "settings.py",
+      "urls.py",
+      "wsgi.py",
+      "models.py",
+      "__init__.py",
+      "redis_ops.py",
+      "apps.py",
+      "admin.py",
+      "tests.py",
+      "urls.py",
+      "middleware.py",
+      "views.py",
+      "__init__.py",
+      "__init__.py",
+      "__init__.py",
+      "cleanup.py"
+    ],
+    "edges": [
+      [
+        "cleanup.py",
+        "util.py"
+      ],
+      [
+        "hosts.py",
+        "conf.py"
+      ],
+      [
+        "redis_ops.py",
+        "conf.py"
+      ],
+      [
+        "util.py",
+        "conf.py"
+      ],
+      [
+        "views.py",
+        "conf.py"
+      ],
+      [
+        "wsgi.py",
+        "conf.py"
+      ]
+    ]
+  },
+  "tier_b_risk_triggered": {
+    "flagged_files": {},
+    "deep_read_count": 0,
+    "total_files": 29,
+    "cost_saved_ratio": 1.0
+  }
+}

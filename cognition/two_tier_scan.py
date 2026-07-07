@@ -23,6 +23,21 @@ import json
 #   COST: 언어마다 import 구문이 달라 언어별 정규식이 늘어남(Swift는 로컬 파일간 import가 없어
 #        구조 스캔 자체가 의미 없음 — 모듈 단위 가시성이라 파일 단위 그래프로 표현 불가, 문서화된 한계)
 #   EXIT: 새 언어는 EXT_GROUPS에 확장자 추가 + extract_targets_for_file에 분기 추가
+#
+# D76: SKIP_DIRS에 static/vendor류 추가 (D74/D75 언어별 corpus 확장 중 발견한 실측 버그)
+#   WHY: D75가 dataset/corpus_report.py에서 사후 필터링으로 우회했던 문제(Django repo의
+#        static/js/에 번들된 서드파티 minified JS가 그 repo의 "언어"로 잘못 집계됨, 실측
+#        21/120건=17.5%)를 스캐너 단에서 근본 차단한다. 서드파티 자산은 개발자가 설계 판단을
+#        내린 코드가 아니므로 애초에 finding 후보에서 빠지는 게 맞다 — 사후 필터는 corpus_report.py
+#        하나에만 적용됐고 examples/*/judgment_output.json 원본엔 여전히 섞여 있었다(D75 COST).
+#   COST: "static"이라는 이름을 실제 애플리케이션 소스 디렉터리로 쓰는 프로젝트(드묾)는 그 파일들이
+#        전부 스캔에서 빠진다 — 서드파티 자산 폴더 컨벤션이라는 가정이 깨지면 재검토 필요.
+#        "vendor"/"vendored"도 같은 이유로 스킵하지만, Go 생태계의 `vendor/`(의존성 복사본, 통상
+#        스킵이 맞음)와 이름이 겹칠 뿐 실제로 이 저장소가 스캔한 5개 repo에선 vendor 디렉터리
+#        사례를 실측하지 못했음(가설적 보강, D75가 실측한 사례는 static/ 뿐).
+#   EXIT: 이 휴리스틱이 실제 소스를 잘못 스킵하는 사례가 나오면 SKIP_DIRS에서 해당 이름 제거.
+#        더 정교하게 하려면 디렉터리명 대신 파일명 패턴(`*.min.js`)으로 판정하는 방식도 검토 가능
+#        (단, 비-minified 서드파티 자산은 여전히 못 잡음 — 근본 해법은 아님).
 
 SRC_EXTS = (
     ".ts", ".tsx", ".js", ".jsx",
@@ -31,7 +46,10 @@ SRC_EXTS = (
     ".c", ".h", ".cpp", ".cc", ".cxx", ".hpp",
     ".swift",
 )
-SKIP_DIRS = {"node_modules", ".git", "dist", "build", "__pycache__", ".venv", "venv"}
+SKIP_DIRS = {
+    "node_modules", ".git", "dist", "build", "__pycache__", ".venv", "venv",
+    "static", "vendor", "vendored",
+}
 
 JS_EXTS = (".ts", ".tsx", ".js", ".jsx")
 C_LIKE_EXTS = (".c", ".h", ".cpp", ".cc", ".cxx", ".hpp")
