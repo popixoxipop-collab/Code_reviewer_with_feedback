@@ -37,11 +37,15 @@ Repository
 | [`feedback/generate_questions.py`](./feedback/generate_questions.py) | 피드백 | 판단 블록 출력을 받아 7단계 질문을 실제 LLM 호출로 자동 생성(스키마 강제, 필드 누락 시 예외). 기본 제공자는 NVIDIA Build(`qwen/qwen3.5-397b-a17b`), `FEEDBACK_PROVIDER=anthropic`으로 Claude로 전환 가능(D56) |
 | [`feedback/nvidia_client.py`](./feedback/nvidia_client.py) + [`nvidia_key_pool.py`](./feedback/nvidia_key_pool.py) | 피드백 | [`popixoxipop-collab/nvidia-build`](https://github.com/popixoxipop-collab/nvidia-build)에서 그대로 가져온 API 키-로테이션 클라이언트 — 무료 티어 40 RPM/모델/키 한도를 팀원 키 풀링으로 확장 |
 | [`feedback/smoke_test_nvidia_parsing.py`](./feedback/smoke_test_nvidia_parsing.py) | 피드백 | NVIDIA의 OpenAI 호환 tool_calls 응답 파싱 로직을 네트워크 없이(고정 fixture로) 검증 — 실제 라이브 호출 검증은 아님(D56) |
+| [`feedback/turn_engine.py`](./feedback/turn_engine.py) | 피드백 | 스펙 04시트 턴 상태기계(코드종속 L1→표면/부분/방어 분류→L2 트레이드오프→L3 극단시나리오→reflection, 최대 4턴) 실제 구현. `run_decision_point()`가 오케스트레이션, 질문은 매 레벨 `ask_question` 툴로 새로 생성(D87) |
+| [`feedback/smoke_test_turn_engine.py`](./feedback/smoke_test_turn_engine.py) | 피드백 | `classify_answer()`의 level별(l1/l2/l3 vs reflection) 분기 로직을 fixture로 격리 검증(D87) — 실제 confirmed 패턴 DB 상태와 무관하게 코드 정확성만 확인 |
 | [`feedback/reflection_signal.py`](./feedback/reflection_signal.py) + [`reflection_hook.py`](./feedback/reflection_hook.py) | 피드백 | Depth Ladder 7단계(Reflection) 판정을 idiom_hook과 동일한 재귀 확인 패턴으로 가드 — 자기오류인식/이유설명/새판단/개선안 4개 서브신호가 전부 confirmed 패턴으로 매치돼야 True |
 | [`examples/study_match/`](./examples/study_match/) | 전체 | 실제 공개 repo(Study-Match-)에 3블록 전부를 돌린 실행 결과, 관용 패턴 필터 데모 포함 |
 | [`pipeline/run_pipeline.py`](./pipeline/run_pipeline.py) | 전체 | 인지→판단 실행 + `injections.json`에 명시된 재귀 hook(idiom/tier_b)을 순차 주입하며 단계마다 before/after 비교표 자동 생성 |
 | [`pipeline/ledger.py`](./pipeline/ledger.py) + `ledger.jsonl` | 전체 | 매 주입을 append-only로 영구 기록 — "지금까지 시도한 방법론들 비교해서 보여줘"에 답하는 데이터 소스 |
 | [`pipeline/compare_methodologies.py`](./pipeline/compare_methodologies.py) | 전체 | ledger.jsonl을 즉시 집계해 방법론간 비교표를 렌더링(재실행 없이 언제든 조회 가능) |
+| [`dataset/mine_repo.py`](./dataset/mine_repo.py) | 전체 | 외부 GitHub repo를 clone→인지→판단 파이프라인에 통과시켜 `examples/<lang>/<repo>/`에 fixture로 저장(D74) |
+| [`dataset/corpus_report.py`](./dataset/corpus_report.py) | 전체 | `examples/**/judgment_output*.json` 전체를 언어별로 집계 — finding 개수/타입/risk-trigger 커버리지 리포트(D74) |
 | [`examples/lms/`](./examples/lms/) | 전체 | 두 번째 실제 공개 repo(jxxnixx/LMS, JS/TS 51파일)에 파이프라인 전체를 돌린 실행 결과 |
 | [`examples/shadowbroker/`](./examples/shadowbroker/) | 전체 | 세 번째 실제 공개 repo(Shadowbroker, Python+TS 726파일 monorepo) — tier_b 방법론 첫 실증 |
 | [`pipeline/evidence_bridge.py`](./pipeline/evidence_bridge.py) | 전체 | D안(B안+C안 결합) — C안 finding을 B안 형식 Repository Evidence + 질문으로 자동 변환 |
@@ -168,6 +172,44 @@ python3 pipeline/run_pipeline.py LMS/src pipeline/examples/lms_injections.json
 여러 개인 코드베이스에서는 부분적으로만 맞다. 관용패턴 hook과 별개로 "고립 판정용" 억제 메커니즘이
 아직 없음(다음 단계 9번).
 
+## 네 번째 실증: 언어별 corpus 확장 + 품질 검증 (D74/D75, 외부 GitHub repo 41개)
+
+`dataset/mine_repo.py`로 Python/Java/C·C++/JS·TS 외부 repo(`gh search repos`로 선정, 두 차례
+스케일업으로 언어당 9~11개, 총 41개) 를 인지→판단 파이프라인에 통과시키고,
+`dataset/corpus_report.py`로 기존 JS/TS fixture(`study_match`, `lms`)와 함께 집계했다.
+품질 검증(D75) 결과 원본 120건 중 21건(17.5%)이 repo 태그와 다른 실제 언어의 파일
+(예: Django repo의 번들 JS 라이브러리)로 드러나 제외했다 — 아래는 **필터링 후** 수치:
+
+```
+language     repos  findings  types
+----------------------------------------------------------------------
+c_cpp           11        26  architecture-diffusion=10, cognition-isolation=16
+java             9        18  architecture-diffusion=9, cognition-isolation=8, tier-b-risk=1
+javascript      10        40  architecture-diffusion=8, cognition-isolation=18, repeated-pattern=1, tier-b-risk=13
+python          11        15  architecture-diffusion=8, cognition-isolation=6, tier-b-risk=1
+----------------------------------------------------------------------
+total: 4 languages, 99 findings (필터 전 120건, 기존 12건 대비 8.25배)
+
+risk-trigger coverage (tier-b-risk present?): c_cpp만 NO -- 필터 전엔 1건 있었으나
+그 1건(navtree.js)도 cross-language noise였음이 드러나 제외됨(java/javascript/python은 yes)
+```
+
+**언어별 finding-밀도 차이**: JS/TS가 repo당 평균 4.0건(40/10)으로 가장 높고, C/C++가
+2.4건(26/11)으로 가장 낮다 — Tier B 트리거(`react-context`/`react-query`/`onSnapshot`)가
+JS/Firebase 전용이라 예상된 편향이 여전히 남아있음. C/C++는 같은 언어에서도 repo에 따라
+편차가 컸다(`turnstile` 12파일/0건 vs `EasyQtSql` 156파일/12건).
+
+**품질 검증에서 실제로 확인한 2가지 결함(D75)**:
+1. **cross-language noise** — repo 하나를 통째로 한 언어로 태깅하면, 그 repo 안의 다른
+   언어 파일(번들 JS, 별도 프론트엔드 등)이 잘못 집계된다. `resolve_lang()`로 재확인해
+   위 표에서는 이미 제외했다.
+2. **Java 같은-패키지 edge 누락(미수정)** — `LibraryManageSystem`을 재-clone해 직접 대조:
+   허브 `Model.java`가 같은 패키지의 `ConnectDatabase.java`를 `new ConnectDatabase()`로
+   직접 참조하는데도, 자바가 같은 패키지 내 참조엔 import가 필요 없어서 `JAVA_IMPORT_RE`가
+   이 edge를 못 잡아 `cognition-isolation:ConnectDatabase.java`가 오탐으로 남아있다.
+
+개별 repo·finding 목록과 각 결함의 WHY/COST/EXIT는 D74/D75 참고.
+
 ## 방법론간 비교표 — 축적된 원장을 즉시 조회 (D23~D26)
 
 `run_pipeline.py`는 실행할 때마다 결과를 `pipeline/ledger.jsonl`에 append하고, 언제든
@@ -215,6 +257,8 @@ python3 pipeline/compare_methodologies.py
 - **javascript 외 언어의 관용 패턴 저장소는 전부 빈 상태(미검증)**: python/java/c/cpp/swift는 구조(디렉토리·threshold)만 있고 실제 피드백으로 채워진 패턴이 하나도 없음
 - **`feedback/generate_questions.py`는 제어 흐름만 검증됨, 실제 LLM 출력 품질은 미검증**: 스키마 강제(7단계 필드 누락 시 예외)·API 키 없을 때 실패 방식·마크다운 렌더링은 스텁 클라이언트로 확인했지만, 실제 Anthropic API를 호출해 생성된 질문의 품질(판별력, Depth Ladder 취지 부합 여부)은 이 세션에서 검증하지 않았음(API 키/과금 필요)
 - ~~NVIDIA 제공자(기본값)는 tool_choice 준수 여부를 라이브로 검증 못 함(D56)~~ — **2026-07-06 해결(D58)**: 87개 카탈로그 모델 × 실제 finding 12개 전수조사로 라이브 검증 완료. 결과/방법론은 [`SURVEY_RESULTS.md`](./SURVEY_RESULTS.md) 참고. 기본 모델을 `qwen/qwen3-next-80b-a3b-instruct`로 교체(동일 100% 준수, 4배 빠름)
+- **Java의 같은 패키지(package-private) 참조가 fan-in 그래프에서 원천적으로 안 보임(D75 실측, 미수정)**: `JAVA_IMPORT_RE`는 `import` 문만 파싱하는데, 자바는 같은 패키지 내 클래스끼리는 import 없이 바로 참조 가능하다. 실측(`LibraryManageSystem`, D75): `database` 패키지의 `Model.java`가 `new ConnectDatabase()`로 같은 패키지의 `ConnectDatabase.java`를 직접 참조하는데도 edge가 안 잡혀 `cognition-isolation:ConnectDatabase.java`("허브로 가는 edge 없음")가 오탐으로 발생함. 같은 한계가 D18(TS `@/` alias)·Swift 구조스캔 제외("모듈 단위 가시성이라 파일간 import 없음")와 근본적으로 같은 클래스 — "언어의 암묵적 가시성 규칙이 명시적 import 문과 다른 경우" 전부가 잠재적 사각지대.
+- **repo 하나에 여러 언어가 섞이면 파일 단위가 아니라 repo 단위로 언어를 태깅한 통계가 왜곡됨(D75 실측, `dataset/` 스크립트에서만 완화됨)**: `two_tier_scan.py`의 `SRC_EXTS`는 언어 무관하게 확장자로만 파일을 훑고 `SKIP_DIRS`에 `static`/`vendor` 류가 없다 — Django 프로젝트의 `static/js/`에 번들된 서드파티 minified JS(`Chart.min.js` 등)나, Java 백엔드+React 프론트엔드가 한 repo에 있는 경우 둘 다 finding으로 잡히지만 언어는 repo의 "주 언어"로 뭉뚱그려진다. `dataset/corpus_report.py`가 `judgment/idiom_filter.py`의 `resolve_lang()`로 finding.file 확장자를 재확인해 이런 "cross-language noise"를 언어별 집계에서 제외하도록 고쳤지만(실측 21/120건, 17.5%), 스캐너 자체(`two_tier_scan.py`)나 판단 블록(`score_findings.py`)의 finding 스키마엔 여전히 실제 파일 언어 필드가 없다.
 
 ## 설계 결정 로그
 
@@ -441,6 +485,129 @@ python3 pipeline/compare_methodologies.py
   - COST: 없음 확인됨(같은 증거 기준 순수 개선). `idiom_filtered` 케이스가 fixture에 2/12뿐이라 "짧게/쉽게" 지시 준수 검증은 약함
   - EXIT: `SURVEY_RESULTS.md`에 100% 준수 확인된 대안 순위표 있음 — `stepfun-ai/step-3.5-flash`(4.6s, 최속이나 재현성 미검증), `deepseek-ai/deepseek-v4-pro`(48.9s, 재현성 최고 0.9)
 
+- **D59** ([`METHODOLOGY_AUDIT_HANDOFF.md`](./METHODOLOGY_AUDIT_HANDOFF.md)) — "3단계 고정 구조"·L1~L5 히트맵·5축 채점 세 개념의 관계를 감사해 문서로 확정
+  - WHY: "3단계 고정 구조 + 동적 질문 생성에서 3단계가 뭐고 L1~L5·5축과 어떻게 연결되는가"라는 질문이 반복 제기됨. 저장소 전체(`README.md`/`POC_TEST.md`/`TEAM_POC_SUMMARY.md`)와 요구사항명세서 v2.0 원문을 재대조한 결과 "3단계"는 세션 진행 단계가 아니라 **인지·판단·피드백 3블록 파이프라인**(`README.md:1`, `POC_TEST.md:1`)을 가리키는 말이었고, L1~L5(FR-5.7)·5축 채점(`interview_rubric.py`)과는 코드상 연결이 전혀 없음(grep 0건)을 확인. 부가로 이 저장소 자체가 팀 5개 경쟁안(A~E) 중 C/D/E안일 뿐이라는 사실도 재확인(`TEAM_POC_SUMMARY.md`)
+  - COST: 이 감사는 혼동의 원인을 문서화했을 뿐 실제 공백(Depth Ladder 7단계→L1~L5 압축 규칙 부재, 5축 프레임워크 3종 불일치, A/B안 원본 미확보)을 해소하지는 못함 — 전부 팀 결정이 필요한 채로 남음
+  - EXIT: 팀이 압축 규칙·축 프레임워크를 확정하면 `METHODOLOGY_AUDIT_HANDOFF.md`의 "팀이 실제로 결정해야 할 것" 섹션을 지우고 그 결정을 `interview_rubric.py`/FR 문서에 직접 반영
+
+- **D60** ([`METHODOLOGY_AUDIT_HANDOFF.md`](./METHODOLOGY_AUDIT_HANDOFF.md)) — 핸드오프 문서 범위를 방법론 정합성(D59, 3문항)에서 AI 파이프라인 전체 6문항 감사로 확장
+  - WHY: "AI 기능 처리 로직을 못 쓴다"는 수준의 차단 질문(모델/CodeSearchNet/Decision Point 추출/GitHub API 연동/방법론/채점방식)이 한 세트로 다시 제기됨. D59는 3문항(방법론)만 다뤄서 나머지 3문항(모델·데이터·아키텍처 현실)이 별도 chat 답변에만 남아 있었음 — 전부 같은 문서에 통합해야 팀이 한 번에 참조 가능. 재검증 결과 신규 확정 사실: 판단 블록은 LLM 호출이 코드에 전혀 없음(grep 0건, LLM-as-judge 아님), CodeSearchNet·GitHub API 실연동 둘 다 0건(스펙 선언뿐), 최종등급명 "소유/표면/미흡"은 스펙 table4에 있으나 컷오프 수치는 스펙·코드 어디에도 없음
+  - COST: 문서 하나가 길어져 특정 질문 하나만 빠르게 찾기 어려워짐 — TL;DR 표를 최상단에 둬서 완화
+  - EXIT: 문항이 더 늘어나 문서가 과하게 길어지면 문항별로 파일 분리하고 이 문서는 인덱스 역할만 하도록 축소
+
+- **D61** ([`benchmarks/harness.py`](./benchmarks/harness.py), [`benchmarks/reproducibility.py`](./benchmarks/reproducibility.py)) — 채점·MEAS-02 두 신규 벤치마크가 공유하는 동시호출/재현성 비교 모듈 신설
+  - WHY: `full_survey.py`/`rerun_failed.py`가 이미 `ThreadPoolExecutor`+진행률출력 루프를 각자 인라인 구현해뒀고, 이번이 3번째 필요 시점(`score_findings.py` D13 EXIT의 "3번째로 필요해지면 공용 모듈로 추출" 원칙과 동일). 재현성 비교는 `nvidia-build/DECISIONS.md` D9가 한 번도 커밋하지 못한 부분(세션 스크래치패드 한정, 수동 보정)인데, 이 저장소의 새 벤치마크는 둘 다 스키마강제 tool-calling(D56/D58 패턴)이라 출력이 구조화 JSON — regex-Jaccard 근사 없이 필드 단위 exact-match로 정확히 계산 가능해짐
+  - COST: 자유서술 출력(`generate_questions.py`의 Depth Ladder 값 자체)에는 이 exact-match가 너무 엄격 — 그런 경우는 여전히 D9식 Jaccard/사람 대조가 필요
+  - EXIT: 벤치마크가 하나만 남으면 호출부에 도로 인라인
+- **D62** — 채점·MEAS-02 두 벤치마크의 후보 모델을 이미 코드리뷰(`nvidia-build`)+tool-calling(`SURVEY_RESULTS.md`) 양쪽에서 검증된 5개(`qwen3-next-80b-a3b-instruct`/`deepseek-v4-pro`/`glm-5.2`/`minimax-m3`/`nemotron-3-ultra-550b-a55b`)로 한정
+  - WHY: 87개 카탈로그 재탐색은 비용/시간 낭비 — 이 5개가 이미 두 독립 과제를 통과함. 특히 qwen3-next-80b-a3b-instruct는 기획명세서 00시트가 "질문생성기·채점기 동일 모델"로 이미 지정한 모델이라, 여기서는 "최선 선택"이 아니라 "그 결정이 채점/추출 역할에서도 성립하는가"를 검증하는 목적
+  - COST: 채점/evidence-추출에 이 5개보다 더 적합한 모델을 놓칠 수 있음
+  - EXIT: 5개 전부 저조하면 `stepfun-ai/step-3.5-flash`(tool-calling 100%/최속, 정밀도 미검증) 추가
+- **D63** ([`feedback/llm_interview_grader.py`](./feedback/llm_interview_grader.py)) — FR-04-01 5축 채점을 스키마강제 tool-calling(`GRADING_TOOL`)으로 최초 구현 — `interview_rubric.py`가 D54부터 "최종 점수는 사람/LLM이 확정해야 한다"고 표시해둔 4/5축(자기_수정 제외)의 첫 실제 채점 코드
+  - WHY: D56/D58이 이미 `DEPTH_LADDER_TOOL`(7필드)에서 스키마강제 tool-calling이 안정적으로 동작함을 검증함. 자유서술 채점은 파싱이 불안정하고, "근거 인용 강제"(기획명세서 00시트 확정 결정)를 구조적으로 보장 못 함
+  - COST: 5축×{score,evidence} 스키마가 7필드 DEPTH_LADDER보다 커서 일부 모델 tool-calling 실패율이 오를 가능성(실측 결과는 D69 참고)
+  - EXIT: 실패율 높으면 축별 5회 개별 tool call로 분리
+- **D64** ([`benchmarks/grading_testset.py`](./benchmarks/grading_testset.py)) — 채점 벤치마크 ground truth를 목표레벨(1/3/5) 사전라벨링 시뮬레이션 답변 15개로 구성(실제 학생 답변 전무)
+  - WHY: `METHODOLOGY_AUDIT_HANDOFF.md`/README가 이미 "실제 학생 답변으로 단 한 건도 검증된 적 없다"고 인정한 상태 — 유일하게 지금 실행 가능한 방법
+  - COST: 목표레벨=정답 취급은 자기참조적 라벨("우리가 그 레벨을 의도하고 썼다")일 뿐 실제 사람 채점자와의 합치도가 아님 — 결과 문서에 명시
+  - EXIT: 실제 학생 인터뷰 데이터가 쌓이면 사람이 채점한 실답변 셋으로 교체
+- **D65** ([`judgment/meas02_decision_point_extractor.py`](./judgment/meas02_decision_point_extractor.py)) — Phase 2를 "정적분석(`cognition`/`judgment` 블록) vs LLM결합 비교"에서 "기획명세서 그대로의 순수 LLM MEAS-02 추출기 구현+벤치마크"로 전면 재설계
+  - WHY: `기획명세서_AI기반_프로젝트교육품질관리플랫폼.xlsx`(00시트, "확정 설계 결정(Locked)")가 이미 "Decision Point 추출 = 순수 LLM(정적 분석 미사용) — AST·CodeSearchNet 매칭 방식은 폐기"로 확정함. 이 저장소의 정적분석 블록(cognition/judgment)은 팀이 이미 폐기하기로 결정한 방식이라, 그 우월성을 다시 벤치마크하는 건 이미 답 난 질문 — 대신 스펙이 요구하는 실제 I/O 계약(코드조각+요구사항+회차포커스 → Decision Point 세트[파일·함수·판단유형·근거·연결요구사항])을 구현하는 게 팀에 쓸모있음
+  - COST: 애초에 설계했던 하이브리드(evidence dict 부분위임, `apply_subrubric()` 재사용) 설계는 전량 폐기. 실측 결과(D69) 이 추출기는 단일 파일만 보므로 cross-file 구조 신호(허브 미연결 등)를 원천적으로 못 잡음 — 스펙이 선택한 아키텍처의 알려진 트레이드오프이지 버그 아님
+  - EXIT: 팀이 정적분석 재도입/하이브리드를 결정하면 `score_findings.py`/`subrubric.py`와 병행 비교를 이 모듈과 별도로 재설계
+- **D66** — MEAS-02 벤치마크의 정밀도 지표를 "recall"이 아니라 **reference-set coverage**로 명명(기존 4개 정적분석 finding은 gold standard가 아니라 참고 세트)
+  - WHY: 정적분석 자체가 팀 결정상 폐기 대상이라 그걸 정답으로 삼으면 안 됨 — `EVALUATION.md` 이래의 정직성 원칙 계승
+  - COST: 원래 기대했을 "recall"이라는 단어와 다름, 설명 필요
+  - EXIT: 실제 학생 코드 기반 사람 검증 데이터가 쌓이면 진짜 gold standard로 교체
+- **D67** ([`benchmarks/`](./benchmarks/)) — 채점·MEAS-02 벤치마크를 위한 최상위 `benchmarks/` 디렉토리 신설(`judgment/`나 `pipeline/`이 아님)
+  - WHY: 이건 인지·판단·피드백 블록 전체를 가로지르는 방법론 벤치마크지 `pipeline/compare_methodologies.py`(단일 방법론의 훅 이력 집계)와 다른 목적. `full_survey.py`가 이미 repo-root survey script 전례이고, 자매 repo `nvidia-build/benchmarks/`가 이미 이 repo 전체에서 참조되는 컨벤션
+  - COST: survey류 스크립트가 repo-root(`full_survey.py`)와 `benchmarks/` 두 곳에 나뉨
+  - EXIT: 나중에 `full_survey.py`/`rerun_failed.py`도 `benchmarks/`로 이동(순수 코드 이동, 이번 범위 밖)
+- **D68** — MEAS-02 벤치마크의 Phase 0을 "Study-Match-/LMS repo clone만"으로 축소, `examples/lms/judgment_output_baseline.json` 재생성 요구 제거
+  - WHY: bucket-agreement 비교(`subrubric.py` 의존)를 더 이상 하지 않으므로, 그 baseline이 D29(subrubric.py 도입) 이전 스키마라는 문제 자체가 무관해짐. 단 실제 코드 조각 입력을 위해 repo clone은 유지
+  - COST: 없음(요구사항 축소)
+  - EXIT: 해당 없음
+- **D69** ([`benchmarks/grading_run_benchmark.py`](./benchmarks/grading_run_benchmark.py), [`benchmarks/meas02_run_benchmark.py`](./benchmarks/meas02_run_benchmark.py)) — 채점(15케이스)·MEAS-02(4케이스) 두 벤치마크 실행 완료, 기획명세서 00시트 "Qwen 스펙 미검증 — 락 전 실측 필요" 리스크를 부산물로 검증
+  - WHY/결과: **팀이 이미 확정한 `qwen3-next-80b-a3b-instruct`는 두 역할 모두에서 깨끗하게 검증됨** — 채점: tool_choice 100%, MAE 0.28(1~5점 척도), 재현성 0.93. MEAS-02: tool_choice 100%, 단일 파일에서 탐지 가능한 참고 finding 3/3 전부 커버(reference-set coverage), 평균 22초/호출. **단, cross-file 구조 신호(firebase.ts 허브에 연결 안 된 Competitions.tsx의 고립)는 이 모델도 못 잡음** — 정적분석 폐기(D65)의 실제 대가가 실측으로 확인된 지점. 나머지 4개 비교 모델(`deepseek-v4-pro`/`glm-5.2`/`minimax-m3`/`nemotron-3-ultra-550b-a55b`)은 API 키 1개 공유+동시성 경합(일부는 당시 다른 병렬 세션의 `benchmark_track_a/b.py` 실행과 겹쳐 쿼터 소진 — `TRACK_AB_BENCHMARK_RESULTS.md` D70~D73 참고)으로 성공률이 0~75%에 그쳐 순위를 신뢰할 수 없음
+  - 참고(교차검증): 병렬 세션의 D70~D73(`TRACK_AB_BENCHMARK_RESULTS.md`)이 별도 6모델 벤치마크에서 **qwen3-next-80b가 정밀도·재현성은 만점이지만 다른 5개 모델보다 4~10배 느림**(24~36s vs 2.6~6.5s)을 확인 — 실시간 세션 응답 지연 이슈로 이어질 수 있어 팀이 알아야 할 트레이드오프. 같은 문서가 `openai/gpt-oss-120b`의 채점 재현성 결함(σ 기반 0.37)도 확인 — `nvidia-build` 코드리뷰 벤치마크에서 이미 드러난 이 모델의 비결정성 문제(D10에서 배제 사유)가 채점 역할에서도 재현된 것
+  - COST: 5개 모델 x 소규모 케이스만 테스트, 대규모 실제 학생 세션/큰 monorepo 규모는 미검증. 상세 방법론적 한계(단일 키 동시성 경합 등)는 `benchmarks/grading_benchmark_results.md`/`benchmarks/meas02_results.md`에 명시
+  - EXIT: qwen3-next-80b가 실전에서 속도 문제로 부적합 판정되면 D62 후보군에서 재검토(단, 재검토 전 반드시 API 키를 여러 개로 늘려 동시성 경합 없이 재측정할 것)
+
+- **D70~D73** ([`benchmark_track_a.py`](./benchmark_track_a.py), [`benchmark_track_b.py`](./benchmark_track_b.py)) — Track A(질문생성)/Track B(채점) 6모델 실측 벤치마크 실행 + deepseek-v4-pro 접근불가로 mistral-nemotron 교체(D73)
+  - WHY: 기획명세서가 모델을 qwen3-next-80b-a3b-instruct 단일로 lock했지만, 질문생성과 채점은 성공기준이 다른 별개 역할이라 "이미 고른 모델이 각 역할에서 합격선을 넘는가"를 실측 검증할 필요가 있었음(사용자 요청). 상세 결과·발견·한계는 [`TRACK_AB_BENCHMARK_RESULTS.md`](./TRACK_AB_BENCHMARK_RESULTS.md) 참고
+  - COST: 실행 중 `benchmarks/`(D61~D69, 병렬 세션 작업)와 목적이 겹치는 걸 뒤늦게 발견 — 원래 D61부터 번호를 매기려다 충돌해 D70으로 재조정. 이 벤치마크의 채점 축 이름·재현성 계산 방식이 `benchmarks/`의 production 정합 버전보다 엄격도가 낮음(`TRACK_AB_BENCHMARK_RESULTS.md`의 비교표 참고)
+  - EXIT: 팀이 공식 벤치마크로 하나만 채택하려면 `benchmarks/`(더 엄격, production 코드 정합) 쪽을 실행해 이 결과와 대조 후 이 문서에 "상위호환됨" 각주 추가
+
+- **D74** ([`dataset/mine_repo.py`](./dataset/mine_repo.py), [`dataset/corpus_report.py`](./dataset/corpus_report.py)) — 인지·판단 블록(정적분석, `two_tier_scan.py`+`score_findings.py`)을 처음으로 JS/TS 외 3개 언어(Python/Java/C·C++)의 실제 공개 repo에 돌려 finding fixture를 신설, 두 차례 스케일업(언어당 1~2개 → 5~7개 → 9~11개, 총 41개 repo)
+  - WHY: `full_survey.py:36-47`의 `FIXTURES`가 여전히 `study_match`/`lms` 둘뿐이라 finding 다양성이 12개(전부 JS/TS)로 고정돼 있었음. "다국어 재검증 실측"(132번 줄, RunPod_Deploy_Agent Python 6+JS 2)과 "세 번째 실증"(140번 줄, jxxnixx/LMS)이 이미 다국어 파싱 버그(D17, 메서드 호출 형태의 위험 함수 호출 오탐)와 sparse-graph 한계를 실측으로 드러냈지만, 그 결과가 `examples/`에 `judgment_output.json`으로 저장된 적은 없어서(스크래치 버그헌팅으로 끝남) 재사용 가능한 fixture가 하나도 안 남아있었다. 사용자 요청(popixoxipop-collab org 대신 외부 GitHub repo로 소싱)에 따라 `gh search repos`로 실재하는 소규모~중규모 repo를 선정해 `mine_repo.py`(clone→scan→score를 스크립트화)로 전부 통과시켰고, 스캔/채점 코드 자체는 무수정(순수 stdlib, 리포별 하드코딩 없음을 사전 확인) — 새로 만든 건 오케스트레이션과 집계뿐.
+  - COST: 최종 41개 repo/120건 원본 findings도 여전히 SFT 정석 물량(보통 수백~수천)엔 못 미침 — 이건 "언어당 repo 수"보다 "언어별 finding 밀도" 문제로 드러남(1차 스케일업 시점 JS/TS 6.2건/repo vs Python 1.1건/repo). Python 2차 추가 repo(django/api 키워드 검색)로 밀도가 3건/repo까지 올라 어느 정도 완화됐지만 여전히 JS/TS보다 낮음. `turnstile`(C, 12파일)은 finding 0건으로 남음 — repo가 나빠서가 아니라 132번 줄이 이미 실측한 "edge가 적은 sparse graph에선 hub/isolation 판정 자체의 신뢰도가 낮다"는 한계. **이 120건 중 21건(17.5%)이 실제로는 cross-language noise였음이 D75 품질검증으로 드러남** — 최종 신뢰 가능한 수치는 D75 참고.
+  - EXIT: 여전히 물량이 더 필요하면 `mine_repo.py <git_url> <lang> [slug]`를 반복 호출해 언어당 repo를 더 늘리면 됨(스크립트는 이미 반복 실행 검증됨). `full_survey.py`/`rerun_failed.py`의 `FIXTURES`에 새 경로들을 추가하면 87모델 서베이도 이 확장된 corpus로 재실행 가능(이번 pass에선 의도적으로 안 건드림 — 그건 별개 관심사).
+
+- **D75** ([`dataset/corpus_report.py`](./dataset/corpus_report.py)) — D74 corpus의 품질 검증(사용자 요청) 중 실제 결함 2건 발견, 1건은 이 스크립트에서 수정
+  - WHY: 물량만 늘리고 내용을 확인 안 하면 "그럴듯하지만 틀린" fixture가 SFT 데이터로 그대로 흘러들어갈 위험이 있어, D74로 만든 41개 repo 중 일부를 실제로 재-clone해 finding 원문과 대조 검증했다. **발견 1(수정함)**: `examples/python/API-Manager/`(Django) 등 3개 repo에서 `tier-b-risk` finding이 실제로는 `static/js/`에 번들된 서드파티 minified JS(`Chart.min.js` 등)였고, `examples/java/Modern-API-Development-with-Spring-6-and-Spring-Boot-3/`는 finding 13건 전부가 이 repo의 React 프론트엔드(`Auth.js`/`Login.js` 등)였다 — repo 하나를 통째로 하나의 언어로 태깅한 게 원인. `judgment/idiom_filter.py`의 `resolve_lang()`(이미 프로덕션에서 쓰는 함수, 재구현 없이 import)로 `finding.file`의 실제 확장자를 재확인해 repo 태그와 다르면 언어별 집계에서 제외하도록 `corpus_report.py`를 고쳤다. **발견 2(미수정, 문서화만)**: `examples/java/LibraryManageSystem/`을 재-clone해 직접 대조한 결과, `cognition-isolation:ConnectDatabase.java`("허브로 가는 edge 없음")가 오탐임을 확인 — 허브 `Model.java`가 `new ConnectDatabase()`로 같은 패키지(`database`) 클래스를 직접 참조하는데, 자바는 같은 패키지 내 참조에 `import`가 필요 없어 `JAVA_IMPORT_RE`가 이 edge를 원천적으로 못 잡는다. 상세는 "알려진 한계" 섹션 참고.
+  - COST: cross-language noise 필터링 후 corpus는 120건 → **99건**으로 줄었다(21건, 17.5% 제외). 필터는 `dataset/corpus_report.py`(내가 만든 집계 스크립트)에만 적용됨 — `two_tier_scan.py`/`score_findings.py`(공유 프로덕션 파이프라인, 동시에 다른 세션이 작업 중)는 건드리지 않았으므로 `examples/*/judgment_output.json` 원본 파일 자체엔 여전히 이 21건이 섞여 있다. Java 같은-패키지 사각지대는 발견만 하고 안 고쳤음 — `score_findings.py`의 hub/isolation 판정 로직을 바꾸는 건 D74보다 범위가 크고, 지금 이 저장소에서 다른 세션이 동시에 `benchmarks/`·`judgment/meas02_decision_point_extractor.py`를 작업 중이라 핵심 판단 블록을 건드리는 건 더 조심스럽게 별도로 계획해야 한다고 판단.
+  - EXIT: cross-language noise를 스캐너 단에서부터 막고 싶으면 `two_tier_scan.py`의 `SKIP_DIRS`에 `static`/`vendor`/`node_modules`류를 보강하거나(단, 공유 파일이라 다른 세션과 조율 필요), `score_findings.py`가 만드는 finding 스키마에 `resolve_lang(file)` 결과를 언어 필드로 아예 박아넣으면 `corpus_report.py`의 사후 재계산이 불필요해짐. Java 같은-패키지 edge 문제는 `JAVA_IMPORT_RE`가 파싱한 것과 별개로 "같은 디렉터리(=대개 같은 패키지) 파일들끼리는 무조건 edge로 간주"하는 보수적 휴리스틱을 추가하면 완화 가능(단, 오탐↔누락 트레이드오프 재평가 필요).
+
+- **D76** ([`cognition/two_tier_scan.py`](./cognition/two_tier_scan.py), [`judgment/score_findings.py`](./judgment/score_findings.py)) — D75 EXIT의 두 제안을 실제로 구현(사용자 요청): `SKIP_DIRS`에 static/vendor 보강 + finding 스키마에 `lang` 필드 신설
+  - WHY: D75가 `dataset/corpus_report.py`(내 집계 스크립트)에서만 사후 필터링으로 우회했던 cross-language noise를, 공유 프로덕션 파이프라인(`two_tier_scan.py`/`score_findings.py`) 자체에서 근본적으로 막아달라는 사용자 요청. `two_tier_scan.py`의 `SKIP_DIRS`(D76 이전: `node_modules`/`.git`/`dist`/`build`/`__pycache__`/`.venv`/`venv`)에 `static`/`vendor`/`vendored`를 추가해 서드파티 자산 디렉터리 자체를 스캔 대상에서 뺐다. 이것만으론 "Java 백엔드 repo에 React 프론트엔드가 같이 있는" 경우(전용 vendor 디렉터리가 아닌 진짜 다른 언어 소스)를 못 잡으므로, `score_findings.py`의 `score()` 끝에 `_tag_lang()`을 추가해 모든 finding에 `judgment/idiom_filter.py`의 `resolve_lang()`(`.h` 파일은 내용 기반 c/cpp 재판정 포함, D15와 동일 로직 재사용)로 계산한 실제 언어를 `lang` 필드로 박아넣었다.
+  - COST: 재검증 결과(41개 repo 전부 재-mine) — `SKIP_DIRS` 보강만으로 raw finding이 **120→112건**으로 줄었다(정적/vendor 자산 8건이 애초에 스캔 대상에서 빠짐: `examples/python/API-Manager`가 4→1건, `examples/java/zgc-ems`가 4→1건 등). 남은 cross-language 사례는 **13건**(`Modern-API-Development-with-Spring-6-and-Spring-Boot-3`의 React 프론트엔드 12건 + `EasyQtSql`의 `navtree.js` 1건) — 둘 다 "static/vendor라는 이름이 아닌 진짜 다른 언어 디렉터리"라 `SKIP_DIRS`로는 원천 차단이 안 되고, 새 `lang` 필드가 있어야 `corpus_report.py`가 걸러낼 수 있다. 최종 `dataset/corpus_report.py` 집계는 112 - 13 = **99건**으로 D75 때와 동일(우연히 같은 숫자 — D75는 20건을 사후 필터, 이번엔 8건을 스캔 단계에서 차단 + 13건을 스키마 필드로 필터). 기존 `examples/lms/`·`examples/study_match/` fixture는 D76 이전 스키마라 `lang` 필드가 없음 — `corpus_report.py`가 `"lang" in finding`으로 분기해 하위호환 유지(없으면 `resolve_lang(file)`로 즉석 계산).
+  - EXIT: `lms`/`study_match`도 재-clone해 `score_findings.py`를 다시 돌리면 `lang` 필드를 채울 수 있음(이번 pass에선 재-clone 경로가 로컬에 없어 보류). Java 같은-패키지 edge 사각지대(D75 발견 2)는 여전히 미수정 — 다음 손댈 후보는 이쪽이지만, 공유 판단 블록(`score_findings.py`)의 hub/isolation 로직 자체를 바꾸는 거라 D74~D76보다 범위가 크다.
+
+- **D77** ([`benchmarks/grading_run_benchmark.py`](./benchmarks/grading_run_benchmark.py), [`benchmarks/meas02_run_benchmark.py`](./benchmarks/meas02_run_benchmark.py)) — D69가 미신뢰로 남긴 4개 모델(deepseek-v4-pro/glm-5.2/minimax-m3/nemotron)을 모델별 순차 실행+전량 재시도로 재검증 완료(사용자 요청: "쿼터 제한으로 안나온 부분은 마저 채워넣기")
+  - WHY: D69 자신이 이미 "동시성 경합이라 재검증 없인 신뢰하면 안 됨"이라고 EXIT에 못박아뒀다. `main()`을 5모델 동시 제출에서 모델별 순차 실행(각 모델 내부는 그대로 max_workers 동시성)으로 바꾸고, 실패 건을 2~20초 간격으로 최대 3라운드 순차 재시도(매 성공마다 즉시 디스크 저장 — 재시도 스크립트가 타임아웃으로 죽어도 유실 없게)했다.
+  - COST/결과: **채점** — qwen/deepseek-v4-pro/minimax-m3 3개 전부 100% 회복(deepseek는 격리 단독 호출도 즉시 성공 — D69의 "쿼터 소진" 추정이 맞았음을 확인), nemotron 87%(잔여는 503/timeout 혼재, 진짜 서비스 이슈로 보임). **MEAS-02** — qwen/deepseek 100%, nemotron 75%. **minimax-m3는 25%로 채점(100%)과 딴판** — 실패가 거의 전부 120s 타임아웃이라, 짧은 프롬프트(채점)엔 강하지만 긴 프롬프트(MEAS-02는 전체 코드파일+요구사항 전문)에 취약한 모델 고유 특성으로 추정. **glm-5.2만 유일하게 두 벤치마크 다 0%** — 모델별 순차 실행(경합 제거)+격리 단독 호출 3회+20초 간격 순차 재시도 7연속까지 총 9회 시도 전부 실패(주로 120s 타임아웃). SURVEY_RESULTS.md의 예전 87모델 전수조사에서도 이 모델만 5/12(42%, "genuinely slow")였던 이력과 일치 — 경합이 아니라 이 모델 자체가 지속적으로 이용 불가 수준이라는 결론. 두 `to_markdown()`의 "방법론적 한계" 문단을 이 최종 수치로 갱신.
+  - EXIT: glm-5.2를 후보군에서 빼고 재검토하려면(EXIT 조건 재충족 시) 이 5개 벤치마크 스크립트의 `MODELS` 리스트에서 제거. minimax-m3를 큰 컨텍스트 task에 계속 쓰려면 프롬프트를 청크로 쪼개는 방식 검토.
+
+- **D78** ([`TRACK_AB_BENCHMARK_RESULTS.md`](./TRACK_AB_BENCHMARK_RESULTS.md)) — D73의 "deepseek-v4-pro 접근 불가" 결론을 정정하고 세 벤치마크(Track A/B, benchmarks/grading, benchmarks/meas02) 통합 결론 작성
+  - WHY: 사용자가 "분당 40회를 다른 세션에서도 호출해서 막힌 거 아니냐"고 직접 반증 가설을 제기 — 격리 단독 호출로 재테스트하니 즉시 성공(D73 당시엔 Track A→B 연속 실행 직후라 일시적 쿼터 소진이었을 가능성이 높음, 영구 접근거부 아님). "즉시 429=접근불가"로 성급히 결론 내렸던 게 틀렸다는 걸 인정하고 정정 섹션을 문서 최상단 가까이에 추가.
+  - COST: D73 시점의 원래 표는 지우지 않고 그대로 둔 채 정정 섹션을 뒤에 추가하는 방식을 택함 — 문서를 처음부터 끝까지 안 읽으면 정정 전 결론(표)만 보고 오해할 위험이 남음.
+  - EXIT: 문서가 더 길어지면 원래 표 자체를 정정된 숫자로 덮어쓰고 "최초 관측값은 git history 참고"로 각주 처리.
+
+- **D79** ([`benchmark_track_a.py`](./benchmark_track_a.py), [`benchmark_track_b.py`](./benchmark_track_b.py) 관련 산출물) — 사용자 요청("부실했던 부분 채워 넣어")으로 Artifact의 deepseek-v4-pro 완전제외·mistral-large-3 Track B 빈칸을 실제 재호출로 채워 6모델→7모델로 확장
+  - WHY: D78의 정정(deepseek-v4-pro는 접근불가가 아니라 일시적 쿼터 소진)을 문서 텍스트로만 남기지 않고, 실제로 이 모델을 Track A(`gq.build_prompt`+Depth Ladder 스키마)·Track B(자체 채점 프롬프트) 양쪽 방법론으로 재호출해 진짜 비교 가능한 데이터를 얻었다. mistral-large-3도 Track B(4답변×3회, `call_with_retry`로 최대 3회 자동재시도)를 재호출해 "쿼터 소진" 유령 막대를 실제 수치로 교체했다.
+  - COST: deepseek-v4-pro Track A/B(24건)·mistral-large-3 Track B(12건) 추가 호출 비용 발생. deepseek-v4-pro는 두 트랙 다 qwen 다음으로 느림(34.6s/28.1s)이 확인돼 "빠른 대안 후보" 목록에선 제외해야 함이 명확해짐.
+  - EXIT: 차트 데이터는 `track_a_summary.json`/`track_b_summary.json`(7개 모델)에 최종 반영, 원시 호출 로그는 `deepseek_track_a.json`/`deepseek_track_b.json`/`mistral_large_track_b.json`(gitignore됨, 재실행으로 regenerate 가능).
+
+- **D80** ([`benchmark_track_a_multilang.py`](./benchmark_track_a_multilang.py), [`track_a_multilang_results.json`](./track_a_multilang_results.json)) — Track A(질문생성)를 D74~D76 다국어 corpus(Python/Java/JS/C·C++)로 처음 재현(사용자 질문: "JS/TS에서 이긴 모델이 다른 언어에서도 이기나?" — 지금까지 SURVEY_RESULTS.md/D58/D61~D79 전부 JS/TS(Study-Match-/LMS)만 썼다는 게 이 세션에서 처음 확인됨)
+  - WHY: 언어당 finding 2개(tier-b-risk 1개 + architecture-diffusion 1개, C/C++만 tier-b-risk가 아예 없어 대신 cognition-isolation 사용, D75/D76이 이미 문서화한 한계) × 6모델 × 1회 = 48콜로 1차 정찰. `feedback/generate_questions.py`의 `build_prompt`/`DEPTH_LADDER_TOOL`을 그대로 재사용(별도 프롬프트 재구현 없음).
+  - **확정 결과(전체 8×6=48건, 429 오염 전부 실제 값으로 교체 완료)**: **`qwen3-next-80b-a3b-instruct`(현재 locked 기본값)/`step-3.5-flash`/`llama-4-maverick`/`deepseek-v4-pro`/`mistral-large-3`, 5개 모델이 4개 언어 전부 8/8 성공(정밀도 100%)** — JS/TS에서 검증된 스키마 준수가 다른 언어에서도 그대로 유지됨을 처음 확인. 유일한 진짜 결함은 **`gpt-oss-120b`가 javascript·c_cpp에서 실패(각 50%)** — tool_choice를 안 지키고 자유서술로 응답(에러 메시지 확인, 429 아님) — D66/artifact가 이미 지적한 채점 재현성 결함이 질문생성 스키마 준수에서도 언어 의존적으로 재현됨. 속도는 언어 무관하게 일관됨: qwen(37.5~50.7s)·deepseek(33.9~57.0s)이 여전히 최하위권, 나머지는 전 언어에서 3~8s대.
+  - COST: **1차 측정에서 `mistral-large-3`가 8건 중 5건 지속적 HTTP 429였던 건 실제 결함이 아니라 완전한 오탐이었음이 재시도로 확정됨** — 최종 데이터는 4개 언어 전부 100%로, 다른 상위권 모델과 동일하다. 근본 원인을 코드로 확인: `feedback/nvidia_client.py:27-33`의 `chat()`은 429 시 "풀에서 다음 키로 재시도"하도록 설계돼 있는데(`max_retries=3`), 이건 팀 전체 키 풀(`.env.example`이 `NVIDIA_API_KEY_1`~`_7`, 7명분 가정)을 전제로 한 설계다. 이 세션은 개인 키 1개만 `NVIDIA_API_KEY_1`로 썼으므로 429 시 "다음 키"가 사실상 같은 키라 재시도가 매번 즉시 같은 429로 끝났다(1차 실패 응답 전부 0.5~0.7초 — 재시도 3회가 전부 즉발 실패했다는 신호). deepseek-v4-pro/mistral-large-3 같은 대형 flagship 모델은 무료 티어에서 40rpm보다 엄격한 한도가 걸려있는 것으로 보이나, **시간(수십 분)이 지나자 같은 키로도 전부 성공** — 즉 영구적 차단이 아니라 일시적 소진이었다(같은 교훈이 D11/artifact "정정됨"/"채워짐" 항목에서 반복 확인된 패턴). 표본이 언어당 2건뿐이라 재현성(D9/D61식 반복측정)은 안 봤음 — 이건 "대략적 방향성 정찰"이지 확정 벤치마크가 아니다.
+  - EXIT: 재현성까지 보려면 `REPEATS`를 3으로 올려 재실행(같은 429 리스크 있으니 팀 키 풀을 여러 개 확보해두면 대기시간 없이 바로 됨). `gpt-oss-120b`의 javascript/c_cpp 실패가 우연인지 일관된 패턴인지 확인하려면 그 두 언어만 finding을 늘려 재측정.
+
+- **D82** (아티팩트, [`track_a_multilang_results.json`](./track_a_multilang_results.json)) — 사용자가 아티팩트에서 "mistral-nemotron이 아직도 429로 뜬다"고 지적 → 실제로는 D80이 이 모델을 애초에 `MODELS` 리스트에서 빠뜨렸던 것(6모델 중 mistral-nemotron 없음)인데, 아티팩트 렌더 코드가 "데이터 없음"과 "429 미확정"을 구분 안 하고 둘 다 같은 회색 "429" 칸으로 표시해서 마치 재시도로도 안 풀린 진짜 429처럼 보였다
+  - WHY: `langBench` 객체에 `mistralai/mistral-nemotron` 키 자체가 없는데, 히트맵 렌더 함수는 `MODEL_ORDER`(7개, Track A/B용 범례에서 온 목록) 전체를 순회하면서 `langBench[m]`이 없으면 무조건 "429/미확정" 라벨을 붙였다 — "이 모델은 테스트를 안 했다"와 "테스트했는데 레이트리밋으로 못 채웠다"가 코드상 구분이 안 됐던 게 근본 원인
+  - COST: mistral-nemotron을 실제로 4개 언어 × 1회 = 8콜 재실행해 확정 데이터를 얻었다(전부 100%, 5.6~6.9s — 다른 상위권 모델과 동일하게 안정적). fallback 라벨도 "429/미확정" → "—/미실행"으로 수정해 앞으로 같은 부류의 "누락을 오탐으로 보이게 하는" 표시 오류를 방지
+  - EXIT: 지금은 7개 모델(qwen3-next-80b/step-3.5-flash/llama-4-maverick/deepseek-v4-pro/gpt-oss-120b/mistral-large-3/mistral-nemotron) 전부 `langBench`에 실측값이 있다. 새 모델을 히트맵에 추가할 때는 `MODEL_COLOR`/`MODEL_SHORT`뿐 아니라 `langBench`에도 반드시 같이 추가해야 함 — 하나만 빠뜨리면 이번과 같은 오탐성 "429" 표시가 재발한다.
+
+- **D83** ([`~/.claude/hooks/scripts/nvidia-keypool-guard.py`](https://github.com/) 전역 설정, repo 밖) — D81에서 만든 nvidia-keypool-guard hook의 오탐 3건을 실사용 중 발견해 즉시 수정
+  - WHY: hook이 "이 명령이 NVIDIA API를 벌스트 호출하는가"를 command 텍스트의 파일명/키워드 매치로만 판정하다 보니, (1) `head`/`grep`으로 `benchmark_track_b.py`를 그냥 읽기만 해도 차단, (2) `cd ...\nhead ...` 같은 멀티라인 명령에서 개행이 구분자로 인식 안 돼 단일라인에서만 통과, (3) `kill`/`pkill`로 이미 떠 있는 벤치마크 프로세스를 죽이려는 것까지 "실행 시도"로 오판해 차단 — 셋 다 이번 세션에서 실제로 겪은 뒤 즉시 고침
+  - COST: 읽기전용/프로세스관리 도구 allowlist(`head/cat/grep/less/tail/wc/sed/awk/kill/pkill/ps/pgrep`)를 하드코딩했다 — 목록에 없는 새로운 읽기전용 도구(예: `bat`, `rg`)를 쓰면 다시 오탐 가능. `\bpython3?\b` 유무로 "진짜 실행"을 판별하는 것도 완벽하진 않음(예: `python3 -c "print('benchmark_track_a')"`처럼 실행이지만 무관한 경우도 걸릴 수 있음)
+  - EXIT: allowlist에 없는 도구로 오탐 재발 시 `READ_ONLY_TOOLS`/`PROC_MGMT_TOOLS` 튜플에 추가. `has_python_exec` 판정이 근본적으로 부족하면 "실제 API 호출까지 가는가"를 더 정확히 보려면 명령이 실제로 `.chat(`/`client.chat`을 실행 경로에서 도달하는지까지 AST 분석해야 하는데, 그건 이 hook의 비용 대비 과함(지금 휴리스틱으로 충분).
+
+- **D84** ([`benchmark_track_ab_multilang.py`](./benchmark_track_ab_multilang.py)) — Track A(질문생성)+Track B(채점)를 언어별로 동시 확장하는 스크립트 작성(336콜: Track A 8find×7model×3rep + Track B 8item×7model×3rep) — **D86에서 실행 20/336에서 중단됨, 이유는 D86 참고**
+  - WHY: 사용자 요청 "언어별 Track A,B 진행한 표를... 3축(정밀도/재현성/속도)". Track A는 D80의 기존 8개 finding을 REPEATS=3(재현성 측정 위해)으로 재실행, Track B는 언어당 finding 1개씩 골라 강/약 답변 쌍을 D71/D72와 같은 방식(실제 코드 확인 후 근거있는 강한 답변 vs 얕은 약한 답변)으로 신규 작성 — Python(Enum 기반 endpoint), Java(placeholder API_KEY), JS(테스트파일 오탐), C++(벤더링된 유닛테스트 프레임워크) 각각의 실제 코드를 재-clone해서 확인 후 작성
+  - COST: 강/약 답변을 언어당 1쌍만 만들어서 "언어 자체의 난이도"가 아니라 "그 언어에서 뽑은 특정 finding의 난이도"에 가까움(D84 코드 주석에도 명시). 결과적으로 이 COST를 따지기도 전에 D86로 전면 재검토됨.
+  - EXIT: 아래 D86 참고 — 이 스크립트 자체(Track A/B 호출 로직, 강/약 답변 데이터)는 재사용 가능하나, "무엇을 벤치마크할 것인가"의 단위 자체가 바뀌어야 함.
+
+- **D86** (실행 중단, 방법론 재검토) — 사용자가 기획명세서 04시트("턴 상태기계") 원문을 직접 인용해 지적: 지금까지의 모든 Track A 벤치마크(SURVEY_RESULTS.md/D58/D61~D84 전부)가 스펙의 **적응형 상호작용**이 아니라 **단발성 7필드 생성 도구**(`feedback/generate_questions.py`의 `DEPTH_LADDER_TOOL`)를 테스트해온 것이었음을 발견 → D84 실행분(20/336 진행 중) 즉시 중단
+  - WHY: 스펙 04시트 R30C5 턴 상태기계 원문(사용자 인용): Decision Point 하나당 "① 코드종속 질문(파일·함수명 삽입) → ② 답변 즉시평가 → ③ 표면/부분/방어 분류 → ④ 방어 아니면 L2(트레이드오프) 반례 → 실패시 L3(극단 시나리오) → ⑤ L3도 실패시 Self Reflection 유도+확인질문 → ⑥ depth/시간 상한 또는 방어 성공시 다음 DP"라는 **학생 답변에 반응하는 적응형(최소 1턴~최대 4턴) 루프**를 요구한다. 반면 `generate_questions.py`는 finding 메타데이터만 보고 학생 답변 없이 7필드를 한 번에 다 생성 — 이건 애초에 스펙이 말하는 "질문 생성 방식" 자체가 아니라 "질문 후보 뱅크 생성기"에 가깝다. 실제로 스펙에 가까운 적응형 분기 로직은 별도로 존재한다: `pipeline/followup_generator.py`(D48)가 학생 첫 답변을 `isolation_classifier`/`reflection_signal`(정규식 기반)로 분류해 5개 사전작성 템플릿 중 하나를 고르고, `pipeline/escalation_hook.py`(D50)가 성공판정을 재귀 반영하는 구조 — 그런데 D48 스스로 COST에 "진짜 LLM 기반 적응형 질문은 아니다, 규칙기반 적응형(고정 분기 트리에서 사전정의 5방향 중 택1)"이라고 명시했고, D48 EXIT가 "API가 생기면 각 분기점에서 Codex/Claude를 호출해 문구를 매번 새로 생성하도록 교체 가능"이라고 이미 예고했던 업그레이드가 `generate_questions.py`가 실제 API를 호출하게 된 지금까지도 실행된 적이 없다.
+  - COST: D58/D61~D84까지 쌓아온 "질문생성 모델 벤치마크" 전부가 프로덕션이 실제로 쓰는 학생-상호작용형 흐름이 아니라 그 앞단의 후보뱅크 생성 도구만 검증한 것이었다는 뜻 — 모델 선정(D58) 자체가 틀렸다는 건 아니지만(단발 7필드 생성 품질은 여전히 유효한 지표), "이 모델이 적응형 압박 루프에서도 잘하는가"는 전혀 검증된 적이 없다. 진행 중이던 336콜(D84)의 20건은 유효한 데이터지만 나머지 316건을 계속 쌓는 건 잘못된 단위를 검증하는 데 API 예산을 더 쓰는 것이라 판단해 즉시 중단.
+  - EXIT: 사용자 결정(2026-07-07) — (1) D48/D50을 D48 EXIT가 예고한 대로 규칙기반 템플릿→실제 LLM 생성으로 업그레이드하는 걸 먼저 하고, (2) 그 다음에 스펙의 턴 상태기계(①~⑥)를 실제로 재현하는 적응형 벤치마크를 새로 설계한다. 두 단계 다 아직 미착수 — 다음 세션/다음 작업 단위.
+
+- **D87** ([`feedback/turn_engine.py`](./feedback/turn_engine.py)) — D86 EXIT (1)단계 실행: D48 EXIT가 예고한 업그레이드("각 분기점에서 Codex/Claude를 호출해 문구를 매번 새로 생성, 분기 로직은 그대로 재사용")를 실제로 구현해 스펙 04시트 6단계 턴 상태기계를 처음으로 재현
+  - WHY: `pipeline/followup_generator.py`(D48)/`escalation_hook.py`(D50)는 답변 분류+분기는 하지만 질문 텍스트가 5개 고정 템플릿 중 하나이고 에스컬레이션이 1단계뿐이었다(L2/L3/reflection 없음). `turn_engine.py`는 `run_decision_point()`로 L1(코드종속 질문, `judgment/idiom_filter.py`의 `_find_file_content`를 재사용해 **실제 파일 소스**를 프롬프트에 포함 — 기존엔 파일명뿐이었고 실제 코드 내용을 보여준 적이 없었음) → 분류(표면/부분/방어) → L2(트레이드오프) → L3(극단시나리오) → reflection까지 최대 4턴을 실제로 오케스트레이션하고, 매 레벨의 질문을 `ask_question` 툴로 강제한 LLM 호출로 새로 생성한다(고정 템플릿 재사용 없음). `classify_answer()`는 D48 EXIT의 "분기 로직은 그대로 재사용" 원칙대로 기존 `isolation_classifier`/`reflection_signal`(둘 다 confirmed 정규식 매칭, D6 계보)을 그대로 호출하고 그 출력을 3단계로 재해석만 한다.
+  - **스모크테스트로 발견한 버그 2건(둘 다 즉시 수정)**: (1) `generate_questions.py`의 `parse_nvidia_tool_response()`가 툴 이름 `"depth_ladder_questions"`에 하드코딩돼 있어 새 `ask_question` 툴에 재사용 불가 — 항상 즉시 RuntimeError(모델은 정상 응답했는데 파서가 다른 이름만 찾음) → 전용 파서 `_parse_ask_question_response()` 신설. (2) `evaluate_reflection()`을 L1/L2/L3 답변 채점에 그대로 재사용하면 **강한 답변도 항상 "표면"으로 나옴** — 원인은 `self_error_recognition`(자기 오류 인정) 서브신호가 필수라서인데, 이건 reflection 단계(사후 반성)에만 의미 있는 조건이지 아직 반례 도전을 안 받은 L1/L2/L3 답변엔 안 맞는 기준이었다. `classify_answer(level=...)`로 분기해 reflection 단계에서만 원래 조건(필수+optional≥2)을 쓰고, L1~L3는 optional 서브신호 개수만으로 판정하도록 수정.
+  - COST: **`feedback/reflection_signal.py`의 confirmed 패턴이 4개 서브신호 전부 0개임을 실측으로 확인**(`self_error_recognition`/`reason_explanation`/`new_judgment`/`concrete_improvement` 전부 candidate조차 없거나 0건) — 즉 tier-b-risk/repeated-pattern/architecture-diffusion 카테고리(4개 중 3개)는 지금 confirmed-pattern DB가 비어 있어 **어떤 답변을 넣어도 항상 "표면"으로만 분류**된다(L1~L3 기준으로 고쳐도 마찬가지 — optional 서브신호 자체가 하나도 confirmed 안 됐으므로). `judgment/isolation_classifier.py`(cognition-isolation 카테고리)만 confirmed 패턴이 있어(`role_separation`/`perf_optimization`/`domain_irrelevance` 각 1개, `alt_storage_or_scope`는 0개) 실제로 표면/부분/방어 3단계가 다 나온다 — 그래서 스모크테스트도 cognition-isolation finding(`cognition-isolation:allocatorstringstorage.h`, loki C++)으로 검증했다. 이건 새 코드의 결함이 아니라 이 저장소의 recursive-hook confirmed-pattern DB가 애초에 재현/일반화용 데이터로 충분히 안 쌓였다는, 이미 알려진(D21/D34/D37 계보) 콜드스타트 한계가 그대로 드러난 것.
+  - **검증 결과(qwen3-next-80b, cognition-isolation:allocatorstringstorage.h)**: 약한 답변("잘 모르겠습니다, 그냥 그렇게 했습니다") 반복 → l1/l2/l3/reflection 전부 표면 판정, 4턴 전부 소진 후 `exhausted_at_cap`(25.3s). 강한 답변(위임+불필요 근거 포함) → L1에서 즉시 `defended`, 1턴만에 종료(3.6s). 에스컬레이션 로직이 답변 품질에 실제로 반응함을 확인. 생성된 L1 질문도 실제 코드 심볼(`AllocatorStringStorage`, `SimpleStringStorage<E, A>::emptyString_` 등)을 인용 — `pipeline/evidence_bridge.py`의 고정 템플릿(`DEPTH_LADDER_OPENING`)보다 질적으로 다름.
+  - EXIT: 7모델 전체 벤치마크(D86가 미룬 다음 단계)를 돌리기 전에, reflection_signal의 confirmed 패턴을 최소한으로라도 채워야 risk-type 카테고리에서도 의미 있는 표면/부분/방어 분리가 나온다 — 안 그러면 그 3개 카테고리는 항상 4턴 다 소진하는 결과만 나와서 "에스컬레이션이 답변에 반응하는가"를 검증할 수 없다. `pipeline/followup_generator.py`/`escalation_hook.py`는 삭제하지 않고 API 없을 때의 폴백 경로로 남겨둠(원래 D48 설계 의도 그대로).
+
+- **D88** ([`feedback/reflection_patterns/*/patterns.json`](./feedback/reflection_patterns/)) — D87 EXIT 실행: `reflection_signal`의 confirmed 패턴을 D51/D52가 확립한 절차(독립 리뷰어 → `record_feedback` → `recursive_update`) 그대로 채움 — 임의로 confirmations를 조작하지 않음
+  - WHY: D87이 발견한 대로 4개 서브신호 전부 confirmed 패턴이 0개(candidate만 1개씩, threshold 3)라 risk-type 카테고리는 항상 "표면"만 나왔다. 이걸 정직하게 고치려면 "진짜 다른 출처(source_finding)의 독립 확인"이 threshold(3)만큼 쌓여야 한다(D51의 dedup 규칙) — 그래서 D74~D84에서 이미 확보한 4개 언어(Python/Java/JS/C++)의 실제 finding 각각에 대해, "약한 첫 답변 → L2/L3 반례 → 반성" 시나리오의 reflection 답변을 실제 코드 맥락에 맞게 새로 작성하고(예: Python은 Enum의 등록되지 않은 엔드포인트 처리 누락, Java는 placeholder API_KEY의 배포 시 검증 부재, C++는 벤더링된 라이브러리를 자체 설계로 오인, JS는 테스트 파일을 프로덕션 코드로 오인), 4개 답변 전부를 **codex-judge(독립 에이전트, 이 세션과 무관)**에게 4개 서브신호 각각에 대해 엄격하게(스스로 판단하지 않고) 검증받았다(16개 판정 요청, 실제 정확한 문구 인용 요구).
+  - **실제 매칭 결과**: 판정받은 evidence_phrase가 아니라 답변 원문 전체를 기존 regex로 재검사해 실제 매치 여부를 코드로 직접 확인(judge의 판정을 그대로 믿지 않고 regex 매치는 별도 검증) — `self_error_recognition`: `too_trusted_browser`(너무\s*신뢰했) 2건, `naive_assumption`(안일하게\s*생각) 2건 → 각각 기존 1+신규 2=3으로 threshold 도달, **둘 다 confirmed 승격**. `reason_explanation`: `so_connector`(그래서) 4건 전부 매치 → 1+4=5, **confirmed 승격**. `new_judgment`: `now_looking_back`(지금\s*보니) 4건 전부 매치 → 1+4=5, **confirmed 승격**. `should_do_pattern`(해야\s*합니다)는 1건만 매치(어미가 "해야 한다고 생각합니다"라 정확히 안 걸린 케이스가 3건) → 1+1=2, **아직 candidate**(threshold 미달, 정직하게 승격 안 시킴). `concrete_improvement`는 기존 2개 패턴(`backend_limit_pattern`/`sanitize_pattern`)이 전부 특정 finding에 종속된 문구라 새 답변과 매치 자체가 안 됨 → 신규 패턴 `concrete_action_verb`(추가해야|확인해야|개선해야)를 4건 전부 매치로 새로 만들어 곧바로 **confirmed**(threshold 첫 승격에 4/3).
+  - **재검증**: `classify_answer()`로 이 4개 reflection 답변을 다시 채점한 결과 전부 `defended`(L1-style/reflection-style 둘 다), 대조군("그냥 그렇게 했습니다")은 전부 `surface` — risk-type 카테고리(tier-b-risk/architecture-diffusion 확인, repeated-pattern은 미검증)가 이제 실제로 표면/부분/방어 3단계를 구분한다.
+  - COST: `should_do_pattern`은 여전히 candidate로 남음(정직하게 미승격) — "해야 합니다" 정확한 종결어미가 아니라 "해야 한다고 생각합니다" 같은 변형이 실제 반성 답변에 더 흔할 수 있다는 신호. 5개 신규/승격 패턴 전부 이번에 내가 직접 작성한 4개 답변에서 나온 것이라 표본이 여전히 작음(언어당 1건) — 진짜 다양성은 실제 학생 답변이 쌓여야 확보됨(D64/D84가 이미 반복 지적한 한계와 동일 계보). codex-judge 16개 판정이 전부 true(관대함 우려 — "엄격하게 판단하라"고 명시했음에도 100% 통과율)라 판정 신뢰도 자체는 낮게 잡아야 함, 그래서 judge의 evidence_phrase를 그대로 믿지 않고 regex 매치를 코드로 별도 재검증하는 절차를 거쳤다(judge 판정=verdict만 신뢰, 실제 매치 여부=코드가 별도 확인).
+  - EXIT: `should_do_pattern`을 마저 승격하려면 "해야 한다고 생각합니다"류 어미까지 포괄하도록 정규식을 넓히거나(`해야\s*(합니다|한다고)`), 다른 출처에서 정확히 "해야 합니다"로 끝나는 반성 답변이 1건 더 나오면 자연히 넘어감. 7모델 벤치마크(D86/D87이 미룬 단계)는 이제 architecture-diffusion/tier-b-risk 카테고리에서도 의미 있는 에스컬레이션 데이터를 낼 수 있는 상태가 됐다.
+
 ## 다음 단계 (미해결)
 
 1. ~~판단 블록에 "프레임워크 관용 패턴 목록" 대조 필터 추가~~ — D5~D7로 완료(javascript만 실증, 나머지 언어는 빈 상태)
@@ -462,6 +629,7 @@ python3 pipeline/compare_methodologies.py
 17. ~~서브루브릭 4서브축의 고정 가중치를 재귀적으로 조정 가능하게~~ — D49(`subrubric_hook.py`)로 완료. 실측 데모로 `mitigation_present` 가중치를 discounted로 내린 뒤 실제 finding 2건의 버킷이 서로 다른 방향으로 바뀌는 것까지 확인. **신규**: discounted→trusted로 되돌리는 로직(aligned 누적 기반 복귀)이 아직 없어 한쪽 방향으로만 조정됨. 서브루브릭 가중치 조정과 idiom_hook/isolation_hook/reflection_hook의 재귀 로직 4개가 이제 전부 병렬로 존재하는데, 이들 사이의 실행 순서·상호작용(예: idiom_filter가 question_value를 덮어쓴 뒤에 subrubric 가중치가 다시 조정되면 어떤 순서로 재계산해야 하는지)은 아직 검토 안 함
 18. ~~`NVIDIA_API_KEY_1`을 확보해 라이브 실행~~ — **2026-07-06 완료(D58)**: 87개 모델 전수조사, 19개 모델이 tool_choice 100% 준수 확인. `nemotron-3-nano-omni-30b-a3b-reasoning`은 실제로 산문 응답(예견된 실패 경로가 라이브로 확인됨), `nemotron-3.3-super-49b-v1.5`는 tool_calls는 왔지만 arguments가 깨진 JSON(신규 실패 유형). Anthropic 대비 품질 비교는 여전히 미확인(ANTHROPIC_API_KEY 필요). 상세: [`SURVEY_RESULTS.md`](./SURVEY_RESULTS.md)
 19. **신규(D57)**: 새로 만든 "설계_논리"·"자기_수정" 2축은 아직 실제 학생/지원자 답변으로 단 한 건도 채점해본 적이 없음 — `auto_score_self_correction()`을 D37 실측 케이스(Bookshelf.jsx XSS 답변)에 돌려본 결과 1/5점(오류를 전혀 인정하지 않음)으로 나온 것도 그 케이스가 애초에 `reflection_signal.py` 재현율 문제의 예시였기 때문(D34 COST와 동일한 한계 — self_error_recognition confirmed 패턴이 1개뿐이라 과소탐지). 실제 다양한 답변으로 자동 초안과 사람 판정이 얼마나 어긋나는지 비교하는 게 다음 검증 순서
+20. **신규(D59)**: Depth Ladder 7단계 → FR-5.7의 L1~L5 이해단계 압축 규칙이 어디에도 정의돼 있지 않음(L1=What·L5=Transfer만 명명, L4=Trade-off는 예시로만 등장, L2·L3는 공백). 5축 채점 프레임워크도 FR스펙/`interview_rubric.py`/팀 ROAF 문서(`코드이해도_평가_질문및채점기준.md`) 3곳이 서로 다름(축 이름·척도 1~5 vs 1~3 모두 불일치). A안(김만서)/B안(박진용) 원본 문서도 로컬에 없어 팀 자체 하이브리드 권고(`TEAM_POC_SUMMARY.md`)를 당장 착수할 수 없음. 상세 근거와 회의 안건은 [`METHODOLOGY_AUDIT_HANDOFF.md`](./METHODOLOGY_AUDIT_HANDOFF.md) 참고 — 전부 팀 결정 필요, 코드로 해소 불가
 
 ## 발표용 라이브 데모 실행 순서 (검증됨)
 
