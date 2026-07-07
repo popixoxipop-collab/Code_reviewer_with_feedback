@@ -1,0 +1,59 @@
+{
+  "qwen/qwen3-next-80b-a3b-instruct": {
+    "tool_call_success_rate": 1.0,
+    "reference_set_coverage": {
+      "lms:useBooksQueries.ts": true,
+      "lms:Bookshelf.jsx": true,
+      "study_match:firebase.ts": true,
+      "study_match:Competitions.tsx": false
+    },
+    "coverage_rate": 0.75,
+    "mean_n_decision_points": 6.2,
+    "mean_elapsed_s": 29.6,
+    "reproducibility_count_stability": 0.5
+  },
+  "deepseek-ai/deepseek-v4-pro": {
+    "tool_call_success_rate": 1.0,
+    "reference_set_coverage": {
+      "lms:useBooksQueries.ts": false,
+      "study_match:firebase.ts": true,
+      "lms:Bookshelf.jsx": true,
+      "study_match:Competitions.tsx": false
+    },
+    "coverage_rate": 0.5,
+    "mean_n_decision_points": 10.5,
+    "mean_elapsed_s": 67.3,
+    "reproducibility_count_stability": 0.5
+  },
+  "z-ai/glm-5.2": {
+    "tool_call_success_rate": 0.0,
+    "reference_set_coverage": {},
+    "coverage_rate": null,
+    "mean_n_decision_points": null,
+    "mean_elapsed_s": null,
+    "reproducibility_count_stability": null
+  },
+  "minimaxai/minimax-m3": {
+    "tool_call_success_rate": 0.25,
+    "reference_set_coverage": {
+      "lms:useBooksQueries.ts": true
+    },
+    "coverage_rate": 1.0,
+    "mean_n_decision_points": 5.0,
+    "mean_elapsed_s": 105.0,
+    "reproducibility_count_stability": 0.0
+  },
+  "nvidia/nemotron-3-ultra-550b-a55b": {
+    "tool_call_success_rate": 0.75,
+    "reference_set_coverage": {
+      "study_match:firebase.ts": true,
+      "lms:useBooksQueries.ts": true,
+      "lms:Bookshelf.jsx": true,
+      "study_match:Competitions.tsx": true
+    },
+    "coverage_rate": 1.0,
+    "mean_n_decision_points": 7.2,
+    "mean_elapsed_s": 76.1,
+    "reproducibility_count_stability": 0.5
+  }
+}

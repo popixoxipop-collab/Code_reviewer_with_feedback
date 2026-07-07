@@ -1,3 +1,16 @@
 __pycache__/
 *.pyc
 full_survey_results.json
+track_a_results.json
+track_b_results.json
+track_a_run.log
+track_b_run.log
+benchmarks/grading_benchmark_raw.json
+benchmarks/meas02_benchmark_raw.json
+benchmarks/*.log
+deepseek_fill.log
+deepseek_track_a.json
+deepseek_track_b_fill.log
+deepseek_track_b.json
+mistral_large_fill.log
+mistral_large_track_b.json

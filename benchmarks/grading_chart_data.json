@@ -1,0 +1,37 @@
+{
+  "qwen/qwen3-next-80b-a3b-instruct": {
+    "tool_call_success_rate": 1.0,
+    "mae_vs_target_level": 0.333,
+    "mean_elapsed_s": 15.7,
+    "reproducibility_rate": 0.933,
+    "n_cases": 15
+  },
+  "deepseek-ai/deepseek-v4-pro": {
+    "tool_call_success_rate": 1.0,
+    "mae_vs_target_level": 0.427,
+    "mean_elapsed_s": 49.8,
+    "reproducibility_rate": 0.893,
+    "n_cases": 15
+  },
+  "z-ai/glm-5.2": {
+    "tool_call_success_rate": 0.0,
+    "mae_vs_target_level": null,
+    "mean_elapsed_s": null,
+    "reproducibility_rate": 0.0,
+    "n_cases": 0
+  },
+  "minimaxai/minimax-m3": {
+    "tool_call_success_rate": 1.0,
+    "mae_vs_target_level": 0.6,
+    "mean_elapsed_s": 74.7,
+    "reproducibility_rate": 0.853,
+    "n_cases": 15
+  },
+  "nvidia/nemotron-3-ultra-550b-a55b": {
+    "tool_call_success_rate": 0.867,
+    "mae_vs_target_level": 0.3,
+    "mean_elapsed_s": 56.7,
+    "reproducibility_rate": 0.817,
+    "n_cases": 14
+  }
+}
