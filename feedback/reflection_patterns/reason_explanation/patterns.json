@@ -4,8 +4,8 @@
     {
       "id": "so_connector",
       "regex": "그래서",
-      "status": "candidate",
-      "confirmations": 1
+      "status": "confirmed",
+      "confirmations": 5
     }
   ]
 }
