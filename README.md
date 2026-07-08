@@ -633,6 +633,14 @@ python3 pipeline/compare_methodologies.py
   - COST: 두 결과 다 이 세션 데이터로 재구성한 추정이지 HTTP 요청 타임스탬프 실측은 아니다(계측 안 해둠). 또한 "왜 걸렸는가"(자초한 버스트)는 설명해도 "왜 deepseek는 몇 분 만에 풀리고 mistral-large-3는 90분+에도 안 풀렸는가"(회복 시간 차이)는 여전히 설명 못함 — 두 모델 다 비슷하게 한도 근처였는데 회복은 갈렸으므로 모델별 정책 차이(D89 "D-cause" 가설 A/B) 자체는 여전히 미해결.
   - EXIT: (1) `nvidia_client.py`의 429 재시도에 지수 백오프 추가(vendored 코드라 원본 nvidia-build repo 우선 수정 후 재동기화 필요, D56 원칙) — 다음 벤치마크의 자초 버스트를 줄임. (2) `call_one()`에 실제 HTTP attempt 타임스탬프 계측 추가 — 다음엔 추정 아닌 실측 가능. 둘 다 핵심 오케스트레이션/vendored 코드 무수정 원칙과 상충해 이번 세션 범위 밖, 별도로 다룰 사안.
 
+- **D93** ([`benchmark_turn_engine_grading_multilang.py`](./benchmark_turn_engine_grading_multilang.py), [`TURN_ENGINE_GRADING_BENCHMARK_RESULTS.md`](./TURN_ENGINE_GRADING_BENCHMARK_RESULTS.md)) — Track A(질문생성)+Track B(FR-04-01 5축 채점)+turn_engine 적응형을 처음으로 통합(사용자 요청: "지금 셋이 따로 노는 OR 상태다, AND로 합쳐라")
+  - WHY: D89~D92는 turn_engine을 4언어×7모델로 돌렸지만 job 성공률/속도(Track A 성격)만 쟀다. Track B(5축 LLM-as-judge, `llm_interview_grader.py`)는 turn_engine과 결합된 적이 없고 애초에 4언어로 재실행된 적도 없었다(D80이 재실행한 건 Track A뿐). D89의 strong/weak 답변(8 findings, 재사용)에 **improving(신규)** 스크립트를 추가 — L1~L3는 weak 재사용, reflection 단계에서만 진짜 자기수정 답변으로 교체(risk-type 4건 신규 저작+오프라인검증, cognition-isolation 4건은 D89 strong 텍스트 재사용, `classify_answer()`가 레벨 무관 분류라 가능). `turn_engine._transcript_text()`(무수정)로 포맷한 전체 transcript를 `grade_answer()`에 전달, 같은 모델이 자기 transcript를 채점(기획명세서 확정 결정 그대로). 8 findings×3 scripts×7 models=168 job, 사용자 확인 하에 축소 없이 전체 진행.
+  - **핵심 결과**: 판정 결과 일치율 100%(D89와 동일 재확인). **자기수정 인식이 명확히 갈림** — 데이터 있는 4개 모델 전부 improving(2.38~3.67)이 weak(1.00~1.12)보다 뚜렷이 높고, 다른 축을 인플레이션 안 하고 자기수정 축만 선택적으로 높이는 사례가 흔함(qwen 스모크테스트: 자기수정=4, 나머지=1~2). Track B 정밀도(strong>weak 비율)는 llama-4-maverick/deepseek-v4-pro 100%, qwen 75%(cognition-isolation 2건만 strong=weak=1.00으로 미달, 원인 미확정).
+  - **신규 발견**: `step-3.5-flash`/`llama-4-maverick`에서 **Track B 5축 채점 도구 호출 시 tool_calls는 왔지만 arguments가 깨진 JSON**인 실패 모드를 처음 확인(gpt-oss-120b식 "자유서술로 응답"과 다른 유형 — 도구는 호출했는데 인자 문자열 자체가 파싱 불가). `llm_interview_grader.py` D63 COST가 예견했던 "5축 스키마가 커서 tool-calling 실패율이 오를 수 있다"가 실측으로 확인됨. `mistral-nemotron`은 이번엔 HTTP 500(D89 때는 400 DEGRADED) — 증상은 다르지만 서버측 가용성 문제라는 결론은 동일.
+  - COST: 실행 시점이 D89/D91과 달라 job 성공률이 전반적으로 낮음(deepseek 42%, gpt-oss 21%, nemotron 13%, mistral-large-3 0% — D91이 확인한 차단 지속). REPEATS=1이라 재현성 미측정. gpt-oss-120b/nemotron/mistral-large-3는 성공 표본이 너무 적어(5/3/0건) Track B 지표를 못 냄(n/a 정직 표시). JSON 파싱 실패의 원본 malformed 응답을 로깅 안 해둬 정확한 재현조건 미확정.
+  - EXIT: `call_one()`에 raw tool-call arguments 문자열 로깅 추가하면 JSON 파싱 버그 근본원인 확정 가능. qwen의 cognition-isolation 2건 미달 원인 조사 후보. REPEATS 늘려 재현성 측정은 여러 키 확보 후.
+
+
 ## 다음 단계 (미해결)
 
 1. ~~판단 블록에 "프레임워크 관용 패턴 목록" 대조 필터 추가~~ — D5~D7로 완료(javascript만 실증, 나머지 언어는 빈 상태)
