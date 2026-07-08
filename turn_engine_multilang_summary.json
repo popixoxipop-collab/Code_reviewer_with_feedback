@@ -1,0 +1,58 @@
+{
+  "qwen/qwen3-next-80b-a3b-instruct": {
+    "job_success_rate": 1.0,
+    "verdict_matches_expected_rate": 1.0,
+    "mean_elapsed_s": 55.1,
+    "mean_turns": 2.5,
+    "n_ok": 16,
+    "n_total": 16
+  },
+  "stepfun-ai/step-3.5-flash": {
+    "job_success_rate": 1.0,
+    "verdict_matches_expected_rate": 1.0,
+    "mean_elapsed_s": 9.3,
+    "mean_turns": 2.5,
+    "n_ok": 16,
+    "n_total": 16
+  },
+  "deepseek-ai/deepseek-v4-pro": {
+    "job_success_rate": 0.75,
+    "verdict_matches_expected_rate": 1.0,
+    "mean_elapsed_s": 57.7,
+    "mean_turns": 2.0,
+    "n_ok": 12,
+    "n_total": 16
+  },
+  "meta/llama-4-maverick-17b-128e-instruct": {
+    "job_success_rate": 0.75,
+    "verdict_matches_expected_rate": 1.0,
+    "mean_elapsed_s": 3.5,
+    "mean_turns": 2.0,
+    "n_ok": 12,
+    "n_total": 16
+  },
+  "openai/gpt-oss-120b": {
+    "job_success_rate": 0.375,
+    "verdict_matches_expected_rate": 1.0,
+    "mean_elapsed_s": 2.1,
+    "mean_turns": 1.0,
+    "n_ok": 6,
+    "n_total": 16
+  },
+  "mistralai/mistral-large-3-675b-instruct-2512": {
+    "job_success_rate": 0.188,
+    "verdict_matches_expected_rate": 1.0,
+    "mean_elapsed_s": 5.1,
+    "mean_turns": 1.0,
+    "n_ok": 3,
+    "n_total": 16
+  },
+  "mistralai/mistral-nemotron": {
+    "job_success_rate": 0.0,
+    "verdict_matches_expected_rate": null,
+    "mean_elapsed_s": null,
+    "mean_turns": null,
+    "n_ok": 0,
+    "n_total": 16
+  }
+}

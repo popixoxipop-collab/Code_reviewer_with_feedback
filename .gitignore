@@ -1,5 +1,6 @@
 __pycache__/
 *.pyc
+.env
 full_survey_results.json
 track_a_results.json
 track_b_results.json
