@@ -1,0 +1,19 @@
+{
+  "model": "mistralai/mistral-large-3-675b-instruct-2512",
+  "poll_interval_min": 5,
+  "max_total_min": 90,
+  "recovered": false,
+  "success_records": [],
+  "still_failing_after": [
+    "java:tier-b-risk:ImageSearchTool.java:secret:weak",
+    "javascript:tier-b-risk:requestWrapper.test.ts:weak",
+    "python:cognition-isolation:patterns.py:weak",
+    "java:cognition-isolation:Book.java:weak",
+    "java:cognition-isolation:Book.java:strong",
+    "javascript:cognition-isolation:Input.jsx:strong",
+    "javascript:cognition-isolation:Input.jsx:weak",
+    "python:architecture-diffusion:endpoint.py:weak",
+    "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:strong",
+    "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:weak"
+  ]
+}

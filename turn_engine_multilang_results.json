@@ -939,7 +939,7 @@
     "category": "tier-b-risk",
     "variant": "weak",
     "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 0.5
+    "elapsed_s": 0.6
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
