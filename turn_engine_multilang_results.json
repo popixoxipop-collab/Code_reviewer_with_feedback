@@ -506,12 +506,14 @@
   {
     "model": "deepseek-ai/deepseek-v4-pro",
     "label": "python:cognition-isolation:patterns.py:weak",
-    "ok": false,
+    "ok": true,
     "lang": "python",
     "category": "cognition-isolation",
     "variant": "weak",
-    "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 85.8
+    "verdict": "exhausted_at_cap",
+    "matches_expected": true,
+    "turns": 4,
+    "elapsed_s": 33.97
   },
   {
     "model": "deepseek-ai/deepseek-v4-pro",
@@ -528,12 +530,14 @@
   {
     "model": "deepseek-ai/deepseek-v4-pro",
     "label": "java:cognition-isolation:Book.java:weak",
-    "ok": false,
+    "ok": true,
     "lang": "java",
     "category": "cognition-isolation",
     "variant": "weak",
-    "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 57.2
+    "verdict": "exhausted_at_cap",
+    "matches_expected": true,
+    "turns": 4,
+    "elapsed_s": 27.72
   },
   {
     "model": "deepseek-ai/deepseek-v4-pro",
@@ -550,22 +554,26 @@
   {
     "model": "deepseek-ai/deepseek-v4-pro",
     "label": "javascript:cognition-isolation:Input.jsx:weak",
-    "ok": false,
+    "ok": true,
     "lang": "javascript",
     "category": "cognition-isolation",
     "variant": "weak",
-    "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 54.4
+    "verdict": "exhausted_at_cap",
+    "matches_expected": true,
+    "turns": 4,
+    "elapsed_s": 16.55
   },
   {
     "model": "deepseek-ai/deepseek-v4-pro",
     "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:weak",
-    "ok": false,
+    "ok": true,
     "lang": "c_cpp",
     "category": "cognition-isolation",
     "variant": "weak",
-    "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 74.0
+    "verdict": "exhausted_at_cap",
+    "matches_expected": true,
+    "turns": 4,
+    "elapsed_s": 35.6
   },
   {
     "model": "meta/llama-4-maverick-17b-128e-instruct",
@@ -946,22 +954,26 @@
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
     "label": "c_cpp:architecture-diffusion:UnitTest.h:strong",
-    "ok": false,
+    "ok": true,
     "lang": "c_cpp",
     "category": "architecture-diffusion",
     "variant": "strong",
-    "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 0.5
+    "verdict": "defended",
+    "matches_expected": true,
+    "turns": 1,
+    "elapsed_s": 2.92
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
     "label": "c_cpp:architecture-diffusion:UnitTest.h:weak",
-    "ok": false,
+    "ok": true,
     "lang": "c_cpp",
     "category": "architecture-diffusion",
     "variant": "weak",
-    "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 0.5
+    "verdict": "exhausted_at_cap",
+    "matches_expected": true,
+    "turns": 4,
+    "elapsed_s": 13.94
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
@@ -971,17 +983,19 @@
     "category": "cognition-isolation",
     "variant": "weak",
     "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 0.4
+    "elapsed_s": 0.5
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
     "label": "python:cognition-isolation:patterns.py:strong",
-    "ok": false,
+    "ok": true,
     "lang": "python",
     "category": "cognition-isolation",
     "variant": "strong",
-    "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 0.4
+    "verdict": "defended",
+    "matches_expected": true,
+    "turns": 1,
+    "elapsed_s": 21.29
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
@@ -1011,7 +1025,7 @@
     "category": "cognition-isolation",
     "variant": "strong",
     "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 0.4
+    "elapsed_s": 0.7
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
@@ -1021,7 +1035,7 @@
     "category": "cognition-isolation",
     "variant": "weak",
     "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 0.4
+    "elapsed_s": 0.5
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
@@ -1031,7 +1045,7 @@
     "category": "architecture-diffusion",
     "variant": "weak",
     "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 2.5
+    "elapsed_s": 0.4
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
@@ -1076,8 +1090,8 @@
     "lang": "c_cpp",
     "category": "cognition-isolation",
     "variant": "strong",
-    "error": "All 1 keys saturated for model 'mistralai/mistral-large-3-675b-instruct-2512' (40/min each); gave up after 30.0s",
-    "elapsed_s": 30.2
+    "error": "HTTP Error 429: Too Many Requests",
+    "elapsed_s": 0.5
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
@@ -1086,8 +1100,8 @@
     "lang": "c_cpp",
     "category": "cognition-isolation",
     "variant": "weak",
-    "error": "All 1 keys saturated for model 'mistralai/mistral-large-3-675b-instruct-2512' (40/min each); gave up after 30.0s",
-    "elapsed_s": 30.3
+    "error": "HTTP Error 429: Too Many Requests",
+    "elapsed_s": 0.5
   },
   {
     "model": "mistralai/mistral-nemotron",

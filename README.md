@@ -614,6 +614,12 @@ python3 pipeline/compare_methodologies.py
   - COST: REPEATS=1이라 반복 안정성(재현성)은 미측정. `repeated-pattern` 카테고리는 4언어 전부 finding 0건이라 이번에도 스코프 제외(`score_findings.py`의 `find_repeated_pattern_files()`가 Firebase 전용 `"onSnapshot"` 하드코딩이라 원천적으로 없음, 공유 판단 블록을 건드리는 별개 범위 큰 작업). 레벨별(L1/L2/L3/reflection) 정밀 스키마 준수율은 못 냄(`run_decision_point()`가 중간 레벨 실패 시 그때까지의 transcript를 버리고 예외를 던짐 — job 단위 성공/실패로만 집계). `nvidia-keypool-guard.py` 훅이 이번엔 발동 안 함(커맨드 텍스트 자체엔 flagship 모델명/`ThreadPoolExecutor`가 없고 모듈 내부에만 있어 훅의 정적 텍스트 탐지가 못 잡음 — D83이 이미 명시한 휴리스틱 한계와 같은 종류의 사각지대).
   - EXIT: 여러 API 키로 재검증하면 deepseek-v4-pro/mistral-large-3의 실제 job 성공률을 다시 잴 수 있음(지금 수치는 단일 키 한도 아티팩트). mistral-nemotron은 NVIDIA 플랫폼 상태가 복구되면 재실행. REPEATS를 늘려 반복 안정성까지 보려면 이 스크립트를 그대로 재실행하되 `FINDINGS` 리스트는 무수정 재사용 가능.
 
+- **D90** ([`turn_engine_multilang_results.json`](./turn_engine_multilang_results.json), [`TURN_ENGINE_BENCHMARK_RESULTS.md`](./TURN_ENGINE_BENCHMARK_RESULTS.md)) — D89 EXIT 실행: 429로 실패한 job(deepseek-v4-pro 4건, mistral-large-3 13건)을 같은 단일 키로 순차 재시도(사용자 요청)
+  - WHY: D89가 "여러 API 키로 재검증하면 실제 job 성공률을 다시 잴 수 있음"이라고 남긴 EXIT를, 새 키를 구하는 대신 우선 같은 단일 키로 시간을 두고 순차 재시도(모델별 순차 + 8초 간격, 최대 3라운드·라운드 사이 30초 대기, `NVIDIA_SINGLE_KEY_OK=1`로 `nvidia-keypool-guard.py` bypass)해 얼마나 회복되는지부터 확인했다.
+  - **결과**: `deepseek-v4-pro`는 4건 전부 라운드 1에서 즉시 성공(75%→**100%**) — D77/D78이 이미 정정한 "즉시 429=접근불가 아니라 일시적 쿼터 소진" 패턴 재확인(D89 실행과 이 재시도 사이 문서 작성·커밋·아티팩트 갱신으로 자연스럽게 수 분 경과, 분당 슬라이딩 윈도우가 풀림). `mistral-large-3`는 13건 중 3건만 회복(19%→**38%**), 나머지 10건은 3라운드 내내 정확히 같은 job이 매번 0.4~0.7초 즉발 실패 — 응답시간이 0에 수렴하고 라운드를 거듭해도 안 풀리는 패턴은 분당 한도가 아니라 `nvidia-keypool-guard.py` 훅이 이미 기록한 "시간 단위로 추정되는 한도"(2026-07-07 최초 발견 당시 40~70분 소요)에 해당 — 이번 재시도는 총 10분이 채 안 걸려 애초에 그 한도가 풀리기엔 부족한 시간이었다. 성공 65→**72건**(112건 중)으로 늘었지만 판정 결과 일치율은 여전히 **100%**(신규 성공분도 전부 기대대로 defended/exhausted_at_cap).
+  - COST: `mistral-large-3`의 38%는 여전히 단일 키·짧은 재시도 창 안에서 얻은 하한값이라 이 순위를 최종으로 인용하면 안 됨(D69/D77 원칙 재확인). `gpt-oss-120b`(tool_choice 미준수)·`mistral-nemotron`(서버 DEGRADED)은 429가 아니라 재시도로 해결될 성질이 아니라 대상에서 제외.
+  - EXIT: `mistral-large-3`를 더 회복시키려면 (1) 40~70분 이상 대기 후 남은 10건만 재시도, 또는 (2) 팀 키 풀을 확보해 `NVIDIA_API_KEY_2`부터 추가(권장, 이 모델의 시간 단위 한도 자체를 우회 가능). 둘 다 이번 세션 범위 밖.
+
 ## 다음 단계 (미해결)
 
 1. ~~판단 블록에 "프레임워크 관용 패턴 목록" 대조 필터 추가~~ — D5~D7로 완료(javascript만 실증, 나머지 언어는 빈 상태)
