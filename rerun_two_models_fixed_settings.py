@@ -41,7 +41,15 @@ _specretry = importlib.util.spec_from_file_location("retry40", os.path.join(REPO
 retry40 = importlib.util.module_from_spec(_specretry)
 _specretry.loader.exec_module(retry40)
 
-RPM_CAP = 30
+# D94c: long-running rerun should mimic the single-call diagnosis more closely.
+# A single API key + long-latency models + 4 workers pushed llama-3.3-70b back
+# into worker-queue overload. Run both models effectively serially, with a lower
+# RPM cap, so timeout/max_tokens changes can be evaluated without extra burst.
+RPM_CAP = 12
+LLAMA_TIMEOUT_S = 360.0
+LLAMA_WORKERS = 1
+NEMOTRON_TIMEOUT_S = 180.0
+NEMOTRON_WORKERS = 1
 
 
 def _is_dns_failure(row):
@@ -100,13 +108,38 @@ def main():
 
     all_new = []
 
-    print(f"=== llama-3.3-70b-instruct: {len(jobs_llama)} jobs (timeout_s=240, max_tokens=512 기본) ===", flush=True)
-    d94.CLIENT = retry40.RateLimitedClient(NvidiaRotatingClient(pool=pool, timeout_s=240.0), rpm=RPM_CAP)
-    all_new.extend(run_concurrent(jobs_llama, lambda j: call_one_with_tokens(j, 512), max_workers=4, progress=print_progress))
+    print(
+        f"=== llama-3.3-70b-instruct: {len(jobs_llama)} jobs "
+        f"(timeout_s={LLAMA_TIMEOUT_S:.0f}, max_tokens=512, workers={LLAMA_WORKERS}) ===",
+        flush=True,
+    )
+    d94.CLIENT = retry40.RateLimitedClient(NvidiaRotatingClient(pool=pool, timeout_s=LLAMA_TIMEOUT_S), rpm=RPM_CAP)
+    all_new.extend(
+        run_concurrent(
+            jobs_llama,
+            lambda j: call_one_with_tokens(j, 512),
+            max_workers=LLAMA_WORKERS,
+            progress=print_progress,
+        )
+    )
 
-    print(f"\n=== nemotron-super-49b-v1.5: {len(jobs_nemotron)} jobs (timeout_s=120 기본, max_tokens=2048) ===", flush=True)
-    d94.CLIENT = retry40.RateLimitedClient(NvidiaRotatingClient(pool=pool, timeout_s=120.0), rpm=RPM_CAP)
-    all_new.extend(run_concurrent(jobs_nemotron, lambda j: call_one_with_tokens(j, 2048), max_workers=4, progress=print_progress))
+    print(
+        f"\n=== nemotron-super-49b-v1.5: {len(jobs_nemotron)} jobs "
+        f"(timeout_s={NEMOTRON_TIMEOUT_S:.0f}, max_tokens=2048, workers={NEMOTRON_WORKERS}) ===",
+        flush=True,
+    )
+    d94.CLIENT = retry40.RateLimitedClient(
+        NvidiaRotatingClient(pool=pool, timeout_s=NEMOTRON_TIMEOUT_S),
+        rpm=RPM_CAP,
+    )
+    all_new.extend(
+        run_concurrent(
+            jobs_nemotron,
+            lambda j: call_one_with_tokens(j, 2048),
+            max_workers=NEMOTRON_WORKERS,
+            progress=print_progress,
+        )
+    )
 
     if all_new and all(not r["ok"] for r in all_new) and all(_is_dns_failure(r) for r in all_new):
         raise RuntimeError(

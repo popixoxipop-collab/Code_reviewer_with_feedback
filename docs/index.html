@@ -423,6 +423,19 @@
     </section>
 
     <section class="panel">
+      <h2>D94b Rerun Status</h2>
+      <p>
+        두 문제 모델 재실행 상태는 아래 JSON 피드로 갱신됩니다. 장기 루프가 끝나면 이 섹션이
+        최종 수치로 바뀝니다.
+      </p>
+      <div id="rerun-status" class="issue">
+        <span class="badge">Loading</span>
+        <h3>Status feed is being loaded</h3>
+        <p>잠시 후 재실행 상태가 표시됩니다.</p>
+      </div>
+    </section>
+
+    <section class="panel">
       <h2>Repository Materials</h2>
       <div class="table-wrap">
         <table>
@@ -470,5 +483,62 @@
       </p>
     </section>
   </main>
+  <script>
+    async function loadRerunStatus() {
+      const box = document.getElementById("rerun-status");
+      if (!box) return;
+      try {
+        const res = await fetch("./d94-rerun-status.json?ts=" + Date.now(), { cache: "no-store" });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const data = await res.json();
+        const badge = data.status || "unknown";
+        const notes = Array.isArray(data.notes) && data.notes.length
+          ? `<ul>${data.notes.map((n) => `<li>${n}</li>`).join("")}</ul>`
+          : "";
+        const models = data.models
+          ? Object.entries(data.models).map(([name, row]) => `
+              <tr>
+                <td><code>${name}</code></td>
+                <td>${row.n_ok ?? 0} / ${row.n_total ?? 24}</td>
+                <td>${row.job_success_rate_pct ?? "n/a"}</td>
+                <td>${row.mean_elapsed_s ?? "n/a"}</td>
+                <td>${row.top_error_summary || "n/a"}</td>
+              </tr>
+            `).join("")
+          : "";
+        const table = models ? `
+          <div class="table-wrap" style="margin-top:16px">
+            <table>
+              <thead>
+                <tr>
+                  <th>Model</th>
+                  <th>Jobs</th>
+                  <th>Success</th>
+                  <th>Mean Elapsed</th>
+                  <th>Top Errors</th>
+                </tr>
+              </thead>
+              <tbody>${models}</tbody>
+            </table>
+          </div>
+        ` : "";
+        box.innerHTML = `
+          <span class="badge">${badge}</span>
+          <h3>${data.headline || "D94b rerun status"}</h3>
+          <p>${data.message || ""}</p>
+          <p><strong>Updated:</strong> ${data.updated_at || "n/a"}</p>
+          ${notes}
+          ${table}
+        `;
+      } catch (err) {
+        box.innerHTML = `
+          <span class="badge">unavailable</span>
+          <h3>Rerun status feed could not be loaded</h3>
+          <p>${String(err)}</p>
+        `;
+      }
+    }
+    loadRerunStatus();
+  </script>
 </body>
 </html>
