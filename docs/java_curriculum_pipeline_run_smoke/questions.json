@@ -1,0 +1,68 @@
+{
+  "questions": [
+    {
+      "unit": "Unit 01",
+      "question": "Java의 WORA(Write Once, Run Anywhere) 원칙이 실제로 작동하려면 JVM과 JDK가 각각 어떤 역할을 해야 하는가? 만약 사용자가 JDK를 설치하지 않고 JRE만 설치했다면, Java 프로그램을 개발할 수 있는가? 왜 그런가?",
+      "source_node_ids": [
+        "concepts:01:2",
+        "concepts:01:3",
+        "concepts:01:19",
+        "concepts:01:20"
+      ],
+      "source_pages": [
+        4,
+        13
+      ],
+      "rationale": "이 질문은 플랫폼 독립성의 핵심 메커니즘을 이해하기 위해 JVM, JDK, JRE 간의 역할 차이를 비교하고, 개발과 실행 환경의 구분을 요구한다. 단순한 정의 암기보다는 시스템 구성 요소 간의 관계를 추론하게 한다.",
+      "good_answer_signal": "JVM은 바이트코드 실행을 담당하고, JDK는 컴파일러를 포함해 개발에 필수적이며, JRE는 실행만 가능하므로 개발은 불가능하다는 점을 명확히 설명하는 것.",
+      "common_gap": "JDK와 JRE를 동일시하거나, JVM이 코드를 컴파일한다고 오해하는 것. 개발 환경과 실행 환경의 구분을 놓치는 경우가 많음."
+    },
+    {
+      "unit": "Unit 01",
+      "question": "main 메소드의 선언이 public static void main(String[] args)여야만 하는 이유는 무엇인가? 만약 public을 빼면 JVM은 어떻게 반응할까? 이는 Java의 실행 메커니즘과 어떤 관계가 있는가?",
+      "source_node_ids": [
+        "concepts:01:25",
+        "concepts:01:24"
+      ],
+      "source_pages": [
+        23,
+        22
+      ],
+      "rationale": "main 메소드의 접근 제어자, 정적 특성, 반환 타입을 요구하는 것은 JVM이 클래스를 로드하고 진입점을 찾는 방식과 직접 연결된다. 단순한 문법 암기보다 실행 시스템의 설계 원리를 탐구하게 한다.",
+      "good_answer_signal": "public은 JVM이 외부에서 접근 가능하게 하기 위함, static은 객체 생성 없이 클래스 로드 즉시 호출 가능하게 하기 위함, void는 반환값이 필요 없기 때문임을 설명하며, JVM의 클래스 로딩 메커니즘과 연결하는 것.",
+      "common_gap": "public을 생략해도 동작할 것이라 생각하거나, static이 없어도 JVM이 자동으로 인스턴스를 생성한다고 오해하는 것."
+    },
+    {
+      "unit": "Unit 01",
+      "question": "System.out.println(\"Hello\\nWorld\")과 System.out.print(\"Hello\\nWorld\")의 출력 결과는 어떻게 다른가? 이스케이프 문자 \\n의 역할이 println의 기능과 어떻게 중복되거나 보완되는가? 이 차이를 이해하지 못하면 어떤 실수를 범할 수 있는가?",
+      "source_node_ids": [
+        "concepts:01:26",
+        "code_examples:01:3",
+        "cautions:01:1"
+      ],
+      "source_pages": [
+        24,
+        25,
+        27
+      ],
+      "rationale": "println과 print의 차이, 그리고 \\n의 역할을 혼동하는 것은 초보자에게 흔한 오류이며, 이 질문은 출력 동작의 세부적인 제어와 메서드 설계 의도를 비교하게 한다.",
+      "good_answer_signal": "println은 자동으로 개행을 추가하고, \\n은 문자열 내에서 수동 개행을 삽입함. print + \\n은 println과 동일한 결과를 내지만, println은 코드가 더 간결하고 의도가 명확하다는 점을 설명함.",
+      "common_gap": "println이 \\n을 자동으로 포함한다고 생각하여 \\n을 중복 사용하거나, print와 \\n의 조합이 println과 동일하다고 오해하는 것."
+    },
+    {
+      "unit": "Unit 01",
+      "question": "Java가 C++보다 메모리 관리가 안전하다고 하지만, JVM이 메모리를 자동으로 관리한다고 해서 메모리 누수(Memory Leak)가 발생할 수 없는가? 예를 들어, static Collection에 무한히 객체를 추가하면 어떤 문제가 발생할 수 있는가? 이는 Java의 '안전성'이 무엇을 의미하는지에 대한 오해를 드러내는가?",
+      "source_node_ids": [
+        "concepts:01:8",
+        "concepts:01:18"
+      ],
+      "source_pages": [
+        7,
+        13
+      ],
+      "rationale": "Java의 메모리 관리가 자동이라는 일반적 인식을 깨고, GC가 작동하더라도 참조가 지속되면 메모리 누수가 발생할 수 있음을 탐구함으로써, '안전성'이 완전한 보호가 아니라 관리 방식의 차이임을 이해하게 한다.",
+      "good_answer_signal": "GC는 사용되지 않는 객체를 정리하지만, static 변수가 객체를 계속 참조하면 그 객체는 GC 대상이 되지 않아 메모리 누수가 발생할 수 있음을 설명하고, 이는 '자동'이 '무조건 안전'이 아님을 보여줌.",
+      "common_gap": "Java는 메모리 누수가 절대 발생하지 않는 언어라고 오해하거나, GC가 모든 문제를 해결한다고 단정하는 것."
+    }
+  ]
+}

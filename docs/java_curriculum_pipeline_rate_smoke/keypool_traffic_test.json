@@ -1,0 +1,85 @@
+{
+  "keys": 7,
+  "capacity_per_minute": 40,
+  "theoretical_capacity_per_model_per_60s": 280,
+  "acquired_without_wait": 280,
+  "extra_request_blocked": true,
+  "extra_request_error": "KeyPoolExhausted: All 7 keys saturated for model 'traffic-test/model' (40/min each); gave up after 0.001s",
+  "rate_audit": {
+    "policy": {
+      "capacity_per_key_per_model_per_60s": 40,
+      "key_slots": 7,
+      "aggregate_capacity_per_model_per_60s": 280,
+      "window_s": 60.0
+    },
+    "event_count": 280,
+    "slot_model_windows": {
+      "NVIDIA_API_KEY_1::traffic-test/model": {
+        "slot": "NVIDIA_API_KEY_1",
+        "model": "traffic-test/model",
+        "calls": 40,
+        "max_calls_in_any_60s": 40,
+        "limit_per_60s": 40,
+        "within_limit": true
+      },
+      "NVIDIA_API_KEY_2::traffic-test/model": {
+        "slot": "NVIDIA_API_KEY_2",
+        "model": "traffic-test/model",
+        "calls": 40,
+        "max_calls_in_any_60s": 40,
+        "limit_per_60s": 40,
+        "within_limit": true
+      },
+      "NVIDIA_API_KEY_3::traffic-test/model": {
+        "slot": "NVIDIA_API_KEY_3",
+        "model": "traffic-test/model",
+        "calls": 40,
+        "max_calls_in_any_60s": 40,
+        "limit_per_60s": 40,
+        "within_limit": true
+      },
+      "NVIDIA_API_KEY_4::traffic-test/model": {
+        "slot": "NVIDIA_API_KEY_4",
+        "model": "traffic-test/model",
+        "calls": 40,
+        "max_calls_in_any_60s": 40,
+        "limit_per_60s": 40,
+        "within_limit": true
+      },
+      "NVIDIA_API_KEY_5::traffic-test/model": {
+        "slot": "NVIDIA_API_KEY_5",
+        "model": "traffic-test/model",
+        "calls": 40,
+        "max_calls_in_any_60s": 40,
+        "limit_per_60s": 40,
+        "within_limit": true
+      },
+      "NVIDIA_API_KEY_6::traffic-test/model": {
+        "slot": "NVIDIA_API_KEY_6",
+        "model": "traffic-test/model",
+        "calls": 40,
+        "max_calls_in_any_60s": 40,
+        "limit_per_60s": 40,
+        "within_limit": true
+      },
+      "NVIDIA_API_KEY_7::traffic-test/model": {
+        "slot": "NVIDIA_API_KEY_7",
+        "model": "traffic-test/model",
+        "calls": 40,
+        "max_calls_in_any_60s": 40,
+        "limit_per_60s": 40,
+        "within_limit": true
+      }
+    },
+    "model_windows": {
+      "traffic-test/model": {
+        "calls": 280,
+        "max_calls_in_any_60s": 280,
+        "aggregate_limit_per_60s": 280,
+        "within_aggregate_limit": true
+      }
+    },
+    "within_policy": true
+  },
+  "pass": true
+}

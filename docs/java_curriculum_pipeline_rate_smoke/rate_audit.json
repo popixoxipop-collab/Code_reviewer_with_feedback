@@ -1,0 +1,28 @@
+{
+  "policy": {
+    "capacity_per_key_per_model_per_60s": 40,
+    "key_slots": 7,
+    "aggregate_capacity_per_model_per_60s": 280,
+    "window_s": 60.0
+  },
+  "event_count": 1,
+  "slot_model_windows": {
+    "NVIDIA_API_KEY_1::qwen/qwen3-next-80b-a3b-instruct": {
+      "slot": "NVIDIA_API_KEY_1",
+      "model": "qwen/qwen3-next-80b-a3b-instruct",
+      "calls": 1,
+      "max_calls_in_any_60s": 1,
+      "limit_per_60s": 40,
+      "within_limit": true
+    }
+  },
+  "model_windows": {
+    "qwen/qwen3-next-80b-a3b-instruct": {
+      "calls": 1,
+      "max_calls_in_any_60s": 1,
+      "aggregate_limit_per_60s": 280,
+      "within_aggregate_limit": true
+    }
+  },
+  "within_policy": true
+}

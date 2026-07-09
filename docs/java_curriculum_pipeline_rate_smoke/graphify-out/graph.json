@@ -1,0 +1,16 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {
+    "name": "java_curriculum_page_grounded_graph",
+    "schema": "graphify-compatible node-link"
+  },
+  "nodes": [
+    {
+      "id": "doc:ai_java",
+      "label": "AI_JAVA_교안.pdf",
+      "type": "document"
+    }
+  ],
+  "links": []
+}

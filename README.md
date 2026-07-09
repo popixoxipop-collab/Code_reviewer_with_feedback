@@ -649,6 +649,11 @@ python3 pipeline/compare_methodologies.py
   - COST: 재시도로도 회복 안 된 원인 진단은 위 2개 모델에 한정(나머지 6개: gpt-oss-120b/gpt-oss-20b는 tool_choice 미준수로 D66/D80/D89 계보와 동일해 재진단 불필요, mistral-nemotron/mistral-large-3/kimi-k2.6/glm-5.2는 미진단). REPEATS=1(재현성 미측정).
   - EXIT: `llama-3.3-70b-instruct`는 다른 시간대 재시도나 client timeout을 200s+로 늘리면 회복 가능성 높음(진단으로 확인된 워커 과부하가 상시가 아닐 수 있음). `nemotron-super-49b-v1.5`는 `max_tokens`를 1500~2000 이상으로 늘려 재실행하면 reasoning 트레이스를 다 쓰고 tool call까지 도달할 가능성 있음 — 둘 다 사용자 확인 후 재실행 후보.
 
+- **D95** ([`scripts/java_curriculum_nvidia_pipeline.py`](./scripts/java_curriculum_nvidia_pipeline.py), [`scripts/nvidia_keypool_traffic_test.py`](./scripts/nvidia_keypool_traffic_test.py), [`docs/JAVA_CURRICULUM_NVIDIA_PIPELINE.md`](./docs/JAVA_CURRICULUM_NVIDIA_PIPELINE.md)) — Java 교안 PDF를 10페이지 chunk로 나눠 NVIDIA Build 병렬 호출 + page provenance state + refine loop + graphify-compatible graph + graph-grounded question generation까지 구현.
+  - WHY: Claude Workflow에 남아 있던 Java 교안 분석 흐름을 repo에서 재실행 가능한 코드로 고정했다. `NVIDIA_API_KEY_1..N` 로테이션은 기존 `feedback/nvidia_key_pool.py`와 동일한 sliding-window acquire path를 사용하며, 새 wrapper는 키 값 없이 slot별 사용량과 60초 최대치를 `rate_audit.json`에 기록한다.
+  - 검증: `docs/java_curriculum_pipeline_run_smoke/`는 실제 NVIDIA Build API로 3개 chunk를 처리해 2개 unit, 35개 concept/code/caution, 65 nodes/108 links graph, 4개 source-page 질문을 생성했다. `docs/java_curriculum_pipeline_rate_smoke/keypool_traffic_test.json`은 로컬 traffic test에서 7 keys × 40RPM = 280개를 같은 60초 창에 즉시 예약하고 281번째를 `KeyPoolExhausted`로 차단함을 확인했다.
+  - COST: 251페이지 전체 실행은 NVIDIA 모델/서버 지연과 JSON 응답 안정성에 막혔다. `qwen/qwen3-next-80b-a3b-instruct`는 저병렬에서 대부분 chunk를 처리했지만 refine JSON 파싱 실패로 중단됐고, 고병렬에서는 504/timeout이 발생했다. 즉 현재 병목은 로컬 40×7 RPM 게이트가 아니라 모델 서빙 지연·응답 형식 안정성이다.
+
 
 ## 다음 단계 (미해결)
 

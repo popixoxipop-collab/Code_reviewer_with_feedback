@@ -1,0 +1,59 @@
+[
+  {
+    "iteration": 1,
+    "status": "needs_refine",
+    "coverage_summary": "Unit 01 covers foundational Java concepts well, but Unit 02 duplicates content from Unit 01 without adding new concepts or page provenance for core topics like variables and data types.",
+    "issues": [
+      {
+        "severity": "high",
+        "issue": "Unit 02 lacks any new concept nodes for variables, data types, String, or type conversion despite claiming to cover them; all concepts are duplicates from Unit 01.",
+        "source_pages": [
+          29,
+          30
+        ],
+        "suggested_fix": "Add new concept nodes for '변수 정의', '기본 자료형 (int, double, boolean 등)', 'String 클래스 이해', '형 변환 (casting)' with evidence and source_pages from pages 29-30."
+      },
+      {
+        "severity": "high",
+        "issue": "Concepts like 'Main 클래스', 'main 메소드', 'System.out.println()' are duplicated across Unit 01 and Unit 02, violating unit boundary clarity and causing redundancy.",
+        "source_pages": [
+          22,
+          23,
+          24
+        ],
+        "suggested_fix": "Remove these concepts from Unit 02; they belong only in Unit 01. Unit 02 should focus exclusively on variables and data types."
+      },
+      {
+        "severity": "medium",
+        "issue": "Concept 'Java 정의' and 'JVM 역할' have overlapping evidence; both cite JVM for platform independence without distinguishing definition from function.",
+        "source_pages": [
+          4
+        ],
+        "suggested_fix": "Merge 'Java 정의' and 'WORA' into one concept 'Java 및 WORA 원리', and separate 'JVM 역할' as a distinct technical function with clearer evidence."
+      },
+      {
+        "severity": "low",
+        "issue": "Source pages for 'Java 활용 분야 - 웹 서비스' and others include page 8, but chunk_range '1-10' is inconsistent with page 8's likely content focus.",
+        "source_pages": [
+          8
+        ],
+        "suggested_fix": "Update chunk_range to reflect actual content range on page 8 (e.g., '15-25') or remove chunk_range if not verifiable."
+      },
+      {
+        "severity": "medium",
+        "issue": "Concept 'JVM' appears twice: once in Unit 01 as 'JVM 역할' and again as 'JVM' on page 13 with near-identical content.",
+        "source_pages": [
+          4,
+          13
+        ],
+        "suggested_fix": "Merge both JVM concepts into one node 'JVM 역할' with evidence from both pages 4 and 13, and remove the duplicate."
+      }
+    ],
+    "checklist": {
+      "all_concepts_have_pages": false,
+      "unit_boundaries_clear": false,
+      "duplicates_detected": true,
+      "question_generation_ready": false
+    }
+  }
+]
