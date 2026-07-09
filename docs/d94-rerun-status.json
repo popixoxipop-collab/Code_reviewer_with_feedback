@@ -1,11 +1,14 @@
 {
-  "status": "pending",
-  "headline": "D94b two-model rerun has not started yet",
-  "message": "This feed will be updated when the low-concurrency long-running rerun starts.",
-  "updated_at": "2026-07-09T00:00:00Z",
+  "status": "running",
+  "headline": "D94b two-model rerun is in progress",
+  "message": "A low-concurrency long loop is currently trying to recover the two blocked models.",
+  "updated_at": "2026-07-09T00:37:21Z",
+  "started_at": "2026-07-09T00:37:21Z",
+  "source_commit": "fb63371",
   "notes": [
     "Targets: meta/llama-3.3-70b-instruct, nvidia/llama-3.3-nemotron-super-49b-v1.5",
-    "Planned settings: llama timeout increase, nemotron max_tokens increase, both at very low concurrency"
+    "Config: llama timeout 360s / workers 1 / rpm 12",
+    "Config: nemotron timeout 180s / max_tokens 2048 / workers 1 / rpm 12"
   ],
   "models": {}
 }
