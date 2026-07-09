@@ -265,24 +265,24 @@
   },
   "nvidia/llama-3.3-nemotron-super-49b-v1.5": {
     "python": {
-      "job": 0.0,
-      "n": "0/6",
-      "prec": null
+      "job": 0.833,
+      "n": "5/6",
+      "prec": 0.0
     },
     "java": {
-      "job": 0.0,
-      "n": "0/6",
-      "prec": null
+      "job": 1.0,
+      "n": "6/6",
+      "prec": 0.0
     },
     "javascript": {
-      "job": 0.0,
-      "n": "0/6",
-      "prec": null
+      "job": 1.0,
+      "n": "6/6",
+      "prec": 0.0
     },
     "c_cpp": {
-      "job": 0.0,
-      "n": "0/6",
-      "prec": null
+      "job": 1.0,
+      "n": "6/6",
+      "prec": 0.0
     }
   },
   "nvidia/nemotron-3-super-120b-a12b": {
@@ -309,13 +309,13 @@
   },
   "meta/llama-3.3-70b-instruct": {
     "python": {
-      "job": 0.0,
-      "n": "0/6",
+      "job": 0.167,
+      "n": "1/6",
       "prec": null
     },
     "java": {
-      "job": 0.0,
-      "n": "0/6",
+      "job": 0.333,
+      "n": "2/6",
       "prec": null
     },
     "javascript": {

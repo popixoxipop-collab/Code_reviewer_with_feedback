@@ -1,14 +1,35 @@
 {
-  "status": "running",
-  "headline": "D94b two-model rerun is in progress",
-  "message": "A low-concurrency long loop is currently trying to recover the two blocked models.",
-  "updated_at": "2026-07-09T01:03:59Z",
+  "status": "completed",
+  "headline": "D94b two-model rerun completed",
+  "message": "Low-concurrency rerun finished and the repository JSON artifacts were refreshed.",
+  "updated_at": "2026-07-09T05:13:22Z",
   "started_at": "2026-07-09T00:58:11Z",
-  "source_commit": "cf7afd6",
+  "source_commit": "15c47a6",
   "notes": [
-    "Targets: meta/llama-3.3-70b-instruct, nvidia/llama-3.3-nemotron-super-49b-v1.5",
-    "Config: llama timeout 600s / workers 1 / rpm 12 / round-robin keys 1..7",
-    "Config: nemotron timeout 300s / max_tokens 2048 / workers 1 / rpm 12 / round-robin keys 1..7"
+    "llama-3.3-70b-instruct: timeout increase + single-worker run",
+    "nvidia/llama-3.3-nemotron-super-49b-v1.5: max_tokens=2048 + single-worker run",
+    "Local log: d94b_long_loop_20260709T005811Z.log"
   ],
-  "models": {}
+  "models": {
+    "meta/llama-3.3-70b-instruct": {
+      "n_ok": 3,
+      "n_total": 24,
+      "job_success_rate_pct": "12.5%",
+      "mean_elapsed_s": 463.1,
+      "track_b_precision": null,
+      "self_correction_improving": null,
+      "self_correction_weak": 1.0,
+      "top_error_summary": "21x HTTP Error 504: Gateway Timeout"
+    },
+    "nvidia/llama-3.3-nemotron-super-49b-v1.5": {
+      "n_ok": 23,
+      "n_total": 24,
+      "job_success_rate_pct": "95.8%",
+      "mean_elapsed_s": 127.2,
+      "track_b_precision": 0.0,
+      "self_correction_improving": 1.0,
+      "self_correction_weak": 1.0,
+      "top_error_summary": "1x HTTP Error 500: Internal Server Error"
+    }
+  }
 }
