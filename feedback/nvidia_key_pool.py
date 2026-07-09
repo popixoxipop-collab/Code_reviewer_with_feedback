@@ -62,6 +62,10 @@ class NvidiaKeyPool:
         self._capacity = capacity_per_minute
         self._window_s = window_s
         self._lock = threading.Lock()
+        # D94c: fairer round-robin start point so low-concurrency long jobs can
+        # actually spread calls across NVIDIA_API_KEY_1..N instead of pinning to
+        # the first key until it saturates.
+        self._next_index = 0
 
     @classmethod
     def from_env(cls, prefix: str = "NVIDIA_API_KEY_", capacity_per_minute: int = 40) -> "NvidiaKeyPool":
@@ -126,11 +130,15 @@ class NvidiaKeyPool:
             with self._lock:
                 now = time.time()
                 best_wait = None
-                for state in self._states:
+                n_states = len(self._states)
+                for offset in range(n_states):
+                    idx = (self._next_index + offset) % n_states
+                    state = self._states[idx]
                     timestamps = state.timestamps_by_model[model]
                     self._prune(timestamps, now)
                     if len(timestamps) < self._capacity:
                         timestamps.append(now)
+                        self._next_index = (idx + 1) % n_states
                         return state.key
                     wait = timestamps[0] + self._window_s - now
                     if best_wait is None or wait < best_wait:

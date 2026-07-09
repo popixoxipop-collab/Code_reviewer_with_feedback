@@ -46,9 +46,9 @@ _specretry.loader.exec_module(retry40)
 # into worker-queue overload. Run both models effectively serially, with a lower
 # RPM cap, so timeout/max_tokens changes can be evaluated without extra burst.
 RPM_CAP = 12
-LLAMA_TIMEOUT_S = 360.0
+LLAMA_TIMEOUT_S = 600.0
 LLAMA_WORKERS = 1
-NEMOTRON_TIMEOUT_S = 180.0
+NEMOTRON_TIMEOUT_S = 300.0
 NEMOTRON_WORKERS = 1
 
 
