@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>D94 Public Brief | Code Reviewer with Feedback</title>
+  <style>
+    :root {
+      --bg: #f4efe6;
+      --paper: rgba(255, 251, 245, 0.9);
+      --ink: #201713;
+      --muted: #6b5a50;
+      --line: rgba(32, 23, 19, 0.14);
+      --accent: #b44d22;
+      --accent-soft: rgba(180, 77, 34, 0.12);
+      --ok: #1f6a52;
+      --warn: #8e5c12;
+      --bad: #8c2f2f;
+      --shadow: 0 18px 40px rgba(75, 48, 34, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(180, 77, 34, 0.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(31, 106, 82, 0.12), transparent 22%),
+        linear-gradient(180deg, #faf6ef 0%, #efe6d9 100%);
+      line-height: 1.5;
+    }
+
+    .frame {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 64px;
+    }
+
+    .hero,
+    .panel,
+    .metric,
+    .issue {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .hero {
+      padding: 28px;
+      border-radius: 28px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -8% -40% auto;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(180, 77, 34, 0.22), transparent 70%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+    }
+
+    h1, h2, h3 {
+      margin: 0 0 12px;
+      line-height: 1.1;
+    }
+
+    h1 {
+      margin-top: 18px;
+      font-size: clamp(2.4rem, 5vw, 4.8rem);
+      max-width: 10ch;
+    }
+
+    h2 {
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+    }
+
+    p {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 1.02rem;
+    }
+
+    .lede {
+      max-width: 70ch;
+      font-size: 1.08rem;
+      color: var(--ink);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      text-decoration: none;
+      color: var(--ink);
+      background: #fffdf8;
+      font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+      font-size: 0.92rem;
+    }
+
+    .button.primary {
+      background: var(--accent);
+      color: #fff8f2;
+      border-color: transparent;
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .metrics {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .metric {
+      border-radius: 22px;
+      padding: 18px;
+    }
+
+    .metric .label {
+      display: block;
+      font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: clamp(1.6rem, 3vw, 2.3rem);
+      margin-bottom: 4px;
+      color: var(--ink);
+    }
+
+    .panel {
+      margin-top: 22px;
+      border-radius: 28px;
+      padding: 24px;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 18px;
+    }
+
+    .issues {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .issue {
+      border-radius: 24px;
+      padding: 20px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+      background: rgba(32, 23, 19, 0.06);
+      color: var(--ink);
+      margin-bottom: 12px;
+    }
+
+    .tone-ok { color: var(--ok); }
+    .tone-warn { color: var(--warn); }
+    .tone-bad { color: var(--bad); }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 680px;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      background: rgba(32, 23, 19, 0.03);
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    ul {
+      margin: 14px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+
+    li + li { margin-top: 8px; }
+
+    code {
+      font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+      font-size: 0.92em;
+      background: rgba(32, 23, 19, 0.06);
+      padding: 2px 5px;
+      border-radius: 6px;
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    .footnote {
+      margin-top: 22px;
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    @media (max-width: 900px) {
+      .metrics,
+      .split,
+      .issues {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="frame">
+    <section class="hero">
+      <span class="eyebrow">D94 Public Mirror</span>
+      <h1>Code Reviewer with Feedback</h1>
+      <p class="lede">
+        팀 공유용 공개 페이지입니다. 원본 Claude 아티팩트는 인증이나 동적 렌더링 제약 때문에
+        GitHub Pages에 그대로 임베드하지 못해서, 리포 안의 근거 파일을 바탕으로 핵심 결과와
+        원인 진단을 다시 구성했습니다.
+      </p>
+      <p>
+        범위: D94 16모델 Sonnet turn_engine 벤치마크, 레이트리밋 재시도 결과, 그리고
+        <code>llama-3.3-70b-instruct</code> / <code>nvidia/llama-3.3-nemotron-super-49b-v1.5</code>
+        두 모델의 후속 원인 진단.
+      </p>
+      <div class="actions">
+        <a class="button primary" href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback">GitHub Repo</a>
+        <a class="button" href="https://claude.ai/code/artifact/46e8d412-a460-4d01-bdfc-3c927ee4af8e">Original Claude Artifact</a>
+        <a class="button" href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback/blob/main/README.md#d94-benchmark_turn_engine_grading_16models_sonnetpy-retry_16models_sonnet_40rpmpy-turn_engine_grading_16models_sonnet_summaryjson--d937모델을-16개-후보-전체로-확장--답변-생성-방식을-고정-텍스트에서-sonnet-실시간-생성으로-교체사용자-요청-2건-16개-후보로-확장-턴-상태기계-질의응답에서-답변은-sonnet이-진행">README D94</a>
+      </div>
+    </section>
+
+    <section class="grid metrics">
+      <article class="metric">
+        <span class="label">Candidate Models</span>
+        <strong>16</strong>
+        <span>검증 완료 7 + 신규 9</span>
+      </article>
+      <article class="metric">
+        <span class="label">Total Jobs</span>
+        <strong>384</strong>
+        <span>8 findings × 4 languages × 3 variants × 16 models</span>
+      </article>
+      <article class="metric">
+        <span class="label">Recovered Run</span>
+        <strong>144 / 384</strong>
+        <span>레이트리밋 게이팅 재시도 후 최종 성공</span>
+      </article>
+      <article class="metric">
+        <span class="label">Reliable Sample</span>
+        <strong>4 models</strong>
+        <span>20건 이상/24건 성공으로 해석 가능한 표본</span>
+      </article>
+    </section>
+
+    <section class="panel split">
+      <div>
+        <h2>What D94 Actually Changed</h2>
+        <p class="lede">
+          D93까지는 strong / weak / improving 답변이 전부 고정 텍스트였습니다.
+          D94는 <code>turn_engine.run_decision_point()</code>의 <code>answer_fn</code> 시임에
+          <code>claude -p --model sonnet --safe-mode</code>를 연결해, 각 턴에서 학생 답변을
+          Sonnet이 실시간으로 생성하도록 바꿨습니다.
+        </p>
+        <ul>
+          <li>모델 후보군은 NVIDIA Build 카탈로그를 다시 조회해 16개로 확장했습니다.</li>
+          <li>실패분은 전역 30rpm 슬라이딩 윈도우 게이팅으로 재시도해 43건을 회복했습니다.</li>
+          <li>정규식 판정은 reflection 문구 다양성에 취약했지만, LLM-as-judge는 자기수정 축을 안정적으로 포착했습니다.</li>
+        </ul>
+      </div>
+      <div>
+        <h2>Interpretation</h2>
+        <p><span class="tone-ok">신호가 분명한 부분</span>: <code>step-3.5-flash</code>, <code>qwen3-next-80b</code>, <code>mistral-medium-3.5</code>, <code>llama-4-maverick</code>는 strong &gt; weak 분리를 안정적으로 만들었습니다.</p>
+        <p><span class="tone-warn">주의할 부분</span>: D94는 실행 환경과 레이트리밋 민감도가 높아서, 낮은 성공률 모델은 품질 해석보다 인프라 원인 진단이 우선입니다.</p>
+        <p><span class="tone-bad">중요</span>: 아래 두 문제 모델은 "고장난 모델"이 아니라 각기 다른 실행 조건 문제로 판명됐습니다.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Top Performers From The D94 Snapshot</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Model</th>
+              <th>Job Success</th>
+              <th>Track B Precision</th>
+              <th>Mean Weak Score</th>
+              <th>Self-Correction</th>
+              <th>Mean Elapsed</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>stepfun-ai/step-3.5-flash</code></td>
+              <td>23 / 24 (95.8%)</td>
+              <td>1.00</td>
+              <td>1.98</td>
+              <td>improving 5.0 / weak 2.0</td>
+              <td>10.5s</td>
+            </tr>
+            <tr>
+              <td><code>qwen/qwen3-next-80b-a3b-instruct</code></td>
+              <td>23 / 24 (95.8%)</td>
+              <td>1.00</td>
+              <td>1.78</td>
+              <td>improving 5.0 / weak 1.88</td>
+              <td>90.3s</td>
+            </tr>
+            <tr>
+              <td><code>mistralai/mistral-medium-3.5-128b</code></td>
+              <td>23 / 24 (95.8%)</td>
+              <td>1.00</td>
+              <td>1.80</td>
+              <td>improving 4.5 / weak 1.88</td>
+              <td>178.9s</td>
+            </tr>
+            <tr>
+              <td><code>meta/llama-4-maverick-17b-128e-instruct</code></td>
+              <td>21 / 24 (87.5%)</td>
+              <td>1.00</td>
+              <td>1.71</td>
+              <td>improving 5.0 / weak 1.71</td>
+              <td>11.7s</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="footnote">
+        위 4개는 20건 이상 성공으로 표본이 충분한 쪽입니다. 나머지 모델은 레이트리밋, tool-choice 미준수,
+        서버 가용성 이슈가 섞여 있어 점수 해석보다 실패 원인 분리가 먼저였습니다.
+      </p>
+    </section>
+
+    <section class="grid issues">
+      <article class="issue">
+        <span class="badge">Blocked Model 01</span>
+        <h3><code>meta/llama-3.3-70b-instruct</code></h3>
+        <p>
+          raw HTTP 진단에서 NVIDIA가 직접 <code>503 ResourceExhausted: Worker local total request limit reached (153/16)</code>를
+          반환했습니다. 즉 모델 자체 결함이 아니라 워커 큐 과부하였습니다.
+        </p>
+        <ul>
+          <li>진단 단일 호출 1회차: 124.7초 후 503</li>
+          <li>진단 단일 호출 2회차: 188초 후 정상 응답</li>
+          <li>의미: 기존 <code>timeout_s=120</code>는 짧았고, 시간대와 병렬도도 영향을 줍니다</li>
+          <li>다음 조정점: timeout 200초+, 병렬도 축소, 다른 시간대 단독 재시도</li>
+        </ul>
+      </article>
+      <article class="issue">
+        <span class="badge">Blocked Model 02</span>
+        <h3><code>nvidia/llama-3.3-nemotron-super-49b-v1.5</code></h3>
+        <p>
+          reasoning 모델 특성상 내부 <code>reasoning_content</code>가 길고, <code>max_tokens=512</code>로는
+          chain-of-thought 단계에서 <code>finish_reason="length"</code>가 나며 <code>content:null</code>로 끝났습니다.
+        </p>
+        <ul>
+          <li>진단 3회 모두 같은 현상 재현</li>
+          <li>문제는 서버 장애보다 tool-calling 전 단계의 토큰 부족</li>
+          <li>다음 조정점: <code>turn_engine.generate_question(..., max_tokens=2048)</code></li>
+          <li>보조 조정점: 병렬도 축소로 워커 큐 압박 감소</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="panel">
+      <h2>Repository Materials</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>File</th>
+              <th>Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback/blob/main/README.md">README.md</a></td>
+              <td>D87~D94 계보, D94 핵심 결과, 두 문제 모델의 원인 진단까지 포함한 메인 설명</td>
+            </tr>
+            <tr>
+              <td><a href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback/blob/main/benchmark_turn_engine_grading_16models_sonnet.py">benchmark_turn_engine_grading_16models_sonnet.py</a></td>
+              <td>16모델 Sonnet turn_engine 본 실행 하니스</td>
+            </tr>
+            <tr>
+              <td><a href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback/blob/main/retry_16models_sonnet_40rpm.py">retry_16models_sonnet_40rpm.py</a></td>
+              <td>30rpm 게이팅 재시도 하니스</td>
+            </tr>
+            <tr>
+              <td><a href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback/blob/main/rerun_two_models_fixed_settings.py">rerun_two_models_fixed_settings.py</a></td>
+              <td>두 문제 모델 전용 후속 재실행 하니스. timeout / max_tokens를 모델별로 분리</td>
+            </tr>
+            <tr>
+              <td><a href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback/blob/main/feedback/turn_engine.py">feedback/turn_engine.py</a></td>
+              <td><code>max_tokens</code>를 선택 인자로 받아 reasoning 모델 재실행을 허용하는 핵심 수정</td>
+            </tr>
+            <tr>
+              <td><a href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback/blob/main/turn_engine_grading_16models_sonnet_summary.json">turn_engine_grading_16models_sonnet_summary.json</a></td>
+              <td>모델별 집계</td>
+            </tr>
+            <tr>
+              <td><a href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback/blob/main/turn_engine_grading_16models_sonnet_results.json">turn_engine_grading_16models_sonnet_results.json</a></td>
+              <td>모든 job의 raw 결과</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="footnote">
+        이 페이지는 GitHub Pages에서 누구나 열 수 있는 공개판입니다. Claude 아티팩트 원문과 1:1 HTML 복제는 아니지만,
+        팀 공유에 필요한 핵심 주장과 근거 파일 링크는 모두 이 페이지에서 바로 접근할 수 있게 정리했습니다.
+      </p>
+    </section>
+  </main>
+</body>
+</html>
