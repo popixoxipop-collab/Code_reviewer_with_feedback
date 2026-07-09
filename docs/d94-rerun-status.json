@@ -2,9 +2,9 @@
   "status": "running",
   "headline": "D94b two-model rerun is in progress",
   "message": "A low-concurrency long loop is currently trying to recover the two blocked models.",
-  "updated_at": "2026-07-09T00:37:21Z",
-  "started_at": "2026-07-09T00:37:21Z",
-  "source_commit": "fb63371",
+  "updated_at": "2026-07-09T00:58:11Z",
+  "started_at": "2026-07-09T00:58:11Z",
+  "source_commit": "0c1d622",
   "notes": [
     "Targets: meta/llama-3.3-70b-instruct, nvidia/llama-3.3-nemotron-super-49b-v1.5",
     "Config: llama timeout 360s / workers 1 / rpm 12",
