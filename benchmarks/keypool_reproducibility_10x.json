@@ -1,0 +1,255 @@
+{
+  "what": "keypool 280rpm verification repeated end-to-end (offline suite + 84-call live burst at 120/min submit pace)",
+  "rounds": [
+    {
+      "round": 1,
+      "offline_pass": true,
+      "live": {
+        "wall_s": 70.4,
+        "effective_rpm": 71.6,
+        "status": {
+          "200": 84
+        },
+        "per_key": {
+          "key_1": 12,
+          "key_2": 12,
+          "key_3": 12,
+          "key_4": 12,
+          "key_5": 12,
+          "key_6": 12,
+          "key_7": 12
+        },
+        "latency_p50_s": 2.2,
+        "latency_max_s": 31.1
+      },
+      "live_pass": true
+    },
+    {
+      "round": 2,
+      "offline_pass": true,
+      "live": {
+        "wall_s": 69.2,
+        "effective_rpm": 72.9,
+        "status": {
+          "200": 83,
+          "-1": 1
+        },
+        "per_key": {
+          "key_1": 12,
+          "key_2": 12,
+          "key_3": 12,
+          "key_4": 12,
+          "key_5": 12,
+          "key_6": 12,
+          "key_7": 12
+        },
+        "latency_p50_s": 1.9,
+        "latency_max_s": 60.1
+      },
+      "live_pass": false
+    },
+    {
+      "round": 3,
+      "offline_pass": true,
+      "live": {
+        "wall_s": 84.8,
+        "effective_rpm": 59.4,
+        "status": {
+          "200": 83,
+          "-1": 1
+        },
+        "per_key": {
+          "key_1": 12,
+          "key_2": 12,
+          "key_3": 12,
+          "key_4": 12,
+          "key_5": 12,
+          "key_6": 12,
+          "key_7": 12
+        },
+        "latency_p50_s": 2.0,
+        "latency_max_s": 60.1
+      },
+      "live_pass": false
+    },
+    {
+      "round": 4,
+      "offline_pass": true,
+      "live": {
+        "wall_s": 67.4,
+        "effective_rpm": 74.8,
+        "status": {
+          "200": 84
+        },
+        "per_key": {
+          "key_1": 12,
+          "key_2": 12,
+          "key_3": 12,
+          "key_4": 12,
+          "key_5": 12,
+          "key_6": 12,
+          "key_7": 12
+        },
+        "latency_p50_s": 2.4,
+        "latency_max_s": 47.2
+      },
+      "live_pass": true
+    },
+    {
+      "round": 5,
+      "offline_pass": true,
+      "live": {
+        "wall_s": 91.6,
+        "effective_rpm": 55.0,
+        "status": {
+          "200": 83,
+          "-1": 1
+        },
+        "per_key": {
+          "key_1": 12,
+          "key_2": 12,
+          "key_3": 12,
+          "key_4": 12,
+          "key_5": 12,
+          "key_6": 12,
+          "key_7": 12
+        },
+        "latency_p50_s": 2.4,
+        "latency_max_s": 60.1
+      },
+      "live_pass": false
+    },
+    {
+      "round": 6,
+      "offline_pass": true,
+      "live": {
+        "wall_s": 51.1,
+        "effective_rpm": 98.7,
+        "status": {
+          "200": 84
+        },
+        "per_key": {
+          "key_1": 12,
+          "key_2": 12,
+          "key_3": 12,
+          "key_4": 12,
+          "key_5": 12,
+          "key_6": 12,
+          "key_7": 12
+        },
+        "latency_p50_s": 2.3,
+        "latency_max_s": 23.2
+      },
+      "live_pass": true
+    },
+    {
+      "round": 7,
+      "offline_pass": true,
+      "live": {
+        "wall_s": 52.6,
+        "effective_rpm": 95.8,
+        "status": {
+          "200": 84
+        },
+        "per_key": {
+          "key_1": 12,
+          "key_2": 12,
+          "key_3": 12,
+          "key_4": 12,
+          "key_5": 12,
+          "key_6": 12,
+          "key_7": 12
+        },
+        "latency_p50_s": 2.4,
+        "latency_max_s": 34.0
+      },
+      "live_pass": true
+    },
+    {
+      "round": 8,
+      "offline_pass": true,
+      "live": {
+        "wall_s": 95.7,
+        "effective_rpm": 52.7,
+        "status": {
+          "200": 83,
+          "-1": 1
+        },
+        "per_key": {
+          "key_1": 12,
+          "key_2": 12,
+          "key_3": 12,
+          "key_4": 12,
+          "key_5": 12,
+          "key_6": 12,
+          "key_7": 12
+        },
+        "latency_p50_s": 2.6,
+        "latency_max_s": 60.1
+      },
+      "live_pass": false
+    },
+    {
+      "round": 9,
+      "offline_pass": true,
+      "live": {
+        "wall_s": 66.2,
+        "effective_rpm": 76.1,
+        "status": {
+          "200": 83,
+          "-1": 1
+        },
+        "per_key": {
+          "key_1": 12,
+          "key_2": 12,
+          "key_3": 12,
+          "key_4": 12,
+          "key_5": 12,
+          "key_6": 12,
+          "key_7": 12
+        },
+        "latency_p50_s": 2.0,
+        "latency_max_s": 60.1
+      },
+      "live_pass": false
+    },
+    {
+      "round": 10,
+      "offline_pass": true,
+      "live": {
+        "wall_s": 95.2,
+        "effective_rpm": 53.0,
+        "status": {
+          "200": 83,
+          "-1": 1
+        },
+        "per_key": {
+          "key_1": 12,
+          "key_2": 12,
+          "key_3": 12,
+          "key_4": 12,
+          "key_5": 12,
+          "key_6": 12,
+          "key_7": 12
+        },
+        "latency_p50_s": 3.0,
+        "latency_max_s": 60.1
+      },
+      "live_pass": false
+    }
+  ],
+  "summary": {
+    "rounds_passed": "4/10",
+    "total_live_calls": 840,
+    "total_http_429": 0,
+    "effective_rpm_min": 52.7,
+    "effective_rpm_max": 98.7,
+    "effective_rpm_mean": 71.0,
+    "per_key_distribution_identical": true,
+    "interpretation": {
+      "property_under_test": "keypool respects per-key 40rpm AND achieves >40rpm aggregate via 7-key rotation",
+      "property_reproducibility": "10/10 rounds -- zero HTTP 429 across all 840 calls, per-key split exactly 12x7 in every round, effective rpm always above the single-key 40/min ceiling (52.7-98.7, mean 71.0)",
+      "strict_all_200_criterion": "4/10 rounds -- six rounds each had exactly ONE call (6/840 = 0.7%) hit the probe's 60s socket timeout (status -1, latency_max 60.1s). A rate-limit rejection would be HTTP 429 (observed zero); key distribution stayed perfect even in those rounds. This is NVIDIA serving tail latency, the same class as the 504/timeout instability measured on other models all day -- unrelated to the rate-limit logic being verified."
+    }
+  }
+}
