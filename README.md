@@ -683,6 +683,13 @@ python3 pipeline/compare_methodologies.py
   - COST: llama-3.3-70b-instruct는 이 벤치마크 세트에서 순위 데이터 없음(0/24로 표에는 남아있으나 "제외" 명시).
   - EXIT: 나중에 이 모델의 NVIDIA 쪽 상태가 나아지면(포럼 스레드가 언젠가 해결되면) `rerun_llama70b_only.py`(workers=1, timeout=600s 이미 준비됨)로 재시도 가능 — 코드는 남겨둠, 삭제 안 함.
 
+- **D100** ([`docs/index.html`](./docs/index.html), [`docs/d94-rerun-status.json`](./docs/d94-rerun-status.json)) — "15/16 모델, 167/384(43%)" 헤드라인이 실제 분포를 가려서 정정(사용자 질문: "167/384로 모델 하나만 빠졌는데 왜 이렇게 비어")
+  - WHY: `turn_engine_grading_16models_sonnet_results.json`을 모델별로 직접 집계해보니 384건은 "15개 모델 대부분 완료 + 1개 제외"가 아니라 16개 모델의 실제 성능 분포였다 — 신뢰 가능(20건+/24) 5개, 부분성공(29~71%) 4개, **0~12.5%인 모델이 7개**(그 중 3개는 완전 0/24: gpt-oss-120b, kimi-k2.6, llama-3.3-70b-instruct). D94b 레이트리밋 재시도 이후 개별 원인진단+전용 재시도를 받은 건 nemotron과 llama-3.3-70b-instruct 딱 2개뿐이고, 나머지 10개는 한 번도 다시 손대지 않은 상태로 "15/16 완료"라는 헤드라인 밑에 가려져 있었다.
+  - **추가 발견**: `docs/index.html`(공개 GitHub Pages)은 D97/D99 이후 갱신이 안 된 상태였다 — Top Performers 표에 nemotron 행이 아예 없었고, "Blocked Model 01/02" 섹션은 둘 다 "다음 조정점"이라며 아직 미해결인 것처럼 서술돼 있었다(실제로는 nemotron 회복·llama-3.3-70b-instruct 제외 둘 다 확정된 상태). 히어로 지표도 `144/384`·`4 models`로 D96 시점에 멈춰 있어, 같은 페이지의 동적 JSON 섹션(`167/384`, `final`)과 서로 다른 숫자를 보여주고 있었다.
+  - **실행 결과**: 히어로 지표(167/384·5 models) 갱신, Top Performers 표에 nemotron 행 추가, Blocked Model 섹션을 "Excluded — Final / Resolved ✓ / Not Individually Retried" 3카드로 재작성해 나머지 10개 모델의 티어(부분성공 4개 + 미재시도 6개)를 명시, 히어로 아래 티어 요약 footnote 추가. `d94-rerun-status.json`의 headline/message도 "15/16"이 아니라 "5 reliable / 4 partial / 6 excluded-untried / 1 formally excluded"로 재작성.
+  - COST: 순위표(Top Performers, 5개 모델)의 데이터 자체는 원래도 정확했음 — 문제는 헤드라인 프레이밍과 공개 페이지 동기화 누락이었지 데이터 오염은 아니었음(D96과는 다른 종류의 문제).
+  - EXIT: `mistral-nemotron`(서버 500)·`mistral-large-3`(시간 단위 차단)는 원인이 일시적일 가능성이 있어 nemotron과 같은 방식(전용 재시도)이 통할 수 있음 — 사용자 결정 대기, 아직 재시도 안 함. 나머지 4개(gpt-oss-120b/20b, kimi-k2.6, glm-5.2)는 구조적 원인(tool-choice 미준수, 계정 접근권한)으로 재시도 실익 낮음.
+
 
 ## 다음 단계 (미해결)
 

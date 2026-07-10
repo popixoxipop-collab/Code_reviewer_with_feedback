@@ -301,16 +301,23 @@
         <span>8 findings × 4 languages × 3 variants × 16 models</span>
       </article>
       <article class="metric">
-        <span class="label">Recovered Run</span>
-        <strong>144 / 384</strong>
-        <span>레이트리밋 게이팅 재시도 후 최종 성공</span>
+        <span class="label">Final Run</span>
+        <strong>167 / 384</strong>
+        <span>전체 재시도 라운드 반영 최종 성공 (43%)</span>
       </article>
       <article class="metric">
         <span class="label">Reliable Sample</span>
-        <strong>4 models</strong>
+        <strong>5 models</strong>
         <span>20건 이상/24건 성공으로 해석 가능한 표본</span>
       </article>
     </section>
+    <p class="footnote" style="margin-top: -8px;">
+      <b>167/384(43%)의 구성</b>: "모델 1개만 빠졌다"가 아니라 16개 모델의 실제 성능 분포입니다 —
+      신뢰 가능 5개(20건+/24, 87.5~95.8%: qwen3-next-80b·step-3.5-flash·mistral-medium-3.5·nemotron-super-49b-v1.5·llama-4-maverick) ·
+      부분 성공 4개(29~71%, 재시도로 일부 회복됐지만 표본 부족: minimax-m3·qwen3.5-122b·deepseek-v4-pro·nemotron-3-super-120b) ·
+      원인이 레이트리밋과 무관해 재시도 없이 제외된 6개(0~12.5%: gpt-oss-120b·gpt-oss-20b·mistral-nemotron·mistral-large-3·kimi-k2.6·glm-5.2) ·
+      3차례 전용 재시도 후 공식 제외된 1개(llama-3.3-70b-instruct, 0%). 아래 순위표는 신뢰 가능한 5개만 사용합니다.
+    </p>
 
     <section class="panel split">
       <div>
@@ -331,7 +338,7 @@
         <h2>Interpretation</h2>
         <p><span class="tone-ok">신호가 분명한 부분</span>: <code>step-3.5-flash</code>, <code>qwen3-next-80b</code>, <code>mistral-medium-3.5</code>, <code>llama-4-maverick</code>는 strong &gt; weak 분리를 안정적으로 만들었습니다.</p>
         <p><span class="tone-warn">주의할 부분</span>: D94는 실행 환경과 레이트리밋 민감도가 높아서, 낮은 성공률 모델은 품질 해석보다 인프라 원인 진단이 우선입니다.</p>
-        <p><span class="tone-bad">중요</span>: 아래 두 문제 모델은 "고장난 모델"이 아니라 각기 다른 실행 조건 문제로 판명됐습니다.</p>
+        <p><span class="tone-bad">중요</span>: 아래는 나머지 11개 모델의 실패 원인입니다. 대부분 "고장난 모델"이 아니라 각기 다른 실행 조건 문제였고, 그 중 개별 진단 + 전용 재시도를 받은 건 2개뿐입니다 — nemotron은 실제로 회복됐고, llama-3.3-70b-instruct는 3라운드 재시도에도 회복 안 돼 최종 제외됐습니다.</p>
       </div>
     </section>
 
@@ -382,42 +389,65 @@
               <td>improving 5.0 / weak 1.71</td>
               <td>11.7s</td>
             </tr>
+            <tr>
+              <td><code>nvidia/llama-3.3-nemotron-super-49b-v1.5</code></td>
+              <td>23 / 24 (95.8%)</td>
+              <td>1.00</td>
+              <td>1.32</td>
+              <td>improving 4.5 / weak 1.12</td>
+              <td>129.1s</td>
+            </tr>
           </tbody>
         </table>
       </div>
       <p class="footnote">
-        위 4개는 20건 이상 성공으로 표본이 충분한 쪽입니다. 나머지 모델은 레이트리밋, tool-choice 미준수,
-        서버 가용성 이슈가 섞여 있어 점수 해석보다 실패 원인 분리가 먼저였습니다.
+        위 5개는 20건 이상 성공으로 표본이 충분한 쪽입니다(reasoning 모델인 nemotron은 max_tokens=2048
+        재시도로 D97에서 이 표에 합류했습니다 — 아래 "Blocked Model" 섹션 참고). 나머지 11개는 레이트리밋,
+        tool-choice 미준수, 서버 가용성, 계정 접근권한 이슈가 섞여 있어 점수 해석보다 실패 원인 분리가
+        먼저였습니다 — 티어별 구성은 위 지표 아래 설명 참고.
       </p>
     </section>
 
     <section class="grid issues">
       <article class="issue">
-        <span class="badge">Blocked Model 01</span>
+        <span class="badge tone-bad">Excluded — Final (2026-07-10)</span>
         <h3><code>meta/llama-3.3-70b-instruct</code></h3>
         <p>
           raw HTTP 진단에서 NVIDIA가 직접 <code>503 ResourceExhausted: Worker local total request limit reached (153/16)</code>를
-          반환했습니다. 즉 모델 자체 결함이 아니라 워커 큐 과부하였습니다.
+          반환했습니다 — 모델 자체 결함이 아니라 워커 큐 과부하입니다.
         </p>
         <ul>
-          <li>진단 단일 호출 1회차: 124.7초 후 503</li>
-          <li>진단 단일 호출 2회차: 188초 후 정상 응답</li>
-          <li>의미: 기존 <code>timeout_s=120</code>는 짧았고, 시간대와 병렬도도 영향을 줍니다</li>
-          <li>다음 조정점: timeout 200초+, 병렬도 축소, 다른 시간대 단독 재시도</li>
+          <li>전용 재시도 3라운드(workers=1 / workers=4·7키 동시 / workers=1·timeout=600s) 전부 0~20%대에 머묾</li>
+          <li>7개 독립 API 키로 동시 호출한 격리 테스트에서도 4/7 타임아웃 — 키·로컬 문제 아님을 확인</li>
+          <li>NVIDIA 개발자 포럼에서 동일 에러 클래스(다른 모델, 미해결)를 외부 교차검증</li>
+          <li><b>결론</b>: 사용자 결정으로 최종 제외. 15/16 모델로 벤치마크 확정</li>
         </ul>
       </article>
       <article class="issue">
-        <span class="badge">Blocked Model 02</span>
+        <span class="badge tone-ok">Resolved ✓ (D97)</span>
         <h3><code>nvidia/llama-3.3-nemotron-super-49b-v1.5</code></h3>
         <p>
-          reasoning 모델 특성상 내부 <code>reasoning_content</code>가 길고, <code>max_tokens=512</code>로는
+          reasoning 모델 특성상 내부 <code>reasoning_content</code>가 길어, <code>max_tokens=512</code>(turn_engine 기본값)로는
           chain-of-thought 단계에서 <code>finish_reason="length"</code>가 나며 <code>content:null</code>로 끝났습니다.
         </p>
         <ul>
-          <li>진단 3회 모두 같은 현상 재현</li>
-          <li>문제는 서버 장애보다 tool-calling 전 단계의 토큰 부족</li>
-          <li>다음 조정점: <code>turn_engine.generate_question(..., max_tokens=2048)</code></li>
-          <li>보조 조정점: 병렬도 축소로 워커 큐 압박 감소</li>
+          <li>진단 3회 모두 같은 현상 재현 — 서버 장애가 아니라 토큰 부족이 근본 원인</li>
+          <li><code>max_tokens=2048</code> + <code>workers=4</code> 재실행 → <b>23/24(95.8%)로 실제 회복 확인</b></li>
+          <li>도중 Claude 주간 사용량 한도 소진으로 데이터가 오염된 사고가 있었으나 발견 즉시 정정 후 재검증(D96)</li>
+          <li>Top Performers 표에 합류 — track B precision 1.00, weak score 1.32</li>
+        </ul>
+      </article>
+      <article class="issue">
+        <span class="badge tone-warn">Not Individually Retried</span>
+        <h3>나머지 10개 모델</h3>
+        <p>
+          위 두 모델만 개별 원인 진단 + 전용 재시도 라운드를 받았습니다. 아래 10개는 최초 레이트리밋
+          재시도(D94b, 30rpm 게이팅) 이후 한 번도 다시 손대지 않은 상태로 남아 있습니다.
+        </p>
+        <ul>
+          <li><b>부분 성공 4개(29~71%)</b>: minimax-m3 70.8% · qwen3.5-122b 58.3% · deepseek-v4-pro 41.7% · nemotron-3-super-120b 29.2% — 레이트리밋 재시도로 일부 회복됐지만 표본 부족</li>
+          <li><b>원인이 레이트리밋과 무관 6개(0~12.5%)</b>: gpt-oss-120b/gpt-oss-20b(tool-choice 미준수, D66/D80/D89 계보) · mistral-nemotron(서버 500) · mistral-large-3(시간 단위 차단, D91과 동일) · kimi-k2.6(계정 접근권한 404) · glm-5.2(원인 미확정)</li>
+          <li>이 중 mistral-nemotron(서버 500)·mistral-large-3(시간 단위 차단)는 원인이 <b>일시적</b>일 가능성이 있어 nemotron과 같은 방식(전용 재시도)이 통할 수 있음 — 아직 시도 안 함</li>
         </ul>
       </article>
     </section>
@@ -425,8 +455,8 @@
     <section class="panel">
       <h2>D94b Rerun Status</h2>
       <p>
-        두 문제 모델 재실행 상태는 아래 JSON 피드로 갱신됩니다. 장기 루프가 끝나면 이 섹션이
-        최종 수치로 바뀝니다.
+        nemotron·llama-3.3-70b-instruct 재실행의 최종 결과입니다. 아래 카드는
+        <code>d94-rerun-status.json</code>을 라이브로 fetch해 표시합니다(<code>status: final</code>).
       </p>
       <div id="rerun-status" class="issue">
         <span class="badge">Loading</span>
