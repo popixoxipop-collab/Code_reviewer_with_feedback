@@ -28,18 +28,18 @@
     "n_graded": 23
   },
   "deepseek-ai/deepseek-v4-pro": {
-    "job_success_rate": 0.417,
-    "verdict_matches_expected_rate": 0.4,
-    "mean_elapsed_s": 87.7,
-    "grading_success_rate": 0.7,
+    "job_success_rate": 1.0,
+    "verdict_matches_expected_rate": 0.333,
+    "mean_elapsed_s": 69.2,
+    "grading_success_rate": 0.875,
     "track_b_precision": 1.0,
     "mean_score_strong": 5.0,
-    "mean_score_weak": 2.2,
-    "self_correction_improving": 5.0,
-    "self_correction_weak": 2.33,
-    "n_ok": 10,
+    "mean_score_weak": 2.17,
+    "self_correction_improving": 4.43,
+    "self_correction_weak": 2.29,
+    "n_ok": 24,
     "n_total": 24,
-    "n_graded": 7
+    "n_graded": 21
   },
   "meta/llama-4-maverick-17b-128e-instruct": {
     "job_success_rate": 0.875,
@@ -98,18 +98,18 @@
     "n_graded": 1
   },
   "z-ai/glm-5.2": {
-    "job_success_rate": 0.125,
-    "verdict_matches_expected_rate": 0.667,
-    "mean_elapsed_s": 325.5,
-    "grading_success_rate": 0.333,
-    "track_b_precision": null,
-    "mean_score_strong": null,
-    "mean_score_weak": 1.8,
-    "self_correction_improving": null,
-    "self_correction_weak": 2.0,
-    "n_ok": 3,
+    "job_success_rate": 0.875,
+    "verdict_matches_expected_rate": 0.286,
+    "mean_elapsed_s": 124.4,
+    "grading_success_rate": 0.81,
+    "track_b_precision": 1.0,
+    "mean_score_strong": 5.0,
+    "mean_score_weak": 2.1,
+    "self_correction_improving": 5.0,
+    "self_correction_weak": 1.5,
+    "n_ok": 21,
     "n_total": 24,
-    "n_graded": 1
+    "n_graded": 17
   },
   "moonshotai/kimi-k2.6": {
     "job_success_rate": 0.0,
@@ -126,32 +126,32 @@
     "n_graded": 0
   },
   "minimaxai/minimax-m3": {
-    "job_success_rate": 0.708,
-    "verdict_matches_expected_rate": 0.353,
-    "mean_elapsed_s": 102.8,
-    "grading_success_rate": 0.824,
+    "job_success_rate": 0.958,
+    "verdict_matches_expected_rate": 0.304,
+    "mean_elapsed_s": 111.7,
+    "grading_success_rate": 0.87,
     "track_b_precision": 1.0,
-    "mean_score_strong": 5.0,
-    "mean_score_weak": 2.1,
-    "self_correction_improving": 5.0,
-    "self_correction_weak": 3.0,
-    "n_ok": 17,
+    "mean_score_strong": 4.83,
+    "mean_score_weak": 1.94,
+    "self_correction_improving": 4.33,
+    "self_correction_weak": 2.71,
+    "n_ok": 23,
     "n_total": 24,
-    "n_graded": 14
+    "n_graded": 20
   },
   "qwen/qwen3.5-122b-a10b": {
-    "job_success_rate": 0.583,
-    "verdict_matches_expected_rate": 0.286,
-    "mean_elapsed_s": 81.8,
-    "grading_success_rate": 0.929,
+    "job_success_rate": 0.833,
+    "verdict_matches_expected_rate": 0.3,
+    "mean_elapsed_s": 70.4,
+    "grading_success_rate": 0.95,
     "track_b_precision": 1.0,
     "mean_score_strong": 5.0,
-    "mean_score_weak": 1.68,
+    "mean_score_weak": 1.86,
     "self_correction_improving": 5.0,
-    "self_correction_weak": 1.8,
-    "n_ok": 14,
+    "self_correction_weak": 2.0,
+    "n_ok": 20,
     "n_total": 24,
-    "n_graded": 13
+    "n_graded": 19
   },
   "mistralai/mistral-medium-3.5-128b": {
     "job_success_rate": 0.958,
@@ -182,18 +182,18 @@
     "n_graded": 23
   },
   "nvidia/nemotron-3-super-120b-a12b": {
-    "job_success_rate": 0.292,
-    "verdict_matches_expected_rate": 0.429,
-    "mean_elapsed_s": 30.9,
+    "job_success_rate": 0.958,
+    "verdict_matches_expected_rate": 0.348,
+    "mean_elapsed_s": 29.6,
     "grading_success_rate": 1.0,
-    "track_b_precision": null,
-    "mean_score_strong": 5.0,
-    "mean_score_weak": 2.07,
+    "track_b_precision": 1.0,
+    "mean_score_strong": 4.92,
+    "mean_score_weak": 2.06,
     "self_correction_improving": 5.0,
-    "self_correction_weak": 2.67,
-    "n_ok": 7,
+    "self_correction_weak": 2.0,
+    "n_ok": 23,
     "n_total": 24,
-    "n_graded": 7
+    "n_graded": 23
   },
   "meta/llama-3.3-70b-instruct": {
     "job_success_rate": 0.0,

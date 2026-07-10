@@ -60,6 +60,9 @@ _specretry.loader.exec_module(retry40)
 
 # D106c: mistral-large-3가 게이트 러너로 24/24(100%) 완전 회복(D103 EXIT 이행)하면서
 #   신뢰 가능 티어가 5 -> 6개로 확장 -- 재채점 대상에 포함.
+# D110b: "개별 진단 미실시 5개"의 실패분 재실행(rerun_partial_five.py)으로 전원 20+/24
+#   진입(deepseek 24/24, minimax·nemotron-3 23/24, glm 21/24, qwen3.5 20/24) --
+#   신뢰 티어 6 -> 11개. 승격 5개를 4축 재채점 대상에 추가.
 RELIABLE_MODELS = [
     "qwen/qwen3-next-80b-a3b-instruct",
     "stepfun-ai/step-3.5-flash",
@@ -67,6 +70,11 @@ RELIABLE_MODELS = [
     "nvidia/llama-3.3-nemotron-super-49b-v1.5",
     "meta/llama-4-maverick-17b-128e-instruct",
     "mistralai/mistral-large-3-675b-instruct-2512",
+    "minimaxai/minimax-m3",
+    "qwen/qwen3.5-122b-a10b",
+    "deepseek-ai/deepseek-v4-pro",
+    "nvidia/nemotron-3-super-120b-a12b",
+    "z-ai/glm-5.2",
 ]
 REPEATS = 3
 # D106e: mistral-large-3 실측(2026-07-10) -- 이 flagship 모델의 429는 분당 창이 아니라

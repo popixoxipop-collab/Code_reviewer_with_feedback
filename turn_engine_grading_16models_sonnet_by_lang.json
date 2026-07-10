@@ -45,24 +45,24 @@
   },
   "deepseek-ai/deepseek-v4-pro": {
     "python": {
-      "job": 0.333,
-      "n": "2/6",
-      "prec": null
+      "job": 1.0,
+      "n": "6/6",
+      "prec": 1.0
     },
     "java": {
-      "job": 0.5,
-      "n": "3/6",
+      "job": 1.0,
+      "n": "6/6",
       "prec": 1.0
     },
     "javascript": {
-      "job": 0.333,
-      "n": "2/6",
-      "prec": null
+      "job": 1.0,
+      "n": "6/6",
+      "prec": 1.0
     },
     "c_cpp": {
-      "job": 0.5,
-      "n": "3/6",
-      "prec": null
+      "job": 1.0,
+      "n": "6/6",
+      "prec": 1.0
     }
   },
   "meta/llama-4-maverick-17b-128e-instruct": {
@@ -155,23 +155,23 @@
   },
   "z-ai/glm-5.2": {
     "python": {
-      "job": 0.167,
-      "n": "1/6",
-      "prec": null
+      "job": 1.0,
+      "n": "6/6",
+      "prec": 1.0
     },
     "java": {
-      "job": 0.0,
-      "n": "0/6",
-      "prec": null
+      "job": 1.0,
+      "n": "6/6",
+      "prec": 1.0
     },
     "javascript": {
-      "job": 0.333,
-      "n": "2/6",
+      "job": 0.833,
+      "n": "5/6",
       "prec": null
     },
     "c_cpp": {
-      "job": 0.0,
-      "n": "0/6",
+      "job": 0.667,
+      "n": "4/6",
       "prec": null
     }
   },
@@ -199,9 +199,9 @@
   },
   "minimaxai/minimax-m3": {
     "python": {
-      "job": 0.667,
-      "n": "4/6",
-      "prec": null
+      "job": 1.0,
+      "n": "6/6",
+      "prec": 1.0
     },
     "java": {
       "job": 0.833,
@@ -209,14 +209,14 @@
       "prec": 1.0
     },
     "javascript": {
-      "job": 0.833,
-      "n": "5/6",
+      "job": 1.0,
+      "n": "6/6",
       "prec": 1.0
     },
     "c_cpp": {
-      "job": 0.5,
-      "n": "3/6",
-      "prec": null
+      "job": 1.0,
+      "n": "6/6",
+      "prec": 1.0
     }
   },
   "qwen/qwen3.5-122b-a10b": {
@@ -226,18 +226,18 @@
       "prec": 1.0
     },
     "java": {
-      "job": 0.333,
-      "n": "2/6",
+      "job": 0.833,
+      "n": "5/6",
       "prec": 1.0
     },
     "javascript": {
-      "job": 0.667,
-      "n": "4/6",
+      "job": 1.0,
+      "n": "6/6",
       "prec": 1.0
     },
     "c_cpp": {
-      "job": 0.5,
-      "n": "3/6",
+      "job": 0.667,
+      "n": "4/6",
       "prec": 1.0
     }
   },
@@ -287,24 +287,24 @@
   },
   "nvidia/nemotron-3-super-120b-a12b": {
     "python": {
-      "job": 0.167,
-      "n": "1/6",
-      "prec": null
+      "job": 1.0,
+      "n": "6/6",
+      "prec": 1.0
     },
     "java": {
-      "job": 0.667,
-      "n": "4/6",
-      "prec": null
+      "job": 1.0,
+      "n": "6/6",
+      "prec": 1.0
     },
     "javascript": {
-      "job": 0.0,
-      "n": "0/6",
-      "prec": null
+      "job": 0.833,
+      "n": "5/6",
+      "prec": 1.0
     },
     "c_cpp": {
-      "job": 0.333,
-      "n": "2/6",
-      "prec": null
+      "job": 1.0,
+      "n": "6/6",
+      "prec": 1.0
     }
   },
   "meta/llama-3.3-70b-instruct": {
