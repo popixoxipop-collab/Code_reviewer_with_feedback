@@ -1,15 +1,15 @@
 {
-  "status": "corrected",
-  "headline": "D94b rerun result was corrupted by a Claude usage-limit message — corrected",
-  "message": "The rerun that reported 95.8%/12.5% success was invalid: claude -p hit this account's weekly usage limit mid-run and printed \"You've hit your weekly limit\" to stdout, which the harness accepted as a literal student answer instead of erroring. 26 of the 26 combined \"successful\" jobs across both models were this same placeholder text, not real model output (the grader correctly scored it at the floor, which is why every axis showed exactly 1.0 — that was the grader working correctly on garbage input). Both models have been reset to their true state: 0/24. The other 14 models in this dataset were checked and are unaffected.",
+  "status": "partial",
+  "headline": "nemotron-super-49b-v1.5 recovered to 95.8% after weekly-limit reset — llama-3.3-70b-instruct held back",
+  "message": "After the D96 correction (see below) and the weekly usage-limit reset, nemotron-super-49b-v1.5 was rerun with max_tokens=2048 and workers=4 (RateLimitedClient's sliding-window gate is thread-safe, already proven under workers=4 in the earlier 16-model retry -- the workers=1 setting from D94b was unneeded caution carried over from a different model's failure mode). Result: 23/24 (95.8%), Track B precision 1.0, clear strong/weak separation (5.0 vs 1.32) and self-correction differentiation (improving 4.5 vs weak 1.12). Re-checked the full transcript set for the weekly-limit contamination string: zero hits. llama-3.3-70b-instruct was attempted first at timeout_s=600/workers=1 -- all 9 jobs tried so far failed at 302-766s each, indicating the NVIDIA-side worker-queue overload is not a momentary blip. The user chose to defer this model rather than keep burning time on it this round.",
   "updated_at": "2026-07-10T00:00:00Z",
   "started_at": "2026-07-09T00:58:11Z",
   "source_commit": "TBD",
   "notes": [
-    "Root-cause diagnoses from the original D94 investigation still stand: llama-3.3-70b-instruct is NVIDIA-side worker-queue overload (503, confirmed via raw HTTP diagnostic), nemotron-super-49b-v1.5 needs a larger max_tokens as a reasoning model (confirmed via raw HTTP diagnostic).",
-    "The D94b rerun attempt itself failed for an unrelated reason: this account's Claude weekly usage limit was exhausted mid-run.",
-    "Weekly limit resets 2026-07-11 12:00 (Asia/Seoul) — retry blocked until then.",
-    "Correction applied by fix_quota_contaminated_results.py, which flags contaminated rows explicitly rather than silently deleting them."
+    "nemotron-super-49b-v1.5: root cause (reasoning model, max_tokens starvation) confirmed via raw HTTP diagnostic in D94, fix confirmed via live rerun in D97.",
+    "llama-3.3-70b-instruct: root cause (NVIDIA worker-queue overload, HTTP 503 \"153/16\") still stands, but recovery attempt this round was abandoned after 9/9 failures at extended timeout -- deferred to a future session.",
+    "Correction from the prior quota-contamination incident (D96) held: this rerun's successes were verified contamination-free before publishing.",
+    "See README.md D97 for the full writeup, including a module-reload bug found along the way (two independent copies of the same script module via importlib caused CLIENT=None)."
   ],
   "models": {
     "meta/llama-3.3-70b-instruct": {
@@ -20,17 +20,17 @@
       "track_b_precision": null,
       "self_correction_improving": null,
       "self_correction_weak": null,
-      "top_error_summary": "21x HTTP 504 Gateway Timeout, 3x contaminated (weekly-limit message misread as answer)"
+      "top_error_summary": "9/9 attempted failed at 302-766s even with timeout_s=600 -- sustained NVIDIA worker-queue overload, not momentary. Deferred."
     },
     "nvidia/llama-3.3-nemotron-super-49b-v1.5": {
-      "n_ok": 0,
+      "n_ok": 23,
       "n_total": 24,
-      "job_success_rate_pct": "0%",
-      "mean_elapsed_s": null,
-      "track_b_precision": null,
-      "self_correction_improving": null,
-      "self_correction_weak": null,
-      "top_error_summary": "23x contaminated (weekly-limit message misread as answer), 1x HTTP 500 Internal Server Error"
+      "job_success_rate_pct": "95.8%",
+      "mean_elapsed_s": 129.1,
+      "track_b_precision": 1.0,
+      "self_correction_improving": 4.5,
+      "self_correction_weak": 1.12,
+      "top_error_summary": "1x remaining failure after two rounds of retry (non-timeout, cause not further diagnosed)"
     }
   }
 }

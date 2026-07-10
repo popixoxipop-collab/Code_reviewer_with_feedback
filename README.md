@@ -662,6 +662,14 @@ python3 pipeline/compare_methodologies.py
   - COST: 두 모델은 이 교정으로 다시 사실상 0%(nemotron 0/24, llama-3.3-70b-instruct 0/24)로 돌아갔다 — D94b가 시도한 설정값 수정(timeout 확대/max_tokens 확대) 자체가 틀렸다는 뜻은 아니다. D94의 raw HTTP 진단(워커 큐 과부하 / reasoning 토큰 부족)은 여전히 유효한 원인 분석이고, 그 시도 도중 완전히 별개의 이유(계정 사용량 한도)로 검증 데이터가 못 쓰게 됐을 뿐이다.
   - EXIT: 주간 한도는 2026-07-11 12:00(Asia/Seoul) 리셋 — 그 이후에 D94b(또는 동등한 timeout/max_tokens 조정)를 재시도하면 된다. `_sonnet_call()` 가드가 있으니 다음번엔 같은 방식으로 오염될 수 없고, 한도 소진 시 그 job은 정직하게 실패로 집계된다.
 
+- **D97** ([`rerun_nemotron_only.py`](./rerun_nemotron_only.py)) — 주간 한도 리셋 후 nemotron-super-49b-v1.5를 실제로 회복시킴, llama-3.3-70b-instruct는 이번 라운드 보류(사용자 결정)
+  - WHY: 사용자가 한도 리셋을 확인하고 재시도를 요청. llama-3.3-70b-instruct는 `timeout_s=600`으로도 첫 9개 job이 전부 302~766초 실패(워커 과부하가 하루 넘게 지속)해 시간 대비 실익이 낮다고 판단, 사용자가 이번 라운드는 보류하고 nemotron만 먼저 채우기로 결정.
+  - **동시성 재검토(사용자 질문)**: `rerun_two_models_fixed_settings.py`가 `workers=1`(순차)로 설정돼 있었는데, 이건 llama-3.3-70b-instruct의 **워커 큐 과부하**(HTTP 503, D94에서 확정) 문제에 대한 방어적 캐치올이었지 nemotron의 문제(max_tokens 부족, 이미 해결됨)와는 무관했다. `RateLimitedClient`(D94 재시도에서 이미 만든 스레드세이프 슬라이딩윈도우 게이트)가 `workers=4`에서도 정상 작동함이 이전 재시도(D94, minimax-m3 등 회복)로 이미 검증됐으므로, nemotron 재시도는 `workers=4`로 바꿔 진행 — 순차 실행은 근거 없는 과잉 보수였다.
+  - **모듈 재로딩 함정(신규)**: `rerun_nemotron_only.py`가 `rerun_two_models_fixed_settings.py`의 `call_one_with_tokens()`를 `importlib.util.spec_from_file_location`으로 재사용했는데, 이 함수가 내부적으로 참조하는 `d94.CLIENT`는 그 파일이 **자체적으로 다시 로드한 별개의 `d94` 모듈 인스턴스**였다(같은 소스 파일이라도 `module_from_spec`을 두 번 호출하면 서로 다른 객체) — 호출부에서 `d94.CLIENT`를 설정해도 반영이 안 돼 24/24가 `'NoneType' object has no attribute 'chat'`로 즉시 실패(0.0초). `rerun2.d94.CLIENT`처럼 대상 모듈 인스턴스에 직접 설정하도록 수정 후 정상화.
+  - **실행 결과**: 1차(workers=1 잔재, timeout=300s) 21/24(88%, 실패 3건 중 1건은 300초 타임아웃). 2차 재시도(실패 3건만, workers=4, timeout=600s)로 2건 추가 회복 → **최종 23/24(95.8%)**. Track B 정밀도 1.0, 강한 답변 평균 5.0/약한 답변 1.32, 자기수정 인식 improving 4.5 vs weak 1.12로 뚜렷하게 분리 — D94 COST가 우려했던 "정규식 채점기 표현취약성"과 달리 이번엔 LLM-as-judge 경로가 잘 작동. 언어별로도 Python/Java/JS 6/6, C/C++ 5/6로 고르게 분포. 재오염 여부는 별도로 transcript 전수조사해 0건 확인.
+  - COST: llama-3.3-70b-instruct는 여전히 0/24(보류) — 전체 성공률 165/384(43%)→167/384(43%, nemotron 회복분 반영). REPEATS=1 미측정은 동일.
+  - EXIT: llama-3.3-70b-instruct는 워커 과부하가 진짜로 시간대 의존적인지(다른 시간대 재시도) 아니면 상시적인지 아직 미확정 — 다음 세션에서 재시도 여부는 사용자 판단.
+
 
 ## 다음 단계 (미해결)
 

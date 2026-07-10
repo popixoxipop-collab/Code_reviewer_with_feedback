@@ -168,18 +168,18 @@
     "n_graded": 23
   },
   "nvidia/llama-3.3-nemotron-super-49b-v1.5": {
-    "job_success_rate": 0.0,
-    "verdict_matches_expected_rate": null,
-    "mean_elapsed_s": null,
-    "grading_success_rate": null,
-    "track_b_precision": null,
-    "mean_score_strong": null,
-    "mean_score_weak": null,
-    "self_correction_improving": null,
-    "self_correction_weak": null,
-    "n_ok": 0,
+    "job_success_rate": 0.958,
+    "verdict_matches_expected_rate": 0.348,
+    "mean_elapsed_s": 129.1,
+    "grading_success_rate": 1.0,
+    "track_b_precision": 1.0,
+    "mean_score_strong": 5.0,
+    "mean_score_weak": 1.32,
+    "self_correction_improving": 4.5,
+    "self_correction_weak": 1.12,
+    "n_ok": 23,
     "n_total": 24,
-    "n_graded": 0
+    "n_graded": 23
   },
   "nvidia/nemotron-3-super-120b-a12b": {
     "job_success_rate": 0.292,
