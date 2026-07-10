@@ -747,6 +747,20 @@ python3 pipeline/compare_methodologies.py
   - COST: maverick의 정밀도/재현성은 영구 미측정(합성 0점) — NVIDIA 서빙이 복구된 뒤 재채점하면 실측으로 대체 가능하나, 사용자 결정으로 이 벤치마크 라운드는 여기서 확정.
   - EXIT: 나중에 maverick을 실측으로 채우려면 `python3 benchmark_4axis_regrade.py "meta/llama-4-maverick-17b-128e-instruct"` 후 `--aggregate-only` — SERVING_OUTAGE의 합성 엔트리는 raw 행이 생기면 자동으로 실측이 우선한다(`m not in summary` 조건).
 
+- **D110** ([`rerun_partial_five.py`](./rerun_partial_five.py)) — "개별 진단 미실시 5개" 병렬 진단+재실행: **60/69 회복, 전원 신뢰 티어 진입** (사용자 지시: "병렬로 개별 진단")
+  - WHY: 감쇠 분석의 "개별 진단 미실시" 티어 5개(minimax-m3 71%/qwen3.5-122b 58%/deepseek-v4-pro 42%/nemotron-3-super-120b 29%/glm-5.2 13%)는 D94b 일괄 재시도만 받고 nemotron식 개별 진단이 없었다. 로컬 error 분포 분석(콜 0건)으로 실패 69건이 3클래스로 정확히 갈림: (a) HTTP 429 31건(minimax·deepseek·glm — D94b 버스트 시대 잔재), (b) content=None 10건(qwen3.5 전부 — D97 nemotron-49b와 동일한 reasoning 512 기아 시그니처), (c) content에 추론 독백/JSON 25건(nemotron-3·glm — 512가 tool 호출 전에 끊었는지 진짜 미준수인지 재실행이 판별 실험).
+  - **실행 결과**: 현재 설정(중앙 4096/600s, 전역 12rpm, workers=4, 답변=haiku D107)으로 69 job 재실행 → **60건 회복**. deepseek-v4-pro 42%→**24/24(100%)** · minimax-m3 71%→**23/24(96%)** · nemotron-3-super-120b 29%→**23/24(96%)** (미준수로 보였던 17건이 실제론 512 기아) · glm-5.2 13%→**21/24(88%)** · qwen3.5-122b 58%→**20/24(83%)**. 전체 190→**250/384(65%)**, "부분 성공" 티어 소멸 — 신뢰 티어 6→**11개**.
+  - **잔여 9건(정직한 잔차)**: 인프라 노이즈 2(503/504) · qwen3.5의 지속성 content=None 3(4096으로도 소진 — 이 모델 고유 한계) · glm의 "정확한 JSON을 content 채널에 출력" 4(간헐적 tool-API 미준수).
+  - COST: 회복 job의 답변은 haiku 생성(기존 ok 행은 sonnet) — `answer_model` 필드로 감사 가능, 모델 간 비교 시 주의(D107). 세션 통산 교훈의 스케일 확정: "나쁜 모델" 점수 대부분이 우리 발사 패턴(job당 5~8 HTTP콜 × 무백오프 재시도 × 동시성이 40rpm 초과)+512 캡의 아티팩트였지 모델 품질이 아니었다.
+  - EXIT: 승격 5개를 RELIABLE_MODELS에 추가(D110b), 4축 재채점(candidate-as-grader ×3) 실행 → 11모델 4축 완전판으로 재집계. → D111에서 완료.
+
+- **D111** ([`turn_engine_4axis_summary.json`](./turn_engine_4axis_summary.json), [`benchmark_4axis_regrade.py`](./benchmark_4axis_regrade.py)) — 승격 5개 4축 재채점 완료, **11모델 완전판 최종 순위** + minimax DEGRADED 진단
+  - **결과**: step-3.5-flash **0.984** > qwen3-next-80b 0.779 > **deepseek-v4-pro 0.776**(안정성 1.0 유일 만점 — 질문생성 24/24 × 채점 72/72) > mistral-medium-3.5 0.74 > qwen3.5-122b 0.701 > nemotron-3-super-120b 0.694 > nemotron-49b 0.658 > glm-5.2 0.652 > maverick 0.248 > mistral-large-3 0.229 > minimax-m3 0.1.
+  - **신규 발견 2건**: (1) nemotron-3-super-120b는 채점 준수율 0.928인데 **재현성 0.0(총점 spread 4.41) + 범위 밖 점수(0점·9점) 출력** — 질문생성기론 96%지만 채점기론 극도로 불안정. (2) minimax-m3의 채점 콜 69건 전멸은 **전부 동일한 HTTP 400 "DEGRADED function cannot be invoked"**(라이브 단건 재현 확인) — 측정 시간대에 NVIDIA가 서빙 함수를 강등한 것으로, 1시간 전 질문생성 23/24를 통과한 모델이라 결함이 아니라 인프라(annotation `grader_measurement_outage`로 명시, 복구 후 재측정 가능).
+  - **채점기 역할까지 무결한 모델**: step-3.5-flash·deepseek-v4-pro·mistral-medium-3.5·glm-5.2(채점 준수 0.98+). 질문생성기 역할은 11개 전원 합격 — 스펙(단일 모델 양역할) 기준 실질 후보군은 4개로 좁혀짐.
+  - COST: minimax·maverick의 정밀도/재현성은 서빙 장애로 미측정(0점 처리, 원인 annotation 구분) — NVIDIA 복구 시 해당 모델만 재실행하면 자동 대체.
+  - EXIT: `python3 benchmark_4axis_regrade.py "<model>"` 후 `--aggregate-only` — minimax/maverick 재측정용. 벤치마크 라운드는 여기서 확정.
+
 
 ## 다음 단계 (미해결)
 

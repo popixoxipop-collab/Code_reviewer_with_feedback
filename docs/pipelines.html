@@ -512,21 +512,23 @@
         <span class="tier-name">계정 접근권한 · 1개</span>
         <span class="tier-body"><code>kimi-k2.6</code>(0%) — 카탈로그(<code>/v1/models</code>)엔 있지만 채팅 엔드포인트가 HTTP 404. preview 권한 문제로 추정.</span>
       </li>
-      <li style="--tier-color: var(--status-active);">
-        <span class="tier-name">개별 진단 미실시 · 5개</span>
-        <span class="tier-body"><code>minimax-m3</code>(71%) · <code>qwen3.5-122b</code>(58%) · <code>deepseek-v4-pro</code>(42%) · <code>nemotron-3-super-120b</code>(29%) · <code>glm-5.2</code>(13%) — 일괄 레이트리밋 재시도만 받았고 nemotron식 개별 원인진단+전용 재시도는 아직. <b>진짜 천장 미상</b> — nemotron·mistral-large-3 사례처럼 일부는 회복 가능성 있음.</span>
+      <li style="--tier-color: var(--status-ok);">
+        <span class="tier-name">D110 전원 회복 · 5개</span>
+        <span class="tier-body"><code>deepseek-v4-pro</code> 42%→<b>100%</b> · <code>minimax-m3</code> 71%→<b>96%</b> · <code>nemotron-3-super-120b</code> 29%→<b>96%</b> · <code>glm-5.2</code> 13%→<b>88%</b> · <code>qwen3.5-122b</code> 58%→<b>83%</b> — 개별 진단(사용자 지시) 결과 실패 69건이 3클래스(429=우리 버스트 잔재 / content=None=512 기아 / content에 JSON=기아·미준수 혼합)로 갈렸고, 현재 설정(4096 캡·12rpm)으로 재실행하자 <b>60/69 회복</b>. "진짜 천장 미상"이던 티어가 통째로 신뢰 티어에 합류(신뢰 11개, 전체 250/384=65%). 잔여 9건은 인프라 노이즈 2 + qwen3.5 고유 한계 3 + glm 간헐 미준수 4.</span>
       </li>
     </ul>
     <p class="lesson">
       핵심 교훈: <b>"낮은 성공률 = 나쁜 모델"이 아니다.</b> 16개 중 우리 설정이 원인이었던 게 2개(둘 다 근본수정 완료),
       무료 티어 인프라가 원인인 게 4개, 모델 결함이 2개 — 라이브 벤치마크에서 원인 분리 없이 순위만 읽으면
       nemotron(0%&rarr;95.8%)·mistral-large-3(4%&rarr;100%) 같은 모델을 억울하게 탈락시키게 된다.
-      최종 순위는 <b>4축 벤치마크</b>(안정성=질문생성&times;채점 end-to-end · 정밀도(자기채점) · 재현성 · 속도, 6모델 완전판)로
-      확정: <b>step-3.5-flash 0.994</b> &gt; qwen3-next-80b 0.79 &gt; mistral-medium-3.5 0.75 &gt;
-      nemotron-super-49b 0.667 &gt; llama-4-maverick 0.248(NVIDIA 서빙 장애 10시간+, 82회 프로브 전부 타임아웃 —
-      채점기 역할 측정 불가, 연결 안정성 미달로 안정성 축 0) &gt; mistral-large-3 0.229(채점기 퇴행 루프).
-      정밀도는 채점 성공 모델 전원 1.00 — 승부처는 재현성(temp=0인데도 0.44~0.83)이었다. 상세 근거는
-      <a href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback/blob/main/README.md" style="color:var(--accent);">README D94~D109</a> 참고.
+      최종 순위는 <b>4축 벤치마크</b>(안정성=질문생성&times;채점 end-to-end · 정밀도(자기채점) · 재현성 · 속도, 11모델 완전판):
+      <b>step-3.5-flash 0.984</b> &gt; qwen3-next-80b 0.779 &gt; deepseek-v4-pro 0.776(안정성 유일 만점) &gt;
+      mistral-medium-3.5 0.74 &gt; qwen3.5-122b 0.701 &gt; nemotron-3-super 0.694(재현성 0.0, 범위 밖 점수 출력) &gt;
+      nemotron-49b 0.658 &gt; glm-5.2 0.652 &gt; maverick 0.248(서빙 장애) &gt; mistral-large-3 0.229(채점기 퇴행 루프) &gt;
+      minimax-m3 0.1(측정 시간대 NVIDIA DEGRADED — 모델 결함 아님).
+      정밀도는 채점 성공 모델 전원 1.00 — 승부처는 재현성(temp=0인데도 0.0~0.83)과 채점기 역할 안정성이다.
+      질문생성기는 11개 모두 합격이지만 채점기까지 무결한 건 step-3.5-flash·deepseek-v4-pro·mistral-medium-3.5·glm-5.2 정도. 상세 근거는
+      <a href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback/blob/main/README.md" style="color:var(--accent);">README D94~D111</a> 참고.
     </p>
   </section>
 

@@ -115,6 +115,18 @@ SERVING_OUTAGE = {
         "Question-generator stability (0.875, 21/24) was measured before the outage."
     ),
 }
+
+# D111: raw 행은 있으나 실패 원인이 모델이 아니라 측정 시간대의 NVIDIA 서빙 장애인 모델 --
+#   순위 점수(안정성 0)는 실측 그대로 두되, 원인을 annotation으로 명시(억울한 판정 방지).
+GRADER_MEASUREMENT_OUTAGE = {
+    "minimaxai/minimax-m3": (
+        "all 69 grading calls returned a uniform HTTP 400 '...DEGRADED function cannot be "
+        "invoked' (live single-call repro confirmed) -- NVIDIA marked the model's serving "
+        "function DEGRADED during the regrade window. NOT a model defect: one hour earlier "
+        "the same model passed 23/24 as question generator, and the identical grading "
+        "schema works on 8 other models. Re-measure when NVIDIA recovers (see EXIT)."
+    ),
+}
 # D106b: NVIDIA 부분 장애(같은 시각 qwen·maverick만 90s 프로브 초과, 나머지 정상) 대응 --
 #   CLI 인자로 대상 모델 서브셋 지정 가능. raw 파일은 모델 단위로 병합(이번 대상만 교체,
 #   나머지 모델의 기존 행 보존)해서 장애 모델은 회복 후 개별 재실행하면 된다.
@@ -311,6 +323,10 @@ def main():
     for m, why in GRADER_ROLE_DEFECTS.items():
         if m in summary:
             summary[m]["grader_role_defect"] = why
+    # D111: 측정 시간대 서빙 장애 annotation (모델 결함 아님을 명시)
+    for m, why in GRADER_MEASUREMENT_OUTAGE.items():
+        if m in summary:
+            summary[m]["grader_measurement_outage"] = why
 
     # D108c: 전 모델을 순위에 포함한다. 채점 콜이 전멸한 모델(정밀도/재현성 미측정)은
     #   축을 건너뛰는 게 아니라 0으로 친다 -- "채점을 한 번도 성공 못한 채점기"의 유효
