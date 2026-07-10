@@ -696,6 +696,13 @@ python3 pipeline/compare_methodologies.py
   - COST: 이 페이지는 2026-07-10 D100 시점 **정적 스냅샷**이다 — `docs/index.html`의 벤치마크 섹션과 달리 `d94-rerun-status.json`을 fetch하는 라이브 갱신 구조가 없어서, 이후 벤치마크 수치가 바뀌면(예: mistral 페어 재시도 결과) 수동으로 다시 편집+push해야 한다. 관리해야 할 공개 파일이 3개(`docs/index.html`, `docs/pipelines.html`, 루트 리다이렉트 2개)로 늘어남.
   - EXIT: 구조 자체를 바꾸려면 `docs/pipelines.html`을 직접 편집(청사진 소스는 스크래치패드 `pipeline_blueprint.html`과 동일 마크업)하고 push. 페이지를 없애려면 `docs/pipelines.html`+루트 `pipelines.html`+`docs/index.html`의 "Pipeline Map" 링크 3곳을 함께 제거.
 
+- **D102** (`~/.claude/hooks/scripts/timeout-config-guard.py`, [`rerun_mistral_pair.py`](./rerun_mistral_pair.py)) — mistral-nemotron 504 확인 + D98 hook의 경로 스코프 우회 발견/수정(사용자 질문: "타임아웃을 450초로 내가 하드코딩 하지 말고 중앙 통제식 변수로 가고 모두 일괄 600을 쓰도록 강제했는데 어떻게 이게 구조적으로 가능해?")
+  - WHY: D100 EXIT를 따라 mistral-nemotron+mistral-large-3 전용 재시도(`rerun_mistral_pair.py`)를 돌렸는데 mistral-nemotron이 16/16 전부 ~302초에서 죽어서, 하니스를 거치지 않고 raw urllib로 직접 1건 진단 호출을 날렸다(클라이언트 타임아웃을 관측된 컷오프보다 넉넉하게 잡아야 우리 쪽 타임아웃이 먼저 안 걸린다는 걸 확인할 수 있어서 `450.0`을 그 스크립트에 직접 대입) — 이 진단 스크립트를 스크래치패드(repo 밖)에 저장했는데, `timeout-config-guard.py`가 `PROJECT_MARKER not in file_path`면 즉시 `sys.exit(0)`하는 경로 문자열 전용 스코프 게이트라 그대로 통과됐다. 사용자가 "D98에서 무조건 600으로 강제하기로 했는데 이게 어떻게 가능하냐"고 정확히 지적.
+  - **진단 결과(핵심)**: raw 호출이 `HTTPError after 302.3s: code=504 reason=Gateway Timeout`을 반환 — 우리 쪽에 450초를 요청했는데도 NVIDIA 게이트웨이 자체가 ~300초에서 연결을 끊는다는 뜻. 하니스의 16/16 동일 ~302초 실패와 정확히 일치. **client 설정(timeout_s/workers/max_tokens)으로는 고칠 수 없는 서버측 하드 컷오프**로 확정 — D89/D94 때의 "빠른 500/DEGRADED"와는 다른, 더 나쁜 증상(응답 없이 게이트웨이가 대신 끊음). mistral-nemotron은 이번 라운드에서 재시도 대상에서 제외, `rerun_mistral_pair.py`의 `TARGET_MODELS`에서 뺐다(재추가 조건을 코드 주석에 명시).
+  - **hook 수정**: `PROJECT_MARKER` 경로 매칭 OR `NVIDIA_CONTENT_MARKERS`(API URL/vendored client 클래스명·모듈명) content 매칭으로 스코프를 넓힘 — repo 밖 스크래치패드 진단 스크립트라도 이 프로젝트의 NVIDIA 호출 코드를 담고 있으면 이제 걸린다. 8케이스 하네스(경로매칭/content매칭/무관스크립트 오탐없음/기존 in-project 케이스/DEFAULT_TIMEOUT_S 참조/timeout_config.py 자기예외/allow주석) 전수 통과 + 실제 Write 도구로 차단 재현(`hook_proof_should_block.py`) 확인.
+  - COST: content 마커 검사가 `.py` 파일 전체를 대상으로 하므로, 이 프로젝트와 무관하지만 우연히 `nvidia_client`라는 문자열을 포함하는 다른 프로젝트 스크립트가 있다면 그것도 걸릴 수 있음(마커 5개가 충분히 특이적이라 실제 오탐 가능성은 낮다고 판단, 발생하면 `# timeout-guard: allow`로 개별 예외).
+  - EXIT: mistral-nemotron을 나중에 재시도하려면 `rerun_mistral_pair.py`의 `TARGET_MODELS`에 `"mistralai/mistral-nemotron"`을 다시 추가(코드 주석에 조건 명시: NVIDIA 쪽이 복구됐다는 신호가 있을 때만). hook의 `NVIDIA_CONTENT_MARKERS` 튜플에 새 마커를 추가하면 스코프를 더 넓힐 수 있음.
+
 
 ## 다음 단계 (미해결)
 

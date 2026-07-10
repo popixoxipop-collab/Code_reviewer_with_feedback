@@ -40,7 +40,15 @@ _specrerun = importlib.util.spec_from_file_location("rerun2", os.path.join(REPO,
 rerun2 = importlib.util.module_from_spec(_specrerun)
 _specrerun.loader.exec_module(rerun2)
 
-TARGET_MODELS = ["mistralai/mistral-nemotron", "mistralai/mistral-large-3-675b-instruct-2512"]
+# D102: mistral-nemotron dropped from this run after a raw single-call diagnostic
+#   (bypassing the whole harness, client-side cap set well above the observed cutoff so
+#   our own client-side limit couldn't fire first) came back "HTTPError after 302.3s:
+#   code=504 reason=Gateway Timeout" -- NVIDIA's own gateway is killing the request
+#   around ~300s regardless of what we ask for client-side, so no client setting
+#   (workers, timeout_s, max_tokens) can fix this. The first 16/16 jobs in the actual
+#   harness run all failed at an identical ~302s too, consistent with this. Re-add
+#   "mistralai/mistral-nemotron" here if NVIDIA's side recovers later.
+TARGET_MODELS = ["mistralai/mistral-large-3-675b-instruct-2512"]
 RPM_CAP = 12
 RETRY_TIMEOUT_S = DEFAULT_TIMEOUT_S  # D98: centralized in timeout_config.py (user request)
 RETRY_WORKERS = 4  # no queue-overload diagnosis for these two (unlike llama-3.3-70b-instruct) -- no reason to serialize
@@ -66,7 +74,7 @@ def main():
             for (lang_finding, variant), entry in all_labels.items()
             if (model, lang_finding, variant) not in already_ok]
 
-    print(f"=== mistral-nemotron + mistral-large-3 재시도: {len(jobs)}/{len(all_labels) * len(TARGET_MODELS)} jobs "
+    print(f"=== {' + '.join(TARGET_MODELS)} 재시도: {len(jobs)}/{len(all_labels) * len(TARGET_MODELS)} jobs "
           f"(timeout_s={RETRY_TIMEOUT_S:.0f}, max_tokens={MAX_TOKENS}, workers={RETRY_WORKERS}) ===", flush=True)
     client = retry40.RateLimitedClient(NvidiaRotatingClient(pool=pool, timeout_s=RETRY_TIMEOUT_S), rpm=RPM_CAP)
     d94.CLIENT = client
