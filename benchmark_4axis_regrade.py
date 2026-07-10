@@ -69,12 +69,36 @@ RELIABLE_MODELS = [
     "mistralai/mistral-large-3-675b-instruct-2512",
 ]
 REPEATS = 3
-RPM_CAP = 12
-WORKERS = 4
+# D106e: mistral-large-3 실측(2026-07-10) -- 이 flagship 모델의 429는 분당 창이 아니라
+#   천천히 재충전되는 시간 단위 총량 버킷이다: 단발 프로브는 통과(65s 간격 3연속 200)해도
+#   72콜 일괄 발사는 전멸했고, ~100콜 소진 후엔 단발조차 ~1시간 전멸했다. 이런 모델은
+#   낮은 rpm으로 버킷 재충전 속도 아래에서 돌려야 하므로 env로 페이스 조절 가능하게 한다.
+RPM_CAP = int(os.environ.get("REGRADE_RPM", "12"))
+WORKERS = int(os.environ.get("REGRADE_WORKERS", "4"))
+
+# D108b: 채점기 역할 자체가 결함으로 확정된 모델 -- 재채점 반복이 무의미(콜당 전체 토큰
+#   예산을 태우며 실패)하므로 재실행 대상에서 제외하고 사유를 summary에 남긴다.
+#   mistral-large-3 실측(2026-07-10, 단건 재현 3회): 5축 채점 tool-call에서 퇴행 생성 루프 --
+#   cap=2048/4096/8192 전부 finish_reason="length"로 예산 완전 소진(completion_tokens=cap)인데
+#   가시 출력은 args 809~907자 + reasoning_content 0자. 캡 2배 상향이 args를 60자만 늘림 =
+#   유한한 캡으로 해결 불가. 단순 스키마(ask_question, 1필드)는 24/24 정상이므로 이건
+#   "복잡한 스키마에서만 터지는" 모델/서빙측 결함 -- 질문생성기 적합, 채점기 부적합.
+GRADER_ROLE_DEFECTS = {
+    "mistralai/mistral-large-3-675b-instruct-2512": (
+        "degenerate tool-call loop on the 5-axis grading schema: caps 2048/4096/8192 all "
+        "burn the FULL completion budget (completion_tokens == cap, finish_reason=length) "
+        "while emitting only ~850-907 chars of arguments and zero reasoning_content -- no "
+        "finite cap can fix this. The simple ask_question schema works fine (24/24), so the "
+        "model is usable as question generator but NOT as grader (locked spec requires both roles)."
+    ),
+}
 # D106b: NVIDIA 부분 장애(같은 시각 qwen·maverick만 90s 프로브 초과, 나머지 정상) 대응 --
 #   CLI 인자로 대상 모델 서브셋 지정 가능. raw 파일은 모델 단위로 병합(이번 대상만 교체,
 #   나머지 모델의 기존 행 보존)해서 장애 모델은 회복 후 개별 재실행하면 된다.
-TARGETS = sys.argv[1:] if len(sys.argv) > 1 else RELIABLE_MODELS
+# D106d: --aggregate-only = API 콜 없이 기존 raw 파일만 재집계(집계 로직 수정 후 재계산용)
+AGGREGATE_ONLY = "--aggregate-only" in sys.argv
+_args = [a for a in sys.argv[1:] if a != "--aggregate-only"]
+TARGETS = _args if _args else RELIABLE_MODELS
 for _t in TARGETS:
     if _t not in RELIABLE_MODELS:
         raise SystemExit(f"unknown target model: {_t} (choose from RELIABLE_MODELS)")
@@ -125,42 +149,47 @@ def main():
     with open(raw_path, encoding="utf-8") as f:
         existing = json.load(f)
 
-    # 이 스크립트는 재시도 루프 없음(job당 1콜, 실패도 데이터) -- 헤더 정책 참고.
-    # retry-backoff-guard: intentional-no-backoff
-    jobs = []
-    n_transcripts = 0
-    for r in existing:
-        if r["model"] not in TARGETS or not r.get("ok") or not r.get("transcript"):
-            continue
-        lang_finding = r["label"].rsplit(":", 1)[0]
-        finding = _findings_by_key.get(lang_finding)
-        if finding is None:
-            continue
-        question = r["transcript"][0]["question"]
-        answer_text = _transcript_text(r["transcript"])
-        n_transcripts += 1
-        for rep in range(REPEATS):
-            jobs.append((r["model"], r["label"], r["variant"], finding, question, answer_text, rep))
-
-    print(f"=== 4축 재채점 (대상 {len(TARGETS)}모델): {n_transcripts} transcripts x {REPEATS} repeats = {len(jobs)} grading calls "
-          f"(candidate-as-grader, timeout_s={DEFAULT_TIMEOUT_S:.0f}, max_tokens={DEFAULT_MAX_TOKENS}, "
-          f"rpm={RPM_CAP}, workers={WORKERS}) ===", flush=True)
-
-    pool = NvidiaKeyPool.from_env()
-    CLIENT = retry40.RateLimitedClient(NvidiaRotatingClient(pool=pool, timeout_s=DEFAULT_TIMEOUT_S), rpm=RPM_CAP)
-
-    rows = run_concurrent(jobs, call_one, max_workers=WORKERS, progress=print_progress)
-
-    # D106b: 모델 단위 병합 -- 이번 TARGETS의 행만 교체, 다른 모델의 기존 행은 보존
     raw_out = os.path.join(REPO, "turn_engine_4axis_regrade_raw.json")
-    merged_rows = []
-    if os.path.exists(raw_out):
+    if AGGREGATE_ONLY:
         with open(raw_out, encoding="utf-8") as f:
-            merged_rows = [r for r in json.load(f) if r["model"] not in TARGETS]
-    merged_rows.extend(rows)
-    rows = merged_rows
-    with open(raw_out, "w", encoding="utf-8") as f:
-        json.dump(rows, f, ensure_ascii=False, indent=2)
+            rows = json.load(f)
+        print(f"=== aggregate-only: {len(rows)} raw rows 재집계 (API 콜 없음) ===", flush=True)
+    else:
+        # 이 스크립트는 재시도 루프 없음(job당 1콜, 실패도 데이터) -- 헤더 정책 참고.
+        # retry-backoff-guard: intentional-no-backoff
+        jobs = []
+        n_transcripts = 0
+        for r in existing:
+            if r["model"] not in TARGETS or not r.get("ok") or not r.get("transcript"):
+                continue
+            lang_finding = r["label"].rsplit(":", 1)[0]
+            finding = _findings_by_key.get(lang_finding)
+            if finding is None:
+                continue
+            question = r["transcript"][0]["question"]
+            answer_text = _transcript_text(r["transcript"])
+            n_transcripts += 1
+            for rep in range(REPEATS):
+                jobs.append((r["model"], r["label"], r["variant"], finding, question, answer_text, rep))
+
+        print(f"=== 4축 재채점 (대상 {len(TARGETS)}모델): {n_transcripts} transcripts x {REPEATS} repeats = {len(jobs)} grading calls "
+              f"(candidate-as-grader, timeout_s={DEFAULT_TIMEOUT_S:.0f}, max_tokens={DEFAULT_MAX_TOKENS}, "
+              f"rpm={RPM_CAP}, workers={WORKERS}) ===", flush=True)
+
+        pool = NvidiaKeyPool.from_env()
+        CLIENT = retry40.RateLimitedClient(NvidiaRotatingClient(pool=pool, timeout_s=DEFAULT_TIMEOUT_S), rpm=RPM_CAP)
+
+        rows = run_concurrent(jobs, call_one, max_workers=WORKERS, progress=print_progress)
+
+        # D106b: 모델 단위 병합 -- 이번 TARGETS의 행만 교체, 다른 모델의 기존 행은 보존
+        merged_rows = []
+        if os.path.exists(raw_out):
+            with open(raw_out, encoding="utf-8") as f:
+                merged_rows = [r for r in json.load(f) if r["model"] not in TARGETS]
+        merged_rows.extend(rows)
+        rows = merged_rows
+        with open(raw_out, "w", encoding="utf-8") as f:
+            json.dump(rows, f, ensure_ascii=False, indent=2)
 
     # ---- 집계 (raw에 행이 있는 모델 전부 -- 부분 실행이 쌓이면 자동으로 커버리지 확장) ----
     old_summary = json.load(open(os.path.join(REPO, "turn_engine_grading_16models_sonnet_summary.json"), encoding="utf-8"))
@@ -205,9 +234,19 @@ def main():
         precision_hits = sum(1 for k in common if strong_by_finding[k] > weak_by_finding[k])
 
         old = old_summary.get(model, {})
+        job_sr = old.get("job_success_rate")
+        grader_sr = round(n_ok_calls / n_calls, 3) if n_calls else None
+        # D108c(사용자 지적 "그럼 그냥 4축 중에 연결 안정성이 낮은 거잖아"): 안정성 축은
+        #   두 역할을 합친 end-to-end다 -- 스펙이 한 모델에 질문생성기+채점기를 둘 다
+        #   요구하므로, 실전 job 성공확률 ~= P(질문생성 성공) x P(채점 성공). 채점기
+        #   결함(large-3 퇴행 루프, nemotron 스키마 미준수)은 별도 카테고리로 빼서 순위
+        #   제외하는 게 아니라 이 축의 낮은 점수로 순위에 반영된다.
+        stability_combined = round(job_sr * grader_sr, 3) if (job_sr is not None and grader_sr is not None) else None
         summary[model] = {
-            # 축 1: 호출 안정성 (질문생성기 역할, 기존 실측 재사용)
-            "stability_job_success_rate": old.get("job_success_rate"),
+            # 축 1: 호출 안정성 = 질문생성 성공률 x 채점 성공률 (end-to-end, 두 역할 통합)
+            "stability_combined": stability_combined,
+            "stability_question_gen": job_sr,
+            "stability_grader_call": grader_sr,
             # 축 2: 정밀도 (채점기 역할, 이번에 처음으로 candidate-as-grader로 측정)
             "precision_candidate_as_grader": round(precision_hits / len(common), 3) if common else None,
             "precision_fixed_grader_legacy": old.get("track_b_precision"),
@@ -216,8 +255,6 @@ def main():
             "reproducibility_mean_total_spread": round(sum(spreads) / len(spreads), 2) if spreads else None,
             # 축 4: 속도 (질문생성기 역할, 기존 실측 재사용)
             "speed_mean_elapsed_s": old.get("mean_elapsed_s"),
-            # 보조: 채점기 역할의 규격 준수율(안정성의 채점 측면)
-            "grader_call_success_rate": round(n_ok_calls / n_calls, 3) if n_calls else None,
             "n_transcripts": len(by_label), "n_grading_calls": n_calls,
         }
 
@@ -228,28 +265,38 @@ def main():
         return {i: ((v - lo) / (hi - lo) if hi > lo else 1.0) if v is not None else None
                 for i, v in enumerate(vals)}
 
-    stab = _norm([summary[m]["stability_job_success_rate"] for m in covered])
-    prec = _norm([summary[m]["precision_candidate_as_grader"] for m in covered])
-    repr_ = _norm([summary[m]["reproducibility_identical_rate"] for m in covered])
-    spd = _norm([-(summary[m]["speed_mean_elapsed_s"] or 0) for m in covered])
-    for i, m in enumerate(covered):
+    # D108b: 채점기 결함 확정 모델은 사유를 summary에 명시(문서화용 -- 순위 제외는 안 함)
+    for m, why in GRADER_ROLE_DEFECTS.items():
+        if m in summary:
+            summary[m]["grader_role_defect"] = why
+
+    # D108c: 전 모델을 순위에 포함한다. 채점 콜이 전멸한 모델(정밀도/재현성 미측정)은
+    #   축을 건너뛰는 게 아니라 0으로 친다 -- "채점을 한 번도 성공 못한 채점기"의 유효
+    #   정밀도/재현성은 0이 맞다(측정불가 != 무죄). D106d의 "빠진 축 건너뛰고 평균" 왜곡
+    #   (large-3가 안정성+속도만으로 1위)과 "특수 카테고리 제외"(사용자 지적) 둘 다 폐기.
+    ranked = list(covered)
+    stab = _norm([summary[m]["stability_combined"] or 0.0 for m in ranked])
+    prec = _norm([summary[m]["precision_candidate_as_grader"] or 0.0 for m in ranked])
+    repr_ = _norm([summary[m]["reproducibility_identical_rate"] or 0.0 for m in ranked])
+    spd = _norm([-(summary[m]["speed_mean_elapsed_s"] or 0) for m in ranked])
+    for i, m in enumerate(ranked):
         parts = [stab[i], prec[i], repr_[i], spd[i]]
-        summary[m]["composite_4axis"] = round(sum(p for p in parts if p is not None) / len([p for p in parts if p is not None]), 3)
+        summary[m]["composite_4axis"] = round(sum(parts) / len(parts), 3)
     summary["_meta"] = {
         "covered_models": covered,
-        "note": "composite_4axis is min-max normalized WITHIN covered_models only -- rerun after all reliable models are covered for the final ranking",
+        "ranked_models": ranked,
+        "note": "stability axis = question-gen success x grader-call success (end-to-end, both roles per locked spec). Models whose grading never succeeded score 0 on precision/reproducibility instead of being excluded -- a grader that cannot grade has zero effective precision. composite_4axis is min-max normalized within ranked_models.",
     }
 
     with open(os.path.join(REPO, "turn_engine_4axis_summary.json"), "w", encoding="utf-8") as f:
         json.dump(summary, f, ensure_ascii=False, indent=2)
 
     print("\n=== 4축 결과 ===", flush=True)
-    for m in sorted(covered, key=lambda x: -summary[x]["composite_4axis"]):
+    for m in sorted(covered, key=lambda x: -(summary[x]["composite_4axis"] if summary[x]["composite_4axis"] is not None else -1)):
         s = summary[m]
-        print(f"{m}\n  안정성={s['stability_job_success_rate']}  정밀도(자기채점)={s['precision_candidate_as_grader']} "
-              f"(고정grader 구값={s['precision_fixed_grader_legacy']})  재현성={s['reproducibility_identical_rate']} "
-              f"(spread={s['reproducibility_mean_total_spread']})  속도={s['speed_mean_elapsed_s']}s  "
-              f"채점규격준수={s['grader_call_success_rate']}  종합={s['composite_4axis']}", flush=True)
+        print(f"{m}\n  안정성(end-to-end)={s['stability_combined']} (질문생성={s['stability_question_gen']} x 채점={s['stability_grader_call']})  "
+              f"정밀도(자기채점)={s['precision_candidate_as_grader']}  재현성={s['reproducibility_identical_rate']} "
+              f"(spread={s['reproducibility_mean_total_spread']})  속도={s['speed_mean_elapsed_s']}s  종합={s['composite_4axis']}", flush=True)
 
 
 if __name__ == "__main__":

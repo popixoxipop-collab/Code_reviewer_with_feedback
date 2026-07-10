@@ -1,0 +1,4718 @@
+[
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 13.9
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "python:architecture-diffusion:endpoint.py:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 14.1
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "python:architecture-diffusion:endpoint.py:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 15.1
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 4,
+      "자기_수정": 5
+    },
+    "elapsed_s": 12.3
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 17.6
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "python:architecture-diffusion:endpoint.py:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 22.3
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 15.5
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "python:architecture-diffusion:endpoint.py:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 27.0
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "python:architecture-diffusion:endpoint.py:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 36.3
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 9.8
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 20.1
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "python:architecture-diffusion:endpoint.py:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 95.5
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 21.3
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "python:architecture-diffusion:endpoint.py:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 15.0
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "python:architecture-diffusion:endpoint.py:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 30.7
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "python:architecture-diffusion:endpoint.py:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 43.2
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 10.0
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 100.8
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 11.1
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 12.0
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 34.6
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 10.4
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 14.8
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 4
+    },
+    "elapsed_s": 18.9
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 10.1
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 4
+    },
+    "elapsed_s": 53.1
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 14.9
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 8.7
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 4
+    },
+    "elapsed_s": 67.7
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 9.7
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 23.1
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 48.3
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 35.6
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 23.2
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "python:cognition-isolation:patterns.py:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 4,
+      "대안_비교": 3,
+      "설계_논리": 2,
+      "자기_수정": 5
+    },
+    "elapsed_s": 13.7
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "python:cognition-isolation:patterns.py:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 17.2
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "python:cognition-isolation:patterns.py:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 4,
+      "대안_비교": 3,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 24.8
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 79.6
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "java:cognition-isolation:Book.java:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 17.6
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": false,
+    "error": "HTTP Error 504: Gateway Timeout",
+    "elapsed_s": 302.5
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "python:cognition-isolation:patterns.py:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 4
+    },
+    "elapsed_s": 19.0
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "python:cognition-isolation:patterns.py:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 24.3
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "python:cognition-isolation:patterns.py:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 4
+    },
+    "elapsed_s": 18.6
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "java:cognition-isolation:Book.java:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 14.7
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "java:cognition-isolation:Book.java:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 99.3
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "python:cognition-isolation:patterns.py:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 19.2
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "java:cognition-isolation:Book.java:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 76.3
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "java:cognition-isolation:Book.java:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 68.9
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "python:cognition-isolation:patterns.py:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 13.8
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "java:cognition-isolation:Book.java:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 40.9
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "java:cognition-isolation:Book.java:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 203.9
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "java:cognition-isolation:Book.java:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 15.2
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "javascript:cognition-isolation:Input.jsx:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 12.6
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "javascript:cognition-isolation:Input.jsx:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 15.5
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "javascript:cognition-isolation:Input.jsx:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 16.3
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "javascript:cognition-isolation:Input.jsx:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 18.4
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "javascript:cognition-isolation:Input.jsx:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 11.2
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "javascript:cognition-isolation:Input.jsx:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 9.0
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 12.6
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 10.7
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 13.4
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 1,
+      "대안_비교": 4,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 19.9
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 20.9
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "javascript:cognition-isolation:Input.jsx:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 25.9
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "javascript:cognition-isolation:Input.jsx:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 18.0
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "javascript:cognition-isolation:Input.jsx:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 11.5
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "python:cognition-isolation:patterns.py:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 278.3
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 137.2
+  },
+  {
+    "model": "stepfun-ai/step-3.5-flash",
+    "label": "java:cognition-isolation:Book.java:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 281.8
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "python:architecture-diffusion:endpoint.py:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 16.4
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "python:architecture-diffusion:endpoint.py:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 18.3
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "python:architecture-diffusion:endpoint.py:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 46.9
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "python:architecture-diffusion:endpoint.py:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 45.2
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "python:architecture-diffusion:endpoint.py:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 16.3
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "python:architecture-diffusion:endpoint.py:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 14.8
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 4
+    },
+    "elapsed_s": 11.4
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 20.8
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 21.0
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 29.2
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "python:architecture-diffusion:endpoint.py:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 2,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 4
+    },
+    "elapsed_s": 15.3
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 4
+    },
+    "elapsed_s": 24.2
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 31.0
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "python:architecture-diffusion:endpoint.py:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 2,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 4
+    },
+    "elapsed_s": 19.9
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "python:architecture-diffusion:endpoint.py:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 2,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 4
+    },
+    "elapsed_s": 16.7
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 10.3
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 17.0
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 26.0
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 17.1
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 2,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 12.7
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 23.5
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 36.4
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 2,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 13.1
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 2,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 19.7
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 3,
+      "대안_비교": 2,
+      "설계_논리": 2,
+      "자기_수정": 5
+    },
+    "elapsed_s": 19.1
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 3,
+      "대안_비교": 2,
+      "설계_논리": 2,
+      "자기_수정": 5
+    },
+    "elapsed_s": 23.6
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "python:cognition-isolation:patterns.py:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 13.6
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "python:cognition-isolation:patterns.py:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 14.7
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "python:cognition-isolation:patterns.py:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 25.6
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 3,
+      "대안_비교": 2,
+      "설계_논리": 2,
+      "자기_수정": 5
+    },
+    "elapsed_s": 34.1
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 23.4
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 14.8
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 23.8
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 4
+    },
+    "elapsed_s": 26.0
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 4
+    },
+    "elapsed_s": 16.3
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "python:cognition-isolation:patterns.py:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 9.0
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "python:cognition-isolation:patterns.py:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 8.6
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 4
+    },
+    "elapsed_s": 34.0
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "python:cognition-isolation:patterns.py:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 4
+    },
+    "elapsed_s": 14.6
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "python:cognition-isolation:patterns.py:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 4
+    },
+    "elapsed_s": 16.7
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "python:cognition-isolation:patterns.py:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 23.2
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "python:cognition-isolation:patterns.py:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 4
+    },
+    "elapsed_s": 15.0
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "javascript:cognition-isolation:Input.jsx:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 14.3
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "java:cognition-isolation:Book.java:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 14.6
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "javascript:cognition-isolation:Input.jsx:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 38.7
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "java:cognition-isolation:Book.java:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 17.4
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "java:cognition-isolation:Book.java:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 16.0
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "java:cognition-isolation:Book.java:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 2,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 9.1
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "java:cognition-isolation:Book.java:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 2,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 4
+    },
+    "elapsed_s": 17.8
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "javascript:cognition-isolation:Input.jsx:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 65.2
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "javascript:cognition-isolation:Input.jsx:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 12.7
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "javascript:cognition-isolation:Input.jsx:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 14.7
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "javascript:cognition-isolation:Input.jsx:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 41.7
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "java:cognition-isolation:Book.java:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 23.1
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "java:cognition-isolation:Book.java:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 15.3
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "java:cognition-isolation:Book.java:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 13.3
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "javascript:cognition-isolation:Input.jsx:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 9.4
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "javascript:cognition-isolation:Input.jsx:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 10.8
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "java:cognition-isolation:Book.java:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 2,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 4
+    },
+    "elapsed_s": 80.1
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 14.7
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "javascript:cognition-isolation:Input.jsx:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 4
+    },
+    "elapsed_s": 35.5
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 14.7
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 4
+    },
+    "elapsed_s": 7.0
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 10.0
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 38.7
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 4
+    },
+    "elapsed_s": 17.1
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 22.3
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 4
+    },
+    "elapsed_s": 50.4
+  },
+  {
+    "model": "mistralai/mistral-medium-3.5-128b",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 37.7
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "python:architecture-diffusion:endpoint.py:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 2,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 3
+    },
+    "elapsed_s": 12.4
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "python:architecture-diffusion:endpoint.py:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 2,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 3
+    },
+    "elapsed_s": 13.1
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "python:architecture-diffusion:endpoint.py:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 2,
+      "대안_비교": 2,
+      "설계_논리": 2,
+      "자기_수정": 3
+    },
+    "elapsed_s": 13.7
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 14.2
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 12.3
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 3,
+      "대안_비교": 3,
+      "설계_논리": 2,
+      "자기_수정": 5
+    },
+    "elapsed_s": 12.2
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 3,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 14.7
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 18.4
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 2,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 18.8
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "python:architecture-diffusion:endpoint.py:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 3,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 4,
+      "자기_수정": 5
+    },
+    "elapsed_s": 18.0
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "python:architecture-diffusion:endpoint.py:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 3,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 4,
+      "자기_수정": 5
+    },
+    "elapsed_s": 15.4
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "python:architecture-diffusion:endpoint.py:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 3,
+      "반례_대응": 4,
+      "대안_비교": 3,
+      "설계_논리": 4,
+      "자기_수정": 5
+    },
+    "elapsed_s": 15.9
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 2,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 27.0
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 2,
+      "대안_비교": 3,
+      "설계_논리": 2,
+      "자기_수정": 3
+    },
+    "elapsed_s": 28.2
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 2,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 29.0
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "python:architecture-diffusion:endpoint.py:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 33.1
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "python:architecture-diffusion:endpoint.py:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 18.0
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "python:architecture-diffusion:endpoint.py:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 25.6
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 3,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 4,
+      "자기_수정": 5
+    },
+    "elapsed_s": 29.0
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 3,
+      "반례_대응": 4,
+      "대안_비교": 2,
+      "설계_논리": 2,
+      "자기_수정": 5
+    },
+    "elapsed_s": 21.9
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 3,
+      "반례_대응": 4,
+      "대안_비교": 3,
+      "설계_논리": 2,
+      "자기_수정": 5
+    },
+    "elapsed_s": 16.6
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 3,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 17.3
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 3,
+      "대안_비교": 2,
+      "설계_논리": 2,
+      "자기_수정": 1
+    },
+    "elapsed_s": 12.5
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 3,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 13.6
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 2,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 2
+    },
+    "elapsed_s": 14.8
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 19.1
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 21.1
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 32.2
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 2,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 2
+    },
+    "elapsed_s": 15.5
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 18.2
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 2,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 2
+    },
+    "elapsed_s": 24.6
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 21.1
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 23.4
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 3,
+      "반례_대응": 3,
+      "대안_비교": 2,
+      "설계_논리": 2,
+      "자기_수정": 5
+    },
+    "elapsed_s": 16.8
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 3,
+      "반례_대응": 3,
+      "대안_비교": 2,
+      "설계_논리": 2,
+      "자기_수정": 5
+    },
+    "elapsed_s": 19.2
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 3,
+      "반례_대응": 3,
+      "대안_비교": 2,
+      "설계_논리": 2,
+      "자기_수정": 5
+    },
+    "elapsed_s": 18.7
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "java:cognition-isolation:Book.java:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 3,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 2
+    },
+    "elapsed_s": 9.8
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "python:cognition-isolation:patterns.py:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 3,
+      "대안_비교": 2,
+      "설계_논리": 2,
+      "자기_수정": 2
+    },
+    "elapsed_s": 20.8
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "python:cognition-isolation:patterns.py:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 3,
+      "대안_비교": 2,
+      "설계_논리": 2,
+      "자기_수정": 2
+    },
+    "elapsed_s": 16.1
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "python:cognition-isolation:patterns.py:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 3,
+      "대안_비교": 2,
+      "설계_논리": 2,
+      "자기_수정": 2
+    },
+    "elapsed_s": 30.4
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "java:cognition-isolation:Book.java:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 2,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 2
+    },
+    "elapsed_s": 10.8
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "java:cognition-isolation:Book.java:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 3,
+      "대안_비교": 2,
+      "설계_논리": 2,
+      "자기_수정": 2
+    },
+    "elapsed_s": 13.9
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "python:cognition-isolation:patterns.py:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 3,
+      "반례_대응": 4,
+      "대안_비교": 4,
+      "설계_논리": 4,
+      "자기_수정": 5
+    },
+    "elapsed_s": 15.2
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "python:cognition-isolation:patterns.py:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 4,
+      "대안_비교": 3,
+      "설계_논리": 4,
+      "자기_수정": 5
+    },
+    "elapsed_s": 20.7
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "java:cognition-isolation:Book.java:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 23.0
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "java:cognition-isolation:Book.java:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 34.2
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "python:cognition-isolation:patterns.py:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 4,
+      "대안_비교": 3,
+      "설계_논리": 4,
+      "자기_수정": 5
+    },
+    "elapsed_s": 35.7
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "java:cognition-isolation:Book.java:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 17.6
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "javascript:cognition-isolation:Input.jsx:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 3,
+      "대안_비교": 1,
+      "설계_논리": 2,
+      "자기_수정": 2
+    },
+    "elapsed_s": 12.3
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "java:cognition-isolation:Book.java:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 4,
+      "대안_비교": 3,
+      "설계_논리": 2,
+      "자기_수정": 5
+    },
+    "elapsed_s": 19.4
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "java:cognition-isolation:Book.java:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 5,
+      "대안_비교": 4,
+      "설계_논리": 4,
+      "자기_수정": 5
+    },
+    "elapsed_s": 25.4
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "java:cognition-isolation:Book.java:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 5,
+      "대안_비교": 4,
+      "설계_논리": 3,
+      "자기_수정": 5
+    },
+    "elapsed_s": 30.6
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "javascript:cognition-isolation:Input.jsx:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 3,
+      "대안_비교": 1,
+      "설계_논리": 2,
+      "자기_수정": 2
+    },
+    "elapsed_s": 12.6
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "javascript:cognition-isolation:Input.jsx:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 3,
+      "대안_비교": 1,
+      "설계_논리": 2,
+      "자기_수정": 2
+    },
+    "elapsed_s": 9.1
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "javascript:cognition-isolation:Input.jsx:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 4,
+      "대안_비교": 3,
+      "설계_논리": 2,
+      "자기_수정": 5
+    },
+    "elapsed_s": 12.6
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "javascript:cognition-isolation:Input.jsx:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 4,
+      "대안_비교": 3,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 13.4
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 2,
+      "자기_수정": 2
+    },
+    "elapsed_s": 16.5
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 2,
+      "대안_비교": 1,
+      "설계_논리": 2,
+      "자기_수정": 1
+    },
+    "elapsed_s": 13.4
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 2,
+      "대안_비교": 1,
+      "설계_논리": 2,
+      "자기_수정": 1
+    },
+    "elapsed_s": 18.6
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "javascript:cognition-isolation:Input.jsx:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 4,
+      "대안_비교": 3,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 30.4
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 35.5
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "javascript:cognition-isolation:Input.jsx:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 23.7
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 26.1
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 32.6
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "javascript:cognition-isolation:Input.jsx:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 11.2
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "javascript:cognition-isolation:Input.jsx:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 14.6
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 4,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 16.9
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 4,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 15.2
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 4,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 14.5
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 873 (char 872)",
+    "elapsed_s": 18.7
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "python:architecture-diffusion:endpoint.py:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 547 (char 546)",
+    "elapsed_s": 19.6
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 884 (char 883)",
+    "elapsed_s": 23.1
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 920 (char 919)",
+    "elapsed_s": 24.1
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "python:architecture-diffusion:endpoint.py:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 726 (char 725)",
+    "elapsed_s": 21.2
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "python:architecture-diffusion:endpoint.py:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 692 (char 691)",
+    "elapsed_s": 25.5
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 898 (char 897)",
+    "elapsed_s": 23.5
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 1003 (char 1002)",
+    "elapsed_s": 23.6
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 914 (char 913)",
+    "elapsed_s": 20.9
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 687 (char 686)",
+    "elapsed_s": 22.8
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 676 (char 675)",
+    "elapsed_s": 21.2
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 608 (char 607)",
+    "elapsed_s": 24.0
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 592 (char 591)",
+    "elapsed_s": 22.3
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 600 (char 599)",
+    "elapsed_s": 17.9
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 583 (char 582)",
+    "elapsed_s": 20.9
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 794 (char 793)",
+    "elapsed_s": 24.5
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 664 (char 663)",
+    "elapsed_s": 22.5
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 717 (char 716)",
+    "elapsed_s": 24.5
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 693 (char 692)",
+    "elapsed_s": 26.1
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 859 (char 858)",
+    "elapsed_s": 18.2
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 760 (char 759)",
+    "elapsed_s": 17.9
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 740 (char 739)",
+    "elapsed_s": 21.5
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 750 (char 749)",
+    "elapsed_s": 25.5
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 697 (char 696)",
+    "elapsed_s": 26.3
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "python:cognition-isolation:patterns.py:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 937 (char 936)",
+    "elapsed_s": 23.4
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "python:cognition-isolation:patterns.py:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 966 (char 965)",
+    "elapsed_s": 18.4
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "python:cognition-isolation:patterns.py:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 799 (char 798)",
+    "elapsed_s": 21.2
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "python:cognition-isolation:patterns.py:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 662 (char 661)",
+    "elapsed_s": 17.4
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "python:cognition-isolation:patterns.py:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 899 (char 898)",
+    "elapsed_s": 26.3
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "python:cognition-isolation:patterns.py:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 630 (char 629)",
+    "elapsed_s": 18.3
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "python:cognition-isolation:patterns.py:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 619 (char 618)",
+    "elapsed_s": 21.1
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "python:cognition-isolation:patterns.py:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 639 (char 638)",
+    "elapsed_s": 28.6
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "python:cognition-isolation:patterns.py:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 687 (char 686)",
+    "elapsed_s": 24.2
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "java:cognition-isolation:Book.java:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 736 (char 735)",
+    "elapsed_s": 23.8
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "java:cognition-isolation:Book.java:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 456 (char 455)",
+    "elapsed_s": 18.6
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "java:cognition-isolation:Book.java:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 949 (char 948)",
+    "elapsed_s": 27.4
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "java:cognition-isolation:Book.java:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 809 (char 808)",
+    "elapsed_s": 26.4
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "java:cognition-isolation:Book.java:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 606 (char 605)",
+    "elapsed_s": 31.0
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "java:cognition-isolation:Book.java:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 504 (char 503)",
+    "elapsed_s": 22.1
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "java:cognition-isolation:Book.java:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 543 (char 542)",
+    "elapsed_s": 20.2
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "java:cognition-isolation:Book.java:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 611 (char 610)",
+    "elapsed_s": 21.6
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "java:cognition-isolation:Book.java:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 635 (char 634)",
+    "elapsed_s": 21.2
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "python:architecture-diffusion:endpoint.py:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 530 (char 529)",
+    "elapsed_s": 21.4
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "python:architecture-diffusion:endpoint.py:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 708 (char 707)",
+    "elapsed_s": 20.1
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 606 (char 605)",
+    "elapsed_s": 17.3
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "python:architecture-diffusion:endpoint.py:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 570 (char 569)",
+    "elapsed_s": 37.7
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 523 (char 522)",
+    "elapsed_s": 22.9
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 548 (char 547)",
+    "elapsed_s": 24.4
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "python:architecture-diffusion:endpoint.py:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 843 (char 842)",
+    "elapsed_s": 24.6
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "python:architecture-diffusion:endpoint.py:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 684 (char 683)",
+    "elapsed_s": 22.5
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "python:architecture-diffusion:endpoint.py:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 799 (char 798)",
+    "elapsed_s": 26.2
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 621 (char 620)",
+    "elapsed_s": 26.7
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 572 (char 571)",
+    "elapsed_s": 20.1
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 519 (char 518)",
+    "elapsed_s": 28.5
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 636 (char 635)",
+    "elapsed_s": 25.7
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 584 (char 583)",
+    "elapsed_s": 54.3
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "javascript:cognition-isolation:Input.jsx:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 612 (char 611)",
+    "elapsed_s": 35.2
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 569 (char 568)",
+    "elapsed_s": 36.3
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "javascript:cognition-isolation:Input.jsx:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 552 (char 551)",
+    "elapsed_s": 24.0
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "javascript:cognition-isolation:Input.jsx:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 624 (char 623)",
+    "elapsed_s": 31.1
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 1040 (char 1039)",
+    "elapsed_s": 23.6
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 903 (char 902)",
+    "elapsed_s": 27.5
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "javascript:cognition-isolation:Input.jsx:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 1221 (char 1220)",
+    "elapsed_s": 19.8
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "javascript:cognition-isolation:Input.jsx:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 636 (char 635)",
+    "elapsed_s": 23.1
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "javascript:cognition-isolation:Input.jsx:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 761 (char 760)",
+    "elapsed_s": 42.8
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "javascript:cognition-isolation:Input.jsx:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 644 (char 643)",
+    "elapsed_s": 18.2
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "javascript:cognition-isolation:Input.jsx:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 681 (char 680)",
+    "elapsed_s": 19.4
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "javascript:cognition-isolation:Input.jsx:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 609 (char 608)",
+    "elapsed_s": 28.3
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 1526 (char 1525)",
+    "elapsed_s": 80.4
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 566 (char 565)",
+    "elapsed_s": 20.4
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 525 (char 524)",
+    "elapsed_s": 19.5
+  },
+  {
+    "model": "mistralai/mistral-large-3-675b-instruct-2512",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": false,
+    "error": "Unterminated string starting at: line 1 column 654 (char 653)",
+    "elapsed_s": 22.7
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "python:architecture-diffusion:endpoint.py:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": false,
+    "error": "Extra data: line 1 column 856 (char 855)",
+    "elapsed_s": 12.3
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 33.0
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "python:architecture-diffusion:endpoint.py:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 4,
+      "반례_대응": 4,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 39.7
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 32.4
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 41.7
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 4,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 48.0
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 3,
+      "대안_비교": 4,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 46.7
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": false,
+    "error": "Extra data: line 1 column 410 (char 409)",
+    "elapsed_s": 17.1
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 4,
+      "반례_대응": 3,
+      "대안_비교": 4,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 40.5
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": false,
+    "error": "Extra data: line 1 column 363 (char 362)",
+    "elapsed_s": 26.0
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "python:architecture-diffusion:endpoint.py:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 122.7
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 42.7
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 42.4
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 60.1
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": false,
+    "error": "Extra data: line 1 column 938 (char 937)",
+    "elapsed_s": 37.8
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 79.5
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": false,
+    "error": "Extra data: line 1 column 1006 (char 1005)",
+    "elapsed_s": 18.4
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 49.6
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 31.4
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 31.2
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "java:tier-b-risk:ImageSearchTool.java:secret:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 36.7
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "python:architecture-diffusion:endpoint.py:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 2
+    },
+    "elapsed_s": 24.7
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 2,
+      "설계_논리": 2,
+      "자기_수정": 2
+    },
+    "elapsed_s": 30.9
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "python:architecture-diffusion:endpoint.py:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 2
+    },
+    "elapsed_s": 44.3
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 3,
+      "설계_논리": 1,
+      "자기_수정": 2
+    },
+    "elapsed_s": 33.4
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "python:architecture-diffusion:endpoint.py:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": false,
+    "error": "Extra data: line 1 column 675 (char 674)",
+    "elapsed_s": 10.0
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "javascript:tier-b-risk:requestWrapper.test.ts:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 2,
+      "자기_수정": 2
+    },
+    "elapsed_s": 30.6
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "python:architecture-diffusion:endpoint.py:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 33.0
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "python:architecture-diffusion:endpoint.py:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 2
+    },
+    "elapsed_s": 98.1
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "python:cognition-isolation:patterns.py:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 3,
+      "반례_대응": 3,
+      "대안_비교": 2,
+      "설계_논리": 2,
+      "자기_수정": 5
+    },
+    "elapsed_s": 50.1
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 2,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 22.2
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 2,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 28.3
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 2,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 26.4
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "python:cognition-isolation:patterns.py:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 3,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 115.8
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "python:cognition-isolation:patterns.py:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": false,
+    "error": "Extra data: line 1 column 586 (char 585)",
+    "elapsed_s": 9.4
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "python:architecture-diffusion:endpoint.py:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 170.4
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "python:cognition-isolation:patterns.py:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": false,
+    "error": "Expecting ',' delimiter: line 2 column 2 (char 909)",
+    "elapsed_s": 144.9
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "java:cognition-isolation:Book.java:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": false,
+    "error": "Extra data: line 1 column 856 (char 855)",
+    "elapsed_s": 15.7
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "python:cognition-isolation:patterns.py:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": false,
+    "error": "Extra data: line 1 column 877 (char 876)",
+    "elapsed_s": 45.5
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "java:cognition-isolation:Book.java:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": false,
+    "error": "Extra data: line 1 column 664 (char 663)",
+    "elapsed_s": 10.1
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "java:cognition-isolation:Book.java:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 2,
+      "대안_비교": 3,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 25.9
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "python:cognition-isolation:patterns.py:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 103.9
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "java:cognition-isolation:Book.java:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 3,
+      "대안_비교": 3,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 64.8
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "java:cognition-isolation:Book.java:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 94.7
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "java:cognition-isolation:Book.java:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 2,
+      "대안_비교": 2,
+      "설계_논리": 2,
+      "자기_수정": 5
+    },
+    "elapsed_s": 41.8
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "javascript:cognition-isolation:Input.jsx:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 65.1
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "javascript:cognition-isolation:Input.jsx:strong",
+    "variant": "strong",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 82.2
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "javascript:cognition-isolation:Input.jsx:strong",
+    "variant": "strong",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 93.2
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "javascript:cognition-isolation:Input.jsx:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 30.6
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "javascript:cognition-isolation:Input.jsx:strong",
+    "variant": "strong",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 5,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 134.0
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 2,
+      "반례_대응": 2,
+      "대안_비교": 3,
+      "설계_논리": 3,
+      "자기_수정": 5
+    },
+    "elapsed_s": 49.1
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "javascript:cognition-isolation:Input.jsx:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 102.5
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 3,
+      "반례_대응": 2,
+      "대안_비교": 3,
+      "설계_논리": 3,
+      "자기_수정": 5
+    },
+    "elapsed_s": 93.1
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "javascript:cognition-isolation:Input.jsx:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 47.2
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "c_cpp:architecture-diffusion:UnitTest.h:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 5,
+      "반례_대응": 4,
+      "대안_비교": 5,
+      "설계_논리": 5,
+      "자기_수정": 5
+    },
+    "elapsed_s": 162.6
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "javascript:cognition-isolation:Input.jsx:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 56.9
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "javascript:cognition-isolation:Input.jsx:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 2,
+      "설계_논리": 1,
+      "자기_수정": 5
+    },
+    "elapsed_s": 145.2
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 3,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 73.8
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 23.2
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:improving",
+    "variant": "improving",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 3,
+      "자기_수정": 5
+    },
+    "elapsed_s": 32.3
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 3,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 61.9
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:improving",
+    "variant": "improving",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 3,
+      "자기_수정": 5
+    },
+    "elapsed_s": 41.8
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:improving",
+    "variant": "improving",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 2,
+      "자기_수정": 5
+    },
+    "elapsed_s": 38.0
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "python:cognition-isolation:patterns.py:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 30.9
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "python:cognition-isolation:patterns.py:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 1,
+      "자기_수정": 1
+    },
+    "elapsed_s": 26.6
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "python:cognition-isolation:patterns.py:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 1,
+      "대안_비교": 1,
+      "설계_논리": 2,
+      "자기_수정": 2
+    },
+    "elapsed_s": 43.9
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "java:cognition-isolation:Book.java:weak",
+    "variant": "weak",
+    "rep": 0,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 3,
+      "대안_비교": 3,
+      "설계_논리": 1,
+      "자기_수정": 2
+    },
+    "elapsed_s": 51.1
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "java:cognition-isolation:Book.java:weak",
+    "variant": "weak",
+    "rep": 2,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 3,
+      "대안_비교": 3,
+      "설계_논리": 2,
+      "자기_수정": 2
+    },
+    "elapsed_s": 41.0
+  },
+  {
+    "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "label": "java:cognition-isolation:Book.java:weak",
+    "variant": "weak",
+    "rep": 1,
+    "ok": true,
+    "grading": {
+      "코드_이해": 1,
+      "반례_대응": 3,
+      "대안_비교": 2,
+      "설계_논리": 2,
+      "자기_수정": 2
+    },
+    "elapsed_s": 53.5
+  }
+]

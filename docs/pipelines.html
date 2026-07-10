@@ -497,16 +497,16 @@
     </p>
     <ul class="tier-list">
       <li style="--tier-color: var(--status-ok);">
-        <span class="tier-name">신뢰 가능 · 5개</span>
-        <span class="tier-body"><code>qwen3-next-80b</code> · <code>step-3.5-flash</code> · <code>mistral-medium-3.5</code> · <code>nemotron-super-49b-v1.5</code> · <code>llama-4-maverick</code> (87.5~95.8%) — 이 중 nemotron은 <b>원래 0%였다가</b> 우리 쪽 설정 원인(max_tokens 기아)을 고쳐 95.8%로 회복한 사례. 순위표는 이 5개만 사용.</span>
+        <span class="tier-name">신뢰 가능 · 6개</span>
+        <span class="tier-body"><code>qwen3-next-80b</code> · <code>step-3.5-flash</code> · <code>mistral-medium-3.5</code> · <code>nemotron-super-49b-v1.5</code> · <code>llama-4-maverick</code> · <code>mistral-large-3</code> (87.5~100%, 질문생성 역할 기준) — nemotron과 mistral-large-3는 <b>원래 0%대였다가</b> 우리 쪽 설정 원인(max_tokens 기아)을 고쳐 각각 95.8%·100%로 회복한 사례. 단 mistral-large-3는 <b>채점기 역할에선 퇴행 생성 루프</b>(캡 2048/4096/8192 전부 예산 전액 소진, 가시 출력 ~900자)로 부적합 판정 — 4축 벤치마크의 안정성 축(질문생성×채점 end-to-end)에 0점으로 반영(D108).</span>
       </li>
       <li style="--tier-color: var(--status-blocked);">
         <span class="tier-name">모델 자체 결함 · 2개</span>
         <span class="tier-body"><code>gpt-oss-120b</code>(0%) · <code>gpt-oss-20b</code>(4%) — <code>tool_choice</code> 강제를 무시하고 자유서술로 응답. 스키마 강제 tool-calling 기반인 이 파이프라인에선 구조적으로 사용 불가 (D66/D80/D89부터 일관 재현).</span>
       </li>
       <li style="--tier-color: var(--status-blocked);">
-        <span class="tier-name">NVIDIA 서버측 · 3개</span>
-        <span class="tier-body"><code>llama-3.3-70b</code>(0%) — HTTP 503 워커풀 고갈, NVIDIA 포럼 교차검증, 최종 제외. <code>mistral-nemotron</code>(4%) — 클라이언트 타임아웃을 450초로 줘도 ~302초에 NVIDIA 게이트웨이가 먼저 끊음(504), 최종 제외. <code>mistral-large-3</code>(29%) — max_tokens 잘림 근본수정 검증 완료 후, <b>완전 독립 7개 키 전부 0.2초 즉발 429인데 같은 키가 같은 순간 다른 모델엔 HTTP 200</b>: 계정/키/IP가 아니라 이 모델만 조이는 모델 스코프 스로틀. 해제 감시 중.</span>
+        <span class="tier-name">NVIDIA 서버측 · 2개</span>
+        <span class="tier-body"><code>llama-3.3-70b</code>(0%) — HTTP 503 워커풀 고갈, NVIDIA 포럼 교차검증, 최종 제외. <code>mistral-nemotron</code>(4%) — 클라이언트 타임아웃을 450초로 줘도 ~302초에 NVIDIA 게이트웨이가 먼저 끊음(504), 최종 제외.</span>
       </li>
       <li style="--tier-color: var(--status-legacy);">
         <span class="tier-name">계정 접근권한 · 1개</span>
@@ -520,12 +520,16 @@
     <p class="lesson">
       핵심 교훈: <b>"낮은 성공률 = 나쁜 모델"이 아니다.</b> 16개 중 우리 설정이 원인이었던 게 2개(둘 다 근본수정 완료),
       무료 티어 인프라가 원인인 게 4개, 모델 결함이 2개 — 라이브 벤치마크에서 원인 분리 없이 순위만 읽으면
-      nemotron(0%&rarr;95.8%) 같은 모델을 억울하게 탈락시키게 된다. 상세 근거는
-      <a href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback/blob/main/README.md" style="color:var(--accent);">README D94~D104</a> 참고.
+      nemotron(0%&rarr;95.8%)·mistral-large-3(4%&rarr;100%) 같은 모델을 억울하게 탈락시키게 된다.
+      최종 순위는 <b>4축 벤치마크</b>(안정성=질문생성&times;채점 end-to-end · 정밀도(자기채점) · 재현성 · 속도)로
+      확정: <b>step-3.5-flash 0.994</b> &gt; qwen3-next-80b 0.79 &gt; mistral-medium-3.5 0.75 &gt;
+      nemotron-super-49b 0.667 &gt; mistral-large-3 0.229 (5/6 커버, maverick은 NVIDIA 다운 대기).
+      정밀도는 채점 성공 모델 전원 1.00 — 승부처는 재현성(temp=0인데도 0.44~0.83)이었다. 상세 근거는
+      <a href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback/blob/main/README.md" style="color:var(--accent);">README D94~D108</a> 참고.
     </p>
   </section>
 
-  <p class="snapshot-note">이 구조도는 2026-07-10 D104 기준 스냅샷 — 최신 수치는 각 폴더의 README_전체이력.md 참고</p>
+  <p class="snapshot-note">이 구조도는 2026-07-10 D108 기준 스냅샷 — 최신 수치는 각 폴더의 README_전체이력.md 참고</p>
 </main>
 </body>
 </html>

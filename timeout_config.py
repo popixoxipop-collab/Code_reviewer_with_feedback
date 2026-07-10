@@ -37,4 +37,10 @@ DEFAULT_TIMEOUT_S = 600.0
 #        considered and deferred -- 8+ files import `from timeout_config
 #        import ...` and a rename would touch all of them for zero behavior
 #        change. If a third knob ever lands here, do the rename then.
-DEFAULT_MAX_TOKENS = 2048
+#   D108: 2048 -> 4096. The 5-axis grading tool's arguments (score + rationale
+#        + verbatim quotes per axis) are much longer than ask_question's, and
+#        mistral-large-3's verbose style hit finish_reason="length" at 2048
+#        mid-JSON (measured: single-call repro, arguments cut at char 805).
+#        A cap is a ceiling, not a target -- models that never reach it are
+#        byte-identical at temp=0, so raising it only unblocks verbose ones.
+DEFAULT_MAX_TOKENS = 4096

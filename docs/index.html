@@ -303,21 +303,24 @@
       </article>
       <article class="metric">
         <span class="label">Final Run</span>
-        <strong>167 / 384</strong>
-        <span>전체 재시도 라운드 반영 최종 성공 (43%)</span>
+        <strong>190 / 384</strong>
+        <span>전체 재시도 라운드 반영 최종 성공 (49%)</span>
       </article>
       <article class="metric">
         <span class="label">Reliable Sample</span>
-        <strong>5 models</strong>
-        <span>20건 이상/24건 성공으로 해석 가능한 표본</span>
+        <strong>6 models</strong>
+        <span>20건 이상/24건 성공 (질문생성 역할 기준)</span>
       </article>
     </section>
     <p class="footnote" style="margin-top: -8px;">
-      <b>167/384(43%)의 구성</b>: "모델 1개만 빠졌다"가 아니라 16개 모델의 실제 성능 분포입니다 —
-      신뢰 가능 5개(20건+/24, 87.5~95.8%: qwen3-next-80b·step-3.5-flash·mistral-medium-3.5·nemotron-super-49b-v1.5·llama-4-maverick) ·
-      부분 성공 4개(29~71%, 재시도로 일부 회복됐지만 표본 부족: minimax-m3·qwen3.5-122b·deepseek-v4-pro·nemotron-3-super-120b) ·
-      원인이 레이트리밋과 무관해 재시도 없이 제외된 6개(0~12.5%: gpt-oss-120b·gpt-oss-20b·mistral-nemotron·mistral-large-3·kimi-k2.6·glm-5.2) ·
-      3차례 전용 재시도 후 공식 제외된 1개(llama-3.3-70b-instruct, 0%). 아래 순위표는 신뢰 가능한 5개만 사용합니다.
+      <b>190/384(49%)의 구성 (D108 기준)</b>: 16개 모델의 실제 성능 분포입니다 —
+      신뢰 가능 6개(20건+/24: qwen3-next-80b·step-3.5-flash·mistral-medium-3.5·nemotron-super-49b-v1.5·llama-4-maverick·<b>mistral-large-3</b>(max_tokens 근본수정 후 24/24 완전 회복 — 단, 채점기 역할은 퇴행 루프로 부적합 판정, 4축 벤치마크 참고)) ·
+      부분 성공 4개(29~71%: minimax-m3·qwen3.5-122b·deepseek-v4-pro·nemotron-3-super-120b) ·
+      원인이 레이트리밋과 무관한 5개(0~12.5%: gpt-oss-120b·gpt-oss-20b·mistral-nemotron(게이트웨이 504)·kimi-k2.6·glm-5.2) ·
+      전용 재시도 후 공식 제외 1개(llama-3.3-70b-instruct, 0%, NVIDIA 워커풀 고갈).
+      최종 순위는 <b>4축 벤치마크</b>(안정성=질문생성×채점 end-to-end / 정밀도(자기채점) / 재현성 / 속도)로 재구성됐습니다 —
+      step-3.5-flash 0.994 &gt; qwen3-next-80b 0.79 &gt; mistral-medium-3.5 0.75 &gt; nemotron-super-49b 0.667 &gt; mistral-large-3 0.229
+      (5/6 커버, llama-4-maverick은 NVIDIA 다운으로 대기). 상세는 README D106~D108.
     </p>
 
     <section class="panel split">

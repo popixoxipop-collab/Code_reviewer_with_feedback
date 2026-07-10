@@ -1,0 +1,85 @@
+{
+  "qwen/qwen3-next-80b-a3b-instruct": {
+    "stability_combined": 0.958,
+    "stability_question_gen": 0.958,
+    "stability_grader_call": 1.0,
+    "precision_candidate_as_grader": 1.0,
+    "precision_fixed_grader_legacy": 1.0,
+    "reproducibility_identical_rate": 0.522,
+    "reproducibility_mean_total_spread": 1.26,
+    "speed_mean_elapsed_s": 90.3,
+    "n_transcripts": 23,
+    "n_grading_calls": 69,
+    "composite_4axis": 0.79
+  },
+  "stepfun-ai/step-3.5-flash": {
+    "stability_combined": 0.945,
+    "stability_question_gen": 0.958,
+    "stability_grader_call": 0.986,
+    "precision_candidate_as_grader": 1.0,
+    "precision_fixed_grader_legacy": 1.0,
+    "reproducibility_identical_rate": 0.818,
+    "reproducibility_mean_total_spread": 0.57,
+    "speed_mean_elapsed_s": 10.5,
+    "n_transcripts": 23,
+    "n_grading_calls": 69,
+    "composite_4axis": 0.994
+  },
+  "mistralai/mistral-medium-3.5-128b": {
+    "stability_combined": 0.958,
+    "stability_question_gen": 0.958,
+    "stability_grader_call": 1.0,
+    "precision_candidate_as_grader": 1.0,
+    "precision_fixed_grader_legacy": 1.0,
+    "reproducibility_identical_rate": 0.826,
+    "reproducibility_mean_total_spread": 0.17,
+    "speed_mean_elapsed_s": 178.9,
+    "n_transcripts": 23,
+    "n_grading_calls": 69,
+    "composite_4axis": 0.75
+  },
+  "nvidia/llama-3.3-nemotron-super-49b-v1.5": {
+    "stability_combined": 0.806,
+    "stability_question_gen": 0.958,
+    "stability_grader_call": 0.841,
+    "precision_candidate_as_grader": 1.0,
+    "precision_fixed_grader_legacy": 1.0,
+    "reproducibility_identical_rate": 0.438,
+    "reproducibility_mean_total_spread": 1.32,
+    "speed_mean_elapsed_s": 129.1,
+    "n_transcripts": 23,
+    "n_grading_calls": 69,
+    "composite_4axis": 0.667
+  },
+  "mistralai/mistral-large-3-675b-instruct-2512": {
+    "stability_combined": 0.0,
+    "stability_question_gen": 1.0,
+    "stability_grader_call": 0.0,
+    "precision_candidate_as_grader": null,
+    "precision_fixed_grader_legacy": null,
+    "reproducibility_identical_rate": null,
+    "reproducibility_mean_total_spread": null,
+    "speed_mean_elapsed_s": 24.7,
+    "n_transcripts": 24,
+    "n_grading_calls": 72,
+    "grader_role_defect": "degenerate tool-call loop on the 5-axis grading schema: caps 2048/4096/8192 all burn the FULL completion budget (completion_tokens == cap, finish_reason=length) while emitting only ~850-907 chars of arguments and zero reasoning_content -- no finite cap can fix this. The simple ask_question schema works fine (24/24), so the model is usable as question generator but NOT as grader (locked spec requires both roles).",
+    "composite_4axis": 0.229
+  },
+  "_meta": {
+    "covered_models": [
+      "qwen/qwen3-next-80b-a3b-instruct",
+      "stepfun-ai/step-3.5-flash",
+      "mistralai/mistral-medium-3.5-128b",
+      "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+      "mistralai/mistral-large-3-675b-instruct-2512"
+    ],
+    "ranked_models": [
+      "qwen/qwen3-next-80b-a3b-instruct",
+      "stepfun-ai/step-3.5-flash",
+      "mistralai/mistral-medium-3.5-128b",
+      "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+      "mistralai/mistral-large-3-675b-instruct-2512"
+    ],
+    "note": "stability axis = question-gen success x grader-call success (end-to-end, both roles per locked spec). Models whose grading never succeeded score 0 on precision/reproducibility instead of being excluded -- a grader that cannot grade has zero effective precision. composite_4axis is min-max normalized within ranked_models."
+  }
+}

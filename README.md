@@ -722,6 +722,25 @@ python3 pipeline/compare_methodologies.py
   - COST: pipelines.html은 여전히 정적 스냅샷(D101 COST 동일) — mistral-large-3 게이트 러너 결과가 나오면 이 감쇠 패널 수치도 수동 갱신 필요.
   - EXIT: 감쇠 티어가 바뀌면(예: mistral-large-3 회복, 미진단 5개 중 회복 사례 발생) `docs/pipelines.html`의 `.attrition` 섹션과 아티팩트의 해당 배너를 함께 수정.
 
+- **D106** ([`benchmark_4axis_regrade.py`](./benchmark_4axis_regrade.py), [`turn_engine_4axis_summary.json`](./turn_engine_4axis_summary.json), [`turn_engine_4axis_regrade_raw.json`](./turn_engine_4axis_regrade_raw.json)) — 4축(호출 안정성/정밀도/재현성/속도) 벤치마크 재구성(사용자 지시) + **lig.MODEL 방법론 갭 발견**
+  - WHY: 4축 중 2축이 결손이었다. (1) 재현성 — D89~D94 내내 REPEATS=1 미측정. (2) 정밀도 — **D93 헤더는 "그 모델이 자기 transcript를 채점한다"(Locked 스펙)고 선언했지만 repo 어디에도 `lig.MODEL`을 후보로 바꾸는 코드가 없어, 지금까지의 모든 Track B 채점이 고정 grader(qwen3-next-80b)로 나갔다** — 모든 모델의 grading_success_rate가 1.0이었던 이유. 신뢰 티어 모델들의 기존 ok transcript(113건)를 재사용해 각 후보가 자기 transcript를 3회 채점(temperature=0, Sonnet 콜 0건)하는 replay 설계로 두 축을 처음 측정.
+  - **핵심 발견**: 정밀도(strong>weak 분리)는 채점이 성공한 모델 전원 1.00 — 승부처는 **재현성**(같은 입력 3회 채점의 5축 벡터 완전일치율)이었다. temp=0인데도 모델별 0.44~0.83으로 갈림(서버측 비결정성). NVIDIA 부분 장애(qwen·maverick 단순 호출도 504) 때문에 모델 서브셋 실행+raw 모델단위 병합(D106b) 지원 추가.
+  - COST: 재채점 raw에서 채점 실패도 데이터로 남김(재시도 없음). 부분 커버리지 상태의 종합지수는 covered 집합 내 정규화라 모델이 추가되면 재계산 필요.
+  - EXIT: `--aggregate-only`로 API 콜 없이 재집계. 신규 모델 추가는 RELIABLE_MODELS에 등록 후 해당 모델만 재실행.
+
+- **D107** ([`benchmark_turn_engine_grading_16models_sonnet.py`](./benchmark_turn_engine_grading_16models_sonnet.py)) — 답변 생성 모델 sonnet→haiku 전환(사용자 지시: "Sonnet 호출 말고 codex 호출하던가 haiku 호출해")
+  - WHY: 답변 생성이 Claude 구독 주간 한도를 공유하는데(D96 오염 사고의 배경) 학생 페르소나 답변(1~3문장 역할극)은 haiku로 충분 — 실측 8.6s, 페르소나 준수 확인. codex CLI는 별도 쿼터 풀이라는 장점이 있지만 서브프로세스 규격이 달라 D96 가드(QUOTA_EXHAUSTED_MARKERS)를 재검증해야 해서 최소 변경인 haiku를 기본값으로(`ANSWER_MODEL` env로 오버라이드 가능).
+  - COST: 결과 파일에 답변 생성기가 다른 job이 섞이게 됨 — 신규 행에 `answer_model` 필드 추가(기존 행=sonnet). 모델 간 공정 비교는 같은 답변 생성기 job끼리만 유효.
+  - EXIT: `ANSWER_MODEL=sonnet`으로 되돌리기 가능. codex 전환이 필요하면 `_sonnet_call()`의 서브프로세스 규격+가드 재검증 필요.
+
+- **D108** ([`timeout_config.py`](./timeout_config.py), [`benchmark_4axis_regrade.py`](./benchmark_4axis_regrade.py)) — max_tokens 2048→4096 + **mistral-large-3 채점기 퇴행 루프 확정** + 안정성 축 통합 산식(사용자 지적 반영)
+  - **D108a**: 5축 채점 tool의 arguments(축당 점수+근거인용)가 ask_question보다 훨씬 길어 mistral-large-3가 2048에서 `finish_reason=length`로 잘림(단건 재현) → 중앙값 4096 상향. 캡은 상한이지 목표가 아니라 temp=0에서 캡에 안 닿는 모델은 바이트 동일 — nemotron 채점 준수율 0.783→0.841로 개선(truncation 분 해소), 잔여 11건은 전부 "Extra data"(유효 JSON 뒤 잉여 출력) = 진짜 스키마 미준수 결함.
+  - **D108b**: mistral-large-3는 4096으로도 실패 → 토큰 행방 추적 결과 **cap=2048/4096/8192 전부 completion_tokens=캡(예산 전액 소진)인데 가시 출력은 args ~850-907자+reasoning 0자** — 캡 2배에 출력 +60자, 유한한 캡으로 해결 불가한 퇴행 생성 루프. 단순 스키마(질문생성)는 24/24 정상이므로 "복잡한 스키마에서만 터지는" 모델/서빙 결함. `GRADER_ROLE_DEFECTS`로 사유 문서화.
+  - **D108c**(사용자 지적: "그럼 그냥 4축 중에 연결 안정성이 낮은 거잖아"): 채점기 결함을 특수 카테고리로 순위 제외하는 대신 **안정성 축 = 질문생성 성공률 × 채점 성공률(end-to-end)**로 통합 — 스펙이 한 모델에 두 역할을 요구하므로 실전 성공확률은 곱. 채점 전멸 모델의 정밀도/재현성은 "측정불가"가 아니라 0점(채점 못하는 채점기의 유효 정밀도는 0). 이전 왜곡 2건(빠진 축 건너뛰고 평균→large-3 가짜 1위, 특수 제외) 모두 폐기.
+  - **4축 최종(5/6 커버, llama-4-maverick은 NVIDIA 다운 지속으로 워처 대기)**: step-3.5-flash 0.994(안정성 0.945·재현성 0.818·10.5s) > qwen3-next-80b 0.79(재현성 0.522) > mistral-medium-3.5 0.75(재현성 spread 최소 0.17, 178.9s) > nemotron-super-49b 0.667(채점 준수 0.841) > mistral-large-3 0.229(채점기 결함, 안정성 0).
+  - COST: **팀 Locked 모델(qwen3-next-80b)이 재현성 0.522로 2위** — step-3.5-flash가 전 축 우세+9배 빠름. 팀 모델 선정 재검토 근거로 쓸 수 있는 실측.
+  - EXIT: maverick 회복 시 워처가 자동 재채점 → `--aggregate-only`로 6모델 완전판 재계산.
+
 
 ## 다음 단계 (미해결)
 
