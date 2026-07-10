@@ -118,12 +118,23 @@ PERSONA_PROMPTS = {
 # 기존 가드로는 안 잡혀서 여기에 명시적으로 추가한다.
 QUOTA_EXHAUSTED_MARKERS = ("weekly limit", "usage limit", "hit your")
 
+# D107: 답변 생성 모델을 sonnet -> haiku로 전환(사용자 지시: "Sonnet 호출 말고 codex
+#   호출하던가 haiku 호출해"). 배경: D96의 주간 한도 오염 사고가 보여줬듯 답변 생성이
+#   구독 주간 한도를 공유하는데, sonnet은 haiku보다 한도를 훨씬 빨리 소진한다. 학생
+#   페르소나 답변(1~3문장 역할극)은 haiku 4.5로 충분함을 실측 확인(8.6s, 페르소나 준수).
+#   codex CLI 전환도 대안이었으나(별도 쿼터 풀) 서브프로세스 규격이 달라 가드
+#   (QUOTA_EXHAUSTED_MARKERS 등)를 다시 검증해야 해서 최소 변경인 haiku를 기본값으로.
+#   주의: 이 값이 바뀌면 같은 결과 파일 안에 답변 생성기가 다른 job이 섞인다 --
+#   모델 간 공정 비교는 답변 생성기가 같은 job끼리만 유효(기존 113 transcript는 전부
+#   sonnet 생성, 이후 신규 실행분은 haiku 생성 -- 결과 행의 answer_model 필드로 구분).
+ANSWER_MODEL = os.environ.get("ANSWER_MODEL", "haiku")
+
 
 def _sonnet_call(prompt: str) -> str:
     result = subprocess.run(
         [
             "claude", "-p", prompt,
-            "--model", "sonnet",
+            "--model", ANSWER_MODEL,  # D107: was hardcoded "sonnet"
             "--safe-mode",
             "--no-session-persistence",
             "--max-budget-usd", SONNET_MAX_BUDGET_USD,
@@ -177,9 +188,10 @@ def call_one(job):
     base = {
         "model": model, "label": label, "ok": True,
         "lang": entry["lang"], "category": entry["category"], "variant": variant,
+        "answer_model": ANSWER_MODEL,  # D107: 답변 생성기 표기(기존 행은 필드 없음=sonnet)
         "verdict": result["verdict"], "matches_expected": result["verdict"] == expected,
         "turns": result["turns"], "elapsed_s": result["elapsed_s"],
-        "transcript": result["transcript"],  # D94 신규: Sonnet 답변 원문 감사 가능하게 보존
+        "transcript": result["transcript"],  # D94 신규: 답변 원문 감사 가능하게 보존
     }
 
     try:

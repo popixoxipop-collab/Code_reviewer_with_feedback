@@ -80,6 +80,7 @@ def call_one_with_tokens(job, max_tokens):
     base = {
         "model": model, "label": label, "ok": True,
         "lang": entry["lang"], "category": entry["category"], "variant": variant,
+        "answer_model": getattr(d94, "ANSWER_MODEL", "sonnet"),  # D107: 답변 생성기 표기
         "verdict": result["verdict"], "matches_expected": result["verdict"] == expected,
         "turns": result["turns"], "elapsed_s": result["elapsed_s"],
         "transcript": result["transcript"],
