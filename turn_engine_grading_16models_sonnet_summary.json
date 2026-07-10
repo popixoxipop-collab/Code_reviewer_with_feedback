@@ -70,16 +70,16 @@
     "n_graded": 0
   },
   "mistralai/mistral-large-3-675b-instruct-2512": {
-    "job_success_rate": 0.292,
-    "verdict_matches_expected_rate": 0.429,
-    "mean_elapsed_s": 33.6,
-    "grading_success_rate": 0.143,
+    "job_success_rate": 1.0,
+    "verdict_matches_expected_rate": 0.333,
+    "mean_elapsed_s": 24.7,
+    "grading_success_rate": 0.042,
     "track_b_precision": null,
     "mean_score_strong": null,
     "mean_score_weak": 2.8,
     "self_correction_improving": null,
     "self_correction_weak": 4.0,
-    "n_ok": 7,
+    "n_ok": 24,
     "n_total": 24,
     "n_graded": 1
   },
