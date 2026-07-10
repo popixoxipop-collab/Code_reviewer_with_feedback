@@ -654,6 +654,14 @@ python3 pipeline/compare_methodologies.py
   - 검증: `docs/java_curriculum_pipeline_run_smoke/`는 실제 NVIDIA Build API로 3개 chunk를 처리해 2개 unit, 35개 concept/code/caution, 65 nodes/108 links graph, 4개 source-page 질문을 생성했다. `docs/java_curriculum_pipeline_rate_smoke/keypool_traffic_test.json`은 로컬 traffic test에서 7 keys × 40RPM = 280개를 같은 60초 창에 즉시 예약하고 281번째를 `KeyPoolExhausted`로 차단함을 확인했다.
   - COST: 251페이지 전체 실행은 NVIDIA 모델/서버 지연과 JSON 응답 안정성에 막혔다. `qwen/qwen3-next-80b-a3b-instruct`는 저병렬에서 대부분 chunk를 처리했지만 refine JSON 파싱 실패로 중단됐고, 고병렬에서는 504/timeout이 발생했다. 즉 현재 병목은 로컬 40×7 RPM 게이트가 아니라 모델 서빙 지연·응답 형식 안정성이다.
 
+- **D96** ([`fix_quota_contaminated_results.py`](./fix_quota_contaminated_results.py)) — D94b 재실행 결과가 Claude 구독 주간 사용량 한도 소진으로 오염된 걸 발견하고 바로잡음(사용자 요청: 원인 파악)
+  - WHY: D94b(다른 세션이 `rerun_two_models_fixed_settings.py`를 편집해 timeout/max_tokens를 조정한 버전)가 도는 도중 이 머신의 **Claude 구독 주간 사용량 한도**가 소진됐다. `claude -p --model sonnet --safe-mode`가 한도 초과 시 에러 종료 대신 `"You've hit your weekly limit · resets Jul 11 at 12pm (Asia/Seoul)"`을 stdout에 그대로 출력하는데, `_sonnet_call()`은 "비어있지 않은 문자열=유효한 답변"으로만 검사해서 이 문구를 학생의 실제 답변으로 그대로 받아들였다.
+  - **발견 경위**: D94b 커밋(`939b812`)이 nemotron-super-49b-v1.5 job_success=95.8%(23/24), llama-3.3-70b-instruct=12.5%(3/24)로 "회복"됐다고 보고했으나, 실제 grading을 열어보니 **두 모델 다 강/약 답변 구분 없이 5축 전부 정확히 1.0점**이었다(만점 5점 척도의 최저값) — 이건 채점기가 고장난 게 아니라 "You've hit your weekly limit..."이라는 무의미한 텍스트를 정확히 최저점으로 채점한, 채점기가 정상 작동한 증거였다. transcript의 answer 필드를 직접 열어 확인 후 확정. 이 오염된 데이터는 이미 origin/main에 push되고 GitHub Pages(https://popixoxipop-collab.github.io/Code_reviewer_with_feedback/)에 "95.8% 성공"으로 공개 노출된 상태였다.
+  - **교정**: `fix_quota_contaminated_results.py`가 transcript의 answer 필드에서 "weekly limit"/"hit your"/"usage limit" 패턴을 검사해 오염된 job 26건(nemotron-super-49b-v1.5 23건 + llama-3.3-70b-instruct 3건, 즉 두 모델의 "성공" job 전부)을 `ok=False`로 되돌리고 `error` 필드에 원인을 명시(조용히 삭제하지 않고 감사 가능하게 남김). 나머지 14개 모델은 오염 없음을 전수조사로 확인(오염 마커 매치 0건) — 재계산 결과 전체 성공률이 원래의 144/384(38%)로 정확히 복원됨. `docs/d94-rerun-status.json`(GitHub Pages가 fetch로 읽는 파일)도 정정된 수치로 갱신.
+  - **재발 방지**: `benchmark_turn_engine_grading_16models_sonnet.py`의 `_sonnet_call()`에 `QUOTA_EXHAUSTED_MARKERS` 가드를 추가 — 앞으로 이 문구가 나오면 빈 문자열과 동일하게 즉시 예외로 처리되어 벤치마크 데이터에 섞여 들어갈 수 없다.
+  - COST: 두 모델은 이 교정으로 다시 사실상 0%(nemotron 0/24, llama-3.3-70b-instruct 0/24)로 돌아갔다 — D94b가 시도한 설정값 수정(timeout 확대/max_tokens 확대) 자체가 틀렸다는 뜻은 아니다. D94의 raw HTTP 진단(워커 큐 과부하 / reasoning 토큰 부족)은 여전히 유효한 원인 분석이고, 그 시도 도중 완전히 별개의 이유(계정 사용량 한도)로 검증 데이터가 못 쓰게 됐을 뿐이다.
+  - EXIT: 주간 한도는 2026-07-11 12:00(Asia/Seoul) 리셋 — 그 이후에 D94b(또는 동등한 timeout/max_tokens 조정)를 재시도하면 된다. `_sonnet_call()` 가드가 있으니 다음번엔 같은 방식으로 오염될 수 없고, 한도 소진 시 그 job은 정직하게 실패로 집계된다.
+
 
 ## 다음 단계 (미해결)
 

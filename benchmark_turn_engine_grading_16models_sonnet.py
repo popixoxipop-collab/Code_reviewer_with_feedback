@@ -110,6 +110,13 @@ PERSONA_PROMPTS = {
 }
 
 
+# D94c: claude -p가 구독 사용량 한도를 넘으면 에러 종료 대신 이 문구를 stdout에 그대로
+# 찍는다 -- 2026-07-10 실측(다른 세션의 D94b 재실행 도중 발생, 26개 job이 이 문구를 "학생
+# 답변"으로 그대로 먹어 채점기가 전부 최저점 처리한 걸 사후 발견). 빈 문자열만 걸러내던
+# 기존 가드로는 안 잡혀서 여기에 명시적으로 추가한다.
+QUOTA_EXHAUSTED_MARKERS = ("weekly limit", "usage limit", "hit your")
+
+
 def _sonnet_call(prompt: str) -> str:
     result = subprocess.run(
         [
@@ -124,6 +131,8 @@ def _sonnet_call(prompt: str) -> str:
     text = (result.stdout or "").strip()
     if not text:
         raise RuntimeError(f"empty sonnet output (rc={result.returncode}): {(result.stderr or '')[:300]!r}")
+    if any(marker in text for marker in QUOTA_EXHAUSTED_MARKERS):
+        raise RuntimeError(f"claude -p returned a usage-limit message, not an answer: {text[:200]!r}")
     return text
 
 

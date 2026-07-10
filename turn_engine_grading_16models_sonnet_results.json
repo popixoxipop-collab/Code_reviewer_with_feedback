@@ -22127,12 +22127,10 @@
   {
     "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
     "label": "python:architecture-diffusion:endpoint.py:improving",
-    "ok": true,
+    "ok": false,
     "lang": "python",
     "category": "architecture-diffusion",
     "variant": "improving",
-    "verdict": "exhausted_at_cap",
-    "matches_expected": false,
     "turns": 4,
     "elapsed_s": 115.75,
     "transcript": [
@@ -22273,24 +22271,16 @@
         }
       }
     ],
-    "graded": true,
-    "grading": {
-      "코드_이해": 1,
-      "반례_대응": 1,
-      "대안_비교": 1,
-      "설계_논리": 1,
-      "자기_수정": 1
-    }
+    "graded": false,
+    "error": "CONTAMINATED: claude -p returned weekly-usage-limit message, not a real answer (D94c correction, 2026-07-10)"
   },
   {
     "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
     "label": "java:tier-b-risk:ImageSearchTool.java:secret:strong",
-    "ok": true,
+    "ok": false,
     "lang": "java",
     "category": "tier-b-risk",
     "variant": "strong",
-    "verdict": "exhausted_at_cap",
-    "matches_expected": false,
     "turns": 4,
     "elapsed_s": 132.13,
     "transcript": [
@@ -22431,24 +22421,16 @@
         }
       }
     ],
-    "graded": true,
-    "grading": {
-      "코드_이해": 1,
-      "반례_대응": 1,
-      "대안_비교": 1,
-      "설계_논리": 1,
-      "자기_수정": 1
-    }
+    "graded": false,
+    "error": "CONTAMINATED: claude -p returned weekly-usage-limit message, not a real answer (D94c correction, 2026-07-10)"
   },
   {
     "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
     "label": "java:tier-b-risk:ImageSearchTool.java:secret:improving",
-    "ok": true,
+    "ok": false,
     "lang": "java",
     "category": "tier-b-risk",
     "variant": "improving",
-    "verdict": "exhausted_at_cap",
-    "matches_expected": false,
     "turns": 4,
     "elapsed_s": 197.26,
     "transcript": [
@@ -22589,24 +22571,16 @@
         }
       }
     ],
-    "graded": true,
-    "grading": {
-      "코드_이해": 1,
-      "반례_대응": 1,
-      "대안_비교": 1,
-      "설계_논리": 1,
-      "자기_수정": 1
-    }
+    "graded": false,
+    "error": "CONTAMINATED: claude -p returned weekly-usage-limit message, not a real answer (D94c correction, 2026-07-10)"
   },
   {
     "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
     "label": "javascript:tier-b-risk:requestWrapper.test.ts:strong",
-    "ok": true,
+    "ok": false,
     "lang": "javascript",
     "category": "tier-b-risk",
     "variant": "strong",
-    "verdict": "exhausted_at_cap",
-    "matches_expected": false,
     "turns": 4,
     "elapsed_s": 119.22,
     "transcript": [
@@ -22747,24 +22721,16 @@
         }
       }
     ],
-    "graded": true,
-    "grading": {
-      "코드_이해": 1,
-      "반례_대응": 1,
-      "대안_비교": 1,
-      "설계_논리": 1,
-      "자기_수정": 1
-    }
+    "graded": false,
+    "error": "CONTAMINATED: claude -p returned weekly-usage-limit message, not a real answer (D94c correction, 2026-07-10)"
   },
   {
     "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
     "label": "javascript:tier-b-risk:requestWrapper.test.ts:improving",
-    "ok": true,
+    "ok": false,
     "lang": "javascript",
     "category": "tier-b-risk",
     "variant": "improving",
-    "verdict": "exhausted_at_cap",
-    "matches_expected": false,
     "turns": 4,
     "elapsed_s": 89.59,
     "transcript": [
@@ -22905,24 +22871,16 @@
         }
       }
     ],
-    "graded": true,
-    "grading": {
-      "코드_이해": 1,
-      "반례_대응": 1,
-      "대안_비교": 1,
-      "설계_논리": 1,
-      "자기_수정": 1
-    }
+    "graded": false,
+    "error": "CONTAMINATED: claude -p returned weekly-usage-limit message, not a real answer (D94c correction, 2026-07-10)"
   },
   {
     "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
     "label": "c_cpp:architecture-diffusion:UnitTest.h:strong",
-    "ok": true,
+    "ok": false,
     "lang": "c_cpp",
     "category": "architecture-diffusion",
     "variant": "strong",
-    "verdict": "exhausted_at_cap",
-    "matches_expected": false,
     "turns": 4,
     "elapsed_s": 115.06,
     "transcript": [
@@ -23063,24 +23021,16 @@
         }
       }
     ],
-    "graded": true,
-    "grading": {
-      "코드_이해": 1,
-      "반례_대응": 1,
-      "대안_비교": 1,
-      "설계_논리": 1,
-      "자기_수정": 1
-    }
+    "graded": false,
+    "error": "CONTAMINATED: claude -p returned weekly-usage-limit message, not a real answer (D94c correction, 2026-07-10)"
   },
   {
     "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
     "label": "java:tier-b-risk:ImageSearchTool.java:secret:weak",
-    "ok": true,
+    "ok": false,
     "lang": "java",
     "category": "tier-b-risk",
     "variant": "weak",
-    "verdict": "exhausted_at_cap",
-    "matches_expected": true,
     "turns": 4,
     "elapsed_s": 220.75,
     "transcript": [
@@ -23221,24 +23171,16 @@
         }
       }
     ],
-    "graded": true,
-    "grading": {
-      "코드_이해": 1,
-      "반례_대응": 1,
-      "대안_비교": 1,
-      "설계_논리": 1,
-      "자기_수정": 1
-    }
+    "graded": false,
+    "error": "CONTAMINATED: claude -p returned weekly-usage-limit message, not a real answer (D94c correction, 2026-07-10)"
   },
   {
     "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
     "label": "python:architecture-diffusion:endpoint.py:weak",
-    "ok": true,
+    "ok": false,
     "lang": "python",
     "category": "architecture-diffusion",
     "variant": "weak",
-    "verdict": "exhausted_at_cap",
-    "matches_expected": true,
     "turns": 4,
     "elapsed_s": 174.28,
     "transcript": [
@@ -23379,24 +23321,16 @@
         }
       }
     ],
-    "graded": true,
-    "grading": {
-      "코드_이해": 1,
-      "반례_대응": 1,
-      "대안_비교": 1,
-      "설계_논리": 1,
-      "자기_수정": 1
-    }
+    "graded": false,
+    "error": "CONTAMINATED: claude -p returned weekly-usage-limit message, not a real answer (D94c correction, 2026-07-10)"
   },
   {
     "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
     "label": "javascript:tier-b-risk:requestWrapper.test.ts:weak",
-    "ok": true,
+    "ok": false,
     "lang": "javascript",
     "category": "tier-b-risk",
     "variant": "weak",
-    "verdict": "exhausted_at_cap",
-    "matches_expected": true,
     "turns": 4,
     "elapsed_s": 128.64,
     "transcript": [
@@ -23537,24 +23471,16 @@
         }
       }
     ],
-    "graded": true,
-    "grading": {
-      "코드_이해": 1,
-      "반례_대응": 1,
-      "대안_비교": 1,
-      "설계_논리": 1,
-      "자기_수정": 1
-    }
+    "graded": false,
+    "error": "CONTAMINATED: claude -p returned weekly-usage-limit message, not a real answer (D94c correction, 2026-07-10)"
   },
   {
     "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
     "label": "python:architecture-diffusion:endpoint.py:strong",
-    "ok": true,
+    "ok": false,
     "lang": "python",
     "category": "architecture-diffusion",
     "variant": "strong",
-    "verdict": "exhausted_at_cap",
-    "matches_expected": false,
     "turns": 4,
     "elapsed_s": 98.81,
     "transcript": [
@@ -23695,24 +23621,16 @@
         }
       }
     ],
-    "graded": true,
-    "grading": {
-      "코드_이해": 1,
-      "반례_대응": 1,
-      "대안_비교": 1,
-      "설계_논리": 1,
-      "자기_수정": 1
-    }
+    "graded": false,
+    "error": "CONTAMINATED: claude -p returned weekly-usage-limit message, not a real answer (D94c correction, 2026-07-10)"
   },
   {
     "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
     "label": "python:cognition-isolation:patterns.py:improving",
-    "ok": true,
+    "ok": false,
     "lang": "python",
     "category": "cognition-isolation",
     "variant": "improving",
-    "verdict": "exhausted_at_cap",
-    "matches_expected": false,
     "turns": 4,
     "elapsed_s": 159.16,
     "transcript": [
@@ -23837,24 +23755,16 @@
         }
       }
     ],
-    "graded": true,
-    "grading": {
-      "코드_이해": 1,
-      "반례_대응": 1,
-      "대안_비교": 1,
-      "설계_논리": 1,
-      "자기_수정": 1
-    }
+    "graded": false,
+    "error": "CONTAMINATED: claude -p returned weekly-usage-limit message, not a real answer (D94c correction, 2026-07-10)"
   },
   {
     "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
     "label": "c_cpp:architecture-diffusion:UnitTest.h:weak",
-    "ok": true,
+    "ok": false,
     "lang": "c_cpp",
     "category": "architecture-diffusion",
     "variant": "weak",
-    "verdict": "exhausted_at_cap",
-    "matches_expected": true,
     "turns": 4,
     "elapsed_s": 111.5,
     "transcript": [
@@ -23995,14 +23905,8 @@
         }
       }
     ],
-    "graded": true,
-    "grading": {
-      "코드_이해": 1,
-      "반례_대응": 1,
-      "대안_비교": 1,
-      "설계_논리": 1,
-      "자기_수정": 1
-    }
+    "graded": false,
+    "error": "CONTAMINATED: claude -p returned weekly-usage-limit message, not a real answer (D94c correction, 2026-07-10)"
   },
   {
     "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
@@ -24018,12 +23922,10 @@
   {
     "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
     "label": "java:cognition-isolation:Book.java:strong",
-    "ok": true,
+    "ok": false,
     "lang": "java",
     "category": "cognition-isolation",
     "variant": "strong",
-    "verdict": "exhausted_at_cap",
-    "matches_expected": false,
     "turns": 4,
     "elapsed_s": 98.8,
     "transcript": [
@@ -24148,24 +24050,16 @@
         }
       }
     ],
-    "graded": true,
-    "grading": {
-      "코드_이해": 1,
-      "반례_대응": 1,
-      "대안_비교": 1,
-      "설계_논리": 1,
-      "자기_수정": 1
-    }
+    "graded": false,
+    "error": "CONTAMINATED: claude -p returned weekly-usage-limit message, not a real answer (D94c correction, 2026-07-10)"
   },
   {
     "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
     "label": "java:cognition-isolation:Book.java:improving",
-    "ok": true,
+    "ok": false,
     "lang": "java",
     "category": "cognition-isolation",
     "variant": "improving",
-    "verdict": "exhausted_at_cap",
-    "matches_expected": false,
     "turns": 4,
     "elapsed_s": 113.38,
     "transcript": [
@@ -24290,24 +24184,16 @@
         }
       }
     ],
-    "graded": true,
-    "grading": {
-      "코드_이해": 1,
-      "반례_대응": 1,
-      "대안_비교": 1,
-      "설계_논리": 1,
-      "자기_수정": 1
-    }
+    "graded": false,
+    "error": "CONTAMINATED: claude -p returned weekly-usage-limit message, not a real answer (D94c correction, 2026-07-10)"
   },
   {
     "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
     "label": "javascript:cognition-isolation:Input.jsx:strong",
-    "ok": true,
+    "ok": false,
     "lang": "javascript",
     "category": "cognition-isolation",
     "variant": "strong",
-    "verdict": "exhausted_at_cap",
-    "matches_expected": false,
     "turns": 4,
     "elapsed_s": 126.6,
     "transcript": [
@@ -24432,24 +24318,16 @@
         }
       }
     ],
-    "graded": true,
-    "grading": {
-      "코드_이해": 1,
-      "반례_대응": 1,
-      "대안_비교": 1,
-      "설계_논리": 1,
-      "자기_수정": 1
-    }
+    "graded": false,
+    "error": "CONTAMINATED: claude -p returned weekly-usage-limit message, not a real answer (D94c correction, 2026-07-10)"
   },
   {
     "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
     "label": "javascript:cognition-isolation:Input.jsx:weak",
-    "ok": true,
+    "ok": false,
     "lang": "javascript",
     "category": "cognition-isolation",
     "variant": "weak",
-    "verdict": "exhausted_at_cap",
-    "matches_expected": true,
     "turns": 4,
     "elapsed_s": 82.52,
     "transcript": [
@@ -24574,24 +24452,16 @@
         }
       }
     ],
-    "graded": true,
-    "grading": {
-      "코드_이해": 1,
-      "반례_대응": 1,
-      "대안_비교": 1,
-      "설계_논리": 1,
-      "자기_수정": 1
-    }
+    "graded": false,
+    "error": "CONTAMINATED: claude -p returned weekly-usage-limit message, not a real answer (D94c correction, 2026-07-10)"
   },
   {
     "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
     "label": "c_cpp:architecture-diffusion:UnitTest.h:improving",
-    "ok": true,
+    "ok": false,
     "lang": "c_cpp",
     "category": "architecture-diffusion",
     "variant": "improving",
-    "verdict": "exhausted_at_cap",
-    "matches_expected": false,
     "turns": 4,
     "elapsed_s": 72.43,
     "transcript": [
@@ -24732,24 +24602,16 @@
         }
       }
     ],
-    "graded": true,
-    "grading": {
-      "코드_이해": 1,
-      "반례_대응": 1,
-      "대안_비교": 1,
-      "설계_논리": 1,
-      "자기_수정": 1
-    }
+    "graded": false,
+    "error": "CONTAMINATED: claude -p returned weekly-usage-limit message, not a real answer (D94c correction, 2026-07-10)"
   },
   {
     "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
     "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:strong",
-    "ok": true,
+    "ok": false,
     "lang": "c_cpp",
     "category": "cognition-isolation",
     "variant": "strong",
-    "verdict": "exhausted_at_cap",
-    "matches_expected": false,
     "turns": 4,
     "elapsed_s": 133.33,
     "transcript": [
@@ -24874,24 +24736,16 @@
         }
       }
     ],
-    "graded": true,
-    "grading": {
-      "코드_이해": 1,
-      "반례_대응": 1,
-      "대안_비교": 1,
-      "설계_논리": 1,
-      "자기_수정": 1
-    }
+    "graded": false,
+    "error": "CONTAMINATED: claude -p returned weekly-usage-limit message, not a real answer (D94c correction, 2026-07-10)"
   },
   {
     "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
     "label": "javascript:cognition-isolation:Input.jsx:improving",
-    "ok": true,
+    "ok": false,
     "lang": "javascript",
     "category": "cognition-isolation",
     "variant": "improving",
-    "verdict": "exhausted_at_cap",
-    "matches_expected": false,
     "turns": 4,
     "elapsed_s": 103.04,
     "transcript": [
@@ -25016,24 +24870,16 @@
         }
       }
     ],
-    "graded": true,
-    "grading": {
-      "코드_이해": 1,
-      "반례_대응": 1,
-      "대안_비교": 1,
-      "설계_논리": 1,
-      "자기_수정": 1
-    }
+    "graded": false,
+    "error": "CONTAMINATED: claude -p returned weekly-usage-limit message, not a real answer (D94c correction, 2026-07-10)"
   },
   {
     "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
     "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:weak",
-    "ok": true,
+    "ok": false,
     "lang": "c_cpp",
     "category": "cognition-isolation",
     "variant": "weak",
-    "verdict": "exhausted_at_cap",
-    "matches_expected": true,
     "turns": 4,
     "elapsed_s": 149.79,
     "transcript": [
@@ -25158,24 +25004,16 @@
         }
       }
     ],
-    "graded": true,
-    "grading": {
-      "코드_이해": 1,
-      "반례_대응": 1,
-      "대안_비교": 1,
-      "설계_논리": 1,
-      "자기_수정": 1
-    }
+    "graded": false,
+    "error": "CONTAMINATED: claude -p returned weekly-usage-limit message, not a real answer (D94c correction, 2026-07-10)"
   },
   {
     "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
     "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:improving",
-    "ok": true,
+    "ok": false,
     "lang": "c_cpp",
     "category": "cognition-isolation",
     "variant": "improving",
-    "verdict": "exhausted_at_cap",
-    "matches_expected": false,
     "turns": 4,
     "elapsed_s": 153.55,
     "transcript": [
@@ -25300,24 +25138,16 @@
         }
       }
     ],
-    "graded": true,
-    "grading": {
-      "코드_이해": 1,
-      "반례_대응": 1,
-      "대안_비교": 1,
-      "설계_논리": 1,
-      "자기_수정": 1
-    }
+    "graded": false,
+    "error": "CONTAMINATED: claude -p returned weekly-usage-limit message, not a real answer (D94c correction, 2026-07-10)"
   },
   {
     "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
     "label": "python:cognition-isolation:patterns.py:weak",
-    "ok": true,
+    "ok": false,
     "lang": "python",
     "category": "cognition-isolation",
     "variant": "weak",
-    "verdict": "exhausted_at_cap",
-    "matches_expected": true,
     "turns": 4,
     "elapsed_s": 142.49,
     "transcript": [
@@ -25442,24 +25272,16 @@
         }
       }
     ],
-    "graded": true,
-    "grading": {
-      "코드_이해": 1,
-      "반례_대응": 1,
-      "대안_비교": 1,
-      "설계_논리": 1,
-      "자기_수정": 1
-    }
+    "graded": false,
+    "error": "CONTAMINATED: claude -p returned weekly-usage-limit message, not a real answer (D94c correction, 2026-07-10)"
   },
   {
     "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
     "label": "java:cognition-isolation:Book.java:weak",
-    "ok": true,
+    "ok": false,
     "lang": "java",
     "category": "cognition-isolation",
     "variant": "weak",
-    "verdict": "exhausted_at_cap",
-    "matches_expected": true,
     "turns": 4,
     "elapsed_s": 87.49,
     "transcript": [
@@ -25584,14 +25406,8 @@
         }
       }
     ],
-    "graded": true,
-    "grading": {
-      "코드_이해": 1,
-      "반례_대응": 1,
-      "대안_비교": 1,
-      "설계_논리": 1,
-      "자기_수정": 1
-    }
+    "graded": false,
+    "error": "CONTAMINATED: claude -p returned weekly-usage-limit message, not a real answer (D94c correction, 2026-07-10)"
   },
   {
     "model": "nvidia/nemotron-3-super-120b-a12b",
@@ -26871,12 +26687,10 @@
   {
     "model": "meta/llama-3.3-70b-instruct",
     "label": "java:tier-b-risk:ImageSearchTool.java:secret:weak",
-    "ok": true,
+    "ok": false,
     "lang": "java",
     "category": "tier-b-risk",
     "variant": "weak",
-    "verdict": "exhausted_at_cap",
-    "matches_expected": true,
     "turns": 4,
     "elapsed_s": 517.08,
     "transcript": [
@@ -27017,24 +26831,16 @@
         }
       }
     ],
-    "graded": true,
-    "grading": {
-      "코드_이해": 1,
-      "반례_대응": 1,
-      "대안_비교": 1,
-      "설계_논리": 1,
-      "자기_수정": 1
-    }
+    "graded": false,
+    "error": "CONTAMINATED: claude -p returned weekly-usage-limit message, not a real answer (D94c correction, 2026-07-10)"
   },
   {
     "model": "meta/llama-3.3-70b-instruct",
     "label": "python:architecture-diffusion:endpoint.py:strong",
-    "ok": true,
+    "ok": false,
     "lang": "python",
     "category": "architecture-diffusion",
     "variant": "strong",
-    "verdict": "exhausted_at_cap",
-    "matches_expected": false,
     "turns": 4,
     "elapsed_s": 437.84,
     "transcript": [
@@ -27175,14 +26981,8 @@
         }
       }
     ],
-    "graded": true,
-    "grading": {
-      "코드_이해": 1,
-      "반례_대응": 1,
-      "대안_비교": 1,
-      "설계_논리": 1,
-      "자기_수정": 1
-    }
+    "graded": false,
+    "error": "CONTAMINATED: claude -p returned weekly-usage-limit message, not a real answer (D94c correction, 2026-07-10)"
   },
   {
     "model": "meta/llama-3.3-70b-instruct",
@@ -27242,12 +27042,10 @@
   {
     "model": "meta/llama-3.3-70b-instruct",
     "label": "java:cognition-isolation:Book.java:strong",
-    "ok": true,
+    "ok": false,
     "lang": "java",
     "category": "cognition-isolation",
     "variant": "strong",
-    "verdict": "exhausted_at_cap",
-    "matches_expected": false,
     "turns": 4,
     "elapsed_s": 434.32,
     "transcript": [
@@ -27372,14 +27170,8 @@
         }
       }
     ],
-    "graded": true,
-    "grading": {
-      "코드_이해": 1,
-      "반례_대응": 1,
-      "대안_비교": 1,
-      "설계_논리": 1,
-      "자기_수정": 1
-    }
+    "graded": false,
+    "error": "CONTAMINATED: claude -p returned weekly-usage-limit message, not a real answer (D94c correction, 2026-07-10)"
   },
   {
     "model": "meta/llama-3.3-70b-instruct",
