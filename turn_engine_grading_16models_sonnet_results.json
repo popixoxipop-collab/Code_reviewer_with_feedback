@@ -12110,8 +12110,8 @@
     "lang": "java",
     "category": "tier-b-risk",
     "variant": "strong",
-    "error": "Unterminated string starting at: line 1 column 14 (char 13)",
-    "elapsed_s": 40.5
+    "error": "HTTP Error 429: Too Many Requests",
+    "elapsed_s": 18.2
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
@@ -12274,13 +12274,154 @@
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
     "label": "javascript:tier-b-risk:requestWrapper.test.ts:strong",
-    "ok": false,
-    "graded": false,
+    "ok": true,
     "lang": "javascript",
     "category": "tier-b-risk",
     "variant": "strong",
-    "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 45.4
+    "verdict": "exhausted_at_cap",
+    "matches_expected": false,
+    "turns": 4,
+    "elapsed_s": 51.63,
+    "transcript": [
+      {
+        "level": "l1",
+        "question": "이 코드에서 `requestWrapper.test.ts` 파일의 `describe('RequestWrapper - request body', () => { ... })` 블록 내에 있는 GET 요청 관련 테스트들(예: `should not have a body for a GET list request`, `should not have a body for a GET retrieve request`)에서, **왜 명시적으로 요청 본문(body)이 비어있는지(`expect(body).to.equal('')`)를 검증하고 있을까요?** \n\n특히, GET 요청에서 본문이 비어있어야 하는 이유와 함께, 이 검증이 실제 운영 환경에서 어떤 보안적 또는 프로토콜 준수적 측면을 반영하고 있는지 설명해 주세요. 또한, 이 테스트가 실패하는 경우 어떤 문제가 발생할 수 있는지도 함께 설명해 주세요.",
+        "answer": "GET 요청은 HTTP 스펙상 본문을 갖지 않는 것이 관례이며, 서버나 프록시가 GET body를 무시하거나 아예 파싱하지 않는 경우가 많기 때문에 요청 로직에서 실수로 body를 붙이면 그 값이 조용히 유실되거나 예상치 못하게 처리될 수 있습니다. 특히 이번 트리거처럼 인증정보가 JSON.stringify되어 에러 객체에 담기는 문제와 맞물리면, GET 요청에 body가 실려 있을 경우 그 안에 토큰이나 credential이 포함되어 있다가 로그·프록시·브라우저 히스토리 등에 노출될 위험이 커지므로, body가 빈 문자열임을 명시적으로 검증하는 것은 보안 회귀를 막는 안전장치입니다. 만약 이 테스트가 실패한다면 GET 요청 생성 로직이 body를 잘못 직렬화하고 있다는 뜻이고, 이는 곧 인증정보나 쿼리 페이로드가 body 채널로 새어나가 로깅 미들웨어나 에러 핸들러에 그대로 찍히는 정보 노출 사고로 이어질 수 있습니다.",
+        "classification": {
+          "verdict": "surface",
+          "raw": {
+            "reflection_present": false,
+            "matched_count": 0,
+            "total_sub_signals": 4,
+            "required_ok": false,
+            "optional_matches": 0,
+            "min_optional_required": 2,
+            "sub_signals": {
+              "self_error_recognition": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "reason_explanation": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "new_judgment": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "concrete_improvement": {
+                "matched": false,
+                "pattern_id": null
+              }
+            }
+          }
+        }
+      },
+      {
+        "level": "l2",
+        "question": "학생의 답변에서 언급한 것처럼 GET 요청에 본문이 포함되지 않는 것은 HTTP 스펙상 관례이지만, **실제로는 GET 요청에 본문을 포함시키는 것이 기술적으로 가능**합니다. 예를 들어, AWS S3의 `selectObjectContent` API나 Elasticsearch의 `_search` API 등 일부 시스템에서는 GET 요청에 본문을 포함시켜 복잡한 쿼리를 전달하기도 합니다.\n\n이러한 배경을 고려할 때, 이 코드에서 **GET 요청에 본문이 포함되지 않도록 강제하는 테스트**가 다음과 같은 트레이드오프를 발생시킬 수 있습니다:\n1. **유연성 감소**: 향후 API 스펙이 변경되어 GET 요청에 본문이 필요해질 경우, 이 테스트로 인해 코드 수정이 강제됩니다.\n2. **표준 준수 vs 실용성**: 엄격한 HTTP 스펙 준수는 보안과 호환성을 높일 수 있지만, 특정 상황에서는 실용적인 유연성을 제한할 수 있습니다.\n\n그렇다면, 이 테스트가 **GET 요청에 본문을 포함시키지 않도록 강제하는 것**이 과연 최선의 선택일까요? 다음 두 가지 시나리오를 비교하여 설명해 보세요:\n- **시나리오 A**: GET 요청에 본문을 포함시키지 않도록 강제하는 현재 방식.\n- **시나리오 B**: GET 요청에 본문을 포함시킬 수 있도록 허용하되, 본문이 포함된 경우 경고 로그를 남기거나, 특정 조건에서만 허용하는 방식.\n\n두 시나리오의 장단점과, **어떤 상황에서 어떤 시나리오가 더 적합할지** 구체적으로 설명해 주세요. 또한, 시나리오 B를 채택할 경우 추가로 고려해야 할 보안적 또는 기술적 문제는 무엇일까요?",
+        "answer": "시나리오 A를 지지합니다. 이 프로젝트에서 GET에 본문을 허용하는 예외는 S3 selectObjectContent처럼 특정 벤더가 명시적으로 계약한 API에 한정되고, 저희 클라이언트는 그런 프로토콜을 구현하지 않으므로 일반 규칙을 깨야 할 실질적 이유가 없습니다. 오히려 지금 발견된 이슈처럼 인증정보가 JSON.stringify로 Error 객체에 실려 로그·스택트레이스에 노출되는 상황에서, GET에 본문을 허용하면 그 본문(종종 인증 토큰이나 쿼리 파라미터를 포함)이 캐시 서버·프록시 로그·APM에 추가로 남을 표면적이 하나 더 늘어나는 셈이라 지금은 더더욱 A가 안전합니다. 시나리오 B는 특정 통합 대상(Elasticsearch 등)을 실제로 지원해야 하는 명확한 요구사항이 생겼을 때만 채택할 가치가 있고, 그때도 \"경고 로그\"보다는 화이트리스트된 엔드포인트에서만 조건부로 허용하는 게 맞습니다. B를 채택한다면 본문에 담긴 민감정보가 GET URL 캐싱, 프록시/CDN 로그, 브라우저 히스토리에 그대로 남을 수 있다는 점과, 일부 미들웨어·로드밸런서가 GET 본문을 조용히 드롭해 버그를 만들 수 있다는 점을 반드시 추가로 검증해야 합니다.",
+        "classification": {
+          "verdict": "surface",
+          "raw": {
+            "reflection_present": false,
+            "matched_count": 0,
+            "total_sub_signals": 4,
+            "required_ok": false,
+            "optional_matches": 0,
+            "min_optional_required": 2,
+            "sub_signals": {
+              "self_error_recognition": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "reason_explanation": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "new_judgment": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "concrete_improvement": {
+                "matched": false,
+                "pattern_id": null
+              }
+            }
+          }
+        }
+      },
+      {
+        "level": "l3",
+        "question": "현재 테스트는 GET 요청에 본문이 포함되지 않도록 강제하고 있습니다. 그런데 만약 이 라이브러리가 **대규모 클라우드 서비스**(예: AWS, Google Cloud, Azure)의 다양한 API와 통합되어야 하는 상황이 된다면, 그리고 이들 클라우드 서비스 중 일부는 **GET 요청에 본문을 요구하는 API**(예: AWS S3 SelectObjectContent, Elasticsearch `_search` API)를 제공하고 있다면 어떻게 될까요? \n\n1. **기술적 한계**: 현재 테스트와 구현은 GET 요청에 본문을 포함시키지 않도록 강제하고 있습니다. 이러한 상황에서 GET 본문을 요구하는 클라우드 서비스 API를 지원하기 위해 코드를 수정해야 한다면, 어떤 부분들이 변경되어야 할까요? 구체적으로 `requestWrapper.test.ts`의 테스트 로직과 `createChargebee` 또는 `mockHttpClient`의 구현에서 어떤 수정이 필요할까요?\n\n2. **보안 리스크**: GET 요청에 본문을 포함시키도록 허용할 경우, **악의적인 공격자**가 이를 악용할 수 있는 시나리오를 설명해 주세요. 예를 들어, 공격자가 GET 요청 본문에 악성 데이터를 삽입하거나, 민감한 정보를 탈취할 수 있는 방법은 무엇일까요? 또한, 이러한 공격으로부터 시스템을 보호하기 위해 어떤 보안 조치를 취해야 할까요?\n\n3. **호환성 문제**: GET 요청에 본문을 포함시키는 것을 허용하면, **기존 인프라**(예: 프록시 서버, 로드 밸런서, 캐시 서버, 모니터링 도구)와의 호환성 문제가 발생할 수 있습니다. 이러한 인프라들이 GET 본문을 어떻게 처리하는지(예: 무시, 드롭, 로깅) 사례를 들어 설명하고, 이로 인해 발생할 수 있는 문제들을 구체적으로 설명해 주세요.\n\n4. **장기적 유지보수**: GET 요청에 본문을 허용하는 방식으로 변경할 경우, **장기적인 유지보수** 측면에서 어떤 어려움이 발생할 수 있을까요? 예를 들어, 팀원들이 이 변경 사항을 인지하지 못하고 실수할 수 있는 부분, 또는 문서화해야 하는 부분들은 무엇일까요? 또한, 이러한 어려움을 최소화하기 위해 어떤 조치를 취할 수 있을까요?",
+        "answer": "현재 설계는 유지하되, 필요하면 `RequestOptions`에 `allowBodyInGet: true` 같은 명시적 옵트인 플래그를 추가해서 S3 SelectObjectContent 같은 예외적 API만 우회하도록 하겠습니다. 기본값은 여전히 GET 본문 금지이므로 `requestWrapper.test.ts`의 기존 불변식 테스트는 그대로 통과하고, `mockHttpClient`에는 옵트인 케이스 전용 테스트 하나만 추가하면 됩니다. 이렇게 제한하는 이유는 보안·인프라 리스크 때문인데, GET 본문은 nginx나 여러 프록시·CDN·캐시 계층에서 조용히 드롭되거나 무시되므로 공격자가 그 사실을 악용해 요청 서명 검증을 우회하거나 캐시 키에 반영되지 않는 본문에 악성 데이터를 실어 캐시 포이즈닝을 유발할 수 있고, 실제로 문제의 핀딩처럼 인증정보를 body나 에러 메시지에 담아 JSON.stringify하면 로그·모니터링 시스템에 그대로 노출될 위험도 커집니다. 장기 유지보수 관점에서는 이런 예외를 도입할 때마다 CHANGELOG와 코드 주석으로 \"이 API만 GET+body 허용\"임을 명시하고 옵트인 플래그가 기본 경로에 절대 새지 않도록 린트 규칙이나 타입 레벨 제약을 추가해야, 팀원이 무심코 다른 엔드포인트에 재사용하는 실수를 막을 수 있습니다.",
+        "classification": {
+          "verdict": "partial",
+          "raw": {
+            "reflection_present": false,
+            "matched_count": 1,
+            "total_sub_signals": 4,
+            "required_ok": false,
+            "optional_matches": 1,
+            "min_optional_required": 2,
+            "sub_signals": {
+              "self_error_recognition": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "reason_explanation": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "new_judgment": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "concrete_improvement": {
+                "matched": true,
+                "pattern_id": "concrete_action_verb"
+              }
+            }
+          }
+        }
+      },
+      {
+        "level": "reflection",
+        "question": "현재 설계에서 GET 요청에 본문을 허용하기 위해 `allowBodyInGet: true`와 같은 옵트인 플래그를 추가하는 방안을 고려하고 있는데, 이 플래그가 **실제로 사용되는 시점**과 **테스트되는 시점**에서 놓치기 쉬운 중요한 보안 또는 호환성 체크 포인트가 무엇일까요? 특히, 이 플래그가 `true`로 설정된 경우 **반드시 검증해야 하는 조건**이나 **추가적으로 테스트해야 하는 시나리오**는 무엇이 있을지 생각해 보세요.",
+        "answer": "플래그가 `true`가 되는 순간 가장 먼저 확인해야 할 것은 중간 프록시나 CDN, 로드밸런서가 GET 바디를 무시하거나 스트립한다는 점이에요. 그래서 캐싱 레이어가 URL만 보고 동일한 응답을 반환하는 캐시 오염 시나리오를 반드시 테스트해야 하고, 실제 fetch/axios 등 클라이언트가 GET 바디를 조용히 drop하지 않는지도 검증해야 합니다. 또한 지금 우리가 다루는 취약점처럼 요청 처리 중 예외가 발생하면 로깅 미들웨어가 body를 포함해 JSON.stringify하는 경로가 있는지 확인해서, allowBodyInGet이 켜진 GET 요청의 인증정보가 에러 로그로 새어나가지 않도록 redaction 테스트를 추가해야 해요. 마지막으로 GET은 안전(safe)하고 멱등하다는 가정 때문에 재시도 로직이나 프리페치가 자동으로 요청을 재전송할 수 있으니, 바디에 민감정보가 있을 경우 재전송으로 인한 중복 노출 시나리오도 별도로 검증해야 합니다.",
+        "classification": {
+          "verdict": "surface",
+          "raw": {
+            "reflection_present": false,
+            "matched_count": 2,
+            "total_sub_signals": 4,
+            "required_ok": false,
+            "optional_matches": 2,
+            "min_optional_required": 2,
+            "sub_signals": {
+              "self_error_recognition": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "reason_explanation": {
+                "matched": true,
+                "pattern_id": "so_connector"
+              },
+              "new_judgment": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "concrete_improvement": {
+                "matched": true,
+                "pattern_id": "concrete_action_verb"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "graded": false,
+    "grading_error": "HTTP Error 504: Gateway Timeout"
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
@@ -12290,8 +12431,8 @@
     "lang": "javascript",
     "category": "tier-b-risk",
     "variant": "weak",
-    "error": "Unterminated string starting at: line 1 column 14 (char 13)",
-    "elapsed_s": 29.4
+    "error": "HTTP Error 429: Too Many Requests",
+    "elapsed_s": 49.6
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
@@ -12301,8 +12442,8 @@
     "lang": "javascript",
     "category": "tier-b-risk",
     "variant": "improving",
-    "error": "All 1 keys saturated for model 'mistralai/mistral-large-3-675b-instruct-2512' (40/min each); gave up after 30.0s",
-    "elapsed_s": 48.2
+    "error": "HTTP Error 429: Too Many Requests",
+    "elapsed_s": 42.5
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
@@ -12312,8 +12453,8 @@
     "lang": "c_cpp",
     "category": "architecture-diffusion",
     "variant": "strong",
-    "error": "All 1 keys saturated for model 'mistralai/mistral-large-3-675b-instruct-2512' (40/min each); gave up after 30.0s",
-    "elapsed_s": 50.2
+    "error": "HTTP Error 429: Too Many Requests",
+    "elapsed_s": 94.3
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
@@ -12324,7 +12465,7 @@
     "category": "architecture-diffusion",
     "variant": "improving",
     "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 0.5
+    "elapsed_s": 11.0
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
@@ -12335,7 +12476,7 @@
     "category": "architecture-diffusion",
     "variant": "weak",
     "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 0.5
+    "elapsed_s": 10.2
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
@@ -12346,7 +12487,7 @@
     "category": "cognition-isolation",
     "variant": "strong",
     "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 0.5
+    "elapsed_s": 7.7
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
@@ -12357,7 +12498,7 @@
     "category": "cognition-isolation",
     "variant": "weak",
     "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 0.4
+    "elapsed_s": 0.8
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
@@ -12368,7 +12509,7 @@
     "category": "cognition-isolation",
     "variant": "improving",
     "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 0.5
+    "elapsed_s": 3.2
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
@@ -12379,7 +12520,7 @@
     "category": "cognition-isolation",
     "variant": "strong",
     "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 0.4
+    "elapsed_s": 3.4
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
@@ -12390,29 +12531,295 @@
     "category": "cognition-isolation",
     "variant": "weak",
     "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 0.5
+    "elapsed_s": 1.2
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
     "label": "java:cognition-isolation:Book.java:improving",
-    "ok": false,
-    "graded": false,
+    "ok": true,
     "lang": "java",
     "category": "cognition-isolation",
     "variant": "improving",
-    "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 0.4
+    "verdict": "exhausted_at_cap",
+    "matches_expected": false,
+    "turns": 4,
+    "elapsed_s": 16.71,
+    "transcript": [
+      {
+        "level": "l1",
+        "question": "`Book.java` 파일에서 필드 변수들(`bookNumber`, `bookName`, `category`, `author`, `publishingHouse`, `publicationDate`)이 모두 **public**으로 선언되어 있습니다. \n\n일반적으로 자바에서 필드 변수는 캡슐화 원칙에 따라 **private**으로 선언하고, getter/setter 메서드를 통해 접근하는 것이 권장됩니다. \n\n1. 이 클래스에서 필드 변수를 **public**으로 선언한 설계 결정의 이유는 무엇입니까? \n2. 특히 `bookNumber`와 `bookName` 필드 옆에는 주석으로 `//ͼ`가 붙어 있습니다. 이 주석은 어떤 의미를 가지며, 왜 이 두 필드에만 적용되었습니까? \n3. 만약 이 클래스가 향후 다른 모듈이나 서비스에서 직접 접근하여 사용된다면, **public** 필드로 인해 발생할 수 있는 잠재적인 문제점은 무엇이라고 생각합니까?",
+        "answer": "1. 그냥... 처음부터 그렇게 짜서 별생각 없이 넘어간 것 같아요, 딱히 이유는 없어요.\n2. 그 주석은 저도 잘 모르겠어요, 뭔가 자동으로 붙은 것 같기도 하고 정확히 뭘 의미하는지는 확실하지 않아요.\n3. 음... 다른 모듈이 막 값을 바꿔버릴 수도 있어서 문제가 될 것 같긴 한데, 구체적으로 어떻게 문제가 되는지는 잘 설명 못 하겠어요.",
+        "classification": {
+          "verdict": "surface",
+          "raw": {
+            "justified": false,
+            "matched_categories": [],
+            "categories": {
+              "role_separation": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "perf_optimization": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "alt_storage_or_scope": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "domain_irrelevance": {
+                "matched": false,
+                "pattern_id": null
+              }
+            }
+          }
+        }
+      },
+      {
+        "level": "l2",
+        "question": "현재 `Book` 클래스의 필드들이 **public**으로 선언된 상태에서, 향후 이 클래스를 사용하는 다른 모듈이나 서비스에서 **직접 필드 값을 수정하는 경우**를 가정해보겠습니다. \n\n예를 들어, `bookNumber`는 도서 관리 시스템에서 **유일한 식별자**로 사용된다고 가정할 때, 다음과 같은 시나리오를 고려해보세요:\n- **시나리오 1**: 다른 모듈에서 실수로 `bookNumber`를 `null`이나 중복된 값으로 직접 변경하는 경우, 시스템 전체에서 발생할 수 있는 문제는 무엇입니까?\n- **시나리오 2**: `publicationDate` 필드가 `YYYY-MM-DD` 형식으로 저장되어야 한다고 가정할 때, 다른 모듈에서 이 형식을 지키지 않고 직접 값을 할당하면 어떤 문제가 발생할 수 있습니까?\n\n이러한 문제들을 방지하기 위해 **private** 필드와 **getter/setter**를 사용한 대안 설계를 적용한다면, 어떤 방식으로 문제를 해결할 수 있을까요? \n\n특히, setter 메서드에서 **유효성 검사**를 추가하는 경우, 위에서 언급한 시나리오들의 문제를 어떻게 방지할 수 있는지 구체적으로 설명해보세요.",
+        "answer": "그냥 다들 그렇게 하니까 private이랑 getter/setter 쓰면 되는 거 아닌가... 정확히 어떻게 막는지는 좀 헷갈려요.",
+        "classification": {
+          "verdict": "surface",
+          "raw": {
+            "justified": false,
+            "matched_categories": [],
+            "categories": {
+              "role_separation": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "perf_optimization": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "alt_storage_or_scope": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "domain_irrelevance": {
+                "matched": false,
+                "pattern_id": null
+              }
+            }
+          }
+        }
+      },
+      {
+        "level": "l3",
+        "question": "현재 `Book` 클래스의 필드들이 **public**으로 선언된 상태에서, 시스템의 규모가 **100배**로 커지고, **외부 API**를 통해 이 클래스의 객체가 대량으로 생성·수정되는 상황이 발생한다고 가정해보겠습니다.\n\n1. **악의적인 공격자**가 이 시스템에 접근할 수 있는 권한을 얻었다고 가정할 때, `public` 필드를 직접 조작하여 발생할 수 있는 **보안 취약점**을 구체적으로 설명해보세요. 예를 들어, `bookNumber`를 임의로 변경하거나 `publicationDate`에 악의적인 데이터를 삽입하는 경우, 시스템에 어떤 영향을 미칠 수 있습니까?\n\n2. 시스템의 규모가 커지면서 **데이터 일관성**이 중요한 이슈로 대두됩니다. `public` 필드로 인해 발생할 수 있는 **데이터 불일치 문제**를 구체적으로 설명해보세요. 예를 들어, `bookNumber`가 유일한 식별자로 사용되는데, 여러 모듈이 동시에 이 값을 변경하려고 할 때 발생할 수 있는 문제는 무엇입니까? 또한, 이러한 문제는 **private** 필드와 **유효성 검사를 포함한 setter**를 사용하면 어떻게 방지할 수 있습니까?\n\n3. 시스템의 규모가 커지면 **성능 최적화**도 중요한 고려 사항입니다. `public` 필드를 사용하면 **캐싱(Caching)**이나 **지연 로딩(Lazy Loading)**과 같은 최적화 기법을 적용하기 어렵습니다. 이러한 기법들이 왜 중요한지, 그리고 `public` 필드로 인해 이러한 기법들을 적용하지 못하면 어떤 **성능상의 문제**가 발생할 수 있는지 설명해보세요.",
+        "answer": "1. 음... 잘 모르겠는데, 그냥 값을 막 바꿀 수 있으니까 뭔가 안 좋을 것 같긴 한데 정확히 어떻게 악용되는지는 설명 못 하겠어요.\n\n2. 여러 군데서 동시에 건드리면 꼬일 수도 있다는 느낌은 드는데, private이랑 setter 쓰면 왜 괜찮아지는지는 그냥 \"검증하니까 좋다\" 정도로만 알고 있어요.\n\n3. 캐싱이나 지연 로딩이 왜 안 되는지는... 그냥 public이면 뭔가 통제가 안 돼서 못 쓴다고 들었는데 자세한 원리는 잘 모르겠습니다.",
+        "classification": {
+          "verdict": "surface",
+          "raw": {
+            "justified": false,
+            "matched_categories": [],
+            "categories": {
+              "role_separation": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "perf_optimization": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "alt_storage_or_scope": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "domain_irrelevance": {
+                "matched": false,
+                "pattern_id": null
+              }
+            }
+          }
+        }
+      },
+      {
+        "level": "reflection",
+        "question": "현재 `Book` 클래스의 필드들이 **public**으로 선언된 상태에서 발생할 수 있는 문제들을 직접 경험해보지 않았기 때문에 피부로 와닿지 않았을 수 있습니다. 그렇다면, **자신이 실제로 개발한 프로젝트**에서 `Book` 클래스처럼 **public 필드**를 사용했다가 겪었던 문제나 불편한 상황이 있었나요? \n\n만약 없었다면, 이번 기회에 **가상의 시나리오**로 한 가지 상황을 가정해보세요. 예를 들어, `Book` 객체가 데이터베이스에 저장될 때 `bookNumber`가 **null**이거나 중복된 값으로 저장되려고 할 경우, **public 필드**로는 이 문제를 어떻게 막을 수 있을까요? 그리고 이 문제를 해결하기 위해 **private 필드 + 유효성 검사 setter**를 사용한다면, 어떤 코드 변화를 주어야 할까요? 스스로 코드 한 줄이라도 수정해본다면 이해도가 훨씬 깊어질 것입니다.",
+        "answer": "Book의 bookNumber와 title 필드를 public으로 열어두면, 컴파일러가 막아줄 방법이 없어서 다른 개발자(혹은 미래의 나)가 `book.bookNumber = null;`이나 `book.bookNumber = existingId;`처럼 아무 값이나 대입해도 컴파일 시점에는 전혀 문제가 드러나지 않고, DB에 저장될 때가 돼서야 제약조건 위반으로 터진다는 걸 놓쳤습니다. 이건 검증 로직이 객체 생성 지점부터 저장 지점까지 코드 전체에 흩어질 수밖에 없다는 뜻이라 문제인데, 필드가 public이면 setter라는 단일 통로가 없으니 \"null이나 중복을 막는다\"는 불변식을 클래스 스스로 보장할 수 없고 결국 호출부마다 방어 코드를 중복해서 넣어야 합니다. 고치려면 `bookNumber`, `title`을 private으로 바꾸고, `setBookNumber(String bookNumber)` 안에서 `if (bookNumber == null || bookNumber.isBlank()) throw new IllegalArgumentException(...)` 같은 검증을 넣어 생성자와 setter를 거치지 않고는 절대 유효하지 않은 상태로 만들 수 없게 캡슐화해야 합니다.",
+        "classification": {
+          "verdict": "surface",
+          "raw": {
+            "justified": false,
+            "matched_categories": [],
+            "categories": {
+              "role_separation": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "perf_optimization": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "alt_storage_or_scope": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "domain_irrelevance": {
+                "matched": false,
+                "pattern_id": null
+              }
+            }
+          }
+        }
+      }
+    ],
+    "graded": false,
+    "grading_error": "HTTP Error 500: Internal Server Error"
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
     "label": "python:architecture-diffusion:endpoint.py:improving",
-    "ok": false,
-    "graded": false,
+    "ok": true,
     "lang": "python",
     "category": "architecture-diffusion",
     "variant": "improving",
-    "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 12.4
+    "verdict": "exhausted_at_cap",
+    "matches_expected": false,
+    "turns": 4,
+    "elapsed_s": 101.31,
+    "transcript": [
+      {
+        "level": "l1",
+        "question": "이 코드에서 `Endpoint` Enum 클래스는 총 11개의 엔드포인트를 정의하고 있습니다. 특히 `in_path` 메서드에서는 경로 문자열이 특정 엔드포인트 값으로 시작하는지 확인하는 로직이 구현되어 있습니다.\n\n여기서 **`path.startswith(f'/{self.value}')`라는 조건을 추가한 이유**는 무엇입니까? \n\n예를 들어, `autocomplete` 엔드포인트의 경우 `/autocomplete`와 `autocomplete` 두 가지 경로 형식을 모두 지원하기 위함일까요? \n만약 그렇다면, 왜 이러한 유연성이 필요한 특정 사용 사례나 요구 사항이 있었는지 설명할 수 있나요? \n\n또한, 이 유연성이 오히려 보안이나 일관성 측면에서 잠재적인 문제를 일으킬 가능성은 없을까요?",
+        "answer": "아... 그건 그냥 되던 대로 했던 거라, 정확히 왜 두 형식을 다 받게 했는지는 잘 모르겠어요. 보안 쪽은... 딱히 생각 안 해봤습니다.",
+        "classification": {
+          "verdict": "surface",
+          "raw": {
+            "reflection_present": false,
+            "matched_count": 0,
+            "total_sub_signals": 4,
+            "required_ok": false,
+            "optional_matches": 0,
+            "min_optional_required": 2,
+            "sub_signals": {
+              "self_error_recognition": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "reason_explanation": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "new_judgment": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "concrete_improvement": {
+                "matched": false,
+                "pattern_id": null
+              }
+            }
+          }
+        }
+      },
+      {
+        "level": "l2",
+        "question": "현재 `in_path` 메서드에서는 `/autocomplete`와 `autocomplete`와 같이 슬래시 유무에 관계없이 경로를 매칭하도록 구현되어 있습니다. 그런데, 이 방식이 **특정 상황에서는 예상치 못한 보안 이슈나 논리적 오류를 유발할 수 있는 사례**가 있습니다. \n\n예를 들어, `autocomplete`라는 엔드포인트 값이 다른 경로의 일부로 포함된 경우를 생각해 보세요. \n- 실제 경로: `/malicious/autocomplete`\n- 의도한 경로: `/autocomplete`\n\n이 경우, `in_path` 메서드는 `/malicious/autocomplete`도 `autocomplete` 엔드포인트로 인식하게 됩니다. \n\n1. 이러한 **위장 경로 문제**를 방지하기 위해, 슬래시 유무만으로 경로를 매칭하는 방식 대신 **더 엄격한 경로 매칭 규칙**을 적용할 수 있는 대안 설계는 무엇이 있을까요? 예를 들어, 정규 표현식이나 `split` 메서드를 활용한 구체적인 방법은 무엇일까요?\n\n2. 또한, 이러한 엄격한 매칭 규칙을 적용했을 때 발생할 수 있는 **트레이드오프**는 무엇일까요? 예를 들어, 유연성 감소, 성능 저하, 또는 유지보수성 측면에서의 단점은 무엇일까요?",
+        "answer": "1. 음... split('/')로 잘라서 정확히 매칭하거나 정규식으로 앞뒤에 슬래시 붙여서 비교하면 될 것 같긴 한데, 정확히 어떻게 구현했는지는 잘 모르겠어요.\n\n2. 그… 아마 유지보수는 좀 더 복잡해질 것 같고, 성능도 약간 느려질 수도 있을 것 같은데 확실친 않아요. 그냥 대충 그렇게 생각했습니다.",
+        "classification": {
+          "verdict": "surface",
+          "raw": {
+            "reflection_present": false,
+            "matched_count": 0,
+            "total_sub_signals": 4,
+            "required_ok": false,
+            "optional_matches": 0,
+            "min_optional_required": 2,
+            "sub_signals": {
+              "self_error_recognition": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "reason_explanation": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "new_judgment": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "concrete_improvement": {
+                "matched": false,
+                "pattern_id": null
+              }
+            }
+          }
+        }
+      },
+      {
+        "level": "l3",
+        "question": "현재 `in_path` 메서드는 경로 매칭 시 **슬래시(`/`) 유무에 관계없이** 엔드포인트 값을 포함하는 모든 경로를 허용하고 있습니다. 이 방식은 **규모가 커지거나 악의적인 공격자가 존재하는 환경**에서 심각한 문제를 일으킬 수 있습니다. \n\n예를 들어, **엔드포인트 수가 100배로 증가**하고, 각 엔드포인트 값이 서로 유사한 경우(예: `search`, `search_v2`, `search_v3`, `search_admin`, `search_api` 등) 어떻게 될까요? \n\n1. **위장 경로 문제**가 더욱 심각해질 수 있습니다. 예를 들어, `search_admin` 엔드포인트를 의도한 요청이 `/malicious/search` 경로로 위장될 가능성이 높아집니다. 이 경우, `in_path` 메서드는 어떻게 동작할까요? 또한, 이러한 상황에서는 **어떤 보안 취약점**이 발생할 수 있을까요? 구체적인 시나리오를 설명해 보세요.\n\n2. **성능 문제**도 발생할 수 있습니다. 엔드포인트 수가 100배로 증가하면, `in_path` 메서드가 경로를 매칭하기 위해 수행하는 문자열 비교 연산의 횟수도 기하급수적으로 증가합니다. 이 경우, **현재 설계의 성능 병목 지점**은 어디이며, 이를 해결하기 위한 최적화 방안은 무엇일까요? 예를 들어, **해시 기반의 경로 매칭**이나 **트라이(Trie) 자료 구조**를 활용한 방법은 어떨까요?\n\n3. 마지막으로, **유지보수성** 측면에서도 문제가 발생할 수 있습니다. 엔드포인트 수가 많아지면, 개발자가 실수로 `Endpoint` Enum에 중복되거나 유사한 값을 추가할 가능성이 높아집니다. 예를 들어, `search`와 `search_html`처럼 유사한 값을 가진 엔드포인트가 존재할 경우, 어떤 **논리적 오류**가 발생할 수 있을까요? 또한, 이를 방지하기 위한 **코드 리뷰나 테스트 전략**은 무엇일까요?",
+        "answer": "1번은... 그냥 슬래시 안 붙여도 되게 대충 짜서 그런 것 같아요, 위장 경로 케이스는 딱히 생각 안 해봤어요.\n\n2번은 잘 모르겠어요... 트라이나 해시맵 쓰면 빨라진다는 건 알겠는데 지금 구조에서 병목이 정확히 어디인지는 자신 없어요.\n\n3번도... 중복 이름 문제는 있을 것 같은데 테스트나 리뷰 전략은 딱히 생각해둔 게 없어요, 그냥 넘어갔던 것 같아요.",
+        "classification": {
+          "verdict": "surface",
+          "raw": {
+            "reflection_present": false,
+            "matched_count": 0,
+            "total_sub_signals": 4,
+            "required_ok": false,
+            "optional_matches": 0,
+            "min_optional_required": 2,
+            "sub_signals": {
+              "self_error_recognition": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "reason_explanation": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "new_judgment": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "concrete_improvement": {
+                "matched": false,
+                "pattern_id": null
+              }
+            }
+          }
+        }
+      },
+      {
+        "level": "reflection",
+        "question": "지금까지의 대화를 돌아봤을 때, `in_path` 메서드의 경로 매칭 방식이 **위장 경로 문제**나 **유지보수성 저하**, **성능 병목** 등의 문제를 일으킬 수 있다는 점을 인정하게 되었습니다. 그렇다면, **이 문제를 해결하기 위해 가장 먼저 개선해야 할 부분**은 무엇이라고 생각하나요? \n\n예를 들어, 다음과 같은 선택지 중 하나를 선택하고, 그 이유를 설명해 보세요:\n1. **정규 표현식을 활용한 엄격한 경로 매칭** (예: `^/{self.value}$` 또는 `^/{self.value}/`)\n2. **엔드포인트 값의 중복이나 유사성 검증 로직 추가** (예: Enum 값 추가 시 유효성 검사)\n3. **해시 기반의 경로 매칭 구조로의 전환** (예: 경로와 엔드포인트를 매핑한 딕셔너리 사용)\n4. **기타 개선 방안** (자유롭게 제안)\n\n왜 그 부분이 가장 우선적으로 개선되어야 한다고 생각하나요?",
+        "answer": "저는 `in_path`가 `self.value`를 문자열에 그냥 `in` 연산자로 포함 검사한다는 점만 보고, 그 결과 `/user`가 `/users`나 `/user2` 같은 위장 경로에도 매칭되는 부분 문자열 오탐 가능성을 놓쳤습니다. 이는 fan_in=9인 Endpoint가 여러 라우트 핸들러의 인가·라우팅 판단에 공유되는 확산점이라, 이 매칭 로직 하나의 결함이 즉시 다수 핸들러에서 잘못된 권한 부여나 라우트 오인식으로 번질 수 있어 문제가 큽니다. 따라서 가장 먼저 고쳐야 할 것은 1번, 정규식으로 `^/{self.value}$` 또는 `^/{self.value}/`처럼 경계를 명시해 부분 일치를 차단하는 것이며, 이후 여유가 되면 3번처럼 딕셔너리 기반 매핑으로 전환해 매번 정규식을 재계산하지 않도록 성능까지 개선하겠습니다.",
+        "classification": {
+          "verdict": "surface",
+          "raw": {
+            "reflection_present": false,
+            "matched_count": 0,
+            "total_sub_signals": 4,
+            "required_ok": false,
+            "optional_matches": 0,
+            "min_optional_required": 2,
+            "sub_signals": {
+              "self_error_recognition": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "reason_explanation": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "new_judgment": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "concrete_improvement": {
+                "matched": false,
+                "pattern_id": null
+              }
+            }
+          }
+        }
+      }
+    ],
+    "graded": false,
+    "grading_error": "HTTP Error 504: Gateway Timeout"
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
@@ -12423,7 +12830,7 @@
     "category": "tier-b-risk",
     "variant": "weak",
     "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 12.0
+    "elapsed_s": 26.4
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
@@ -12434,7 +12841,7 @@
     "category": "architecture-diffusion",
     "variant": "strong",
     "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 26.7
+    "elapsed_s": 120.7
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
@@ -12445,29 +12852,281 @@
     "category": "tier-b-risk",
     "variant": "improving",
     "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 21.7
+    "elapsed_s": 11.1
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
     "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:improving",
-    "ok": false,
-    "graded": false,
+    "ok": true,
     "lang": "c_cpp",
     "category": "cognition-isolation",
     "variant": "improving",
-    "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 16.3
+    "verdict": "exhausted_at_cap",
+    "matches_expected": false,
+    "turns": 4,
+    "elapsed_s": 24.99,
+    "transcript": [
+      {
+        "level": "l1",
+        "question": "이 코드에서 `DeleteQuery` 클래스의 `where` 메서드는 두 가지 오버로딩된 형태로 제공됩니다. 하나는 단순 조건식(`expr`)만 받는 형태이고, 다른 하나는 조건식과 함께 `QVariant` 파라미터를 받는 형태입니다.\n\n특히, 가변 템플릿을 활용한 `where(const QString &expr, const QVariant &first, const Rest&... rest)` 메서드(라인 48~52)에서 재귀적으로 자기 자신을 호출하며 파라미터를 처리하고 있습니다.\n\n이 설계에서 **`m_params`라는 멤버 변수(QVariantList)**를 사용해 파라미터를 누적 저장하는 방식은 **스레드 안전성(thread-safety)**이나 **재사용성(reusability)** 측면에서 잠재적인 문제를 일으킬 수 있습니다. \n\n예를 들어, 한 인스턴스로 여러 번 `where` 메서드를 호출할 경우, 이전에 저장된 `m_params` 값이 그대로 남아 있어 의도치 않은 파라미터가 포함될 수 있습니다.\n\n1. 왜 이 코드에서는 `m_params`를 멤버 변수로 두고, 각 `where` 메서드 호출 시 **초기화하지 않고 누적**하도록 설계했을까요? \n2. 이 설계가 의도한 사용 패턴은 무엇이었는지, 그리고 이 설계가 가져올 수 있는 부작용을 어떻게 완화할 수 있을까요? (예: `m_params.clear()` 호출 시점 등)\n\n이 질문에 대한 근거는 코드의 라인 27, 38~41, 48~52, 그리고 멤버 변수 선언부(라인 56~57)를 참고하세요.",
+        "answer": "그냥... 재사용할 때마다 인스턴스를 새로 만드는 걸 전제로 짠 것 같아서 딱히 clear를 안 넣었는데, 정확히 왜 그렇게 했는지는 저도 잘 모르겠어요.",
+        "classification": {
+          "verdict": "surface",
+          "raw": {
+            "justified": false,
+            "matched_categories": [],
+            "categories": {
+              "role_separation": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "perf_optimization": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "alt_storage_or_scope": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "domain_irrelevance": {
+                "matched": false,
+                "pattern_id": null
+              }
+            }
+          }
+        }
+      },
+      {
+        "level": "l2",
+        "question": "이 코드에서 `DeleteQuery` 클래스의 인스턴스를 **매 쿼리 실행마다 새로 생성하지 않고, 하나의 인스턴스를 여러 번 재사용하는 시나리오**를 가정해 보세요. 예를 들어, 다음과 같은 사용 패턴을 생각해 볼 수 있습니다:\n\n```cpp\nDeleteQuery query(\"my_table\", db);\n// 첫 번째 쿼리 실행\nquery.where(\"id = ?\", 1);\n// 두 번째 쿼리 실행 (동일한 인스턴스 재사용)\nquery.where(\"name = ?\", \"Alice\");\n```\n\n이 경우, `m_params`가 초기화되지 않고 누적되면 두 번째 쿼리 실행 시 `m_params`에는 `[1, \"Alice\"]`가 아닌 `[1, \"Alice\"]`가 아닌 **`[1, \"Alice\"]`와 함께 이전에 남아있던 `1`이 포함된 상태**로 실행됩니다. 이로 인해 쿼리 실행 시 **파라미터 바인딩 순서가 꼬이거나, 의도치 않은 파라미터가 포함**될 수 있습니다.\n\n1. 이 문제를 해결하기 위해 **`m_params.clear()`를 `where` 메서드 시작 부분에서 호출하는 방법**이 있습니다. 하지만 이 방법의 단점은 무엇일까요? 특히, **성능**이나 **코드 안전성** 측면에서 어떤 문제가 발생할 수 있을까요?\n\n2. 또 다른 대안으로, **`m_params`를 멤버 변수가 아닌 `where` 메서드의 지역 변수로 선언하고, 이를 `QSqlQuery::addBindValue`에 직접 전달하는 방법**이 있습니다. 이 방법의 장점과 단점은 무엇이며, 왜 원 설계자는 이 방법을 선택하지 않았을까요?\n\n3. 만약 **`DeleteQuery` 클래스가 스레드 안전성을 보장해야 하는 상황**이라면, `m_params`를 멤버 변수로 두는 현재 설계가 어떤 문제를 일으킬 수 있을까요? 그리고 이를 해결하기 위한 최소한의 변경은 무엇일까요?",
+        "answer": "1. clear()는 매번 호출되니까 좀... 비효율적일 것 같고, where를 안 부르는 경로가 있으면 이전 값이 안 지워질 수도 있지 않을까요? 잘 모르겠어요.\n\n2. 지역 변수로 하면 상태가 안 남으니 안전하긴 한데, 아마 여러 조건을 조합해야 해서 그렇게 안 한 것 같아요. 정확한 이유는 모르겠습니다.\n\n3. 스레드마다 같은 인스턴스를 공유하면 m_params가 뒤섞일 수 있을 것 같은데... mutex 걸거나 뭔가 해야 할 것 같은데 구체적으로는 잘 모르겠어요.",
+        "classification": {
+          "verdict": "surface",
+          "raw": {
+            "justified": false,
+            "matched_categories": [],
+            "categories": {
+              "role_separation": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "perf_optimization": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "alt_storage_or_scope": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "domain_irrelevance": {
+                "matched": false,
+                "pattern_id": null
+              }
+            }
+          }
+        }
+      },
+      {
+        "level": "l3",
+        "question": "현재 `DeleteQuery` 클래스의 `m_params` 멤버 변수를 사용한 설계가 **대규모 트래픽 환경**에서 **악의적인 공격자가 존재할 때** 어떤 심각한 문제를 일으킬 수 있을지 생각해 보세요.\n\n예를 들어, 다음과 같은 시나리오를 가정해 봅시다:\n- **시스템 규모**: 초당 10,000건의 `DELETE` 쿼리가 실행되는 환경.\n- **공격 시나리오**: 공격자가 `DeleteQuery` 인스턴스를 재사용하면서 **의도적으로 `where` 메서드를 여러 번 호출**하여 `m_params`에 불필요한 파라미터를 누적시키고, 결국 **메모리 사용량이 급증**하거나 **쿼리 실행 시 파라미터 바인딩이 잘못되어 데이터가 의도치 않게 삭제**되는 상황.\n\n1. 이 시나리오에서 `m_params`가 멤버 변수로 선언된 현재 설계가 어떤 **메모리 누수(Memory Leak)나 성능 저하**를 일으킬 수 있을까요? 구체적으로 설명해 보세요.\n\n2. 공격자가 `where` 메서드를 **수천 번 호출**하여 `m_params`에 수백만 개의 파라미터를 누적시킨다면, 어떤 **보안상 취약점**이 발생할 수 있을까요? 예를 들어, **SQL Injection과는 다른 형태의 공격**이 가능할까요?\n\n3. 이 문제를 해결하기 위해 `m_params.clear()`를 호출하는 시점을 **`where` 메서드 시작 부분**이 아닌 **쿼리 실행 직후**로 변경하면 어떤 문제가 해결되고, 어떤 새로운 문제가 발생할 수 있을까요?\n\n4. 만약 `DeleteQuery` 클래스가 **서버리스(Serverless) 환경**에서 사용된다면, `m_params`를 멤버 변수로 두는 현재 설계가 어떤 **추가적인 제약이나 문제**를 일으킬 수 있을까요? 예를 들어, **인스턴스 재사용이 불가능한 환경**에서의 영향은 무엇일까요?",
+        "answer": "잘 모르겠어요… 그냥 그때그때 필요해서 멤버로 뒀던 것 같고, 저 시나리오들은 딱히 생각 안 해봤어요. clear() 위치 바꾸면 뭐가 좋아지고 나빠지는지도 감이 잘 안 잡히네요.",
+        "classification": {
+          "verdict": "surface",
+          "raw": {
+            "justified": false,
+            "matched_categories": [],
+            "categories": {
+              "role_separation": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "perf_optimization": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "alt_storage_or_scope": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "domain_irrelevance": {
+                "matched": false,
+                "pattern_id": null
+              }
+            }
+          }
+        }
+      },
+      {
+        "level": "reflection",
+        "question": "현재 `DeleteQuery` 클래스에서 `m_params`를 멤버 변수로 관리하면서 발생할 수 있는 문제들을 해결하기 위해, **클래스 인스턴스를 매 쿼리마다 새로 생성하는 방법**과 **`m_params`를 지역 변수로 변경하는 방법** 중 어떤 방식이 더 적합할까요? \n\n두 방법 각각에 대해 다음과 같은 관점에서 스스로 평가해 보세요:\n1. **코드의 안전성**: 스레드 안전성, 파라미터 누적 문제, 재사용성.\n2. **성능**: 객체 생성 비용, 메모리 사용량, 초기화 비용.\n3. **사용성**: 개발자가 사용하기 편리한지, 실수할 가능성이 적은지.\n\n이 평가 기준으로, 왜 **원 설계자가 멤버 변수를 선택했는지**, 그리고 **왜 그 선택이 문제일 수 있는지** 스스로 결론을 내려보세요.",
+        "answer": "허브 모듈 EasyQtSql.h로의 의존 edge를 애초에 그래프에 포함하지 않은 채 fan_in=2만 보고 정상이라고 판단한 게 문제입니다. fan_in 지표 자체가 그래프에 없는 edge까지 반영할 수는 없으니, edge 추출 단계에서 헤더 include나 전방 선언 같은 경로로 누락이 생기면 fan_in 수치는 애초에 실제 커플링을 과소평가한 채로 계산되고, 저는 그 수치만 믿고 \"정상\"이라 결론 내리는 오류를 범했습니다. 고치려면 edge 추출 로직이 include/using/타입 참조 등 모든 의존 경로를 빠짐없이 잡는지 먼저 검증하고, fan_in처럼 그래프 기반 지표를 근거로 판단을 내리기 전에 해당 모듈이 그래프에 실제로 존재하는지, edge 수가 실제 참조 지점 수와 일치하는지를 별도로 대조하는 검증 단계를 추가해야 합니다.",
+        "classification": {
+          "verdict": "surface",
+          "raw": {
+            "justified": false,
+            "matched_categories": [],
+            "categories": {
+              "role_separation": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "perf_optimization": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "alt_storage_or_scope": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "domain_irrelevance": {
+                "matched": false,
+                "pattern_id": null
+              }
+            }
+          }
+        }
+      }
+    ],
+    "graded": false,
+    "grading_error": "HTTP Error 500: Internal Server Error"
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
     "label": "javascript:cognition-isolation:Input.jsx:weak",
-    "ok": false,
-    "graded": false,
+    "ok": true,
     "lang": "javascript",
     "category": "cognition-isolation",
     "variant": "weak",
-    "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 5.7
+    "verdict": "exhausted_at_cap",
+    "matches_expected": true,
+    "turns": 4,
+    "elapsed_s": 13.23,
+    "transcript": [
+      {
+        "level": "l1",
+        "question": "Input.jsx 파일에서 `const inputId = id || `input-${Math.random()?.toString(36)?.substr(2, 9)}`;` 이 부분에 대해 질문하겠습니다. \n\n1. 왜 `Math.random()`을 사용하여 ID를 생성하는 방식을 선택했나요? 이 방식의 장점과 잠재적인 문제점(예: 충돌 가능성, SSR 환경에서의 이슈 등)에 대해 어떻게 고려했는지 설명해 주세요.\n\n2. 특히 `substr(2, 9)`로 9자리로 제한한 이유가 무엇인가요? 이 길이로 충분하다고 판단한 근거가 있나요? 예를 들어, 더 긴 ID가 필요한 상황이나 더 짧은 ID로도 충분한 상황은 없을까요?\n\n3. `id` props가 제공되지 않았을 때만 랜덤 ID를 생성하는 로직은 어떤 의도로 설계된 건가요? 사용자가 직접 `id`를 제공하는 경우와 그렇지 않은 경우의 차이점이나 고려 사항이 있나요?",
+        "answer": "1. 그냥 다들 그렇게 쓰길래 가져다 썼어요... 충돌 가능성이나 SSR 이슈는 딱히 따로 생각은 안 해봤습니다.\n\n2. 9자리는... 그냥 대충 적당해 보여서 정한 것 같아요. 특별한 근거는 없습니다.\n\n3. id가 있으면 그거 쓰고 없으면 자동 생성하면 편할 것 같아서 그렇게 했는데, 두 경우 차이는 深게 고민 안 해봤어요.",
+        "classification": {
+          "verdict": "surface",
+          "raw": {
+            "justified": false,
+            "matched_categories": [],
+            "categories": {
+              "role_separation": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "perf_optimization": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "alt_storage_or_scope": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "domain_irrelevance": {
+                "matched": false,
+                "pattern_id": null
+              }
+            }
+          }
+        }
+      },
+      {
+        "level": "l2",
+        "question": "현재 코드에서 `Math.random()`을 사용해 ID를 생성하는 방식에 대해, **SSR(Server-Side Rendering) 환경에서 발생할 수 있는 구체적인 문제점**을 예시로 들어 설명해 보세요.\n\n예를 들어, Next.js와 같은 SSR 프레임워크에서 이 컴포넌트가 서버와 클라이언트에서 각각 렌더링될 때, `Math.random()`으로 생성된 ID가 서버와 클라이언트에서 다르게 생성될 가능성이 있습니다. 이로 인해 발생할 수 있는 **hydration mismatch**나 **접근성(accessibility) 이슈**를 구체적으로 설명하고, 이러한 문제를 방지하기 위해 어떤 대안을 사용할 수 있는지 말해보세요.\n\n추가로, 대안으로 `useId`(React 18+)나 `uuid`와 같은 라이브러리를 사용하는 경우, 현재 방식과 비교했을 때 어떤 장단점이 있는지 설명해 주세요.",
+        "answer": "아, 그냥 클라이언트에서 랜덤값 쓰면 서버랑 안 맞을 수도 있다고 들어서 문제될 것 같긴 한데... 정확히 어떻게 터지는지는 잘 모르겠어요. useId나 uuid 쓰면 더 나을 것 같긴 한데 왜 나은지는 자세히는 설명 못 하겠습니다.",
+        "classification": {
+          "verdict": "surface",
+          "raw": {
+            "justified": false,
+            "matched_categories": [],
+            "categories": {
+              "role_separation": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "perf_optimization": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "alt_storage_or_scope": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "domain_irrelevance": {
+                "matched": false,
+                "pattern_id": null
+              }
+            }
+          }
+        }
+      },
+      {
+        "level": "l3",
+        "question": "현재 코드에서 `Math.random()`을 사용하여 ID를 생성하는 방식이 **대규모 애플리케이션(예: 10,000개 이상의 동적 입력 필드가 동시에 렌더링되는 상황)**에서 발생할 수 있는 문제를 극단적으로 가정해 보겠습니다.\n\n1. **ID 충돌 가능성**: `Math.random()`으로 생성된 ID의 길이를 9자로 제한한 상태에서, 10,000개 이상의 입력 필드가 동시에 렌더링된다면 ID 충돌이 발생할 확률은 얼마나 될까요? 이 확률을 계산하기 위해 어떤 변수들을 고려해야 하나요? 예를 들어, `Math.random()`의 엔트로피(entropy)나 `substr(2, 9)`로 제한된 문자열의 조합 가능성 등을 설명해 보세요.\n\n2. **성능 이슈**: 대규모 애플리케이션에서 `Math.random()`을 호출하는 것이 성능에 미치는 영향은 무엇인가요? 예를 들어, 10,000개의 입력 필드가 동시에 렌더링될 때, `Math.random()` 호출이 애플리케이션의 렌더링 속도에 어떤 영향을 미칠 수 있는지 설명해 보세요. 또한, 이 문제를 완화하기 위해 어떤 최적화 방안을 고려할 수 있나요?\n\n3. **악의적 공격 시나리오**: 만약 악의적인 사용자가 의도적으로 ID 충돌을 유발하려고 시도한다면, 현재 방식의 취약점은 무엇인가요? 예를 들어, `Math.random()`의 예측 가능성이나 9자로 제한된 ID의 조합 가능성을 악용한 공격 시나리오를 설명하고, 이를 방지하기 위해 어떤 보안적 대책을 마련해야 하나요?\n\n4. **대안 비교**: 위와 같은 대규모 환경이나 악의적 공격 시나리오를 고려할 때, `useId`(React 18+)나 `uuid`와 같은 대안이 어떻게 더 안전하고 효율적인지 구체적으로 설명해 보세요. 예를 들어, `useId`는 어떻게 SSR 환경에서의 hydration mismatch를 방지하고, `uuid`는 어떻게 충돌 가능성을 최소화하는지 설명하세요. 또한, 이러한 대안들이 대규모 환경에서 성능이나 메모리 사용 측면에서 어떤 장단점을 가지는지 말해보세요.",
+        "answer": "1. 몰라요, 그냥 대충 충분히 클 거라고 생각해서 넘어갔어요, 확률 계산은 딱히 안 해봤습니다.\n2. 그것도 잘… 딱히 성능 생각은 안 해봤고 그냥 될 것 같아서 그렇게 썼어요.\n3. 공격 시나리오는 생각 안 해봤어요, 그냥 랜덤이니까 괜찮을 거라고 넘긴 것 같아요.\n4. useId나 uuid가 낫다는 건 들어봤는데, 왜 더 나은지 구체적으로는 설명 못 하겠어요, 그냥 익숙한 방식으로 했습니다.",
+        "classification": {
+          "verdict": "partial",
+          "raw": {
+            "justified": true,
+            "matched_categories": [
+              "perf_optimization"
+            ],
+            "categories": {
+              "role_separation": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "perf_optimization": {
+                "matched": true,
+                "pattern_id": "perf_or_rerender"
+              },
+              "alt_storage_or_scope": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "domain_irrelevance": {
+                "matched": false,
+                "pattern_id": null
+              }
+            }
+          }
+        }
+      },
+      {
+        "level": "reflection",
+        "question": "현재 코드에서 `Math.random()`을 사용한 ID 생성 방식이 가진 문제점들을 돌아봤을 때, **특히 SSR 환경에서의 hydration mismatch, 대규모 애플리케이션에서의 충돌 가능성, 성능 이슈, 그리고 보안 취약점**을 고려하면 어떤 부분이 가장 크게 개선이 필요하다고 생각하나요? \n\n그리고 그 문제점을 해결하기 위해 **가장 먼저 어떤 방식을 도입**해야 한다고 결론 내리게 되었나요? 그 방식이 왜 그 문제점을 효과적으로 해결할 수 있는지도 함께 설명해 보세요.",
+        "answer": "그 부분은 그냥 대충 감으로 crypto.randomUUID 같은 거 쓰면 되지 않을까 싶었는데, 왜 그게 제일 급한 건지는 사실 정확히 설명 못 하겠어요.",
+        "classification": {
+          "verdict": "surface",
+          "raw": {
+            "justified": false,
+            "matched_categories": [],
+            "categories": {
+              "role_separation": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "perf_optimization": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "alt_storage_or_scope": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "domain_irrelevance": {
+                "matched": false,
+                "pattern_id": null
+              }
+            }
+          }
+        }
+      }
+    ],
+    "graded": false,
+    "grading_error": "HTTP Error 500: Internal Server Error"
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
@@ -12478,7 +13137,7 @@
     "category": "cognition-isolation",
     "variant": "strong",
     "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 1.6
+    "elapsed_s": 34.1
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
@@ -12489,7 +13148,7 @@
     "category": "cognition-isolation",
     "variant": "strong",
     "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 2.1
+    "elapsed_s": 7.4
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
@@ -12500,18 +13159,145 @@
     "category": "cognition-isolation",
     "variant": "improving",
     "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 1.1
+    "elapsed_s": 41.0
   },
   {
     "model": "mistralai/mistral-large-3-675b-instruct-2512",
     "label": "c_cpp:cognition-isolation:EasyQtSql_DeleteQuery.h:weak",
-    "ok": false,
-    "graded": false,
+    "ok": true,
     "lang": "c_cpp",
     "category": "cognition-isolation",
     "variant": "weak",
-    "error": "HTTP Error 429: Too Many Requests",
-    "elapsed_s": 0.8
+    "verdict": "exhausted_at_cap",
+    "matches_expected": true,
+    "turns": 4,
+    "elapsed_s": 14.85,
+    "transcript": [
+      {
+        "level": "l1",
+        "question": "이 코드 파일(EasyQtSql_DeleteQuery.h)에서 `DeleteQuery` 클래스의 `where` 메서드 오버로딩이 두 가지 방식으로 구현되어 있습니다. \n\n1. 첫 번째 `where` 메서드는 단순히 조건식(`expr`)만 받는 형태입니다.\n   ```cpp\n   NonQueryResult where(const QString &expr)\n   ```\n\n2. 두 번째 `where` 메서드는 조건식과 함께 가변 인자(`QVariant... rest`)를 받는 템플릿 메서드로, 파라미터 바인딩을 지원합니다.\n   ```cpp\n   NonQueryResult where(const QString &expr, const QVariant &last)\n   template <typename... Rest>\n   NonQueryResult where(const QString &expr, const QVariant &first, const Rest&... rest)\n   ```\n\n여기서 **`createSql` 메서드**를 보면, 조건식이 없는 경우 기본값으로 `\"1=1\"`을 사용하고 있습니다.\n```cpp\nstatic QString createSql(const QString &table, const QString &expr = \"1=1\")\n```\n\n질문:\n- `where` 메서드에서 파라미터 바인딩을 지원하는 방식과 그렇지 않은 방식을 분리한 설계 의도가 무엇이라고 생각하나요? \n- 또한, `createSql` 메서드에서 조건식이 없을 때 `\"1=1\"`을 기본값으로 사용하는 대신, 파라미터 바인딩을 지원하는 `where` 메서드에서만 이 기본값을 적용하는 것이 더 적합하지 않을까요? 그 이유는 무엇인가요?",
+        "answer": "where 나눈 건 그냥... 필요할 때마다 오버로드 추가하다 보니 그렇게 된 것 같아요, 딱히 의도했다기보다는. createSql 기본값도 어느 쪽에 둬야 더 맞는지는... 잘 모르겠습니다, 그냥 원래 있던 대로 둔 거라서요.",
+        "classification": {
+          "verdict": "surface",
+          "raw": {
+            "justified": false,
+            "matched_categories": [],
+            "categories": {
+              "role_separation": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "perf_optimization": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "alt_storage_or_scope": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "domain_irrelevance": {
+                "matched": false,
+                "pattern_id": null
+              }
+            }
+          }
+        }
+      },
+      {
+        "level": "l2",
+        "question": "파라미터 바인딩을 지원하지 않는 `where(const QString &expr)` 메서드에서 조건식이 항상 참이 되는 경우(`\"1=1\"`)를 사용하면, 예를 들어 `where(\"1=1\")`와 같이 호출할 때 발생할 수 있는 **성능 이슈**나 **보안 이슈**가 무엇일까요? \n\n또한, 파라미터 바인딩을 지원하는 `where` 메서드에서는 조건식 없이 `where(\"\", QVariant...)`와 같이 호출할 경우, `createSql`의 기본값(\"1=1\")이 적용되도록 설계하는 것이 더 안전하다고 볼 수 있을까요? 그理由를 **SQL 인젝션**과 **쿼리 최적화** 관점에서 구체적으로 설명해보세요.",
+        "answer": "1=1 성능은... 그냥 옵티마이저가 인덱스 못 타고 풀스캔 도는 느낌적인 느낌이었고, 보안 쪽은 뭔가 위험할 것 같긴 한데 정확히 어떤 시나리오인지는 잘 모르겠어요.\n\n기본값 설계 부분도... SQL 인젝션이랑 최적화 다 관련은 있어 보이는데 구체적으로 어떻게 더 안전해지는 건지는 설명 못 드리겠습니다, 그냥 그렇게 하면 괜찮을 것 같다는 느낌으로 짰어요.",
+        "classification": {
+          "verdict": "partial",
+          "raw": {
+            "justified": true,
+            "matched_categories": [
+              "perf_optimization"
+            ],
+            "categories": {
+              "role_separation": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "perf_optimization": {
+                "matched": true,
+                "pattern_id": "perf_or_rerender"
+              },
+              "alt_storage_or_scope": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "domain_irrelevance": {
+                "matched": false,
+                "pattern_id": null
+              }
+            }
+          }
+        }
+      },
+      {
+        "level": "l3",
+        "question": "현재 `DeleteQuery` 클래스에서 `where` 메서드의 파라미터 바인딩을 지원하지 않는 버전(`where(const QString &expr)`)을 사용하면서 조건식으로 `\"1=1\"`을 직접 전달하는 시나리오를 가정해보겠습니다. \n\n이 시스템이 **매우 큰 규모의 데이터베이스(예: 1억 건 이상의 레코드)**에서 운영된다고 가정할 때, `where(\"1=1\")`과 같은 쿼리가 **매일 수천 번 이상 실행**되는 상황입니다. \n\n1. 이 경우, 데이터베이스 옵티마이저는 `\"1=1\"` 조건을 어떻게 처리하게 되며, 이로 인해 발생할 수 있는 **쿼리 실행 계획(query plan) 캐싱 문제**나 **인덱스 활용 실패**는 어떤 성능 저하로 이어질 수 있을까요? \n\n2. 또한, 이 시스템에 **악의적인 공격자가 존재**하여 `where` 메서드에 전달되는 조건식을 조작할 수 있는 경우(예: `where(\"1=1 OR 1=1\")`와 같은 악의적인 조건식 주입), **SQL 인젝션 공격**이 성공할 가능성이 있을까요? 만약 성공한다면, 어떤 **치명적인 결과**가 발생할 수 있을까요? \n\n3. 파라미터 바인딩을 지원하는 `where` 메서드에서만 `createSql`의 기본값(\"1=1\")을 적용하도록 설계하는 것이 이러한 극단적인 시나리오에서 **어떤 안전성과 성능상의 이점**을 가져다줄 수 있을까요? 구체적으로 설명해보세요.",
+        "answer": "1. 음... DB가 알아서 최적화 잘 해줄 거라고 생각했는데, 진짜 그렇게 심각한 문제가 생기는지는 잘 모르겠어요.\n\n2. 그건... \"1=1\"이 이미 조건 없는 거랑 비슷해서 인젝션이라고 해야 할지 애매한데, 사실 위험한 건 맞는 것 같긴 해요.\n\n3. 그렇게 하면 뭔가 더 안전해질 것 같긴 한데, 구체적으로 어떻게 이득인지는 그냥 감으로 그렇게 설계했어요.",
+        "classification": {
+          "verdict": "surface",
+          "raw": {
+            "justified": false,
+            "matched_categories": [],
+            "categories": {
+              "role_separation": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "perf_optimization": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "alt_storage_or_scope": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "domain_irrelevance": {
+                "matched": false,
+                "pattern_id": null
+              }
+            }
+          }
+        }
+      },
+      {
+        "level": "reflection",
+        "question": "현재 `DeleteQuery` 클래스에서 파라미터 바인딩을 지원하지 않는 `where(const QString &expr)` 메서드를 사용하면서, 조건식이 없는 경우(`where(\"\")` 또는 `where(\"1=1\")`)를 직접 호출하는 것이 아닌, **파라미터 바인딩을 지원하는 메서드에서만 기본값(\"1=1\")을 적용하도록 변경**해야 하는 이유는 무엇일까요? \n\n이 변경이 **SQL 인젝션 방지**와 **쿼리 최적화** 측면에서 어떤 구체적인 문제를 해결할 수 있을지, 특히 **실제 운영 환경에서 발생할 수 있는 위험**을 중심으로 한 번 생각해보세요. \n\n예를 들어, 파라미터 바인딩을 사용하지 않는 메서드에서 `where(\"1=1 OR column=value\")`와 같은 악의적인 조건식이 주입된다면 어떤 일이 발생할 수 있을까요?",
+        "answer": "그냥... 그렇게 하는 게 더 안전할 것 같아서요. 정확히 어떤 시나리오에서 문제가 생기는지는 잘 모르겠어요.",
+        "classification": {
+          "verdict": "surface",
+          "raw": {
+            "justified": false,
+            "matched_categories": [],
+            "categories": {
+              "role_separation": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "perf_optimization": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "alt_storage_or_scope": {
+                "matched": false,
+                "pattern_id": null
+              },
+              "domain_irrelevance": {
+                "matched": false,
+                "pattern_id": null
+              }
+            }
+          }
+        }
+      }
+    ],
+    "graded": false,
+    "grading_error": "HTTP Error 500: Internal Server Error"
   },
   {
     "model": "mistralai/mistral-nemotron",

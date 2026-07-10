@@ -28,7 +28,7 @@ sys.path.insert(0, os.path.join(REPO, "pipeline"))
 sys.path.insert(0, os.path.join(REPO, "benchmarks"))
 sys.path.insert(0, REPO)
 
-from timeout_config import DEFAULT_TIMEOUT_S  # noqa: E402
+from timeout_config import DEFAULT_TIMEOUT_S, DEFAULT_MAX_TOKENS  # noqa: E402
 from nvidia_client import NvidiaRotatingClient  # noqa: E402
 from nvidia_key_pool import NvidiaKeyPool  # noqa: E402
 from harness import run_concurrent, print_progress  # noqa: E402
@@ -48,9 +48,9 @@ _specretry.loader.exec_module(retry40)
 # into worker-queue overload. Run both models effectively serially, with a lower
 # RPM cap, so timeout/max_tokens changes can be evaluated without extra burst.
 RPM_CAP = 12
-LLAMA_TIMEOUT_S = 600.0
+LLAMA_TIMEOUT_S = DEFAULT_TIMEOUT_S  # D104: was literal 600.0 (pre-dated the D98 central import)
 LLAMA_WORKERS = 1
-NEMOTRON_TIMEOUT_S = 600.0  # D98: standardized to 600s project-wide (user request)
+NEMOTRON_TIMEOUT_S = DEFAULT_TIMEOUT_S  # D98/D104: centralized in timeout_config.py
 NEMOTRON_WORKERS = 1
 
 
@@ -112,14 +112,14 @@ def main():
 
     print(
         f"=== llama-3.3-70b-instruct: {len(jobs_llama)} jobs "
-        f"(timeout_s={LLAMA_TIMEOUT_S:.0f}, max_tokens=512, workers={LLAMA_WORKERS}) ===",
+        f"(timeout_s={LLAMA_TIMEOUT_S:.0f}, max_tokens={DEFAULT_MAX_TOKENS}, workers={LLAMA_WORKERS}) ===",
         flush=True,
     )
     d94.CLIENT = retry40.RateLimitedClient(NvidiaRotatingClient(pool=pool, timeout_s=LLAMA_TIMEOUT_S), rpm=RPM_CAP)
     all_new.extend(
         run_concurrent(
             jobs_llama,
-            lambda j: call_one_with_tokens(j, 512),
+            lambda j: call_one_with_tokens(j, DEFAULT_MAX_TOKENS),  # D104: was literal 512
             max_workers=LLAMA_WORKERS,
             progress=print_progress,
         )
@@ -127,7 +127,7 @@ def main():
 
     print(
         f"\n=== nemotron-super-49b-v1.5: {len(jobs_nemotron)} jobs "
-        f"(timeout_s={NEMOTRON_TIMEOUT_S:.0f}, max_tokens=2048, workers={NEMOTRON_WORKERS}) ===",
+        f"(timeout_s={NEMOTRON_TIMEOUT_S:.0f}, max_tokens={DEFAULT_MAX_TOKENS}, workers={NEMOTRON_WORKERS}) ===",
         flush=True,
     )
     d94.CLIENT = retry40.RateLimitedClient(
@@ -137,7 +137,7 @@ def main():
     all_new.extend(
         run_concurrent(
             jobs_nemotron,
-            lambda j: call_one_with_tokens(j, 2048),
+            lambda j: call_one_with_tokens(j, DEFAULT_MAX_TOKENS),  # D104: was literal 2048
             max_workers=NEMOTRON_WORKERS,
             progress=print_progress,
         )

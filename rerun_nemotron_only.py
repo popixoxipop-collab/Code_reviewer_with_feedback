@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.join(REPO, "pipeline"))
 sys.path.insert(0, os.path.join(REPO, "benchmarks"))
 sys.path.insert(0, REPO)
 
-from timeout_config import DEFAULT_TIMEOUT_S  # noqa: E402
+from timeout_config import DEFAULT_TIMEOUT_S, DEFAULT_MAX_TOKENS  # noqa: E402
 from nvidia_client import NvidiaRotatingClient  # noqa: E402
 from nvidia_key_pool import NvidiaKeyPool  # noqa: E402
 from harness import run_concurrent, print_progress  # noqa: E402
@@ -63,7 +63,7 @@ def main():
             for (lang_finding, variant), entry in all_labels.items()
             if (lang_finding, variant) not in already_ok]
 
-    print(f"=== nemotron-super-49b-v1.5 재시도: {len(jobs)}/{len(all_labels)} jobs (기존 성공 {len(already_ok)}건은 스킵, timeout_s={NEMOTRON_TIMEOUT_S:.0f}, max_tokens=2048, workers={NEMOTRON_WORKERS}) ===", flush=True)
+    print(f"=== nemotron-super-49b-v1.5 재시도: {len(jobs)}/{len(all_labels)} jobs (기존 성공 {len(already_ok)}건은 스킵, timeout_s={NEMOTRON_TIMEOUT_S:.0f}, max_tokens={DEFAULT_MAX_TOKENS}, workers={NEMOTRON_WORKERS}) ===", flush=True)
     # rerun2.call_one_with_tokens reads CLIENT off its OWN separately-loaded copy of the
     # d94 module (importlib.util module_from_spec makes independent instances per load) --
     # setting it on this file's `d94` name does nothing for that call path. Set both so
@@ -73,7 +73,7 @@ def main():
     rerun2.d94.CLIENT = client
     new_rows = run_concurrent(
         jobs,
-        lambda j: rerun2.call_one_with_tokens(j, 2048),
+        lambda j: rerun2.call_one_with_tokens(j, DEFAULT_MAX_TOKENS),  # D104: was literal 2048
         max_workers=NEMOTRON_WORKERS,
         progress=print_progress,
     )

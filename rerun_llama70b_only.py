@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.join(REPO, "pipeline"))
 sys.path.insert(0, os.path.join(REPO, "benchmarks"))
 sys.path.insert(0, REPO)
 
-from timeout_config import DEFAULT_TIMEOUT_S  # noqa: E402
+from timeout_config import DEFAULT_TIMEOUT_S, DEFAULT_MAX_TOKENS  # noqa: E402
 from nvidia_client import NvidiaRotatingClient  # noqa: E402
 from nvidia_key_pool import NvidiaKeyPool  # noqa: E402
 from harness import run_concurrent, print_progress  # noqa: E402
@@ -74,7 +74,7 @@ def main():
 
     new_rows = run_concurrent(
         jobs,
-        lambda j: rerun2.call_one_with_tokens(j, 512),
+        lambda j: rerun2.call_one_with_tokens(j, DEFAULT_MAX_TOKENS),  # D104: was literal 512
         max_workers=LLAMA_WORKERS,
         progress=print_progress,
     )

@@ -15,3 +15,26 @@
 #   EXIT: change DEFAULT_TIMEOUT_S here; every importer picks it up. No other
 #        file should hardcode a timeout number for NVIDIA/claude -p calls.
 DEFAULT_TIMEOUT_S = 600.0
+
+# D104: same centralization for max_tokens (user request, same mechanism as D98).
+#   WHY: max_tokens=512 starvation broke two models in two different ways --
+#        nemotron-super-49b-v1.5 burned the budget on internal reasoning and
+#        returned content:null (D97), mistral-large-3 wrote tool-call arguments
+#        longer than the cap and returned unterminated JSON (D103, 17/17
+#        identical `Unterminated string` errors; the same job passed at 2048).
+#        "Not a reasoning model, so 512 is fine" was disproven -- the required
+#        cap tracks output verbosity, not model type, so per-model guessing is
+#        the same trap as per-script timeout guessing was.
+#   COST: a uniform generous cap can't express "this call must stay short".
+#        Worst-case latency per call rises for chatty models (you only pay
+#        tokens actually generated, but a runaway generation now runs longer
+#        before the cap cuts it).
+#   EXIT: change DEFAULT_MAX_TOKENS here; every importer picks it up. No other
+#        file should hardcode a max_tokens number for NVIDIA/claude -p calls
+#        (enforced by timeout-config-guard.py, same hook as timeouts).
+#   NOTE: this file has outgrown its name (it is now the central LLM-call
+#        config, not just timeouts). Renaming to llm_call_config.py was
+#        considered and deferred -- 8+ files import `from timeout_config
+#        import ...` and a rename would touch all of them for zero behavior
+#        change. If a third knob ever lands here, do the rename then.
+DEFAULT_MAX_TOKENS = 2048

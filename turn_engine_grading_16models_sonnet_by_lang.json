@@ -111,23 +111,23 @@
   },
   "mistralai/mistral-large-3-675b-instruct-2512": {
     "python": {
+      "job": 0.333,
+      "n": "2/6",
+      "prec": null
+    },
+    "java": {
       "job": 0.167,
       "n": "1/6",
       "prec": null
     },
-    "java": {
-      "job": 0.0,
-      "n": "0/6",
-      "prec": null
-    },
     "javascript": {
-      "job": 0.0,
-      "n": "0/6",
+      "job": 0.333,
+      "n": "2/6",
       "prec": null
     },
     "c_cpp": {
-      "job": 0.0,
-      "n": "0/6",
+      "job": 0.333,
+      "n": "2/6",
       "prec": null
     }
   },

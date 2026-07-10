@@ -37,6 +37,13 @@ except ImportError:
     NvidiaRotatingClient = None
     NvidiaKeyPool = None
 
+try:
+    # D104: centralized max_tokens (repo root), same fallback pattern as nvidia_client.py.
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+    from timeout_config import DEFAULT_MAX_TOKENS
+except ImportError:
+    DEFAULT_MAX_TOKENS = 2048
+
 import interview_rubric as rubric
 
 # FR-04-01 이름(코드_이해/반례_대응/대안_비교/설계_논리/자기_수정)을 스키마에 쓴다 — 기획명세서
@@ -146,7 +153,9 @@ def _grade_via_nvidia(client, finding, question, answer):
         messages=[{"role": "user", "content": build_grading_prompt(finding, question, answer)}],
         tools=[_as_openai_tool(GRADING_TOOL)],
         tool_choice={"type": "function", "function": {"name": "grade_interview_answer"}},
-        max_tokens=1536,
+        # D104: was 1536 (D63); DEFAULT_MAX_TOKENS(2048) is a strict superset --
+        # you only pay for tokens actually generated, so raising the cap is safe.
+        max_tokens=DEFAULT_MAX_TOKENS,
         temperature=0.0,
     )
     return parse_nvidia_tool_response(response)
@@ -155,7 +164,7 @@ def _grade_via_nvidia(client, finding, question, answer):
 def _grade_via_anthropic(client, finding, question, answer):
     message = client.messages.create(
         model=MODEL,
-        max_tokens=1536,
+        max_tokens=DEFAULT_MAX_TOKENS,  # D104: was 1536, see _grade_via_nvidia
         tools=[GRADING_TOOL],
         tool_choice={"type": "tool", "name": "grade_interview_answer"},
         messages=[{"role": "user", "content": build_grading_prompt(finding, question, answer)}],

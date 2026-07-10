@@ -38,6 +38,15 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."
 from isolation_classifier import classify_justification  # noqa: E402
 from reflection_signal import evaluate_reflection  # noqa: E402
 from evidence_bridge import finding_category  # noqa: E402
+
+try:
+    # D104: centralized max_tokens (repo root, same pattern as nvidia_client.py's
+    # DEFAULT_TIMEOUT_S import -- falls back to a literal if this file is ever
+    # used somewhere without timeout_config.py on the path).
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+    from timeout_config import DEFAULT_MAX_TOKENS
+except ImportError:
+    DEFAULT_MAX_TOKENS = 2048
 from idiom_filter import _find_file_content  # noqa: E402
 from generate_questions import _as_openai_tool  # noqa: E402
 
@@ -187,7 +196,7 @@ def _parse_ask_question_response(response):
     )
 
 
-def generate_question(level, finding, code_context, transcript, classification, client, model, max_tokens=512):
+def generate_question(level, finding, code_context, transcript, classification, client, model, max_tokens=DEFAULT_MAX_TOKENS):
     prompt = _build_level_prompt(level, finding, code_context, transcript, classification)
     tool = _as_openai_tool(SINGLE_QUESTION_TOOL)
     t0 = time.time()
@@ -204,15 +213,17 @@ def generate_question(level, finding, code_context, transcript, classification, 
     return result["question"], elapsed
 
 
-def run_decision_point(finding, repo_root, answer_fn, client, model, max_turns=4, max_tokens=512):
+def run_decision_point(finding, repo_root, answer_fn, client, model, max_turns=4, max_tokens=DEFAULT_MAX_TOKENS):
     """스펙 04시트의 6단계 흐름을 실행한다.
 
     answer_fn(question: str, level: str) -> str 는 실제 세션이면 학생에게 묻는 함수,
     벤치마크면 미리 준비된 답변을 순서대로 꺼내주는 함수로 교체 가능한 지점(시임)이다.
 
-    max_tokens: generate_question()에 그대로 전달(D94b -- reasoning 모델은 tool-calling
-    전에 내부 chain-of-thought를 다 쓰면 기본 512로 finish_reason="length"에 걸려 응답이
-    빈다는 게 진단으로 확인됨, 기본값은 기존과 동일하게 유지해 다른 호출부는 무변경).
+    max_tokens: generate_question()에 그대로 전달. D94b에서 선택 인자로 추가(당시 기본
+    512 유지), D104에서 기본값을 중앙 설정 DEFAULT_MAX_TOKENS(2048)로 승격 -- 512는
+    nemotron(내부 reasoning이 예산 소진, content:null, D97)과 mistral-large-3(tool
+    arguments JSON이 캡에 잘려 unterminated, D103) 두 모델을 서로 다른 방식으로
+    깨뜨렸다는 게 실측 확인됨. 모델 유형(reasoning 여부)으로 캡을 추정하지 말 것.
     """
     category = finding_category(finding["id"])
     code_context = fetch_code_context(finding, repo_root)
