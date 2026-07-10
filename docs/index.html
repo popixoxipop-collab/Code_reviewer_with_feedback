@@ -318,9 +318,10 @@
       부분 성공 4개(29~71%: minimax-m3·qwen3.5-122b·deepseek-v4-pro·nemotron-3-super-120b) ·
       원인이 레이트리밋과 무관한 5개(0~12.5%: gpt-oss-120b·gpt-oss-20b·mistral-nemotron(게이트웨이 504)·kimi-k2.6·glm-5.2) ·
       전용 재시도 후 공식 제외 1개(llama-3.3-70b-instruct, 0%, NVIDIA 워커풀 고갈).
-      최종 순위는 <b>4축 벤치마크</b>(안정성=질문생성×채점 end-to-end / 정밀도(자기채점) / 재현성 / 속도)로 재구성됐습니다 —
-      step-3.5-flash 0.994 &gt; qwen3-next-80b 0.79 &gt; mistral-medium-3.5 0.75 &gt; nemotron-super-49b 0.667 &gt; mistral-large-3 0.229
-      (5/6 커버, llama-4-maverick은 NVIDIA 다운으로 대기). 상세는 README D106~D108.
+      최종 순위는 <b>4축 벤치마크</b>(안정성=질문생성×채점 end-to-end / 정밀도(자기채점) / 재현성 / 속도, 6모델 완전판)로 확정 —
+      step-3.5-flash 0.994 &gt; qwen3-next-80b 0.79 &gt; mistral-medium-3.5 0.75 &gt; nemotron-super-49b 0.667 &gt;
+      llama-4-maverick 0.248(NVIDIA 서빙 장애 10시간+로 채점기 역할 측정 불가 — 연결 안정성 미달, 안정성 축 0) &gt;
+      mistral-large-3 0.229(채점기 퇴행 루프). 상세는 README D106~D109.
     </p>
 
     <section class="panel split">

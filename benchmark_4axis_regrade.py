@@ -92,6 +92,21 @@ GRADER_ROLE_DEFECTS = {
         "model is usable as question generator but NOT as grader (locked spec requires both roles)."
     ),
 }
+
+# D109: 장기 서빙 장애로 재채점(채점기 역할 측정) 자체가 불가능했던 모델 -- 사용자 결정으로
+#   "이 모델도 연결 안정성이 떨어진다"로 기록하고 벤치마크 마감. D108c 원칙 그대로:
+#   10시간+ 동안 단순 호출("Say OK")조차 전부 타임아웃(3분/10분 간격 워처 2라운드, 총 82회
+#   프로브 전부 실패)이면 채점기 역할의 실효 가용성은 0이다 -- 원인이 모델 결함이 아니라
+#   NVIDIA 서빙이라는 건 annotation으로 남기되, 축 점수는 실측 그대로(안정성 0) 반영한다.
+SERVING_OUTAGE = {
+    "meta/llama-4-maverick-17b-128e-instruct": (
+        "sustained NVIDIA serving outage: every probe over a 10+ hour window timed out "
+        "(82 probes across two watcher rounds, even plain 'Say OK' calls), so the grader "
+        "role could never be measured. Per the D108c end-to-end rule a grader that cannot "
+        "be reached grades nothing -- stability(grader)=0, precision/reproducibility=0. "
+        "Question-generator stability (0.875, 21/24) was measured before the outage."
+    ),
+}
 # D106b: NVIDIA 부분 장애(같은 시각 qwen·maverick만 90s 프로브 초과, 나머지 정상) 대응 --
 #   CLI 인자로 대상 모델 서브셋 지정 가능. raw 파일은 모델 단위로 병합(이번 대상만 교체,
 #   나머지 모델의 기존 행 보존)해서 장애 모델은 회복 후 개별 재실행하면 된다.
@@ -264,6 +279,25 @@ def main():
         lo, hi = min(xs), max(xs)
         return {i: ((v - lo) / (hi - lo) if hi > lo else 1.0) if v is not None else None
                 for i, v in enumerate(vals)}
+
+    # D109: 서빙 장애로 raw 행이 아예 없는 모델도 순위에 포함 -- 안정성(채점)=0으로 합성 엔트리
+    for m, why in SERVING_OUTAGE.items():
+        if m in RELIABLE_MODELS and m not in summary:
+            old = old_summary.get(m, {})
+            job_sr = old.get("job_success_rate")
+            summary[m] = {
+                "stability_combined": 0.0,
+                "stability_question_gen": job_sr,
+                "stability_grader_call": 0.0,
+                "precision_candidate_as_grader": None,
+                "precision_fixed_grader_legacy": old.get("track_b_precision"),
+                "reproducibility_identical_rate": None,
+                "reproducibility_mean_total_spread": None,
+                "speed_mean_elapsed_s": old.get("mean_elapsed_s"),
+                "n_transcripts": 0, "n_grading_calls": 0,
+                "serving_outage": why,
+            }
+            covered.append(m)
 
     # D108b: 채점기 결함 확정 모델은 사유를 summary에 명시(문서화용 -- 순위 제외는 안 함)
     for m, why in GRADER_ROLE_DEFECTS.items():

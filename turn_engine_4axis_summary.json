@@ -65,20 +65,36 @@
     "grader_role_defect": "degenerate tool-call loop on the 5-axis grading schema: caps 2048/4096/8192 all burn the FULL completion budget (completion_tokens == cap, finish_reason=length) while emitting only ~850-907 chars of arguments and zero reasoning_content -- no finite cap can fix this. The simple ask_question schema works fine (24/24), so the model is usable as question generator but NOT as grader (locked spec requires both roles).",
     "composite_4axis": 0.229
   },
+  "meta/llama-4-maverick-17b-128e-instruct": {
+    "stability_combined": 0.0,
+    "stability_question_gen": 0.875,
+    "stability_grader_call": 0.0,
+    "precision_candidate_as_grader": null,
+    "precision_fixed_grader_legacy": 1.0,
+    "reproducibility_identical_rate": null,
+    "reproducibility_mean_total_spread": null,
+    "speed_mean_elapsed_s": 11.7,
+    "n_transcripts": 0,
+    "n_grading_calls": 0,
+    "serving_outage": "sustained NVIDIA serving outage: every probe over a 10+ hour window timed out (82 probes across two watcher rounds, even plain 'Say OK' calls), so the grader role could never be measured. Per the D108c end-to-end rule a grader that cannot be reached grades nothing -- stability(grader)=0, precision/reproducibility=0. Question-generator stability (0.875, 21/24) was measured before the outage.",
+    "composite_4axis": 0.248
+  },
   "_meta": {
     "covered_models": [
       "qwen/qwen3-next-80b-a3b-instruct",
       "stepfun-ai/step-3.5-flash",
       "mistralai/mistral-medium-3.5-128b",
       "nvidia/llama-3.3-nemotron-super-49b-v1.5",
-      "mistralai/mistral-large-3-675b-instruct-2512"
+      "mistralai/mistral-large-3-675b-instruct-2512",
+      "meta/llama-4-maverick-17b-128e-instruct"
     ],
     "ranked_models": [
       "qwen/qwen3-next-80b-a3b-instruct",
       "stepfun-ai/step-3.5-flash",
       "mistralai/mistral-medium-3.5-128b",
       "nvidia/llama-3.3-nemotron-super-49b-v1.5",
-      "mistralai/mistral-large-3-675b-instruct-2512"
+      "mistralai/mistral-large-3-675b-instruct-2512",
+      "meta/llama-4-maverick-17b-128e-instruct"
     ],
     "note": "stability axis = question-gen success x grader-call success (end-to-end, both roles per locked spec). Models whose grading never succeeded score 0 on precision/reproducibility instead of being excluded -- a grader that cannot grade has zero effective precision. composite_4axis is min-max normalized within ranked_models."
   }

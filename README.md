@@ -739,7 +739,13 @@ python3 pipeline/compare_methodologies.py
   - **D108c**(사용자 지적: "그럼 그냥 4축 중에 연결 안정성이 낮은 거잖아"): 채점기 결함을 특수 카테고리로 순위 제외하는 대신 **안정성 축 = 질문생성 성공률 × 채점 성공률(end-to-end)**로 통합 — 스펙이 한 모델에 두 역할을 요구하므로 실전 성공확률은 곱. 채점 전멸 모델의 정밀도/재현성은 "측정불가"가 아니라 0점(채점 못하는 채점기의 유효 정밀도는 0). 이전 왜곡 2건(빠진 축 건너뛰고 평균→large-3 가짜 1위, 특수 제외) 모두 폐기.
   - **4축 최종(5/6 커버, llama-4-maverick은 NVIDIA 다운 지속으로 워처 대기)**: step-3.5-flash 0.994(안정성 0.945·재현성 0.818·10.5s) > qwen3-next-80b 0.79(재현성 0.522) > mistral-medium-3.5 0.75(재현성 spread 최소 0.17, 178.9s) > nemotron-super-49b 0.667(채점 준수 0.841) > mistral-large-3 0.229(채점기 결함, 안정성 0).
   - COST: **팀 Locked 모델(qwen3-next-80b)이 재현성 0.522로 2위** — step-3.5-flash가 전 축 우세+9배 빠름. 팀 모델 선정 재검토 근거로 쓸 수 있는 실측.
-  - EXIT: maverick 회복 시 워처가 자동 재채점 → `--aggregate-only`로 6모델 완전판 재계산.
+  - EXIT: maverick 회복 시 워처가 자동 재채점 → `--aggregate-only`로 6모델 완전판 재계산. → D109에서 사용자 결정으로 대기 종료·마감.
+
+- **D109** ([`benchmark_4axis_regrade.py`](./benchmark_4axis_regrade.py), [`turn_engine_4axis_summary.json`](./turn_engine_4axis_summary.json)) — llama-4-maverick "연결 안정성 미달"로 기록하고 4축 벤치마크 최종 마감(사용자 결정: "저 모델도 연결 안정성이 떨어진다고 쓰고 마무리 지어")
+  - WHY: NVIDIA가 이 모델 서빙을 10시간+ 복구하지 못함 — 워처 2라운드(3분 간격 80회 + 10분 간격) 총 82회 프로브가 전부 타임아웃(단순 "Say OK"조차 불통). 회복을 무한정 기다리는 대신, D108c의 end-to-end 원칙을 그대로 적용해 마감: 채점기 역할을 아예 수행할 수 없는 모델의 채점 안정성은 0이다. 원인이 모델 결함이 아니라 NVIDIA 서빙이라는 사실은 `serving_outage` 필드로 명시(억울한 탈락이 아니라 감사 가능한 판정).
+  - **4축 최종 (6모델 완전판)**: step-3.5-flash **0.994** > qwen3-next-80b 0.79 > mistral-medium-3.5 0.75 > nemotron-super-49b 0.667 > llama-4-maverick 0.248(서빙 장애, 안정성 0.875×0=0) > mistral-large-3 0.229(채점기 퇴행 루프, 안정성 1.0×0=0). 아티팩트·GitHub Pages(index/pipelines) 모두 완전판으로 동기화.
+  - COST: maverick의 정밀도/재현성은 영구 미측정(합성 0점) — NVIDIA 서빙이 복구된 뒤 재채점하면 실측으로 대체 가능하나, 사용자 결정으로 이 벤치마크 라운드는 여기서 확정.
+  - EXIT: 나중에 maverick을 실측으로 채우려면 `python3 benchmark_4axis_regrade.py "meta/llama-4-maverick-17b-128e-instruct"` 후 `--aggregate-only` — SERVING_OUTAGE의 합성 엔트리는 raw 행이 생기면 자동으로 실측이 우선한다(`m not in summary` 조건).
 
 
 ## 다음 단계 (미해결)
