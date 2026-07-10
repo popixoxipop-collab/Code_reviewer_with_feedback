@@ -690,6 +690,12 @@ python3 pipeline/compare_methodologies.py
   - COST: 순위표(Top Performers, 5개 모델)의 데이터 자체는 원래도 정확했음 — 문제는 헤드라인 프레이밍과 공개 페이지 동기화 누락이었지 데이터 오염은 아니었음(D96과는 다른 종류의 문제).
   - EXIT: `mistral-nemotron`(서버 500)·`mistral-large-3`(시간 단위 차단)는 원인이 일시적일 가능성이 있어 nemotron과 같은 방식(전용 재시도)이 통할 수 있음 — 사용자 결정 대기, 아직 재시도 안 함. 나머지 4개(gpt-oss-120b/20b, kimi-k2.6, glm-5.2)는 구조적 원인(tool-choice 미준수, 계정 접근권한)으로 재시도 실익 낮음.
 
+- **D101** ([`docs/pipelines.html`](./docs/pipelines.html), [`pipelines.html`](./pipelines.html)) — 3파이프라인(교안분석/코드분석/질의응답) 구조도를 GitHub Pages로 공개(사용자 요청: "다른 팀원들에게 공유 가능하게 github.io로 만들어줘")
+  - WHY: 직전에 claude.ai 아티팩트로 만든 3파이프라인 청사진(각 파이프라인의 단계별 flow·핵심 파일·상태·팀 스펙과의 관계)을 팀원 공유용으로 옮겨달라는 요청. 이 repo는 이미 `docs/` 폴더 기반 GitHub Pages가 살아있어(D94 이후) 새 인프라 없이 같은 곳에 두는 게 최소 비용. `gh api .../pages`로 실제 소스 설정(`branch:main, path:/`)을 먼저 확인했고, 루트 `index.html`이 `./docs/`로 리다이렉트하는 기존 패턴을 그대로 따라 루트에 `pipelines.html` 리다이렉트 스텁도 추가해 팀원에게 깔끔한 짧은 URL을 줄 수 있게 했다.
+  - **실행 결과**: `docs/pipelines.html`(청사진 본문, 다크/라이트 테마 대응)과 루트 `pipelines.html`(→`./docs/pipelines.html` 리다이렉트) 신설. `docs/index.html` 상단 액션 버튼에 "Pipeline Map" 링크 추가(양방향 내비게이션). 공유 URL: `https://popixoxipop-collab.github.io/Code_reviewer_with_feedback/pipelines.html`.
+  - COST: 이 페이지는 2026-07-10 D100 시점 **정적 스냅샷**이다 — `docs/index.html`의 벤치마크 섹션과 달리 `d94-rerun-status.json`을 fetch하는 라이브 갱신 구조가 없어서, 이후 벤치마크 수치가 바뀌면(예: mistral 페어 재시도 결과) 수동으로 다시 편집+push해야 한다. 관리해야 할 공개 파일이 3개(`docs/index.html`, `docs/pipelines.html`, 루트 리다이렉트 2개)로 늘어남.
+  - EXIT: 구조 자체를 바꾸려면 `docs/pipelines.html`을 직접 편집(청사진 소스는 스크래치패드 `pipeline_blueprint.html`과 동일 마크업)하고 push. 페이지를 없애려면 `docs/pipelines.html`+루트 `pipelines.html`+`docs/index.html`의 "Pipeline Map" 링크 3곳을 함께 제거.
+
 
 ## 다음 단계 (미해결)
 

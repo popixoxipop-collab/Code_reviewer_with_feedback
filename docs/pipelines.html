@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>세 파이프라인 구조도 — Code_reviewer_with_feedback</title>
+<style>
+  :root {
+    --bg: #0b1c2c;
+    --bg-panel: #0f2337;
+    --grid-line: rgba(220,233,242,0.05);
+    --ink: #dfeaf2;
+    --ink-dim: #8ea3b6;
+    --ink-faint: #5f7488;
+    --line: rgba(220,233,242,0.16);
+    --line-strong: rgba(220,233,242,0.32);
+    --accent: #e3a94a;
+    --accent-soft: rgba(227,169,74,0.14);
+    --status-active: #e3a94a;
+    --status-ok: #6fb896;
+    --status-legacy: #7c93a8;
+    --status-blocked: #d1835a;
+    --mono: ui-monospace, "SF Mono", "IBM Plex Mono", Menlo, Consolas, monospace;
+    --sans: -apple-system, "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", sans-serif;
+  }
+  :root[data-theme="light"] {
+    --bg: #ece5d4;
+    --bg-panel: #f4efe2;
+    --grid-line: rgba(28,43,58,0.055);
+    --ink: #1c2b3a;
+    --ink-dim: #4c5f72;
+    --ink-faint: #7c8b9a;
+    --line: rgba(28,43,58,0.18);
+    --line-strong: rgba(28,43,58,0.36);
+    --accent: #a86a12;
+    --accent-soft: rgba(168,106,18,0.12);
+    --status-active: #a86a12;
+    --status-ok: #3f7a5c;
+    --status-legacy: #55697c;
+    --status-blocked: #a1502b;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #ece5d4;
+      --bg-panel: #f4efe2;
+      --grid-line: rgba(28,43,58,0.055);
+      --ink: #1c2b3a;
+      --ink-dim: #4c5f72;
+      --ink-faint: #7c8b9a;
+      --line: rgba(28,43,58,0.18);
+      --line-strong: rgba(28,43,58,0.36);
+      --accent: #a86a12;
+      --accent-soft: rgba(168,106,18,0.12);
+      --status-active: #a86a12;
+      --status-ok: #3f7a5c;
+      --status-legacy: #55697c;
+      --status-blocked: #a1502b;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background:
+      linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0 / 28px 28px,
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0 / 28px 28px,
+      var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .frame { max-width: 1320px; margin: 0 auto; padding: 40px 32px 80px; }
+
+  .nav-links {
+    display: flex; flex-wrap: wrap; gap: 8px 18px;
+    font-family: var(--mono); font-size: 0.72rem;
+    margin-bottom: 26px;
+  }
+  .nav-links a {
+    color: var(--ink-dim); text-decoration: none;
+    border: 1px solid var(--line); border-radius: 999px;
+    padding: 5px 12px;
+  }
+  .nav-links a:hover { color: var(--accent); border-color: var(--accent); }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 26px; height: 1px;
+    background: var(--accent);
+    display: inline-block;
+  }
+  h1 {
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: clamp(1.7rem, 3vw, 2.35rem);
+    letter-spacing: -0.01em;
+    margin: 14px 0 10px;
+    text-wrap: balance;
+  }
+  .lede {
+    max-width: 74ch;
+    color: var(--ink-dim);
+    font-size: 1rem;
+    margin: 0 0 6px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 8px 18px;
+    margin-top: 18px;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    color: var(--ink-faint);
+  }
+  .meta-row a { color: var(--ink-dim); text-decoration: none; border-bottom: 1px dotted var(--line-strong); }
+  .meta-row a:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* legend */
+  .legend {
+    margin-top: 30px;
+    display: flex; flex-wrap: wrap; gap: 10px 22px;
+    padding: 14px 18px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--bg-panel);
+  }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; color: var(--ink-dim); }
+  .legend-item .sw { width: 10px; height: 10px; border-radius: 2px; flex: none; }
+
+  /* spec source + branch connector */
+  .spec-source {
+    margin: 40px auto 0;
+    max-width: 460px;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 0.76rem;
+    color: var(--ink-dim);
+    border: 1px solid var(--line-strong);
+    border-radius: 4px;
+    padding: 12px 16px;
+    background: var(--bg-panel);
+  }
+  .spec-source b { color: var(--ink); font-weight: 600; }
+  .branch-lines {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 1100px;
+    margin: 0 auto;
+    height: 34px;
+  }
+  .branch-lines::before {
+    content: "";
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    align-self: start;
+    height: 1px;
+    background: var(--line-strong);
+    margin: 0 16.6%;
+  }
+  .branch-lines .tick { justify-self: center; width: 1px; height: 100%; background: var(--line-strong); }
+
+  .not-chained {
+    text-align: center;
+    font-size: 0.76rem;
+    color: var(--ink-faint);
+    margin: -6px 0 6px;
+  }
+
+  /* pipeline grid */
+  .pipelines {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+    align-items: start;
+  }
+  .pipeline {
+    border: 1px solid var(--line);
+    border-top: 2px solid var(--accent-local);
+    border-radius: 4px;
+    background: var(--bg-panel);
+    padding: 22px 20px 24px;
+  }
+  .pipeline[data-status="active"]   { --accent-local: var(--status-active); }
+  .pipeline[data-status="ok"]       { --accent-local: var(--status-ok); }
+  .pipeline[data-status="legacy"]   { --accent-local: var(--status-legacy); }
+  .pipeline[data-status="blocked"]  { --accent-local: var(--status-blocked); }
+
+  .p-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 6px; }
+  .p-num {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--accent-local);
+    border: 1px solid var(--accent-local);
+    border-radius: 3px;
+    width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    flex: none;
+  }
+  .p-title-wrap { flex: 1; }
+  .p-title-kr { font-weight: 700; font-size: 1.05rem; letter-spacing: -0.01em; }
+  .p-title-en { font-family: var(--mono); font-size: 0.7rem; color: var(--ink-faint); margin-top: 2px; }
+
+  .status-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--accent-local);
+    border: 1px solid var(--accent-local);
+    background: color-mix(in srgb, var(--accent-local) 12%, transparent);
+    border-radius: 999px;
+    padding: 3px 9px;
+    margin: 10px 0 14px;
+  }
+  .status-chip .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-local); }
+
+  .p-desc { font-size: 0.85rem; color: var(--ink-dim); margin: 0 0 18px; }
+
+  .flow { list-style: none; margin: 0 0 18px; padding: 0; }
+  .flow li { position: relative; padding-left: 32px; padding-bottom: 15px; }
+  .flow li:last-child { padding-bottom: 0; }
+  .flow li::before {
+    content: "";
+    position: absolute; left: 10px; top: 22px; bottom: -3px; width: 1px;
+    background: var(--line);
+  }
+  .flow li:last-child::before { display: none; }
+  .flow .n {
+    position: absolute; left: 0; top: 0;
+    width: 21px; height: 21px;
+    border: 1px solid var(--accent-local);
+    border-radius: 3px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 0.66rem; color: var(--accent-local);
+    background: var(--bg-panel);
+  }
+  .flow .t { font-size: 0.82rem; color: var(--ink); display: block; padding-top: 2px; }
+  .flow .side-note {
+    margin-top: 6px;
+    font-size: 0.74rem;
+    color: var(--ink-faint);
+    border-left: 2px solid var(--line-strong);
+    padding-left: 10px;
+  }
+
+  .p-files {
+    border-top: 1px solid var(--line);
+    padding-top: 14px;
+    margin-bottom: 14px;
+  }
+  .p-files .label, .p-note .label {
+    font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-faint); margin-bottom: 8px; display: block;
+  }
+  .p-files code {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    color: var(--ink-dim);
+    padding: 2px 0;
+  }
+  .p-note {
+    border-top: 1px solid var(--line);
+    padding-top: 14px;
+  }
+  .p-note p { font-size: 0.78rem; color: var(--ink-dim); margin: 0; }
+  .p-note .d-range {
+    font-family: var(--mono); font-size: 0.68rem; color: var(--ink-faint); margin-top: 8px; display: block;
+  }
+
+  .snapshot-note {
+    margin-top: 34px;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--ink-faint);
+  }
+
+  @media (max-width: 920px) {
+    .pipelines { grid-template-columns: 1fr; }
+    .branch-lines, .spec-source, .not-chained { display: none; }
+  }
+</style>
+</head>
+<body>
+<main class="frame">
+  <div class="nav-links">
+    <a href="./index.html">&larr; 벤치마크 결과 (D94~D100)</a>
+    <a href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback" target="_blank" rel="noopener">GitHub Repo</a>
+  </div>
+
+  <p class="eyebrow">Code_reviewer_with_feedback</p>
+  <h1>하나의 스펙, 세 파이프라인</h1>
+  <p class="lede">
+    같은 팀 확정 스펙(기획명세서_AI기반_프로젝트교육품질관리플랫폼.xlsx) 아래, 서로 체인으로
+    연결되지 않은 세 개의 독립 파이프라인이 각기 다른 문제를 맡고 있다 — 교안을 읽는 파이프라인,
+    코드를 스캔하는 파이프라인, 학생과 대화하며 채점하는 파이프라인.
+  </p>
+  <div class="meta-row">
+    <span>repo: <a href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback" target="_blank" rel="noopener">popixoxipop-collab/Code_reviewer_with_feedback</a></span>
+    <span>스냅샷: 2026-07-10 (D100 기준)</span>
+    <span>폴더: ~/Desktop/Code_reviewer_파이프라인/</span>
+  </div>
+
+  <div class="legend">
+    <span class="legend-item"><span class="sw" style="background:var(--status-active)"></span>활성 · 진행중</span>
+    <span class="legend-item"><span class="sw" style="background:var(--status-ok)"></span>완료 · 인프라로 유지</span>
+    <span class="legend-item"><span class="sw" style="background:var(--status-legacy)"></span>완료 · 방법론 부분대체</span>
+    <span class="legend-item"><span class="sw" style="background:var(--status-blocked)"></span>실험적 · 부분 차단</span>
+  </div>
+
+  <div class="spec-source"><b>기획명세서_AI기반_프로젝트교육품질관리플랫폼.xlsx</b><br>팀 "수도권 6반 17조" 확정 설계 결정(Locked)</div>
+  <div class="branch-lines"><span class="tick"></span><span class="tick"></span><span class="tick"></span></div>
+  <p class="not-chained">&darr; 세 갈래 모두 이 스펙에서 출발 — 서로 import/데이터 의존 없는 독립 트랙(코드로 확인)</p>
+
+  <div class="pipelines">
+
+    <!-- Pipeline 1 -->
+    <section class="pipeline" data-status="blocked">
+      <div class="p-head">
+        <span class="p-num">01</span>
+        <div class="p-title-wrap">
+          <div class="p-title-kr">교안 분석 파이프라인</div>
+          <div class="p-title-en">Java Curriculum &rarr; NVIDIA Build</div>
+        </div>
+      </div>
+      <span class="status-chip"><span class="dot"></span>실험적 · 부분 차단</span>
+      <p class="p-desc">Java 교안 PDF를 청크로 나눠 NVIDIA Build로 병렬 처리하고, 그래프로 구조화해 질문을 생성한다. (D95)</p>
+
+      <ol class="flow">
+        <li><span class="n">1</span><span class="t">Java 교안 PDF 입력 (251p)</span></li>
+        <li><span class="n">2</span><span class="t">10페이지 단위 chunk 분할</span></li>
+        <li><span class="n">3</span><span class="t">NVIDIA Build 병렬 호출 (7-key pool)</span></li>
+        <li><span class="n">4</span><span class="t">Page provenance state 기록</span></li>
+        <li><span class="n">5</span><span class="t">Refine loop</span></li>
+        <li><span class="n">6</span><span class="t">graphify 호환 그래프 생성</span></li>
+        <li><span class="n">7</span><span class="t">Graph-grounded 질문 생성</span></li>
+      </ol>
+
+      <div class="p-files">
+        <span class="label">핵심 파일</span>
+        <code>scripts/java_curriculum_nvidia_pipeline.py</code>
+        <code>scripts/nvidia_keypool_traffic_test.py</code>
+      </div>
+      <div class="p-note">
+        <span class="label">한계</span>
+        <p>251p 전체 실행은 NVIDIA 모델/서버 지연 + JSON 응답 안정성에 막힘 — 로컬 7&times;40rpm 게이트는 원인 아님(실측: 로컬 게이트 기준 280req/min까지 확인됨).</p>
+        <span class="d-range">D95</span>
+      </div>
+    </section>
+
+    <!-- Pipeline 2 -->
+    <section class="pipeline" data-status="legacy">
+      <div class="p-head">
+        <span class="p-num">02</span>
+        <div class="p-title-wrap">
+          <div class="p-title-kr">코드 분석 파이프라인</div>
+          <div class="p-title-en">Cognition + Judgment (Static Analysis)</div>
+        </div>
+      </div>
+      <span class="status-chip"><span class="dot"></span>완료 · 방법론 부분대체</span>
+      <p class="p-desc">학생 코드를 스캔해 판단이 개입된 지점(Decision Point)을 찾고, 규칙기반 서브루브릭으로 질문가치를 점수화한다.</p>
+
+      <ol class="flow">
+        <li><span class="n">1</span><span class="t">대상 repo 코드 스캔</span></li>
+        <li><span class="n">2</span><span class="t">1차/2차 스캔 &rarr; cost_saved_ratio</span></li>
+        <li><span class="n">3</span><span class="t">Decision Point 후보 추출</span></li>
+        <li><span class="n">4</span><span class="t">규칙기반 서브루브릭 채점 (4서브축)</span></li>
+        <li><span class="n">5</span><span class="t">질문가치 점수화</span></li>
+        <li>
+          <span class="n">6</span><span class="t">재귀 업데이트 hook 3종 (idiom / isolation / tier_b)</span>
+          <div class="side-note">meas02_decision_point_extractor.py(순수 LLM 시도)는 팀 스펙에서 대체 확정 — 파이프라인 03이 이 역할을 이어받음</div>
+        </li>
+      </ol>
+
+      <div class="p-files">
+        <span class="label">핵심 파일</span>
+        <code>cognition/two_tier_scan.py</code>
+        <code>judgment/subrubric.py, score_findings.py</code>
+        <code>pipeline/run_pipeline.py</code>
+      </div>
+      <div class="p-note">
+        <span class="label">관계</span>
+        <p>팀 확정 스펙: MEAS-02는 순수 LLM(파이프라인 03)으로 대체 — 이 정적분석 갈래는 팀의 5개 경쟁 방법론 중 하나. cost_saved_ratio 인지블록만 인프라로 계속 사용.</p>
+        <span class="d-range">D1~D53, D61(스펙 갭 확인)</span>
+      </div>
+    </section>
+
+    <!-- Pipeline 3 -->
+    <section class="pipeline" data-status="active">
+      <div class="p-head">
+        <span class="p-num">03</span>
+        <div class="p-title-wrap">
+          <div class="p-title-kr">질의응답 과정 파이프라인</div>
+          <div class="p-title-en">turn_engine — Adaptive Socratic Interview</div>
+        </div>
+      </div>
+      <span class="status-chip"><span class="dot"></span>활성 · 진행중 (지금 이 작업)</span>
+      <p class="p-desc">6단계 적응형 턴 상태기계로 학생과 대화하며 FR-04-01 5축으로 채점 — 16개 NVIDIA 후보 모델을 질문생성기+채점기로 벤치마킹 중.</p>
+
+      <ol class="flow">
+        <li><span class="n">1</span><span class="t">Decision Point &rarr; L1 코드종속 질문</span></li>
+        <li><span class="n">2</span><span class="t">답변 수집 (D94~ Sonnet 실시간 생성)</span></li>
+        <li><span class="n">3</span><span class="t">표면 / 부분 / 방어 분류</span></li>
+        <li><span class="n">4</span><span class="t">L2 트레이드오프 반례</span></li>
+        <li><span class="n">5</span><span class="t">L3 극단 시나리오</span></li>
+        <li><span class="n">6</span><span class="t">Reflection(자기수정) 유도</span></li>
+        <li><span class="n">7</span><span class="t">Track B: 5축 LLM-as-judge 채점</span></li>
+        <li><span class="n">8</span><span class="t">16개 후보 모델 비교 벤치마크</span></li>
+      </ol>
+
+      <div class="p-files">
+        <span class="label">핵심 파일</span>
+        <code>feedback/turn_engine.py</code>
+        <code>feedback/llm_interview_grader.py</code>
+        <code>feedback/nvidia_client.py, nvidia_key_pool.py</code>
+        <code>timeout_config.py</code>
+        <code>benchmark_turn_engine_grading_16models_sonnet.py</code>
+      </div>
+      <div class="p-note">
+        <span class="label">현재 상태 (D100)</span>
+        <p>167/384(43%) — 신뢰 가능 5개(20건+/24) &middot; 부분성공 4개(29~71%) &middot; 0~12.5% 7개(3개는 완전 0/24, 그 중 llama-3.3-70b-instruct는 최종 제외). mistral-nemotron&middot;mistral-large-3 전용 재시도가 진행 중.</p>
+        <span class="d-range">D48(전신), D56~D100</span>
+      </div>
+    </section>
+
+  </div>
+
+  <p class="snapshot-note">이 구조도는 2026-07-10 D100 기준 스냅샷 — 최신 수치는 각 폴더의 README_전체이력.md 참고</p>
+</main>
+</body>
+</html>
