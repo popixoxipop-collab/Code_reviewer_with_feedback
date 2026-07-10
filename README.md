@@ -761,6 +761,14 @@ python3 pipeline/compare_methodologies.py
   - COST: minimax·maverick의 정밀도/재현성은 서빙 장애로 미측정(0점 처리, 원인 annotation 구분) — NVIDIA 복구 시 해당 모델만 재실행하면 자동 대체.
   - EXIT: `python3 benchmark_4axis_regrade.py "<model>"` 후 `--aggregate-only` — minimax/maverick 재측정용. 벤치마크 라운드는 여기서 확정.
 
+- **D112** ([`benchmarks/test_keypool_280rpm.py`](./benchmarks/test_keypool_280rpm.py), [`benchmarks/live_burst_keypool.py`](./benchmarks/live_burst_keypool.py)) — 키풀 280rpm 능력 검증(사용자 지시: "키가 7개면 이론상 7×40=280회/min이어야 하는데 코드가 그렇게 되어 있는지 검증")
+  - WHY: minimax·maverick의 측정 실패를 "NVIDIA측"으로 판정했는데, 사용자가 "우리가 40rpm을 못 지킨 것 아니냐"는 대안 가설을 제기 — 키풀 코드가 실제로 키당 40rpm × 7키를 올바르게 구현·집행하는지 실증이 필요했다.
+  - **오프라인 검증(가짜 시계, HTTP 0건) — 5항목 전부 PASS**: ① 한 윈도우(60s)에서 280 grant 무블로킹 발급 ② 281번째는 정확히 윈도우 슬라이드(~60s)까지 대기 ③ 키 분배 공정(키당 정확히 40) ④ 모델별 예산 격리(모델A 포화가 모델B에 무영향) ⑤ 280 acquire 실시계 <1s(인위적 직렬화 없음).
+  - **라이브 검증 — PASS**: 단일 키 한도(40/min)를 넘는 120/min 발사 페이스로 step-3.5-flash에 84콜 실발사 → **84/84 전부 HTTP 200, 429 제로, 키 분배 완벽(7키 × 정확히 12콜)**, 실효 68/min(단일 키 한도의 1.7배, 응답 지연이 벽시계를 늘림).
+  - **결론**: 풀 코드는 결백 — 280/min 능력을 정확히 구현. 역사적으로 40rpm을 어긴 건 키풀 도입 전 D94 최초 실행(단일 키+동시성6+무백오프 재시도)뿐이고, 이후로는 오히려 전역 12rpm 캡이 풀 능력의 4%만 사용. **minimax의 400 "DEGRADED function"은 검증 직후 같은 키로 재현(레이트리밋이면 429여야 함) — NVIDIA 함수 상태 문제 확정**, maverick도 여전히 타임아웃(14시간+).
+  - COST: 라이브 버스트에 step-3.5-flash 트리비얼 콜 84건 소비. 12rpm 캡이 과도하게 보수적이라는 것도 함께 확정 — 다음 대규모 실행부터는 REGRADE_RPM 상향 여지(단, mistral-large-3류 시간 단위 버킷 모델은 예외).
+  - EXIT: minimax(채점 페이로드 프로브)·maverick(단순 프로브) 회복 감시 워처 가동(10분 간격, ~12h) — 회복 즉시 재채점+재집계 자동 실행.
+
 
 ## 다음 단계 (미해결)
 
