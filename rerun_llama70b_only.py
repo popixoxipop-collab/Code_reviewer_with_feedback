@@ -1,8 +1,9 @@
-# D94b (nemotron 단독): llama-3.3-70b-instruct는 사용자 판단으로 이번 라운드에서 보류
-#   (600s 타임아웃에도 9/9 전부 실패, 워커 과부하가 일시적이 아니라 지속적인 것으로 보여
-#   시간 대비 실익이 낮다고 판단) -- nemotron-super-49b-v1.5만 먼저 채운다.
-#   설정은 rerun_two_models_fixed_settings.py의 기존 튜닝값(다른 세션이 조정) 그대로 재사용:
-#   timeout_s=300, workers=1, RPM_CAP=12.
+# D98: llama-3.3-70b-instruct 재시도 -- 이전 라운드(D97) 보류분을 나중에(시간대 다른 상태에서)
+#   재시도. 사전 진단(raw urllib 3회, 57.0/63.9/74.3초 전부 성공)으로 워커 과부하가 지금은
+#   풀려있는 것으로 확인 후 착수.
+#   설정: workers=4(D97 교훈 -- RateLimitedClient가 이미 스레드세이프, workers=1은 근거
+#   없는 과잉보수였음), timeout_s=300(관측된 단일호출 55~75초에 4턴 몰아도 여유), 이미
+#   성공한 job은 스킵(재사용 가능하도록 rerun_nemotron_only.py와 동일 구조).
 from __future__ import annotations
 
 import importlib.util
@@ -36,13 +37,14 @@ rerun2 = importlib.util.module_from_spec(_specrerun)
 _specrerun.loader.exec_module(rerun2)
 
 RPM_CAP = 12
-NEMOTRON_TIMEOUT_S = DEFAULT_TIMEOUT_S  # D98: centralized in timeout_config.py (user request)
-NEMOTRON_WORKERS = 4
-# workers=1 was inherited caution from llama-3.3-70b-instruct's *different* failure mode
-# (NVIDIA worker-queue overload, HTTP 503 "153/16"). nemotron's issue was max_tokens
-# starvation (now fixed), not queue contention -- and RateLimitedClient's sliding-window
-# lock is already thread-safe and proven under workers=4 in the earlier 16-model retry.
-# No reason to also serialize here (user question, 2026-07-10).
+LLAMA_TIMEOUT_S = DEFAULT_TIMEOUT_S  # D98: centralized in timeout_config.py (user request)
+# D98: reverted to workers=1 after 3/3 jobs at workers=4 failed at exactly 300.1s each --
+# too consistent to be coincidence. Unlike nemotron (token-budget issue, concurrency-safe),
+# this model's failure mode is NVIDIA-side worker-queue capacity ("153/16", D94) -- a
+# constraint on simultaneous requests to that model, independent of which of the 7 pooled
+# API keys sends them. Concurrency itself reproduces the congestion; serializing avoids it.
+LLAMA_WORKERS = 1
+MODEL = "meta/llama-3.3-70b-instruct"
 
 
 def main():
@@ -57,24 +59,23 @@ def main():
     already_ok = {
         (r["label"].rsplit(":", 1)[0], r["variant"])
         for r in existing
-        if r["model"] == "nvidia/llama-3.3-nemotron-super-49b-v1.5" and r["ok"]
+        if r["model"] == MODEL and r["ok"]
     }
-    jobs = [("nvidia/llama-3.3-nemotron-super-49b-v1.5", entry, variant)
+    jobs = [(MODEL, entry, variant)
             for (lang_finding, variant), entry in all_labels.items()
             if (lang_finding, variant) not in already_ok]
 
-    print(f"=== nemotron-super-49b-v1.5 재시도: {len(jobs)}/{len(all_labels)} jobs (기존 성공 {len(already_ok)}건은 스킵, timeout_s={NEMOTRON_TIMEOUT_S:.0f}, max_tokens=2048, workers={NEMOTRON_WORKERS}) ===", flush=True)
-    # rerun2.call_one_with_tokens reads CLIENT off its OWN separately-loaded copy of the
-    # d94 module (importlib.util module_from_spec makes independent instances per load) --
-    # setting it on this file's `d94` name does nothing for that call path. Set both so
-    # this file's own d94.FINDINGS/summarize() calls below stay consistent too.
-    client = retry40.RateLimitedClient(NvidiaRotatingClient(pool=pool, timeout_s=NEMOTRON_TIMEOUT_S), rpm=RPM_CAP)
+    print(f"=== {MODEL} 재시도: {len(jobs)}/{len(all_labels)} jobs (기존 성공 {len(already_ok)}건 스킵, "
+          f"timeout_s={LLAMA_TIMEOUT_S:.0f}, workers={LLAMA_WORKERS}) ===", flush=True)
+
+    client = retry40.RateLimitedClient(NvidiaRotatingClient(pool=pool, timeout_s=LLAMA_TIMEOUT_S), rpm=RPM_CAP)
     d94.CLIENT = client
     rerun2.d94.CLIENT = client
+
     new_rows = run_concurrent(
         jobs,
-        lambda j: rerun2.call_one_with_tokens(j, 2048),
-        max_workers=NEMOTRON_WORKERS,
+        lambda j: rerun2.call_one_with_tokens(j, 512),
+        max_workers=LLAMA_WORKERS,
         progress=print_progress,
     )
 
@@ -91,7 +92,7 @@ def main():
         else:
             merged.append(r)
 
-    backup_path = raw_path + ".bak2"
+    backup_path = raw_path + ".bak3"
     shutil.copyfile(raw_path, backup_path)
     with open(raw_path, "w", encoding="utf-8") as f:
         json.dump(merged, f, ensure_ascii=False, indent=2)
@@ -107,8 +108,8 @@ def main():
     with open(os.path.join(out_dir, "turn_engine_grading_16models_sonnet_by_lang.json"), "w", encoding="utf-8") as f:
         json.dump(lang_summary, f, ensure_ascii=False, indent=2)
 
-    s = summary["nvidia/llama-3.3-nemotron-super-49b-v1.5"]
-    print(f"\nnemotron-super-49b-v1.5: job_success={s['job_success_rate']*100:.0f}% "
+    s = summary[MODEL]
+    print(f"\n{MODEL}: job_success={s['job_success_rate']*100:.0f}% "
           f"trackB_precision={(s['track_b_precision'] or 0)*100:.0f}% "
           f"자기수정(improving/weak)={s['self_correction_improving']}/{s['self_correction_weak']} "
           f"mean_elapsed={s['mean_elapsed_s']}s ({s['n_ok']}/{s['n_total']})")

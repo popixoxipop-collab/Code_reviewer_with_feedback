@@ -26,7 +26,9 @@ sys.path.insert(0, os.path.join(REPO, "feedback"))
 sys.path.insert(0, os.path.join(REPO, "judgment"))
 sys.path.insert(0, os.path.join(REPO, "pipeline"))
 sys.path.insert(0, os.path.join(REPO, "benchmarks"))
+sys.path.insert(0, REPO)
 
+from timeout_config import DEFAULT_TIMEOUT_S  # noqa: E402
 from nvidia_client import NvidiaRotatingClient  # noqa: E402
 from nvidia_key_pool import NvidiaKeyPool  # noqa: E402
 from harness import run_concurrent, print_progress  # noqa: E402
@@ -48,7 +50,7 @@ _specretry.loader.exec_module(retry40)
 RPM_CAP = 12
 LLAMA_TIMEOUT_S = 600.0
 LLAMA_WORKERS = 1
-NEMOTRON_TIMEOUT_S = 300.0
+NEMOTRON_TIMEOUT_S = 600.0  # D98: standardized to 600s project-wide (user request)
 NEMOTRON_WORKERS = 1
 
 

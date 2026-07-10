@@ -16,11 +16,26 @@ import urllib.request
 
 from nvidia_key_pool import NvidiaKeyPool
 
+try:
+    # D98: centralized timeout (repo root, not part of the vendored upstream --
+    # falls back to a literal if this file is ever copied somewhere without it,
+    # e.g. back into nvidia-build).
+    from timeout_config import DEFAULT_TIMEOUT_S
+except ImportError:
+    DEFAULT_TIMEOUT_S = 600.0
+
 API_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
 
 
 class NvidiaRotatingClient:
-    def __init__(self, pool: NvidiaKeyPool | None = None, timeout_s: float = 120.0):
+    # D98: default bumped 120s -> 600s (user request, global default) after
+    #   llama-3.3-70b-instruct's worker-queue overload (503 "153/16", see D94)
+    #   showed real single-call latency up to ~300s+ under load; 120s was
+    #   timing out calls that would have succeeded. This is vendored code
+    #   (D56 -- normally update nvidia-build upstream first, then re-copy) but
+    #   the user explicitly asked for the global default, so applied here
+    #   directly; sync upstream is still open.
+    def __init__(self, pool: NvidiaKeyPool | None = None, timeout_s: float = DEFAULT_TIMEOUT_S):
         self.pool = pool or NvidiaKeyPool.from_env()
         self.timeout_s = timeout_s
 

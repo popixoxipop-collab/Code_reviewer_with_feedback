@@ -42,7 +42,9 @@ sys.path.insert(0, os.path.join(REPO, "feedback"))
 sys.path.insert(0, os.path.join(REPO, "judgment"))
 sys.path.insert(0, os.path.join(REPO, "pipeline"))
 sys.path.insert(0, os.path.join(REPO, "benchmarks"))
+sys.path.insert(0, REPO)
 
+from timeout_config import DEFAULT_TIMEOUT_S  # noqa: E402
 from turn_engine import run_decision_point, _transcript_text  # noqa: E402
 import llm_interview_grader as lig  # noqa: E402
 from nvidia_client import NvidiaRotatingClient  # noqa: E402
@@ -83,7 +85,7 @@ MODELS = [
     "openai/gpt-oss-20b",
 ]
 
-SONNET_TIMEOUT_S = 90
+SONNET_TIMEOUT_S = DEFAULT_TIMEOUT_S  # D98: centralized in timeout_config.py (user request)
 SONNET_MAX_BUDGET_USD = "0.30"  # 호출당 안전장치 -- 정상 답변은 이 근처도 안 감
 
 PERSONA_PROMPTS = {

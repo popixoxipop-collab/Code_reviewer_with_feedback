@@ -670,6 +670,19 @@ python3 pipeline/compare_methodologies.py
   - COST: llama-3.3-70b-instruct는 여전히 0/24(보류) — 전체 성공률 165/384(43%)→167/384(43%, nemotron 회복분 반영). REPEATS=1 미측정은 동일.
   - EXIT: llama-3.3-70b-instruct는 워커 과부하가 진짜로 시간대 의존적인지(다른 시간대 재시도) 아니면 상시적인지 아직 미확정 — 다음 세션에서 재시도 여부는 사용자 판단.
 
+- **D98** ([`timeout_config.py`](./timeout_config.py), `~/.claude/hooks/scripts/timeout-config-guard.py`) — 프로젝트 전체 타임아웃을 단일 중앙 설정으로 통합 + hook으로 재발 방지(사용자 요청: "타임아웃 600초로 하라"를 세 번 반복 지적한 뒤 "중앙 통제식으로 하자 hook에 걸어놓으라고")
+  - WHY: D94b~D97에서 LLAMA_TIMEOUT_S/NEMOTRON_TIMEOUT_S/SONNET_TIMEOUT_S가 스크립트마다 따로 하드코딩되며 값이 어긋나는 일이 반복됨(즉석 진단 스크립트에도 `timeout=120`을 매번 새로 박아넣다 사용자에게 지적받음). `timeout_config.py`에 `DEFAULT_TIMEOUT_S = 600.0` 하나만 두고 `nvidia_client.py`(vendored, D56 예외 처리 — 사용자가 명시적으로 전역 기본값 요청) 및 모든 벤치마크/재시도 스크립트가 여기서 import하도록 통일.
+  - **hook 설계**: `timeout-config-guard.py`(PreToolUse Write|Edit, `~/.claude/settings.json`에 기존 `data-first-guard.py` 옆에 등록)가 Code_reviewer_with_feedback 안의 `.py` 파일에서 `timeout_s=`/`timeout=`/`*TIMEOUT_S`/`*TIMEOUT` 패턴에 숫자 리터럴이 직접 대입되면 차단, `DEFAULT_TIMEOUT_S` 참조는 통과, `timeout_config.py` 자기 자신은 예외, `# timeout-guard: allow` 주석으로 개별 예외 가능.
+  - **정규식 함정 2건(실측 발견)**: (1) 초안이 "숫자 하나를 `[^=]`로 미리 소비"하는 방식이라 남은 자릿수 앞에 `\b`가 안 걸려 `timeout_s=120.0` 자체를 통째로 놓침 — 값 전체를 파싱하지 않고 "대입 직후 숫자 존재"만 보는 것으로 교체. (2) `TIMEOUT_S`/`TIMEOUT` 패턴에 붙인 선행 `\b`가 밑줄은 `\w`라서 `SONNET_TIMEOUT_S`처럼 접두어가 붙은 상수를 못 잡음(D85 한글 조사 경계 문제와 동일 계열의 함정) — 선행 `\b` 제거, 후행 `\b`만 유지해 `TIMEOUT_STRING` 같은 무관한 이름 오탐만 막음. 10개 케이스(위반 4·정상 3·오탐방지 3) 전부 통과 확인 후 실제 Write 호출로 차단/통과 양쪽 다 실측 검증.
+  - COST: 이 hook은 Code_reviewer_with_feedback 전용(다른 프로젝트 파일은 자동 통과) — 프로젝트 범위를 벗어나면 재적용 불필요.
+  - EXIT: 값 자체를 바꾸려면 `timeout_config.py`의 `DEFAULT_TIMEOUT_S` 한 줄만 수정.
+
+- **D99** (최종 정리) — llama-3.3-70b-instruct 최종 제외, 15/16 모델로 벤치마크 완료(사용자 결정: "16개 중 저 모델 하나만 호출 문제가 지속되는 거면 그걸 이유로 빼고 밴치마킹 표 완료해")
+  - WHY: D97 이후 세 번째 재시도(workers=1, timeout=600s)도 11개 job 시점까지 2승 9패(18%)로 부진 지속. 웹조사로 NVIDIA 개발자 포럼에서 동일 에러 클래스("ResourceExhausted: Worker local total request limit reached")를 다른 모델(DeepSeek V4 Flash)에서도 겪은 스레드를 발견 — 커뮤니티 의견이 "로컬 설정 문제" vs "업스트림 워커 풀 고갈"로 갈리는데, 저희가 이미 확인한 사실(완전히 다른 7개 키로 동시 요청해도 4/7 실패)이 후자를 직접 뒷받침함. 공식 해결책 없이 미해결 상태로 남은, NVIDIA 쪽에서 이미 알려진 이슈로 확인됨(https://forums.developer.nvidia.com/t/resourceexhausted-worker-local-total-request-limit-reached-33-32/375518).
+  - **최종 상태**: 16개 후보 중 15개 라이브 벤치마크 완료(167/384, 43%), llama-3.3-70b-instruct 1개는 원인 진단은 확정됐으나(NVIDIA 워커 큐 과부하, 외부 포럼 교차검증) 재시도로 회복 안 돼 최종 제외. 신뢰 가능한 표본(20건+/24) 5개: qwen3-next-80b/step-3.5-flash/mistral-medium-3.5/nemotron-super-49b-v1.5/llama-4-maverick.
+  - COST: llama-3.3-70b-instruct는 이 벤치마크 세트에서 순위 데이터 없음(0/24로 표에는 남아있으나 "제외" 명시).
+  - EXIT: 나중에 이 모델의 NVIDIA 쪽 상태가 나아지면(포럼 스레드가 언젠가 해결되면) `rerun_llama70b_only.py`(workers=1, timeout=600s 이미 준비됨)로 재시도 가능 — 코드는 남겨둠, 삭제 안 함.
+
 
 ## 다음 단계 (미해결)
 

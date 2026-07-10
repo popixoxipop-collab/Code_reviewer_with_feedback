@@ -1,26 +1,27 @@
 {
-  "status": "partial",
-  "headline": "nemotron-super-49b-v1.5 recovered to 95.8% after weekly-limit reset — llama-3.3-70b-instruct held back",
-  "message": "After the D96 correction (see below) and the weekly usage-limit reset, nemotron-super-49b-v1.5 was rerun with max_tokens=2048 and workers=4 (RateLimitedClient's sliding-window gate is thread-safe, already proven under workers=4 in the earlier 16-model retry -- the workers=1 setting from D94b was unneeded caution carried over from a different model's failure mode). Result: 23/24 (95.8%), Track B precision 1.0, clear strong/weak separation (5.0 vs 1.32) and self-correction differentiation (improving 4.5 vs weak 1.12). Re-checked the full transcript set for the weekly-limit contamination string: zero hits. llama-3.3-70b-instruct was attempted first at timeout_s=600/workers=1 -- all 9 jobs tried so far failed at 302-766s each, indicating the NVIDIA-side worker-queue overload is not a momentary blip. The user chose to defer this model rather than keep burning time on it this round.",
+  "status": "final",
+  "headline": "Benchmark complete: 15/16 models. nemotron-super-49b-v1.5 recovered to 95.8%; llama-3.3-70b-instruct formally excluded.",
+  "message": "After the D96 correction and the weekly usage-limit reset, nemotron-super-49b-v1.5 was rerun with max_tokens=2048 and workers=4. Result: 23/24 (95.8%), Track B precision 1.0, clear strong/weak separation (5.0 vs 1.32) and self-correction differentiation (improving 4.5 vs weak 1.12) -- verified contamination-free. llama-3.3-70b-instruct was retried three separate times (workers=1, workers=4 across 7 distinct API keys, and workers=1 again at timeout_s=600) and stayed in the 0-20% range throughout. A controlled test hitting the model with 7 fully independent API keys simultaneously still saw 4/7 time out, ruling out any per-key or local explanation. A matching NVIDIA Developer Forums thread (different model, same error class) shows this is a known, unresolved upstream issue -- not specific to this pipeline. The user made the call to exclude this model and finalize the benchmark at 15/16 rather than keep retrying an infrastructure problem outside our control.",
   "updated_at": "2026-07-10T00:00:00Z",
   "started_at": "2026-07-09T00:58:11Z",
   "source_commit": "TBD",
   "notes": [
     "nemotron-super-49b-v1.5: root cause (reasoning model, max_tokens starvation) confirmed via raw HTTP diagnostic in D94, fix confirmed via live rerun in D97.",
-    "llama-3.3-70b-instruct: root cause (NVIDIA worker-queue overload, HTTP 503 \"153/16\") still stands, but recovery attempt this round was abandoned after 9/9 failures at extended timeout -- deferred to a future session.",
-    "Correction from the prior quota-contamination incident (D96) held: this rerun's successes were verified contamination-free before publishing.",
-    "See README.md D97 for the full writeup, including a module-reload bug found along the way (two independent copies of the same script module via importlib caused CLIENT=None)."
+    "llama-3.3-70b-instruct: root cause (NVIDIA worker-queue overload, HTTP 503 \"153/16\") confirmed and externally corroborated (NVIDIA Developer Forums, same error class on a different model, unresolved). Excluded from the final ranking -- see README.md D99.",
+    "Correction from the prior quota-contamination incident (D96) held: nemotron's successes were verified contamination-free before publishing.",
+    "See README.md D97-D99 for the full writeup, including a module-reload bug found along the way (two independent copies of the same script module via importlib caused CLIENT=None) and the new timeout_config.py + PreToolUse hook (D98) that centralizes and enforces the 600s timeout project-wide.",
+    "Forum corroboration: https://forums.developer.nvidia.com/t/resourceexhausted-worker-local-total-request-limit-reached-33-32/375518"
   ],
   "models": {
     "meta/llama-3.3-70b-instruct": {
       "n_ok": 0,
       "n_total": 24,
-      "job_success_rate_pct": "0%",
+      "job_success_rate_pct": "0% (excluded)",
       "mean_elapsed_s": null,
       "track_b_precision": null,
       "self_correction_improving": null,
       "self_correction_weak": null,
-      "top_error_summary": "9/9 attempted failed at 302-766s even with timeout_s=600 -- sustained NVIDIA worker-queue overload, not momentary. Deferred."
+      "top_error_summary": "Persistent NVIDIA-side worker-queue overload across 3 retry rounds and a 7-key concurrent isolation test. Externally corroborated as a known, unresolved upstream issue. Formally excluded from the final 15/16 benchmark."
     },
     "nvidia/llama-3.3-nemotron-super-49b-v1.5": {
       "n_ok": 23,
