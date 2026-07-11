@@ -66,18 +66,17 @@
     "composite_4axis": 0.229
   },
   "minimaxai/minimax-m3": {
-    "stability_combined": 0.0,
+    "stability_combined": 0.945,
     "stability_question_gen": 0.958,
-    "stability_grader_call": 0.0,
-    "precision_candidate_as_grader": null,
+    "stability_grader_call": 0.986,
+    "precision_candidate_as_grader": 1.0,
     "precision_fixed_grader_legacy": 1.0,
-    "reproducibility_identical_rate": null,
-    "reproducibility_mean_total_spread": null,
+    "reproducibility_identical_rate": 0.318,
+    "reproducibility_mean_total_spread": 1.09,
     "speed_mean_elapsed_s": 111.7,
     "n_transcripts": 23,
     "n_grading_calls": 69,
-    "grader_measurement_outage": "all 69 grading calls returned a uniform HTTP 400 '...DEGRADED function cannot be invoked' (live single-call repro confirmed) -- NVIDIA marked the model's serving function DEGRADED during the regrade window. NOT a model defect: one hour earlier the same model passed 23/24 as question generator, and the identical grading schema works on 8 other models. Re-measure when NVIDIA recovers (see EXIT).",
-    "composite_4axis": 0.1
+    "composite_4axis": 0.682
   },
   "qwen/qwen3.5-122b-a10b": {
     "stability_combined": 0.556,

@@ -324,8 +324,10 @@ def main():
         if m in summary:
             summary[m]["grader_role_defect"] = why
     # D111: 측정 시간대 서빙 장애 annotation (모델 결함 아님을 명시)
+    # D114: 실측이 채워지면(채점 성공 존재) annotation을 달지 않는다 -- minimax가 워처
+    #   자동 재채점으로 회복(채점 68/69)했는데 "69콜 전멸" 문구가 계속 붙는 낡음 방지.
     for m, why in GRADER_MEASUREMENT_OUTAGE.items():
-        if m in summary:
+        if m in summary and (summary[m].get("stability_grader_call") or 0) == 0:
             summary[m]["grader_measurement_outage"] = why
 
     # D108c: 전 모델을 순위에 포함한다. 채점 콜이 전멸한 모델(정밀도/재현성 미측정)은

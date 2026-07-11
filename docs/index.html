@@ -319,9 +319,9 @@
       낮았던 점수 대부분은 모델 품질이 아니라 <b>우리 발사 패턴(job당 5~8 HTTP콜×무백오프 재시도×동시성)+512 토큰 캡의 아티팩트</b>였음이 D110 재실행(60/69 회복)으로 확정.
       최종 순위는 <b>4축 벤치마크</b>(안정성=질문생성×채점 end-to-end / 정밀도 / 재현성 / 속도, 11모델 완전판) —
       step-3.5-flash 0.984 &gt; qwen3-next-80b 0.779 &gt; deepseek-v4-pro 0.776(안정성 유일 만점) &gt; mistral-medium-3.5 0.74 &gt;
-      qwen3.5-122b 0.701 &gt; nemotron-3-super 0.694(재현성 0.0) &gt; nemotron-49b 0.658 &gt; glm-5.2 0.652 &gt;
-      maverick 0.248(서빙 장애) &gt; mistral-large-3 0.229(채점기 퇴행 루프) &gt; minimax-m3 0.1(측정 시간대 DEGRADED — 모델 결함 아님).
-      상세는 README D106~D111.
+      qwen3.5-122b 0.701 &gt; nemotron-3-super 0.694(재현성 0.0) &gt; minimax-m3 0.682(워처 자동 회복 후 실측) &gt; nemotron-49b 0.658 &gt;
+      glm-5.2 0.652 &gt; maverick 0.248(서빙 장애) &gt; mistral-large-3 0.229(채점기 퇴행 루프).
+      전체 표는 아래 "4축 최종 벤치마크 표" 참고, 상세는 README D106~D114.
     </p>
 
     <section class="panel split">
@@ -348,68 +348,47 @@
     </section>
 
     <section class="panel">
-      <h2>Top Performers From The D94 Snapshot</h2>
+      <h2>4축 최종 벤치마크 표 — 응답이 실제로 오는 11개 모델 (D114)</h2>
+      <p>
+        안정성 = 질문생성 job 성공률 × 채점 콜 성공률(end-to-end, Locked 스펙 "단일 모델 양역할" 기준).
+        정밀도 = 후보가 자기 transcript를 직접 채점했을 때 strong&gt;weak 분리율.
+        재현성 = 같은 입력 3회 채점의 5축 벡터 완전일치율(±평균 총점 spread). temperature=0 고정.
+        종합 = 4축 min-max 정규화 평균(속도 역정규화).
+      </p>
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
+              <th>#</th>
               <th>Model</th>
-              <th>Job Success</th>
-              <th>Track B Precision</th>
-              <th>Mean Weak Score</th>
-              <th>Self-Correction</th>
-              <th>Mean Elapsed</th>
+              <th>안정성 (질문생성×채점)</th>
+              <th>정밀도</th>
+              <th>재현성 (±spread)</th>
+              <th>속도</th>
+              <th>종합</th>
+              <th>비고</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td><code>stepfun-ai/step-3.5-flash</code></td>
-              <td>23 / 24 (95.8%)</td>
-              <td>1.00</td>
-              <td>1.98</td>
-              <td>improving 5.0 / weak 2.0</td>
-              <td>10.5s</td>
-            </tr>
-            <tr>
-              <td><code>qwen/qwen3-next-80b-a3b-instruct</code></td>
-              <td>23 / 24 (95.8%)</td>
-              <td>1.00</td>
-              <td>1.78</td>
-              <td>improving 5.0 / weak 1.88</td>
-              <td>90.3s</td>
-            </tr>
-            <tr>
-              <td><code>mistralai/mistral-medium-3.5-128b</code></td>
-              <td>23 / 24 (95.8%)</td>
-              <td>1.00</td>
-              <td>1.80</td>
-              <td>improving 4.5 / weak 1.88</td>
-              <td>178.9s</td>
-            </tr>
-            <tr>
-              <td><code>meta/llama-4-maverick-17b-128e-instruct</code></td>
-              <td>21 / 24 (87.5%)</td>
-              <td>1.00</td>
-              <td>1.71</td>
-              <td>improving 5.0 / weak 1.71</td>
-              <td>11.7s</td>
-            </tr>
-            <tr>
-              <td><code>nvidia/llama-3.3-nemotron-super-49b-v1.5</code></td>
-              <td>23 / 24 (95.8%)</td>
-              <td>1.00</td>
-              <td>1.32</td>
-              <td>improving 4.5 / weak 1.12</td>
-              <td>129.1s</td>
-            </tr>
+            <tr><td>1</td><td><code>step-3.5-flash</code></td><td>0.945 (0.958×0.986)</td><td>1</td><td>0.818 (±0.57)</td><td>10.5s</td><td><b>0.984</b></td><td></td></tr>
+            <tr><td>2</td><td><code>qwen3-next-80b</code></td><td>0.958 (0.958×1)</td><td>1</td><td>0.522 (±1.26)</td><td>90.3s</td><td><b>0.779</b></td><td>팀 Locked 모델</td></tr>
+            <tr><td>3</td><td><code>deepseek-v4-pro</code></td><td>1 (1×1)</td><td>1</td><td>0.375 (±1.42)</td><td>69.2s</td><td><b>0.776</b></td><td>안정성 유일 만점</td></tr>
+            <tr><td>4</td><td><code>mistral-medium-3.5</code></td><td>0.958 (0.958×1)</td><td>1</td><td>0.826 (±0.17)</td><td>178.9s</td><td><b>0.74</b></td><td>채점 일관성 최고(spread 0.17)</td></tr>
+            <tr><td>5</td><td><code>qwen3.5-122b</code></td><td>0.556 (0.833×0.667)</td><td>1</td><td>0.5 (±0.4)</td><td>70.4s</td><td><b>0.701</b></td><td></td></tr>
+            <tr><td>6</td><td><code>nemotron-3-super-120b</code></td><td>0.889 (0.958×0.928)</td><td>1</td><td>0 (±4.41)</td><td>29.6s</td><td><b>0.694</b></td><td>범위 밖 점수(0·9) 출력</td></tr>
+            <tr><td>7</td><td><code>minimax-m3</code></td><td>0.945 (0.958×0.986)</td><td>1</td><td>0.318 (±1.09)</td><td>111.7s</td><td><b>0.682</b></td><td>워처 자동 회복 후 실측</td></tr>
+            <tr><td>8</td><td><code>nemotron-super-49b</code></td><td>0.806 (0.958×0.841)</td><td>1</td><td>0.438 (±1.32)</td><td>129.1s</td><td><b>0.658</b></td><td></td></tr>
+            <tr><td>9</td><td><code>glm-5.2</code></td><td>0.861 (0.875×0.984)</td><td>1</td><td>0.35 (±0.76)</td><td>124.4s</td><td><b>0.652</b></td><td></td></tr>
+            <tr><td>10</td><td><code>llama-4-maverick</code></td><td>0 (0.875×0)</td><td>—</td><td>—</td><td>11.7s</td><td><b>0.248</b></td><td>NVIDIA 서빙 장애(측정 불가)</td></tr>
+            <tr><td>11</td><td><code>mistral-large-3</code></td><td>0 (1×0)</td><td>—</td><td>—</td><td>24.7s</td><td><b>0.229</b></td><td>채점기 퇴행 루프(결함)</td></tr>
           </tbody>
         </table>
       </div>
       <p class="footnote">
-        위 5개는 20건 이상 성공으로 표본이 충분한 쪽입니다(reasoning 모델인 nemotron은 max_tokens=2048
-        재시도로 D97에서 이 표에 합류했습니다 — 아래 "Blocked Model" 섹션 참고). 나머지 11개는 레이트리밋,
-        tool-choice 미준수, 서버 가용성, 계정 접근권한 이슈가 섞여 있어 점수 해석보다 실패 원인 분리가
-        먼저였습니다 — 티어별 구성은 위 지표 아래 설명 참고.
+        정밀도는 채점 가능한 9개 전원 1.00 — 실제 변별축은 재현성(0~0.826)과 채점기 역할 안정성.
+        minimax-m3는 측정 시간대 NVIDIA DEGRADED로 한때 0점이었으나 회복 감시 워처가 자동 재측정해
+        실측(7위)으로 대체됨. 원자료: <code>turn_engine_4axis_summary.json</code> ·
+        <code>turn_engine_4axis_regrade_raw.json</code> (repo).
       </p>
     </section>
 

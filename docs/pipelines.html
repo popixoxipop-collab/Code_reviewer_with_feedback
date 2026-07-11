@@ -524,8 +524,8 @@
       최종 순위는 <b>4축 벤치마크</b>(안정성=질문생성&times;채점 end-to-end · 정밀도(자기채점) · 재현성 · 속도, 11모델 완전판):
       <b>step-3.5-flash 0.984</b> &gt; qwen3-next-80b 0.779 &gt; deepseek-v4-pro 0.776(안정성 유일 만점) &gt;
       mistral-medium-3.5 0.74 &gt; qwen3.5-122b 0.701 &gt; nemotron-3-super 0.694(재현성 0.0, 범위 밖 점수 출력) &gt;
-      nemotron-49b 0.658 &gt; glm-5.2 0.652 &gt; maverick 0.248(서빙 장애) &gt; mistral-large-3 0.229(채점기 퇴행 루프) &gt;
-      minimax-m3 0.1(측정 시간대 NVIDIA DEGRADED — 모델 결함 아님).
+      minimax-m3 0.682(DEGRADED 해제 후 워처 자동 재측정, 채점 68/69) &gt; nemotron-49b 0.658 &gt; glm-5.2 0.652 &gt;
+      maverick 0.248(서빙 장애) &gt; mistral-large-3 0.229(채점기 퇴행 루프).
       정밀도는 채점 성공 모델 전원 1.00 — 승부처는 재현성(temp=0인데도 0.0~0.83)과 채점기 역할 안정성이다.
       질문생성기는 11개 모두 합격이지만 채점기까지 무결한 건 step-3.5-flash·deepseek-v4-pro·mistral-medium-3.5·glm-5.2 정도. 상세 근거는
       <a href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback/blob/main/README.md" style="color:var(--accent);">README D94~D111</a> 참고.
