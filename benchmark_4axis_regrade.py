@@ -30,6 +30,7 @@
 #   # retry-backoff-guard: intentional-no-backoff
 from __future__ import annotations
 
+import collections
 import importlib.util
 import json
 import os
@@ -76,7 +77,10 @@ RELIABLE_MODELS = [
     "nvidia/nemotron-3-super-120b-a12b",
     "z-ai/glm-5.2",
 ]
-REPEATS = 3
+# D115: REPEATS를 env로 조절 가능하게(사용자 지시: "재현성 엄밀성을 위해 100번 반복
+#   밴치마킹") -- 기본값 3은 유지(기존 스크립트/문서가 이 기본값을 전제로 함), 대규모
+#   재현성 재측정만 REGRADE_REPEATS=100으로 명시 실행.
+REPEATS = int(os.environ.get("REGRADE_REPEATS", "3"))
 # D106e: mistral-large-3 실측(2026-07-10) -- 이 flagship 모델의 429는 분당 창이 아니라
 #   천천히 재충전되는 시간 단위 총량 버킷이다: 단발 프로브는 통과(65s 간격 3연속 200)해도
 #   72콜 일괄 발사는 전멸했고, ~100콜 소진 후엔 단발조차 ~1시간 전멸했다. 이런 모델은
@@ -239,13 +243,30 @@ def main():
         n_calls = len(mrows)
         n_ok_calls = sum(1 for r in mrows if r["ok"])
 
-        # 재현성: 3/3 성공한 label 중 5축 벡터가 3회 완전 일치한 비율 + 총점 spread
+        # D115: mode_agreement_rate/coverage_rate 신규 추가 (사용자 지시로 REPEATS 3->100
+        #   대규모 재측정 진행하며 설계). identical_rate의 기존 판정 기준("len(ok_reps)==
+        #   REPEATS 완전 성공"만 분모에 포함)은 그대로 둔다 -- 처음엔 ">=2회 성공"으로
+        #   완화해봤으나 실측으로 반증됨: qwen3.5-122b(coverage=0.667, 대부분 2/3 성공)의
+        #   identical_rate가 0.5->0.733으로 급등하는 걸 확인 -- N이 작을수록(2개 비교가
+        #   3개 비교보다) "우연히 다 일치"하기 쉬운 통계적 착시였다(coverage 낮은 모델일수록
+        #   유리해지는 역설적 편향). 그래서 이미 공개된 identical_rate/composite_4axis
+        #   계산 기준(정확히 REPEATS개 성공해야 분모에 포함)은 변경하지 않고 그대로 유지 --
+        #   대신 REPEATS가 커질 때의 "커버리지 급락" 문제는 mode_agreement_rate(성공한
+        #   반복 중 최빈 5축 벡터 점유율, 연속값이라 부분 커버리지에도 상대적으로 안정적)와
+        #   coverage_rate(모델 일관성과 인프라 노이즈를 분리해서 보여주는 참고 지표)로
+        #   별도 노출한다 -- 랭킹에 쓰는 identical_rate는 절대 건드리지 않는다.
         full_ok, identical, spreads = 0, 0, []
+        mode_rates, coverages = [], []
         for label, reps in by_label.items():
             ok_reps = [r for r in reps if r["ok"]]
             totals = [sum(r["grading"].values()) for r in ok_reps]
+            if reps:
+                coverages.append(len(ok_reps) / len(reps))
             if len(ok_reps) >= 2:
                 spreads.append(max(totals) - min(totals))
+                vecs = [tuple(sorted(r["grading"].items())) for r in ok_reps]
+                mode_count = collections.Counter(vecs).most_common(1)[0][1]
+                mode_rates.append(mode_count / len(ok_reps))
             if len(ok_reps) == REPEATS:
                 full_ok += 1
                 vecs = [tuple(sorted(r["grading"].items())) for r in ok_reps]
@@ -285,9 +306,14 @@ def main():
             # 축 2: 정밀도 (채점기 역할, 이번에 처음으로 candidate-as-grader로 측정)
             "precision_candidate_as_grader": round(precision_hits / len(common), 3) if common else None,
             "precision_fixed_grader_legacy": old.get("track_b_precision"),
-            # 축 3: 재현성 (같은 입력 3회 채점의 5축 벡터 완전일치율)
+            # 축 3: 재현성 -- identical_rate(이진, >=2회 성공한 label 중 완전일치 비율,
+            #   레거시 연속성 유지) + mode_agreement_rate(연속값, D115 신규 주 지표) +
+            #   coverage_rate(REPEATS 대비 실제 성공률 -- 모델 일관성과 인프라 노이즈 분리)
             "reproducibility_identical_rate": round(identical / full_ok, 3) if full_ok else None,
+            "reproducibility_mode_agreement_rate": round(sum(mode_rates) / len(mode_rates), 3) if mode_rates else None,
             "reproducibility_mean_total_spread": round(sum(spreads) / len(spreads), 2) if spreads else None,
+            "reproducibility_coverage_rate": round(sum(coverages) / len(coverages), 3) if coverages else None,
+            "reproducibility_repeats": REPEATS,
             # 축 4: 속도 (질문생성기 역할, 기존 실측 재사용)
             "speed_mean_elapsed_s": old.get("mean_elapsed_s"),
             "n_transcripts": len(by_label), "n_grading_calls": n_calls,
@@ -345,7 +371,7 @@ def main():
     summary["_meta"] = {
         "covered_models": covered,
         "ranked_models": ranked,
-        "note": "stability axis = question-gen success x grader-call success (end-to-end, both roles per locked spec). Models whose grading never succeeded score 0 on precision/reproducibility instead of being excluded -- a grader that cannot grade has zero effective precision. composite_4axis is min-max normalized within ranked_models.",
+        "note": "stability axis = question-gen success x grader-call success (end-to-end, both roles per locked spec). Models whose grading never succeeded score 0 on precision/reproducibility instead of being excluded -- a grader that cannot grade has zero effective precision. composite_4axis is min-max normalized within ranked_models and uses reproducibility_identical_rate (unchanged formula, for continuity across REPEATS values). D115: reproducibility_mode_agreement_rate is the more robust reproducibility read at large REPEATS -- identical_rate requires a perfect run across ALL repeats to even count a transcript, which under-samples as REPEATS grows (see code comment); reproducibility_coverage_rate separates infra noise (call failures) from actual grader inconsistency (repeated calls disagreeing).",
     }
 
     with open(os.path.join(REPO, "turn_engine_4axis_summary.json"), "w", encoding="utf-8") as f:
@@ -356,7 +382,9 @@ def main():
         s = summary[m]
         print(f"{m}\n  안정성(end-to-end)={s['stability_combined']} (질문생성={s['stability_question_gen']} x 채점={s['stability_grader_call']})  "
               f"정밀도(자기채점)={s['precision_candidate_as_grader']}  재현성={s['reproducibility_identical_rate']} "
-              f"(spread={s['reproducibility_mean_total_spread']})  속도={s['speed_mean_elapsed_s']}s  종합={s['composite_4axis']}", flush=True)
+              f"(mode={s.get('reproducibility_mode_agreement_rate')} coverage={s.get('reproducibility_coverage_rate')} "
+              f"spread={s['reproducibility_mean_total_spread']} n={s.get('reproducibility_repeats')})  "
+              f"속도={s['speed_mean_elapsed_s']}s  종합={s['composite_4axis']}", flush=True)
 
 
 if __name__ == "__main__":

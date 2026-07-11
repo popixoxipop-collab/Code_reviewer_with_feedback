@@ -782,6 +782,13 @@ python3 pipeline/compare_methodologies.py
   - COST: 표는 정적 스냅샷 — maverick이 회복돼 실측이 들어오면(워처 감시 중) 표 3곳+순위 문장 수동 갱신 필요. minimax의 재현성(0.318)은 DEGRADED 회복 직후 측정이라 평상시보다 낮게 나왔을 가능성 존재(재측정으로 확인 가능).
   - EXIT: 표 재생성은 summary JSON→행 변환 스크립트 패턴 재사용(D114 커밋의 생성 코드 참고).
 
+- **D115** ([`benchmark_4axis_regrade.py`](./benchmark_4axis_regrade.py)) — 4축 벤치마크 재현성 축을 REPEATS 3→100으로 대규모 재측정(사용자 지시: "재현성 엄밀성을 위해 100번 반복 밴치마킹") + **집계 지표 함정 발견/반증**
+  - WHY: "100번 반복"이 D112/D113의 키풀 인프라 검증(가벼운 "Say OK" 호출)과 실제 4축 벤치마크의 재현성 축(진짜 채점 콜) 중 어느 쪽인지 비용이 최대 33배(2.5시간 vs 31.5시간) 차이나 AskUserQuestion으로 확인 → **4축 벤치마크의 재현성 축**으로 확정. 대상 9개 모델(mistral-large-3는 채점기 자체 결함으로 100번 반복해도 전부 실패만 반복해 제외, llama-4-maverick은 transcript 0건이라 재측정 대상 자체가 없어 자동 제외) × 203 transcripts × 100 = **20,300 채점 콜**.
+  - **집계 함정 발견 + 반증(진짜 소득)**: REPEATS를 env로 설정 가능하게 바꾸는 김에 "재현성 판정 기준(len(ok_reps)==REPEATS 완전성공만 인정)이 REPEATS가 커질수록 커버리지가 (1-p)^REPEATS로 급락한다"는 문제를 미리 고치려고 판정 기준을 ">=2회 성공"으로 완화했다가, **`--aggregate-only`로 기존 REPEATS=3 데이터에 재적용해보니 순위 4-5위·8-9위가 실제로 뒤바뀜을 발견**(qwen3.5-122b 재현성 0.5→0.733, composite 0.701→0.772 등). 원인 규명: qwen3.5-122b는 coverage=0.667(대부분 2/3 성공)이라, "2개 비교"가 "3개 비교"보다 통계적으로 우연히 다 일치하기 쉬워서 **coverage 낮은(=인프라 노이즈 많이 겪은) 모델일수록 재현성이 역설적으로 부풀려지는 편향**이었다 — 실측으로 자가 검증해 반증하고 원래 기준(정확히 REPEATS개 성공)으로 되돌림, 이미 공개된 identical_rate/composite 수치는 완전히 무손상 확인(`turn_engine_4axis_summary.json.bak_repeats3`와 바이트 비교로 재검증 완료). 대신 REPEATS가 클 때를 위한 신규 참고지표 2개를 별도 추가: `reproducibility_mode_agreement_rate`(성공한 반복 중 최빈 5축 벡터 점유율, 연속값이라 부분 커버리지에도 상대적으로 안정) + `reproducibility_coverage_rate`(모델 일관성과 인프라 노이즈를 분리해서 노출) — 둘 다 랭킹 산식(composite_4axis)에는 반영 안 함, 순수 진단용.
+  - **실행**: 9모델 순차 실행(레이스 방지 — RateLimitedClient가 프로세스 내부 상태라 병렬 프로세스는 각자 독립적으로 rpm을 세어 합산 시 진짜 한도를 넘길 위험, D112에서 확인한 사실을 여기 설계에 직접 반영). 페이싱은 D112/D113가 실측 증명한 안전범위 안에서 기존 12rpm/4workers 기본값보다 상향(60rpm/24workers) — 채점 콜은 trivial 호출보다 지연이 커서(모델별 평균 30~180초) workers 수가 실제 병목이 될 수 있음을 인지하고 진행하며 조정.
+  - COST: 실행 전 REPEATS=3 raw/summary를 `.bak_repeats3`로 백업(대조군 보존, 드리프트 없음을 재검증하는 근거로도 사용). 20,300콜은 오늘 하루 여러 차례 겪은 NVIDIA DEGRADED/서빙장애 패턴을 감안하면 실행 중 일부 모델에서 재현될 수 있음 — 모델 단위 순차+raw 병합 설계라 중간에 한 모델이 전멸해도 이미 끝난 모델의 데이터는 안전.
+  - EXIT: 결과는 완료 후 표+README 갱신. 재현성 판정 기준을 identical_rate 대신 mode_agreement_rate로 바꾸고 싶으면(통계적으로 더 안정적) `composite_4axis` 계산부의 `repr_` 라인 하나만 교체.
+
 
 ## 다음 단계 (미해결)
 
