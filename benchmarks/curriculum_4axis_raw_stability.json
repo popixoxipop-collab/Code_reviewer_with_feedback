@@ -1,0 +1,41 @@
+[
+  {
+    "run": 1,
+    "ok": true,
+    "elapsed_s": 300.4,
+    "returncode": 0,
+    "stderr_tail": null,
+    "chunk_ok": 26,
+    "chunk_total": 26,
+    "refine_ok": 2,
+    "refine_total": 2,
+    "questions_ok": true,
+    "n_questions": 5
+  },
+  {
+    "run": 2,
+    "ok": true,
+    "elapsed_s": 327.5,
+    "returncode": 0,
+    "stderr_tail": null,
+    "chunk_ok": 26,
+    "chunk_total": 26,
+    "refine_ok": 2,
+    "refine_total": 2,
+    "questions_ok": true,
+    "n_questions": 5
+  },
+  {
+    "run": 3,
+    "ok": true,
+    "elapsed_s": 290.2,
+    "returncode": 0,
+    "stderr_tail": null,
+    "chunk_ok": 26,
+    "chunk_total": 26,
+    "refine_ok": 2,
+    "refine_total": 2,
+    "questions_ok": true,
+    "n_questions": 5
+  }
+]

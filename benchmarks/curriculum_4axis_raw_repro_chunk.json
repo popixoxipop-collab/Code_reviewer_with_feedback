@@ -1,0 +1,59 @@
+[
+  {
+    "chunk_range": "p1-10",
+    "reps": 100,
+    "ok_reps": 94,
+    "errors": 6,
+    "error_types": {
+      "ValueError: JSON parse failed (Expecting ',' delimiter: line 101 column 6 (char 3790)); repair failed (Expecting ',' delimiter: line 101 column 6 (char 3790)); raw_head='{\\n  \"chunk_range\": \"1-10\",\\n  \"units\": [\\": 1,
+      "ValueError: JSON parse failed (Expecting ',' delimiter: line 108 column 6 (char 3915)); repair failed (Expecting ',' delimiter: line 108 column 6 (char 3915)); raw_head='{\\n  \"chunk_range\": \"1-10\",\\n  \"units\": [\\": 1,
+      "ValueError: JSON parse failed (Expecting ',' delimiter: line 109 column 6 (char 3984)); repair failed (Expecting ',' delimiter: line 108 column 6 (char 3959)); raw_head='{\\n  \"chunk_range\": \"1-10\",\\n  \"units\": [\\": 1,
+      "ValueError: JSON parse failed (Expecting ',' delimiter: line 108 column 6 (char 3932)); repair failed (Expecting ',' delimiter: line 108 column 6 (char 3932)); raw_head='{\\n  \"chunk_range\": \"1-10\",\\n  \"units\": [\\": 1,
+      "ValueError: JSON parse failed (Expecting ',' delimiter: line 108 column 6 (char 3949)); repair failed (Expecting ',' delimiter: line 108 column 6 (char 3949)); raw_head='{\\n  \"chunk_range\": \"1-10\",\\n  \"units\": [\\": 1,
+      "ValueError: JSON parse failed (Expecting ',' delimiter: line 101 column 6 (char 3714)); repair failed (Expecting ',' delimiter: line 101 column 6 (char 3714)); raw_head='{\\n  \"chunk_range\": \"1-10\",\\n  \"units\": [\\": 1
+    },
+    "unique_signatures": 27,
+    "identical_rate": 0.18085106382978725,
+    "elapsed_s": 1139.9
+  },
+  {
+    "chunk_range": "p61-70",
+    "reps": 100,
+    "ok_reps": 100,
+    "errors": 0,
+    "error_types": {},
+    "unique_signatures": 34,
+    "identical_rate": 0.36,
+    "elapsed_s": 623.0
+  },
+  {
+    "chunk_range": "p131-140",
+    "reps": 100,
+    "ok_reps": 100,
+    "errors": 0,
+    "error_types": {},
+    "unique_signatures": 27,
+    "identical_rate": 0.17,
+    "elapsed_s": 748.1
+  },
+  {
+    "chunk_range": "p191-200",
+    "reps": 100,
+    "ok_reps": 100,
+    "errors": 0,
+    "error_types": {},
+    "unique_signatures": 61,
+    "identical_rate": 0.1,
+    "elapsed_s": 843.1
+  },
+  {
+    "chunk_range": "p241-250",
+    "reps": 100,
+    "ok_reps": 100,
+    "errors": 0,
+    "error_types": {},
+    "unique_signatures": 57,
+    "identical_rate": 0.1,
+    "elapsed_s": 897.3
+  }
+]

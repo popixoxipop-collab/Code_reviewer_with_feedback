@@ -1,0 +1,150 @@
+[
+  {
+    "iteration": 1,
+    "status": "needs_refine",
+    "coverage_summary": "Comprehensive coverage of Java fundamentals from syntax to OOP, but with significant duplication, ambiguous page provenance, and missing concept-page alignment for key topics.",
+    "issues": [
+      {
+        "severity": "high",
+        "issue": "Duplicate concept nodes detected: '메서드 정의', '메서드 오버로딩', '클래스의 필요성', '객체의 정의' appear twice with identical content and source pages.",
+        "source_pages": [
+          141,
+          143,
+          144,
+          148,
+          149,
+          150
+        ],
+        "suggested_fix": "Remove duplicate entries. Keep one instance per unique concept with consolidated evidence and source pages."
+      },
+      {
+        "severity": "high",
+        "issue": "Concept 'JVM' appears twice: once in 'JVM 역할' (page 4) and again as standalone 'JVM' (page 13). Definitions overlap but are treated as separate concepts.",
+        "source_pages": [
+          4,
+          13
+        ],
+        "suggested_fix": "Merge into single concept 'JVM' with comprehensive evidence from both pages. Retain only one node with unified summary and source pages [4, 13]."
+      },
+      {
+        "severity": "medium",
+        "issue": "Concept 'Java 생태계 안정성' cites page 6, but no other concepts on page 6 are defined. Page 6 may be underutilized or misaligned.",
+        "source_pages": [
+          6
+        ],
+        "suggested_fix": "Verify page 6 content. If only one concept is derived, add more concepts from this page or remove it from source_pages if irrelevant."
+      },
+      {
+        "severity": "medium",
+        "issue": "Concept 'String comparison with equals()' and '== vs equals() for Strings' are semantically identical but named differently. Redundant.",
+        "source_pages": [
+          51,
+          52
+        ],
+        "suggested_fix": "Merge into one concept: 'String equality comparison using equals() vs ==', with combined evidence from both pages."
+      },
+      {
+        "severity": "low",
+        "issue": "Source pages for 'Java 활용 분야 - 웹 서비스' include [8], but page 8 also covers 'Android 앱', '엔터프라이즈', and '빅데이터'. No clear chunking or separation.",
+        "source_pages": [
+          8
+        ],
+        "suggested_fix": "Add chunk_range to distinguish sections on page 8 (e.g., '1-5' for web, '6-10' for Android) to improve traceability."
+      },
+      {
+        "severity": "low",
+        "issue": "Concept '변수 사용 이유' and '변수 선언' both reference page 32-34, but no granular chunk_range differentiates them. Risk of ambiguous provenance.",
+        "source_pages": [
+          32,
+          33,
+          34
+        ],
+        "suggested_fix": "Refine chunk_range for each concept (e.g., '32-32' for usage reason, '33-33' for declaration, '34-34' for initialization)."
+      }
+    ],
+    "checklist": {
+      "all_concepts_have_pages": true,
+      "unit_boundaries_clear": true,
+      "duplicates_detected": true,
+      "question_generation_ready": false
+    }
+  },
+  {
+    "iteration": 2,
+    "status": "needs_refine",
+    "coverage_summary": "Comprehensive coverage of Java fundamentals from syntax to OOP, but with critical issues in concept duplication, missing page provenance for key topics, and inconsistent granularity.",
+    "issues": [
+      {
+        "severity": "high",
+        "issue": "Duplicate concepts detected: '메서드 정의', '메서드 오버로딩', '클래스의 필요성', '객체의 정의' appear twice with identical content and source pages.",
+        "source_pages": [
+          141,
+          143,
+          144,
+          148,
+          149,
+          150
+        ],
+        "suggested_fix": "Remove duplicate entries. Retain one instance of each concept with consolidated evidence and source pages."
+      },
+      {
+        "severity": "high",
+        "issue": "Concept 'JVM' appears twice: once in unit concepts (page 4) and again on page 13 with conflicting summary and evidence. This creates ambiguity.",
+        "source_pages": [
+          4,
+          13
+        ],
+        "suggested_fix": "Merge both JVM entries. Use the more detailed version from page 13 as primary, and remove the superficial one from page 4. Update evidence to reflect both WORA and execution role."
+      },
+      {
+        "severity": "high",
+        "issue": "Concept 'Java 정의' and 'JVM 역할' are too broad and lack concrete page-specific evidence. Evidence text is generic and repeats across multiple concepts.",
+        "source_pages": [
+          4
+        ],
+        "suggested_fix": "Refine concepts to be more granular. For example, split 'Java 정의' into 'Java 역사 및 관리자' (page 4) and 'Java 언어 특성' (page 5). Ensure each concept's evidence is uniquely tied to a specific sentence or paragraph."
+      },
+      {
+        "severity": "medium",
+        "issue": "Concept '바이트코드' has source page [15], but 'Java 컴파일 및 실행 과정' also references [14,15] — no clear distinction in coverage. Risk of overlap without clear boundary.",
+        "source_pages": [
+          14,
+          15
+        ],
+        "suggested_fix": "Clarify boundaries: 'Java 컴파일 및 실행 과정' should cover steps 1-4 on page 14, while '바이트코드' should focus exclusively on the definition and purpose of .class files on page 15."
+      },
+      {
+        "severity": "medium",
+        "issue": "Concept 'String 자료형' references pages [46,48], but 'String 선언 규칙' and 'String length()' etc. all reference [51] — inconsistent granularity. String methods are too fragmented.",
+        "source_pages": [
+          46,
+          48,
+          51
+        ],
+        "suggested_fix": "Group all String methods (length(), charAt(), substring(), etc.) under one concept 'String 메서드 사용법' with source page [51], and keep 'String 자료형' for type definition on [46,48]."
+      },
+      {
+        "severity": "low",
+        "issue": "Concept 'JDK' and 'JRE' are defined on page 13, but no page references distinguish their differences visually or contextually in the source material.",
+        "source_pages": [
+          13
+        ],
+        "suggested_fix": "Add chunk_range to differentiate: e.g., 'JDK' from lines 1-10, 'JRE' from lines 11-20 on page 13, to ensure traceability."
+      },
+      {
+        "severity": "low",
+        "issue": "Concept '윤년 판정 조건' has no associated code example or visual aid in source pages — evidence is purely textual, limiting question generation.",
+        "source_pages": [
+          93
+        ],
+        "suggested_fix": "Add a code snippet or pseudocode example from page 93 to the evidence field to support question generation (e.g., 'if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0))')."
+      }
+    ],
+    "checklist": {
+      "all_concepts_have_pages": false,
+      "unit_boundaries_clear": false,
+      "duplicates_detected": true,
+      "question_generation_ready": false
+    }
+  }
+]

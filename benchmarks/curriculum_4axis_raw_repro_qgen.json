@@ -1,0 +1,13 @@
+{
+  "reps": 50,
+  "ok_reps": 45,
+  "errors": 5,
+  "error_types": {
+    "HTTPError: HTTP Error 500: Internal Server Error": 4,
+    "HTTPError: HTTP Error 400: Bad Request": 1
+  },
+  "unique_signatures": 40,
+  "identical_rate": 0.06666666666666667,
+  "reproducibility_mode_agreement_rate": 0.06666666666666667,
+  "elapsed_s": 1334.2
+}

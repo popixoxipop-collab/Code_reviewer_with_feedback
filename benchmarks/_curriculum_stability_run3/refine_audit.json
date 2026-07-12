@@ -1,0 +1,276 @@
+[
+  {
+    "iteration": 1,
+    "status": "needs_refine",
+    "coverage_summary": "Unit covers foundational Java concepts from syntax to OOP, but has severe duplication, missing page provenance for key concepts, and inconsistent granularity.",
+    "issues": [
+      {
+        "severity": "high",
+        "issue": "Duplicate concept nodes: 'JVM', 'JDK', 'JRE', '메서드 정의', '메서드 오버로딩', '클래스의 필요성', '객체의 정의' appear multiple times with identical or near-identical content but different source_pages.",
+        "source_pages": [
+          4,
+          14
+        ],
+        "suggested_fix": "Merge duplicate concepts into single nodes with consolidated evidence and all source_pages included. Remove redundant entries."
+      },
+      {
+        "severity": "high",
+        "issue": "Concept 'Java 정의' has evidence and summary copied verbatim from source page 4, but no page provenance for 'Java 생태계', 'Java vs Python', etc. despite being listed as on pages 6-8.",
+        "source_pages": [
+          6,
+          7,
+          8
+        ],
+        "suggested_fix": "Ensure every concept has at least one concrete source_page with direct evidence. Add missing page references for concepts like 'Java 생태계' and 'Java 활용 분야' based on actual content location."
+      },
+      {
+        "severity": "medium",
+        "issue": "Concept '변수와 자료형 단원 시작' is a unit header, not a concept. It describes Unit 02 structure but is not a learnable Java concept.",
+        "source_pages": [
+          29
+        ],
+        "suggested_fix": "Remove this node. Replace with actual concepts from Unit 02: '변수', '자료형', etc., which are already present."
+      },
+      {
+        "severity": "medium",
+        "issue": "Concept 'String은 참조 자료형' and 'String 자료형' are semantically overlapping. One explains what String is, the other how to use it.",
+        "source_pages": [
+          46,
+          48
+        ],
+        "suggested_fix": "Merge into one concept: 'String 자료형 (참조 자료형)' with combined evidence covering definition and reference behavior."
+      },
+      {
+        "severity": "low",
+        "issue": "Chunk ranges like '1-10' are vague and not page-specific. They do not support precise traceability to PDF content.",
+        "source_pages": [
+          4,
+          5,
+          6
+        ],
+        "suggested_fix": "Replace chunk_range with specific line numbers or section titles (e.g., 'Section 1.2: JVM Overview') for verifiable provenance."
+      },
+      {
+        "severity": "high",
+        "issue": "Concept 'main 메소드' and 'Main 클래스' are critical entry points but lack evidence from page 22-23 that shows actual code examples or syntax.",
+        "source_pages": [
+          22,
+          23
+        ],
+        "suggested_fix": "Update evidence to include exact code snippets from pages 22-23 (e.g., 'public static void main(String[] args) { ... }') to validate provenance."
+      }
+    ],
+    "checklist": {
+      "all_concepts_have_pages": false,
+      "unit_boundaries_clear": false,
+      "duplicates_detected": true,
+      "question_generation_ready": false
+    }
+  },
+  {
+    "iteration": 2,
+    "status": "needs_refine",
+    "coverage_summary": "Comprehensive coverage of Java fundamentals from syntax to OOP, but with critical duplication and missing page provenance for key concepts.",
+    "issues": [
+      {
+        "severity": "high",
+        "issue": "Duplicate concept nodes: 'JVM', 'JDK', 'JRE', '메서드 정의', '메서드 오버로딩', '클래스의 필요성', '객체의 정의' appear multiple times with identical or near-identical content but different source_pages.",
+        "source_pages": [
+          4,
+          14
+        ],
+        "suggested_fix": "Merge duplicate concepts into single nodes with consolidated evidence and all source_pages included. Remove redundant entries."
+      },
+      {
+        "severity": "high",
+        "issue": "Concept 'Java 정의' has evidence and summary copied verbatim from source, but no unique chunk_range or page-specific insight; risks being flagged as low-value content.",
+        "source_pages": [
+          4
+        ],
+        "suggested_fix": "Rewrite summary and evidence to reflect pedagogical interpretation, not direct quote. Add context from page range 1-10."
+      },
+      {
+        "severity": "medium",
+        "issue": "Concept '변수와 자료형 단원 시작' is a unit header, not a learnable concept. It describes structure, not content.",
+        "source_pages": [
+          29
+        ],
+        "suggested_fix": "Remove this node. Replace with individual concept nodes for each sub-unit (변수, 기본 자료형, etc.) which are already present."
+      },
+      {
+        "severity": "medium",
+        "issue": "Concept 'String은 참조 자료형' and 'String 자료형' are semantically overlapping; both explain String as reference type but with redundant evidence.",
+        "source_pages": [
+          46,
+          48
+        ],
+        "suggested_fix": "Merge into single concept 'String 자료형' with evidence covering both definition and reference-type nature."
+      },
+      {
+        "severity": "low",
+        "issue": "Some source_pages are non-contiguous and include irrelevant pages (e.g., 106, 107, 108, 110, 111, 112, 113, 121, 122, 123, 125, 126, 127, 128, 130, 131, 132, 133, 141, 143, 144, 145, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 159, 160, 183–250) without clear alignment to concept content.",
+        "source_pages": [
+          1,
+          2,
+          3,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          12,
+          14,
+          15,
+          16,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          31,
+          32,
+          33,
+          34,
+          35,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          61,
+          62,
+          63,
+          64,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          81,
+          82,
+          91,
+          92,
+          93,
+          101,
+          102,
+          106,
+          107,
+          108,
+          110,
+          111,
+          112,
+          113,
+          121,
+          122,
+          123,
+          125,
+          126,
+          127,
+          128,
+          130,
+          131,
+          132,
+          133,
+          141,
+          143,
+          144,
+          145,
+          148,
+          149,
+          150,
+          151,
+          152,
+          153,
+          154,
+          155,
+          156,
+          157,
+          159,
+          160,
+          183,
+          184,
+          185,
+          186,
+          187,
+          188,
+          189,
+          190,
+          191,
+          192,
+          193,
+          195,
+          196,
+          197,
+          198,
+          199,
+          200,
+          201,
+          202,
+          208,
+          211,
+          212,
+          213,
+          214,
+          215,
+          216,
+          217,
+          218,
+          220,
+          221,
+          222,
+          223,
+          224,
+          225,
+          226,
+          231,
+          232,
+          233,
+          234,
+          236,
+          237,
+          238,
+          239,
+          240,
+          241,
+          242,
+          243,
+          248,
+          249,
+          250
+        ],
+        "suggested_fix": "Audit each concept's source_pages to ensure only pages containing direct evidence are included. Remove pages with no explicit mention of the concept."
+      },
+      {
+        "severity": "high",
+        "issue": "Concept 'main 메소드' has source_pages [23], but 'Main 클래스' has [22] — these are logically connected and should be grouped or cross-referenced to support question generation.",
+        "source_pages": [
+          22,
+          23
+        ],
+        "suggested_fix": "Add cross-reference in metadata or merge into a single concept 'Java 진입점 (Main 클래스 및 main 메소드)' with combined evidence and both pages."
+      }
+    ],
+    "checklist": {
+      "all_concepts_have_pages": false,
+      "unit_boundaries_clear": false,
+      "duplicates_detected": true,
+      "question_generation_ready": false
+    }
+  }
+]

@@ -1,0 +1,78 @@
+{
+  "questions": [
+    {
+      "unit": "Unit 01",
+      "question": "다음 두 코드 조각의 출력 결과는 어떻게 다릅니까? 이유를 설명하세요. \n\n코드 A: \nint a = 5; \nSystem.out.println(a++); \nSystem.out.println(a); \n\n코드 B: \nint a = 5; \nSystem.out.println(++a); \nSystem.out.println(a);",
+      "source_node_ids": [
+        "concepts:01:57"
+      ],
+      "source_pages": [
+        79,
+        80
+      ],
+      "rationale": "전위(++a)와 후위(a++) 증감 연산자의 차이를 이해하려면 실행 순서와 부작용을 구분해야 하며, 이는 Java의 핵심 개념 중 하나로 자주 오해되는 지점입니다.",
+      "good_answer_signal": "코드 A는 5, 6을 출력하고 코드 B는 6, 6을 출력함을 명시하며, 전위는 먼저 증가 후 사용, 후위는 먼저 사용 후 증가한다고 설명해야 합니다.",
+      "common_gap": "학습자들이 후위 연산자가 '결과적으로는 같은 값'이라고 생각하며 실행 순서의 차이를 간과하는 경향이 있습니다."
+    },
+    {
+      "unit": "Unit 01",
+      "question": "다음 코드에서 '=='와 'equals()' 중 어떤 것을 사용해야 올바른 문자열 비교가 되며, 왜 다른 방식은 잘못된 결과를 낼 수 있나요? \n\nString s1 = new String(\"hello\"); \nString s2 = new String(\"hello\"); \nSystem.out.println(s1 == s2); \nSystem.out.println(s1.equals(s2));",
+      "source_node_ids": [
+        "concepts:01:47",
+        "concepts:01:48"
+      ],
+      "source_pages": [
+        51,
+        52
+      ],
+      "rationale": "Java에서 문자열 비교는 참조 주소 비교(==)와 내용 비교(equals())를 혼동하는 것이 가장 흔한 오류 중 하나이며, 이는 실제 애플리케이션에서 버그의 주요 원인이 됩니다.",
+      "good_answer_signal": "equals()를 사용해야 하며, ==은 두 객체가 동일한 메모리 주소를 가리키는지 확인하는 것이고, equals()는 문자열 내용을 비교하기 때문이라고 설명해야 합니다.",
+      "common_gap": "학습자들이 문자열 리터럴과 new String()의 차이를 인지하지 못하고, 항상 ==이 동작한다고 잘못 이해하는 경우가 많습니다."
+    },
+    {
+      "unit": "Unit 01",
+      "question": "다음 switch 문에서 break 문을 제거하면 어떤 결과가 발생합니까? 왜 그런 현상이 발생하며, 이를 방지하기 위한 원칙은 무엇인가요? \n\nint day = 3; \nswitch(day) { \n  case 1: System.out.println(\"Mon\"); \n  case 2: System.out.println(\"Tue\"); \n  case 3: System.out.println(\"Wed\"); \n  case 4: System.out.println(\"Thu\"); \n  default: System.out.println(\"Invalid\"); \n}",
+      "source_node_ids": [
+        "concepts:01:72",
+        "concepts:01:73"
+      ],
+      "source_pages": [
+        105,
+        104
+      ],
+      "rationale": "break 문의 생략으로 인한 fall-through 동작은 switch 문의 가장 흔한 오류 원인 중 하나이며, 이는 코드의 의도와 실행 결과가 크게 달라지는 실수입니다.",
+      "good_answer_signal": "break 없이 실행되면 'Wed', 'Thu', 'Invalid'가 모두 출력되며, 이는 case가 연속적으로 실행되는 fall-through 현상입니다. 각 case 끝에 break를 삽입해야 의도한 동작을 보장합니다.",
+      "common_gap": "학습자들이 break 문이 생략되어도 '하나의 case만 실행될 것'이라고 착각하며, fall-through의 존재를 인지하지 못합니다."
+    },
+    {
+      "unit": "Unit 01",
+      "question": "다음 코드에서 메서드 오버로딩과 오버라이딩을 구분할 수 있나요? 각각의 정의와 차이를 설명하고, 이 코드에서 어떤 것이 오버로딩이고 어떤 것이 오버라이딩인지 판별하세요. \n\n// 부모 클래스 \nclass Animal { \n  void makeSound() { System.out.println(\"Animal sound\"); } \n} \n\n// 자식 클래스 \nclass Dog extends Animal { \n  void makeSound() { System.out.println(\"Bark\"); } \n  void makeSound(String type) { System.out.println(\"Bark: \" + type); } \n}",
+      "source_node_ids": [
+        "concepts:01:90",
+        "concepts:01:109"
+      ],
+      "source_pages": [
+        143,
+        144,
+        195
+      ],
+      "rationale": "오버로딩과 오버라이딩은 Java의 핵심 다형성 개념이지만, 학습자들이 매개변수 차이와 상속 관계를 혼동하는 경우가 매우 흔합니다. 이 질문은 개념적 구분을 요구합니다.",
+      "good_answer_signal": "makeSound(String)은 오버로딩(동일 클래스 내 동일 이름, 다른 매개변수), makeSound()는 오버라이딩(상속받아 재정의)임을 명확히 구분하고, 오버로딩은 컴파일 시 결정, 오버라이딩은 런타임 시 결정된다고 설명해야 합니다.",
+      "common_gap": "학습자들이 오버로딩을 '상속받은 메서드를 바꾼 것'이라고 잘못 이해하거나, 오버라이딩을 매개변수를 바꾼 것으로 착각하는 경향이 있습니다."
+    },
+    {
+      "unit": "Unit 01",
+      "question": "다음 코드에서 Scanner의 next()와 nextLine()을 혼용할 때 발생할 수 있는 문제를 설명하고, 이를 해결하기 위한 올바른 패턴을 제시하세요. \n\nScanner sc = new Scanner(System.in); \nSystem.out.print(\"정수 입력: \"); \nint num = sc.nextInt(); \nSystem.out.print(\"문자열 입력: \"); \nString str = sc.nextLine(); \nSystem.out.println(\"입력된 문자열: '\" + str + \"'\");",
+      "source_node_ids": [
+        "concepts:01:52"
+      ],
+      "source_pages": [
+        69,
+        70
+      ],
+      "rationale": "next()는 개행 문자를 소비하지 않아 다음 nextLine()이 빈 문자열을 반환하는 문제는 Java 초보자에게 가장 흔한 입력 오류 중 하나입니다. 이는 실습에서 빈번히 발생하는 버그입니다.",
+      "good_answer_signal": "next() 후 nextLine()이 빈 문자열을 반환하는 이유는 next()가 개행 문자를 소비하지 않기 때문이며, 해결법으로 next() 후 추가로 nextLine()을 호출하여 개행 문자를 소비해야 한다고 설명해야 합니다.",
+      "common_gap": "학습자들이 nextLine()이 '입력한 다음 줄'을 읽는다고 착각하고, next()가 버퍼에 남긴 개행 문자를 무시하는 현상을 인지하지 못합니다."
+    }
+  ]
+}

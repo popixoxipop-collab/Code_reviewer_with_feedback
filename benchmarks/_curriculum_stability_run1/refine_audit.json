@@ -1,0 +1,141 @@
+[
+  {
+    "iteration": 1,
+    "status": "needs_refine",
+    "coverage_summary": "Unit covers broad Java fundamentals from syntax to OOP, but has critical issues with concept duplication, missing page provenance for key topics, and checklist failures.",
+    "issues": [
+      {
+        "severity": "high",
+        "issue": "Duplicate concept 'JVM' defined on pages [4] and [14] with conflicting evidence and summaries; one is platform independence, the other is execution environment role.",
+        "source_pages": [
+          4,
+          14
+        ],
+        "suggested_fix": "Merge into single concept 'JVM' with comprehensive summary covering both platform independence and execution role, using evidence from both pages."
+      },
+      {
+        "severity": "high",
+        "issue": "Concept '메서드 정의' appears twice with identical name but different evidence and chunk ranges ([137] and [141]); causes ambiguity in provenance.",
+        "source_pages": [
+          137,
+          141
+        ],
+        "suggested_fix": "Rename second instance to '메서드 정의 - 실습 예시' or merge both into one concept with unified evidence from both pages."
+      },
+      {
+        "severity": "high",
+        "issue": "Concept 'Java 필요성' (page 11) and 'Java 장기 커리어 전망' (page 12) lack direct evidence linking to specific PDF content; evidence is generic and not anchored to chunk_range.",
+        "source_pages": [
+          11,
+          12
+        ],
+        "suggested_fix": "Revise evidence to quote exact sentences from pages 11 and 12, and ensure chunk_range matches the actual text location."
+      },
+      {
+        "severity": "medium",
+        "issue": "Concept 'Scanner introduction' (page 59) has no substantive evidence; it merely references the next unit without explaining Scanner itself.",
+        "source_pages": [
+          59
+        ],
+        "suggested_fix": "Replace evidence with actual content from page 59 describing Scanner's purpose, or remove this concept if redundant with 'Scanner 클래스'."
+      },
+      {
+        "severity": "medium",
+        "issue": "Concept '논리 연산자 우선순위' (pages 91,92) overlaps with '논리 AND/OR/NOT 연산자' and 'NOT 연산자'; creates redundancy and confusion.",
+        "source_pages": [
+          91,
+          92
+        ],
+        "suggested_fix": "Remove '논리 연산자 우선순위' and integrate its content into '논리 AND/OR/NOT 연산자' as a subsection."
+      },
+      {
+        "severity": "low",
+        "issue": "Concept 'String charAt()' and other String methods (page 51) are listed individually; too granular for unit-level mapping.",
+        "source_pages": [
+          51
+        ],
+        "suggested_fix": "Group into single concept 'String 메서드 사용' with subpoints listed in summary, reducing node count and improving clarity."
+      },
+      {
+        "severity": "low",
+        "issue": "Concept '변수와 자료형' (page 30) is a unit header, not a concept; it summarizes Unit 02 but lacks specific evidence.",
+        "source_pages": [
+          30
+        ],
+        "suggested_fix": "Remove this node; replace with individual concepts for '변수 정의', '자료형 정의', etc., which are already present."
+      }
+    ],
+    "checklist": {
+      "all_concepts_have_pages": false,
+      "unit_boundaries_clear": false,
+      "duplicates_detected": true,
+      "question_generation_ready": false
+    }
+  },
+  {
+    "iteration": 2,
+    "status": "needs_refine",
+    "coverage_summary": "Unit covers foundational Java concepts from syntax to OOP, but has critical issues with duplicate concepts, missing page provenance for key topics, and inconsistent granularity.",
+    "issues": [
+      {
+        "severity": "high",
+        "issue": "Duplicate concept 'JVM' defined on pages [4] and [14] with conflicting summaries and evidence, creating ambiguity.",
+        "source_pages": [
+          4,
+          14
+        ],
+        "suggested_fix": "Merge into single concept 'JVM' with unified summary and evidence from both pages, or rename one as 'JVM Architecture' if distinct focus."
+      },
+      {
+        "severity": "high",
+        "issue": "Concept '메서드 정의' appears twice with identical name but different evidence and source pages [137] and [141], causing confusion in provenance.",
+        "source_pages": [
+          137,
+          141
+        ],
+        "suggested_fix": "Merge into one concept '메서드 정의' with consolidated evidence, or rename second as '메서드 정의 실습 (예제)' if context differs."
+      },
+      {
+        "severity": "medium",
+        "issue": "Concept 'Java 필요성' (page 11) and 'Java 장기 커리어 전망' (page 12) overlap significantly in content about industry adoption; risk of redundancy.",
+        "source_pages": [
+          11,
+          12
+        ],
+        "suggested_fix": "Merge into single concept 'Java 산업적 중요성 및 장기 전망' with combined evidence from both pages."
+      },
+      {
+        "severity": "medium",
+        "issue": "Concept '논리 연산자 우선순위' (page 91,92) duplicates '논리 AND/OR/NOT 연산자' and 'NOT 연산자' with overlapping evidence; lacks clear distinction.",
+        "source_pages": [
+          88,
+          89,
+          91
+        ],
+        "suggested_fix": "Remove '논리 연산자 우선순위' as standalone; integrate precedence logic into '논리 AND/OR/NOT 연산자' as a sub-point."
+      },
+      {
+        "severity": "low",
+        "issue": "Concept 'Scanner introduction' (page 59) is vague and lacks evidence; it's a placeholder, not a concrete concept.",
+        "source_pages": [
+          59
+        ],
+        "suggested_fix": "Replace with 'Scanner 클래스' as the actual concept, and remove this placeholder entry."
+      },
+      {
+        "severity": "low",
+        "issue": "Concept '변수와 자료형' (page 30) is a unit header, not a concrete concept; it lists sub-units but lacks its own evidence.",
+        "source_pages": [
+          30
+        ],
+        "suggested_fix": "Remove this concept; its sub-concepts (변수 정의, 자료형 정의, etc.) are already present and properly sourced."
+      }
+    ],
+    "checklist": {
+      "all_concepts_have_pages": false,
+      "unit_boundaries_clear": false,
+      "duplicates_detected": true,
+      "question_generation_ready": false
+    }
+  }
+]

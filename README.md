@@ -815,6 +815,19 @@ python3 pipeline/compare_methodologies.py
   - COST: (b)/T1의 null 결과는 이번 8-repo 표본의 특성일 수 있음 — 팀 자체 프로젝트급(Study-Match-/LMS류)으로 표본을 넓히면 다른 결과가 나올 가능성이 있음.
   - EXIT: 라벨러 2인 확보 시 `judgment_precision_labels.jsonl`의 `labeler_a/b_label`을 채우고 kappa 계산 → 정밀도 축 확정. 팀 자체 프로젝트를 표본에 추가하려면 `judgment_4axis_benchmark.py`의 `discover_corpus()`에 `PROVENANCE.json`만 추가하면 재클론 로직이 그대로 재사용됨.
 
+- **D120** ([`benchmarks/curriculum_4axis_benchmark.py`](./benchmarks/curriculum_4axis_benchmark.py)) — 파이프라인 01(교안 분석) 4축 벤치마크 실측(M2, 사용자 지시 "바로 이어가"). PDF가 암호로 잠겨 있어 사용자에게 직접 비밀번호를 받아 진행(`.env`에 `JAVA_CURRICULUM_PDF_PASSWORD`로 저장, git엔 안 올라감). D119보다 훨씬 험난했다 — 실행 중 실제 버그 4건을 실시간으로 root-cause해 고쳤다(아래).
+  - **최종 결과**: 안정성 **1.0**(3/3 풀런 전부 26청크+refine+질문생성 end-to-end 성공) · 재현성 청크층 평균 **0.182**(5개 층화표본×100회) · 재현성 질문생성층 **0.067**(고정 그래프×50회) · 정밀도 **0.551**(236개 concept/code/caution 중 결정론 매치 42 + 교차모델 판정 88 = 130건 근거 확인) · 속도 평균 306초/풀런(26청크+refine 2회+질문생성 1회 e2e).
+  - **P01-T1 모델 비교(5청크×10회, 확정 트랙)**: **step-3.5-flash 0/50(전멸)** — `ValueError: NVIDIA response had no content; finish_reason=stop`, 재시도해도 100% 동일 실패(전송 오류 아니라 모델 자체 행동). mistral-medium-3.5 50/50(100%), qwen3-next-80b(팀 Locked) 48/50(96%). **계획서 §4.3이 명시적으로 예견한 가설이 실측으로 확정됨**: "P03 1위(step-3.5-flash)가 P01에서는 탈락일 수 있다"는 D95 전례 기반 추측이, 탈락 정도가 아니라 완전 실패로 재현됨 — "파이프라인마다 벤치마크를 따로 해야 한다"는 이 계획 전체의 논거가 최댓값으로 실증됨.
+  - **디버깅 여정(투자 대비 가치 있었던 4건)**:
+    1. **질문생성 max_tokens 트렁케이션**: 파이프라인 스크립트 자체 CLI 기본값(`--max-tokens-questions 1800`)을 그대로 썼다가 파일럿 5/10 실패 — 진짜 좋은 한국어 질문(트레이드오프 질문 등)이 char 3597에서 문자열 도중 잘림(`Unterminated string`). 8192로 올렸더니 오히려 3/3 전부 `HTTP 400`으로 요청 자체가 거부됨(모델의 실제 max_tokens 상한이 1800~8192 사이 어딘가). 이 프로젝트 기존 중앙값 `DEFAULT_MAX_TOKENS`(4096, P02-T2로 이미 검증된 값)로 낙착, 3/3 클린 통과. **프로덕션 파이프라인(`scripts/java_curriculum_nvidia_pipeline.py`)도 같은 1800 기본값을 쓰므로 실사용에서도 질문 누락 가능성 — 팀에 별도 공유 필요.**
+    2. **`refine_once` 미보호 예외로 파일럿 전체 크래시**: 원본 `analyse_chunk` 루프와 달리 그래프 구축용 단발 `refine_once()` 호출에 try/except가 없어 `HTTP 500` 1건에 이미 성공한 26개 청크 분석 결과(qgen용 고정 그래프 구축의 전제)까지 통째로 유실 위기. `_call_with_retry`(3회, 8초 backoff)로 감싸고, `unit_map`을 26청크 분석 직후 즉시 캐시 파일로 저장해(`_curriculum_fixed_unit_map_cache.json`) 재시도 시 26콜을 다시 안 써도 되게 함.
+    3. **본실행 초반 HTTP 400 폭풍 → 재시도로 해소**: 재현성 청크층 p1-10이 100/100 즉발 400(4.1초에 전멸), 안정성 3회 풀런은 run1 34.6%·run2/3 0%까지 악화. **3+ 가설 검증**: (H1) 동시성 자체가 원인 — 4-concurrent 다른청크 번인 테스트로 반증(4/4 성공). (H2) qwen 총량 쿼타 완전 소진(D103/D116 계보) — 격리 단발 호출이 즉시 성공해 반증(완전 소진이면 단발도 막혀야 함). (H3, 채택) **일시적 NVIDIA측 장애 구간** — 초반(안정성+재현성 앞부분)에 집중되고 후반(재현성 뒷부분·질문생성·T1)은 자연 해소된 시계열 패턴과 정합. `_retry_transient()`(400/500/502/503/KeyPoolExhausted/timeout만 선별 재시도, JSON파싱 실패 등 진짜 모델 행동은 재시도 안 함 — 신뢰도 있는 데이터 유지) 추가 후 재실행 → 안정성 11.5%→100%, 재현성 p1-10 0%→94%, p61-70 37%→100%로 전부 해소. **재발 방지용 인프라 자산(retry+에러타입 로깅)은 남기되, 근본원인을 코드 버그로 오판하지 않도록 "확정 안 됨" 상태로 정직히 기록.**
+    4. **모델 ID bare-name 버그, 같은 실수를 두 곳에서 반복**: `COMPARE_MODELS`에 `"step-3.5-flash"`/`"mistral-medium-3.5"`를 provider prefix 없이 썼다가 `HTTP 404`. `benchmark_4axis_regrade.py`의 `RELIABLE_MODELS`에서 정확한 ID(`stepfun-ai/step-3.5-flash`, `mistralai/mistral-medium-3.5-128b`) 확인 후 교체 — **정밀도 tier2 judge model에도 똑같은 실수(`"mistral-medium-3.5"`)가 있어 194건 판정이 전부 조용히 실패**(`grounded=None`으로만 쌓여 눈에 안 띔)했던 것도 같은 교정으로 함께 해결.
+  - WHY: 파일럿(§4.2 pilot-then-size)이 실제로 막아준 것 — 만약 파일럿 없이 바로 REPEATS=100/50 본실행부터 갔으면 max_tokens 버그를 550콜 다 쓰고서야 발견했을 것.
+  - COST: 디버깅에 쓴 추가 API 콜(진단용 격리 호출 다수 + 재실행분)은 계획 §7.3 비용표(~1,234+α)에 반영 안 된 초과분 — 정확한 초과량은 추적 안 함(진단 콜은 대부분 1~3콜 단위로 작아 무시 가능한 수준으로 판단).
+  - EXIT: HTTP 400 폭풍의 근본원인이 진짜 "일시적 NVIDIA 장애"인지 이 코드베이스의 잠재 버그인지는 여전히 100% 확정 아님 — 다음에 재현되면(특히 실행 초반에 집중되는 패턴이 또 나오면) `_retry_transient`의 marker 목록과 backoff를 첫 대응으로 쓰되, D103/D116 계보처럼 "모델별 총량 쿼타"로 재분류할 근거(예: 격리 단발 호출도 실패)가 나오면 annotation 정정.
+  - 다음(M3): Hook File 스키마/생성기 구축, 이후 M4(hook 루프 실험).
+
 
 ## 다음 단계 (미해결)
 

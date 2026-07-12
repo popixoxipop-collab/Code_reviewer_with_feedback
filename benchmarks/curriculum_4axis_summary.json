@@ -1,0 +1,268 @@
+{
+  "note": "P01 4-axis (D120). Model=qwen3-next-80b (Locked). Stability=3-stage(chunk x refine x qgen) e2e product over full-corpus pipeline runs. Precision=2-tier provenance (deterministic token match + cross-model judge on mismatches only). Reproducibility=normalized structural signature identical-rate, stratified 5-chunk sample for chunk layer + 1 fixed graph for qgen layer. Speed=stability run wall-clock.",
+  "stability": {
+    "n_runs": 3,
+    "n_full_pipeline_ok": 3,
+    "mean_chunk_success_rate": 1.0,
+    "mean_refine_success_rate": 1.0,
+    "mean_questions_success_rate": 1.0,
+    "end_to_end_stability": 1.0,
+    "mean_elapsed_s": 306.0
+  },
+  "reproducibility": {
+    "chunk_layer": {
+      "per_chunk": [
+        {
+          "chunk_range": "p1-10",
+          "reps": 100,
+          "ok_reps": 94,
+          "errors": 6,
+          "error_types": {
+            "ValueError: JSON parse failed (Expecting ',' delimiter: line 101 column 6 (char 3790)); repair failed (Expecting ',' delimiter: line 101 column 6 (char 3790)); raw_head='{\\n  \"chunk_range\": \"1-10\",\\n  \"units\": [\\": 1,
+            "ValueError: JSON parse failed (Expecting ',' delimiter: line 108 column 6 (char 3915)); repair failed (Expecting ',' delimiter: line 108 column 6 (char 3915)); raw_head='{\\n  \"chunk_range\": \"1-10\",\\n  \"units\": [\\": 1,
+            "ValueError: JSON parse failed (Expecting ',' delimiter: line 109 column 6 (char 3984)); repair failed (Expecting ',' delimiter: line 108 column 6 (char 3959)); raw_head='{\\n  \"chunk_range\": \"1-10\",\\n  \"units\": [\\": 1,
+            "ValueError: JSON parse failed (Expecting ',' delimiter: line 108 column 6 (char 3932)); repair failed (Expecting ',' delimiter: line 108 column 6 (char 3932)); raw_head='{\\n  \"chunk_range\": \"1-10\",\\n  \"units\": [\\": 1,
+            "ValueError: JSON parse failed (Expecting ',' delimiter: line 108 column 6 (char 3949)); repair failed (Expecting ',' delimiter: line 108 column 6 (char 3949)); raw_head='{\\n  \"chunk_range\": \"1-10\",\\n  \"units\": [\\": 1,
+            "ValueError: JSON parse failed (Expecting ',' delimiter: line 101 column 6 (char 3714)); repair failed (Expecting ',' delimiter: line 101 column 6 (char 3714)); raw_head='{\\n  \"chunk_range\": \"1-10\",\\n  \"units\": [\\": 1
+          },
+          "unique_signatures": 27,
+          "identical_rate": 0.18085106382978725,
+          "elapsed_s": 1139.9
+        },
+        {
+          "chunk_range": "p61-70",
+          "reps": 100,
+          "ok_reps": 100,
+          "errors": 0,
+          "error_types": {},
+          "unique_signatures": 34,
+          "identical_rate": 0.36,
+          "elapsed_s": 623.0
+        },
+        {
+          "chunk_range": "p131-140",
+          "reps": 100,
+          "ok_reps": 100,
+          "errors": 0,
+          "error_types": {},
+          "unique_signatures": 27,
+          "identical_rate": 0.17,
+          "elapsed_s": 748.1
+        },
+        {
+          "chunk_range": "p191-200",
+          "reps": 100,
+          "ok_reps": 100,
+          "errors": 0,
+          "error_types": {},
+          "unique_signatures": 61,
+          "identical_rate": 0.1,
+          "elapsed_s": 843.1
+        },
+        {
+          "chunk_range": "p241-250",
+          "reps": 100,
+          "ok_reps": 100,
+          "errors": 0,
+          "error_types": {},
+          "unique_signatures": 57,
+          "identical_rate": 0.1,
+          "elapsed_s": 897.3
+        }
+      ],
+      "mean_identical_rate": 0.1822,
+      "repeats": 100
+    },
+    "qgen_layer": {
+      "reps": 50,
+      "ok_reps": 45,
+      "errors": 5,
+      "error_types": {
+        "HTTPError: HTTP Error 500: Internal Server Error": 4,
+        "HTTPError: HTTP Error 400: Bad Request": 1
+      },
+      "unique_signatures": 40,
+      "identical_rate": 0.06666666666666667,
+      "reproducibility_mode_agreement_rate": 0.06666666666666667,
+      "elapsed_s": 1334.2
+    }
+  },
+  "precision": {
+    "status": "measured",
+    "summary": {
+      "n_items": 236,
+      "tier1_pass": 42,
+      "tier1_mismatch_needing_tier2": 194,
+      "tier2_judge_model": "mistralai/mistral-medium-3.5-128b",
+      "tier2_grounded": 88,
+      "tier2_not_grounded": 106,
+      "final_precision_rate": 0.551,
+      "note": "tier1은 결정론 토큰매치(0콜), tier2는 mismatch만 다른 모델(judge)로 재판정. 검증기 자체의 신뢰도(사람 표본 대조)는 별도 사람 감사 필요 -- 미착수, 이 필드는 그 결과 없이 자동 판정만 반영"
+    }
+  },
+  "p01_t1_model_comparison": [
+    {
+      "model": "stepfun-ai/step-3.5-flash",
+      "chunk_range": "p1-10",
+      "reps": 10,
+      "ok_reps": 0,
+      "errors": 10,
+      "error_types": {
+        "ValueError: NVIDIA response had no content; finish_reason=stop": 10
+      },
+      "identical_rate": null,
+      "mean_elapsed_s": 11.3
+    },
+    {
+      "model": "stepfun-ai/step-3.5-flash",
+      "chunk_range": "p61-70",
+      "reps": 10,
+      "ok_reps": 0,
+      "errors": 10,
+      "error_types": {
+        "ValueError: NVIDIA response had no content; finish_reason=stop": 10
+      },
+      "identical_rate": null,
+      "mean_elapsed_s": 9.3
+    },
+    {
+      "model": "stepfun-ai/step-3.5-flash",
+      "chunk_range": "p131-140",
+      "reps": 10,
+      "ok_reps": 0,
+      "errors": 10,
+      "error_types": {
+        "ValueError: NVIDIA response had no content; finish_reason=stop": 10
+      },
+      "identical_rate": null,
+      "mean_elapsed_s": 14.2
+    },
+    {
+      "model": "stepfun-ai/step-3.5-flash",
+      "chunk_range": "p191-200",
+      "reps": 10,
+      "ok_reps": 0,
+      "errors": 10,
+      "error_types": {
+        "ValueError: NVIDIA response had no content; finish_reason=stop": 10
+      },
+      "identical_rate": null,
+      "mean_elapsed_s": 10.2
+    },
+    {
+      "model": "stepfun-ai/step-3.5-flash",
+      "chunk_range": "p241-250",
+      "reps": 10,
+      "ok_reps": 0,
+      "errors": 10,
+      "error_types": {
+        "ValueError: NVIDIA response had no content; finish_reason=stop": 10
+      },
+      "identical_rate": null,
+      "mean_elapsed_s": 17.6
+    },
+    {
+      "model": "mistralai/mistral-medium-3.5-128b",
+      "chunk_range": "p1-10",
+      "reps": 10,
+      "ok_reps": 10,
+      "errors": 0,
+      "error_types": {},
+      "identical_rate": 0.5,
+      "mean_elapsed_s": 53.0
+    },
+    {
+      "model": "mistralai/mistral-medium-3.5-128b",
+      "chunk_range": "p61-70",
+      "reps": 10,
+      "ok_reps": 10,
+      "errors": 0,
+      "error_types": {},
+      "identical_rate": 0.2,
+      "mean_elapsed_s": 38.9
+    },
+    {
+      "model": "mistralai/mistral-medium-3.5-128b",
+      "chunk_range": "p131-140",
+      "reps": 10,
+      "ok_reps": 10,
+      "errors": 0,
+      "error_types": {},
+      "identical_rate": 0.1,
+      "mean_elapsed_s": 38.1
+    },
+    {
+      "model": "mistralai/mistral-medium-3.5-128b",
+      "chunk_range": "p191-200",
+      "reps": 10,
+      "ok_reps": 10,
+      "errors": 0,
+      "error_types": {},
+      "identical_rate": 0.1,
+      "mean_elapsed_s": 48.2
+    },
+    {
+      "model": "mistralai/mistral-medium-3.5-128b",
+      "chunk_range": "p241-250",
+      "reps": 10,
+      "ok_reps": 10,
+      "errors": 0,
+      "error_types": {},
+      "identical_rate": 0.2,
+      "mean_elapsed_s": 47.1
+    },
+    {
+      "model": "qwen/qwen3-next-80b-a3b-instruct",
+      "chunk_range": "p1-10",
+      "reps": 10,
+      "ok_reps": 8,
+      "errors": 2,
+      "error_types": {
+        "ValueError: JSON parse failed (Expecting ',' delimiter: line 108 column 6 (char 4062)); repair failed (Expecting ',' delimiter: line 108 column 6 (char 4062)); raw_head='{\\n  \"chunk_range\": \"1-10\",\\n  \"units\": [\\": 1,
+        "ValueError: JSON parse failed (Expecting ',' delimiter: line 101 column 6 (char 3765)); repair failed (Expecting ',' delimiter: line 101 column 6 (char 3765)); raw_head='{\\n  \"chunk_range\": \"1-10\",\\n  \"units\": [\\": 1
+      },
+      "identical_rate": 0.5,
+      "mean_elapsed_s": 56.8
+    },
+    {
+      "model": "qwen/qwen3-next-80b-a3b-instruct",
+      "chunk_range": "p61-70",
+      "reps": 10,
+      "ok_reps": 10,
+      "errors": 0,
+      "error_types": {},
+      "identical_rate": 0.3,
+      "mean_elapsed_s": 29.4
+    },
+    {
+      "model": "qwen/qwen3-next-80b-a3b-instruct",
+      "chunk_range": "p131-140",
+      "reps": 10,
+      "ok_reps": 10,
+      "errors": 0,
+      "error_types": {},
+      "identical_rate": 0.3,
+      "mean_elapsed_s": 31.7
+    },
+    {
+      "model": "qwen/qwen3-next-80b-a3b-instruct",
+      "chunk_range": "p191-200",
+      "reps": 10,
+      "ok_reps": 10,
+      "errors": 0,
+      "error_types": {},
+      "identical_rate": 0.2,
+      "mean_elapsed_s": 34.6
+    },
+    {
+      "model": "qwen/qwen3-next-80b-a3b-instruct",
+      "chunk_range": "p241-250",
+      "reps": 10,
+      "ok_reps": 10,
+      "errors": 0,
+      "error_types": {},
+      "identical_rate": 0.2,
+      "mean_elapsed_s": 38.7
+    }
+  ]
+}

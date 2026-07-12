@@ -1,0 +1,76 @@
+{
+  "policy": {
+    "capacity_per_key_per_model_per_60s": 20,
+    "key_slots": 7,
+    "aggregate_capacity_per_model_per_60s": 140,
+    "window_s": 60.0
+  },
+  "event_count": 26,
+  "slot_model_windows": {
+    "NVIDIA_API_KEY_1::qwen/qwen3-next-80b-a3b-instruct": {
+      "slot": "NVIDIA_API_KEY_1",
+      "model": "qwen/qwen3-next-80b-a3b-instruct",
+      "calls": 4,
+      "max_calls_in_any_60s": 2,
+      "limit_per_60s": 20,
+      "within_limit": true
+    },
+    "NVIDIA_API_KEY_2::qwen/qwen3-next-80b-a3b-instruct": {
+      "slot": "NVIDIA_API_KEY_2",
+      "model": "qwen/qwen3-next-80b-a3b-instruct",
+      "calls": 4,
+      "max_calls_in_any_60s": 2,
+      "limit_per_60s": 20,
+      "within_limit": true
+    },
+    "NVIDIA_API_KEY_3::qwen/qwen3-next-80b-a3b-instruct": {
+      "slot": "NVIDIA_API_KEY_3",
+      "model": "qwen/qwen3-next-80b-a3b-instruct",
+      "calls": 4,
+      "max_calls_in_any_60s": 2,
+      "limit_per_60s": 20,
+      "within_limit": true
+    },
+    "NVIDIA_API_KEY_4::qwen/qwen3-next-80b-a3b-instruct": {
+      "slot": "NVIDIA_API_KEY_4",
+      "model": "qwen/qwen3-next-80b-a3b-instruct",
+      "calls": 4,
+      "max_calls_in_any_60s": 2,
+      "limit_per_60s": 20,
+      "within_limit": true
+    },
+    "NVIDIA_API_KEY_5::qwen/qwen3-next-80b-a3b-instruct": {
+      "slot": "NVIDIA_API_KEY_5",
+      "model": "qwen/qwen3-next-80b-a3b-instruct",
+      "calls": 4,
+      "max_calls_in_any_60s": 2,
+      "limit_per_60s": 20,
+      "within_limit": true
+    },
+    "NVIDIA_API_KEY_6::qwen/qwen3-next-80b-a3b-instruct": {
+      "slot": "NVIDIA_API_KEY_6",
+      "model": "qwen/qwen3-next-80b-a3b-instruct",
+      "calls": 3,
+      "max_calls_in_any_60s": 2,
+      "limit_per_60s": 20,
+      "within_limit": true
+    },
+    "NVIDIA_API_KEY_7::qwen/qwen3-next-80b-a3b-instruct": {
+      "slot": "NVIDIA_API_KEY_7",
+      "model": "qwen/qwen3-next-80b-a3b-instruct",
+      "calls": 3,
+      "max_calls_in_any_60s": 2,
+      "limit_per_60s": 20,
+      "within_limit": true
+    }
+  },
+  "model_windows": {
+    "qwen/qwen3-next-80b-a3b-instruct": {
+      "calls": 26,
+      "max_calls_in_any_60s": 11,
+      "aggregate_limit_per_60s": 140,
+      "within_aggregate_limit": true
+    }
+  },
+  "within_policy": true
+}
