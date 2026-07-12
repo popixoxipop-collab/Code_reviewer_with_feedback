@@ -317,11 +317,12 @@
       신뢰 가능 <b>11개</b>(20건+/24, 질문생성 역할 기준: qwen3-next-80b·step-3.5-flash·mistral-medium-3.5·nemotron-super-49b·llama-4-maverick·mistral-large-3·<b>deepseek-v4-pro(100%)·minimax-m3(96%)·nemotron-3-super-120b(96%)·glm-5.2(88%)·qwen3.5-122b(83%)</b>) ·
       진짜 탈락 5개(모델 결함 gpt-oss-120b/20b(tool_choice 미준수) · 계정 kimi-k2.6(404) · NVIDIA측 mistral-nemotron(게이트웨이 504)·llama-3.3-70b(워커풀 고갈)).
       낮았던 점수 대부분은 모델 품질이 아니라 <b>우리 발사 패턴(job당 5~8 HTTP콜×무백오프 재시도×동시성)+512 토큰 캡의 아티팩트</b>였음이 D110 재실행(60/69 회복)으로 확정.
-      최종 순위는 <b>4축 벤치마크</b>(안정성=질문생성×채점 end-to-end / 정밀도 / 재현성 / 속도, 11모델 완전판) —
-      step-3.5-flash 0.984 &gt; qwen3-next-80b 0.779 &gt; deepseek-v4-pro 0.776(안정성 유일 만점) &gt; mistral-medium-3.5 0.74 &gt;
-      qwen3.5-122b 0.701 &gt; nemotron-3-super 0.694(재현성 0.0) &gt; minimax-m3 0.682(워처 자동 회복 후 실측) &gt; nemotron-49b 0.658 &gt;
-      glm-5.2 0.652 &gt; maverick 0.248(서빙 장애) &gt; mistral-large-3 0.229(채점기 퇴행 루프).
-      전체 표는 아래 "4축 최종 벤치마크 표" 참고, 상세는 README D106~D114.
+      최종 순위는 <b>4축 벤치마크</b>(안정성=질문생성×채점 end-to-end / 정밀도 / 재현성 / 속도, 재현성 <b>100회 반복</b> 재측정 완료) —
+      step-3.5-flash 0.866 &gt; mistral-medium-3.5 0.749 &gt; qwen3-next-80b 0.742 &gt; nemotron-3-super 0.663 &gt;
+      qwen3.5-122b 0.589 &gt; nemotron-49b 0.531 &gt; deepseek-v4-pro 0.487(쿼터 버킷 소진, 몇 시간 전엔 100%) &gt;
+      maverick 0.248(서빙 장애) &gt; mistral-large-3 0.229(채점기 퇴행 루프) &gt; glm-5.2 0.104(쿼터 버킷 소진) &gt;
+      minimax-m3 0.1(DEGRADED 재발). 하위 3개는 재현성이 아니라 인프라 붕괴 — 아래 표 비고 참고.
+      전체 표는 아래 "4축 최종 벤치마크 표" 참고, 상세는 README D106~D116.
     </p>
 
     <section class="panel split">
@@ -348,12 +349,13 @@
     </section>
 
     <section class="panel">
-      <h2>4축 최종 벤치마크 표 — 응답이 실제로 오는 11개 모델 (D114)</h2>
+      <h2>4축 최종 벤치마크 표 — 재현성 100회 반복 (D116)</h2>
       <p>
         안정성 = 질문생성 job 성공률 × 채점 콜 성공률(end-to-end, Locked 스펙 "단일 모델 양역할" 기준).
         정밀도 = 후보가 자기 transcript를 직접 채점했을 때 strong&gt;weak 분리율.
-        재현성 = 같은 입력 3회 채점의 5축 벡터 완전일치율(±평균 총점 spread). temperature=0 고정.
-        종합 = 4축 min-max 정규화 평균(속도 역정규화).
+        재현성 = 같은 입력 <b>100회</b> 채점의 5축 벡터 완전일치율(정확히 100/100 성공한 표본만 판정,
+        REPEATS=3 때와 동일 기준 — 판정 기준 자체를 바꾸면 낮은 커버리지 모델이 통계적으로 유리해지는
+        편향이 실측으로 확인돼 폐기, README D115). temperature=0 고정. 종합 = 4축 min-max 정규화 평균(속도 역정규화).
       </p>
       <div class="table-wrap">
         <table>
@@ -363,31 +365,34 @@
               <th>Model</th>
               <th>안정성 (질문생성×채점)</th>
               <th>정밀도</th>
-              <th>재현성 (±spread)</th>
+              <th>재현성</th>
               <th>속도</th>
               <th>종합</th>
               <th>비고</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td>1</td><td><code>step-3.5-flash</code></td><td>0.945 (0.958×0.986)</td><td>1</td><td>0.818 (±0.57)</td><td>10.5s</td><td><b>0.984</b></td><td></td></tr>
-            <tr><td>2</td><td><code>qwen3-next-80b</code></td><td>0.958 (0.958×1)</td><td>1</td><td>0.522 (±1.26)</td><td>90.3s</td><td><b>0.779</b></td><td>팀 Locked 모델</td></tr>
-            <tr><td>3</td><td><code>deepseek-v4-pro</code></td><td>1 (1×1)</td><td>1</td><td>0.375 (±1.42)</td><td>69.2s</td><td><b>0.776</b></td><td>안정성 유일 만점</td></tr>
-            <tr><td>4</td><td><code>mistral-medium-3.5</code></td><td>0.958 (0.958×1)</td><td>1</td><td>0.826 (±0.17)</td><td>178.9s</td><td><b>0.74</b></td><td>채점 일관성 최고(spread 0.17)</td></tr>
-            <tr><td>5</td><td><code>qwen3.5-122b</code></td><td>0.556 (0.833×0.667)</td><td>1</td><td>0.5 (±0.4)</td><td>70.4s</td><td><b>0.701</b></td><td></td></tr>
-            <tr><td>6</td><td><code>nemotron-3-super-120b</code></td><td>0.889 (0.958×0.928)</td><td>1</td><td>0 (±4.41)</td><td>29.6s</td><td><b>0.694</b></td><td>범위 밖 점수(0·9) 출력</td></tr>
-            <tr><td>7</td><td><code>minimax-m3</code></td><td>0.945 (0.958×0.986)</td><td>1</td><td>0.318 (±1.09)</td><td>111.7s</td><td><b>0.682</b></td><td>워처 자동 회복 후 실측</td></tr>
-            <tr><td>8</td><td><code>nemotron-super-49b</code></td><td>0.806 (0.958×0.841)</td><td>1</td><td>0.438 (±1.32)</td><td>129.1s</td><td><b>0.658</b></td><td></td></tr>
-            <tr><td>9</td><td><code>glm-5.2</code></td><td>0.861 (0.875×0.984)</td><td>1</td><td>0.35 (±0.76)</td><td>124.4s</td><td><b>0.652</b></td><td></td></tr>
-            <tr><td>10</td><td><code>llama-4-maverick</code></td><td>0 (0.875×0)</td><td>—</td><td>—</td><td>11.7s</td><td><b>0.248</b></td><td>NVIDIA 서빙 장애(측정 불가)</td></tr>
-            <tr><td>11</td><td><code>mistral-large-3</code></td><td>0 (1×0)</td><td>—</td><td>—</td><td>24.7s</td><td><b>0.229</b></td><td>채점기 퇴행 루프(결함)</td></tr>
+            <tr><td>1</td><td><code>step-3.5-flash</code></td><td>0.953 (0.958×0.995)</td><td>1</td><td>0.286</td><td>10.5s</td><td><b>0.866</b></td><td></td></tr>
+            <tr><td>2</td><td><code>mistral-medium-3.5</code></td><td>0.951 (0.958×0.993)</td><td>1</td><td>0.615</td><td>178.9s</td><td><b>0.749</b></td><td></td></tr>
+            <tr><td>3</td><td><code>qwen3-next-80b</code></td><td>0.951 (0.958×0.993)</td><td>1</td><td>0.273</td><td>90.3s</td><td><b>0.742</b></td><td>팀 Locked 모델</td></tr>
+            <tr><td>4</td><td><code>nemotron-3-super-120b</code></td><td>0.729 (0.958×0.761)</td><td>1</td><td>0</td><td>29.6s</td><td><b>0.663</b></td><td>범위 밖 점수 출력(진짜 결함, 100회가 더 정확히 잡음)</td></tr>
+            <tr><td>5</td><td><code>qwen3.5-122b</code></td><td>0.68 (0.833×0.816)</td><td>1</td><td>—</td><td>70.4s</td><td><b>0.589</b></td><td></td></tr>
+            <tr><td>6</td><td><code>nemotron-super-49b</code></td><td>0.791 (0.958×0.826)</td><td>1</td><td>0</td><td>129.1s</td><td><b>0.531</b></td><td></td></tr>
+            <tr><td>7</td><td><code>deepseek-v4-pro</code></td><td>0.284 (1×0.284)</td><td>1</td><td>0</td><td>69.2s</td><td><b>0.487</b></td><td>총량 쿼타 버킷 소진(REPEATS=3땐 100%였음)</td></tr>
+            <tr><td>8</td><td><code>llama-4-maverick</code></td><td>0 (0.875×0)</td><td>—</td><td>—</td><td>11.7s</td><td><b>0.248</b></td><td>NVIDIA 서빙 장애(측정 불가)</td></tr>
+            <tr><td>9</td><td><code>mistral-large-3</code></td><td>0 (1×0)</td><td>—</td><td>—</td><td>24.7s</td><td><b>0.229</b></td><td>채점기 퇴행 루프(결함)</td></tr>
+            <tr><td>10</td><td><code>glm-5.2</code></td><td>0.089 (0.875×0.102)</td><td>—</td><td>0</td><td>124.4s</td><td><b>0.104</b></td><td>총량 쿼타 버킷 소진(mistral-large-3와 동일 패턴)</td></tr>
+            <tr><td>11</td><td><code>minimax-m3</code></td><td>0 (0.958×0)</td><td>—</td><td>—</td><td>111.7s</td><td><b>0.1</b></td><td>REPEATS=100 도중 DEGRADED 재발(종료 후 정상 확인)</td></tr>
           </tbody>
         </table>
       </div>
       <p class="footnote">
-        정밀도는 채점 가능한 9개 전원 1.00 — 실제 변별축은 재현성(0~0.826)과 채점기 역할 안정성.
-        minimax-m3는 측정 시간대 NVIDIA DEGRADED로 한때 0점이었으나 회복 감시 워처가 자동 재측정해
-        실측(7위)으로 대체됨. 원자료: <code>turn_engine_4axis_summary.json</code> ·
+        <b>하위 3개(deepseek-v4-pro·glm-5.2·minimax-m3)는 재현성이 아니라 인프라가 무너진 결과다.</b>
+        20,300건 규모로 한 모델에 30~40분간 집중 발사하자 glm·deepseek는 HTTP 429(총량 쿼타 버킷
+        소진 — mistral-large-3에서만 봤던 패턴이 최소 2개 모델 더 있다는 새 발견), minimax는 HTTP 400
+        DEGRADED가 재발했다. 셋 다 런 종료 직후 라이브 프로브로 원인 확인, 사용자 결정으로 재시도 없이
+        이 수치를 최종 기록. nemotron-3-super-120b는 반대로 <b>100회가 3회보다 진짜 결함(범위 밖 점수
+        출력)을 더 정확히 잡아낸 사례</b>. 원자료: <code>turn_engine_4axis_summary.json</code> ·
         <code>turn_engine_4axis_regrade_raw.json</code> (repo).
       </p>
     </section>

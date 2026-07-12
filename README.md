@@ -789,6 +789,14 @@ python3 pipeline/compare_methodologies.py
   - COST: 실행 전 REPEATS=3 raw/summary를 `.bak_repeats3`로 백업(대조군 보존, 드리프트 없음을 재검증하는 근거로도 사용). 20,300콜은 오늘 하루 여러 차례 겪은 NVIDIA DEGRADED/서빙장애 패턴을 감안하면 실행 중 일부 모델에서 재현될 수 있음 — 모델 단위 순차+raw 병합 설계라 중간에 한 모델이 전멸해도 이미 끝난 모델의 데이터는 안전.
   - EXIT: 결과는 완료 후 표+README 갱신. 재현성 판정 기준을 identical_rate 대신 mode_agreement_rate로 바꾸고 싶으면(통계적으로 더 안정적) `composite_4axis` 계산부의 `repr_` 라인 하나만 교체.
 
+- **D116** ([`benchmark_4axis_regrade.py`](./benchmark_4axis_regrade.py), [`turn_engine_4axis_summary.json`](./turn_engine_4axis_summary.json)) — 100회 재현성 완주(총 12시간 39분) + **"모델별 총량 쿼타 버킷"이 mistral-large-3만의 특성이 아니었음을 확인**, 사용자 결정으로 그대로 마감
+  - **완주 결과(9모델 순차, 23:36~08:22)**: 6개는 신뢰 가능한 재측정 — nemotron-3-super-120b는 채점 성공률 92.8%→76.1%로 하락했는데 원인이 범위 밖 점수(0점·8점) 출력과 tool_choice 미준수라 **100회가 이 모델의 진짜 결함률을 작은 표본(3회)보다 정확히 잡아낸 것**(의도한 효과가 실현된 사례). 나머지 5개(step/medium/qwen3-next/qwen3.5/nemotron-49b)는 REPEATS=3 대비 값이 합리적 범위에서 이동 — 재현성이 낮을수록(0.27~0.62) 표본이 커질 때 값이 더 크게 흔들리는 것 자체가 통계적으로 정상.
+  - **3개는 인프라 붕괴, 재현성 문제 아님**: minimax-m3(2300/2300 전부 HTTP 400 DEGRADED — D111 사건 재발, 종료 직후 라이브 프로브로 정상 복구 확인) · glm-5.2(2100건 중 1883건 HTTP 429, 98.4%→10.2%) · deepseek-v4-pro(2400건 중 1719건 HTTP 429, **100%→28.4%**, 몇 시간 전 유일한 완전무결 모델이었음). glm/deepseek 둘 다 **런 종료 직후에도 라이브 단발 프로브가 여전히 429** — 이건 D103에서 mistral-large-3 하나에서만 확인했던 "천천히 재충전되는 모델별 총량 쿼타 버킷"이 **최소 2개 모델 더 있다는 새 발견**이다. D112/D113가 증명한 "60rpm 안전"은 step-3.5-flash 한 모델로만 검증한 것이라 전 모델에 일반화되지 않는다는 게 실측으로 확정됨 — 대량 단일모델 벤치마크를 다시 설계할 때는 모델별로 낮은 rpm을 기본값으로 잡아야 한다.
+  - **사용자 결정**: AskUserQuestion으로 "3개 모델을 어떻게 처리할지"(재시도 대기 8~12시간 추가 vs 즉시 마감) 확인 → **3개 다 지금 상태로 마감, 추가 실행 없음**. `GRADER_MEASUREMENT_OUTAGE`(minimax) + 신규 `VOLUME_QUOTA_BURST_INCIDENT`(glm-5.2·deepseek-v4-pro) 딕셔너리로 원인을 summary에 명시하되 점수 자체는 실측 그대로 반영(annotation은 설명이지 면죄부가 아님, D109/D111 원칙 재사용).
+  - **최종 11모델 순위**: step-3.5-flash 0.866 > mistral-medium-3.5 0.749 > qwen3-next-80b 0.742 > nemotron-3-super-120b 0.663 > qwen3.5-122b 0.589 > nemotron-super-49b 0.531 > deepseek-v4-pro 0.487(인프라) > llama-4-maverick 0.248 > mistral-large-3 0.229 > glm-5.2 0.104(인프라) > minimax-m3 0.1(인프라). REPEATS=3 대비 큰 순위 이동: deepseek(3위→7위)·glm(9위→10위)·minimax(7위→11위)는 전부 인프라 원인, nemotron-3-super(6위→4위 상승은 다른 모델들이 인프라로 떨어진 상대효과)는 절대 성공률 자체는 하락(진짜 결함).
+  - COST: REPEATS=3 raw/summary(`.bak_repeats3`)와 REPEATS=100 run1 raw/summary(`.bak_repeats100_run1`) 둘 다 보존 — 대조/재현 가능. `--aggregate-only` 재실행 시 `REGRADE_REPEATS=100`을 반드시 같이 지정해야 함(env 없이 돌리면 기본값 3으로 떨어져 REPEATS=100 데이터의 `len(ok_reps)==REPEATS` 판정이 전부 깨짐 — 이번에 실제로 한 번 겪고 즉시 재수정).
+  - EXIT: minimax(이미 복구)·glm/deepseek(쿼터 버킷 해제 대기 필요)를 나중에 재측정하려면 `benchmark_4axis_regrade.py "<model>"`을 D103 mistral-large-3 패턴(REGRADE_RPM=6, REGRADE_WORKERS=2, 필요시 게이트 러너로 회복 감시)으로 재실행. 재실측 raw가 생기면 annotation은 그대로 남지만(과거 사건 기록), 점수는 새 데이터로 자동 갱신됨.
+
 
 ## 다음 단계 (미해결)
 

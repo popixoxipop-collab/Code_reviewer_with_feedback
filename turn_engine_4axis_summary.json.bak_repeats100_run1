@@ -94,7 +94,7 @@
     "speed_mean_elapsed_s": 111.7,
     "n_transcripts": 23,
     "n_grading_calls": 2300,
-    "grader_measurement_outage": "2300/2300 grading calls in the REPEATS=100 rerun (2026-07-12) hit a uniform HTTP 400 '...DEGRADED function cannot be invoked' -- a recurrence of the same DEGRADED-function pattern first seen in the REPEATS=3 run. NOT a model defect: a live probe immediately after this run completed got HTTP 200 in 0.6s, and the question-generator role passed 23/24 throughout. User decision: record as final rather than re-run (2026-07-12) -- the composite score reflects an infra outage window, not the model's real grading capability.",
+    "grader_measurement_outage": "all 69 grading calls returned a uniform HTTP 400 '...DEGRADED function cannot be invoked' (live single-call repro confirmed) -- NVIDIA marked the model's serving function DEGRADED during the regrade window. NOT a model defect: one hour earlier the same model passed 23/24 as question generator, and the identical grading schema works on 8 other models. Re-measure when NVIDIA recovers (see EXIT).",
     "composite_4axis": 0.1
   },
   "qwen/qwen3.5-122b-a10b": {
@@ -127,7 +127,6 @@
     "speed_mean_elapsed_s": 69.2,
     "n_transcripts": 24,
     "n_grading_calls": 2400,
-    "volume_quota_burst_incident": "1719/2400 grading calls in the REPEATS=100 rerun (2026-07-12) hit HTTP 429 after ~40 minutes of sustained ~60/min load to this single model -- same pattern as glm-5.2 above. This model had PERFECT end-to-end stability (24/24 question-gen, 72/72 grading) at REPEATS=3 just hours earlier. A live probe immediately after this run completed still got HTTP 429. User decision: record as final rather than wait-and-retry (2026-07-12).",
     "composite_4axis": 0.487
   },
   "nvidia/nemotron-3-super-120b-a12b": {
@@ -160,7 +159,6 @@
     "speed_mean_elapsed_s": 124.4,
     "n_transcripts": 21,
     "n_grading_calls": 2100,
-    "volume_quota_burst_incident": "1883/2100 grading calls in the REPEATS=100 rerun (2026-07-12) hit HTTP 429 'Too Many Requests' after ~35 minutes of sustained ~60/min load to this single model -- the same slow-recharging model-scoped quota bucket pattern documented for mistral-large-3 (D103), now confirmed on a second model. NOT a rate-limit logic bug (D112/D113 verified the pool respects per-key 40rpm with zero 429s using step-3.5-flash) and NOT a reproducibility problem: this same model scored 98.4% grading success hours earlier at REPEATS=3, low volume. A live probe immediately after this run completed still got HTTP 429. User decision: record as final rather than wait-and-retry (2026-07-12).",
     "composite_4axis": 0.104
   },
   "meta/llama-4-maverick-17b-128e-instruct": {

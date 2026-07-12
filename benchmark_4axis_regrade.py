@@ -120,15 +120,52 @@ SERVING_OUTAGE = {
     ),
 }
 
-# D111: raw 행은 있으나 실패 원인이 모델이 아니라 측정 시간대의 NVIDIA 서빙 장애인 모델 --
+# D111/D116: raw 행은 있으나 실패 원인이 모델이 아니라 측정 시간대의 NVIDIA 서빙 장애인 모델 --
 #   순위 점수(안정성 0)는 실측 그대로 두되, 원인을 annotation으로 명시(억울한 판정 방지).
 GRADER_MEASUREMENT_OUTAGE = {
+    # D116: D111의 DEGRADED 사건과는 별개 재발 -- REPEATS=100 재측정(2026-07-12) 도중
+    #   2300/2300 콜 전부 다시 HTTP 400 DEGRADED. 사용자 결정으로 재시도 없이 이 결과를
+    #   그대로 최종 기록(라이브 프로브로 종료 직후 정상 복구 확인 -- 모델 결함 아님, 측정
+    #   창에서만 강등된 것).
     "minimaxai/minimax-m3": (
-        "all 69 grading calls returned a uniform HTTP 400 '...DEGRADED function cannot be "
-        "invoked' (live single-call repro confirmed) -- NVIDIA marked the model's serving "
-        "function DEGRADED during the regrade window. NOT a model defect: one hour earlier "
-        "the same model passed 23/24 as question generator, and the identical grading "
-        "schema works on 8 other models. Re-measure when NVIDIA recovers (see EXIT)."
+        "2300/2300 grading calls in the REPEATS=100 rerun (2026-07-12) hit a uniform "
+        "HTTP 400 '...DEGRADED function cannot be invoked' -- a recurrence of the same "
+        "DEGRADED-function pattern first seen in the REPEATS=3 run. NOT a model defect: "
+        "a live probe immediately after this run completed got HTTP 200 in 0.6s, and the "
+        "question-generator role passed 23/24 throughout. User decision: record as final "
+        "rather than re-run (2026-07-12) -- the composite score reflects an infra outage "
+        "window, not the model's real grading capability."
+    ),
+}
+
+# D116: 새로 발견된 패턴 -- mistral-large-3(D103)에서만 본 "모델별 천천히 재충전되는
+#   총량 쿼타 버킷"이 사실은 더 넓게 존재했다. REPEATS=100 재측정에서 한 모델에 30~40분
+#   동안 2000+콜을 몰아치자 glm-5.2(2100콜 중 1883건 429)·deepseek-v4-pro(2400콜 중
+#   1719건 429)가 무너짐 -- 두 모델 다 몇 시간 전 REPEATS=3에서는 각각 98.4%/100%
+#   완벽했다. 종료 직후 라이브 단발 프로브로도 둘 다 여전히 429 확인(버킷이 아직 안 풀림,
+#   추측이 아니라 실측). D112/D113가 검증한 "60rpm 안전"은 step-3.5-flash 한 모델로만
+#   확인한 것이라 전 모델에 일반화되지 않는다는 걸 이번에 알았다 -- 다음에 이런 대량
+#   단일모델 벤치마크를 설계할 때는 모델별로 낮은 rpm(mistral-large-3에 썼던 6rpm 수준)을
+#   기본값으로 삼아야 한다.
+VOLUME_QUOTA_BURST_INCIDENT = {
+    "z-ai/glm-5.2": (
+        "1883/2100 grading calls in the REPEATS=100 rerun (2026-07-12) hit HTTP 429 "
+        "'Too Many Requests' after ~35 minutes of sustained ~60/min load to this single "
+        "model -- the same slow-recharging model-scoped quota bucket pattern documented "
+        "for mistral-large-3 (D103), now confirmed on a second model. NOT a rate-limit "
+        "logic bug (D112/D113 verified the pool respects per-key 40rpm with zero 429s "
+        "using step-3.5-flash) and NOT a reproducibility problem: this same model scored "
+        "98.4% grading success hours earlier at REPEATS=3, low volume. A live probe "
+        "immediately after this run completed still got HTTP 429. User decision: record "
+        "as final rather than wait-and-retry (2026-07-12)."
+    ),
+    "deepseek-ai/deepseek-v4-pro": (
+        "1719/2400 grading calls in the REPEATS=100 rerun (2026-07-12) hit HTTP 429 "
+        "after ~40 minutes of sustained ~60/min load to this single model -- same pattern "
+        "as glm-5.2 above. This model had PERFECT end-to-end stability (24/24 question-gen, "
+        "72/72 grading) at REPEATS=3 just hours earlier. A live probe immediately after "
+        "this run completed still got HTTP 429. User decision: record as final rather "
+        "than wait-and-retry (2026-07-12)."
     ),
 }
 # D106b: NVIDIA 부분 장애(같은 시각 qwen·maverick만 90s 프로브 초과, 나머지 정상) 대응 --
@@ -355,6 +392,13 @@ def main():
     for m, why in GRADER_MEASUREMENT_OUTAGE.items():
         if m in summary and (summary[m].get("stability_grader_call") or 0) == 0:
             summary[m]["grader_measurement_outage"] = why
+    # D116: 총량 쿼타 버킷 소진 annotation -- 부분 성공(0%가 아님)이라 위 outage 조건
+    #   (==0)에 안 걸리므로 별도 무조건 적용. 사용자 결정으로 재시도 없이 이 수치를 최종
+    #   기록하되, 원인이 재현성이 아니라 인프라 총량제임을 명시(D103 mistral-large-3와
+    #   동일 계열 패턴이 이번에 2개 모델에서 추가 확인됨).
+    for m, why in VOLUME_QUOTA_BURST_INCIDENT.items():
+        if m in summary:
+            summary[m]["volume_quota_burst_incident"] = why
 
     # D108c: 전 모델을 순위에 포함한다. 채점 콜이 전멸한 모델(정밀도/재현성 미측정)은
     #   축을 건너뛰는 게 아니라 0으로 친다 -- "채점을 한 번도 성공 못한 채점기"의 유효
