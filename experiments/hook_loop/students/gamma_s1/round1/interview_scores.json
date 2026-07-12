@@ -1,0 +1,62 @@
+[
+  {
+    "finding_id": "architecture-diffusion:ScoreCalculator.java",
+    "ok": true,
+    "axis": "구조_인지도",
+    "fr_axis": "코드_이해",
+    "score": 4,
+    "criterion": "흐름은 맞지만 일부 연결 관계 불명확",
+    "evidence": "[L1] 질문: ScoreCalculator.java의 calculateAverage 메서드에서, 왜 int 타입의 total 변수를 사용하여 합을 계산한 후에 마지막에 (double)로 캐스팅했나요? 이 설계는 정확도 측면에서 어떤 영향을 미치며, double 타입의 total을 사용하지 않은 이유는 무엇인가요? (라인 8~11 참고)\n[L1] 학생 답변: 음... int 연산이 double보다 빠르다고 생각해서 그렇게 한 건데, 정확도 측면에서는 합이 int의 최대값을 넘으면 오버플로우가 발생할 수 있을 것 같습니다. 처음부터 ",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "architecture-diffusion:ScoreCalculator.java",
+    "ok": true,
+    "axis": "트레이드오프_인지도",
+    "fr_axis": "반례_대응",
+    "score": 5,
+    "criterion": "반례를 스스로 먼저 언급하거나, 던졌을 때 즉각 인지",
+    "evidence": "[L1] 질문: ScoreCalculator.java의 calculateAverage 메서드에서, 왜 int 타입의 total 변수를 사용하여 합을 계산한 후에 마지막에 (double)로 캐스팅했나요? 이 설계는 정확도 측면에서 어떤 영향을 미치며, double 타입의 total을 사용하지 않은 이유는 무엇인가요? (라인 8~11 참고)\n[L1] 학생 답변: 음... int 연산이 double보다 빠르다고 생각해서 그렇게 한 건데, 정확도 측면에서는 합이 int의 최대값을 넘으면 오버플로우가 발생할 수 있을 것 같습니다. 처음부터 ",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "architecture-diffusion:ScoreCalculator.java",
+    "ok": true,
+    "axis": "대안_탐색_능력",
+    "fr_axis": "대안_비교",
+    "score": 4,
+    "criterion": "대안 방향은 명확하나 구현 방법 일부 불명확",
+    "evidence": "[L1] 질문: ScoreCalculator.java의 calculateAverage 메서드에서, 왜 int 타입의 total 변수를 사용하여 합을 계산한 후에 마지막에 (double)로 캐스팅했나요? 이 설계는 정확도 측면에서 어떤 영향을 미치며, double 타입의 total을 사용하지 않은 이유는 무엇인가요? (라인 8~11 참고)\n[L1] 학생 답변: 음... int 연산이 double보다 빠르다고 생각해서 그렇게 한 건데, 정확도 측면에서는 합이 int의 최대값을 넘으면 오버플로우가 발생할 수 있을 것 같습니다. 처음부터 ",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "architecture-diffusion:ScoreCalculator.java",
+    "ok": true,
+    "axis": "설계_논리",
+    "fr_axis": "설계_논리",
+    "score": 4,
+    "criterion": "설계 의도는 설명하나 제약조건과의 연결은 부분적",
+    "evidence": "[L1] 질문: ScoreCalculator.java의 calculateAverage 메서드에서, 왜 int 타입의 total 변수를 사용하여 합을 계산한 후에 마지막에 (double)로 캐스팅했나요? 이 설계는 정확도 측면에서 어떤 영향을 미치며, double 타입의 total을 사용하지 않은 이유는 무엇인가요? (라인 8~11 참고)\n[L1] 학생 답변: 음... int 연산이 double보다 빠르다고 생각해서 그렇게 한 건데, 정확도 측면에서는 합이 int의 최대값을 넘으면 오버플로우가 발생할 수 있을 것 같습니다. 처음부터 ",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "architecture-diffusion:ScoreCalculator.java",
+    "ok": true,
+    "axis": "자기_수정",
+    "fr_axis": "자기_수정",
+    "score": 5,
+    "criterion": "자기오류인식+이유설명+새판단+구체적개선안 4개 신호 전부 스스로 제시",
+    "evidence": "[L1] 질문: ScoreCalculator.java의 calculateAverage 메서드에서, 왜 int 타입의 total 변수를 사용하여 합을 계산한 후에 마지막에 (double)로 캐스팅했나요? 이 설계는 정확도 측면에서 어떤 영향을 미치며, double 타입의 total을 사용하지 않은 이유는 무엇인가요? (라인 8~11 참고)\n[L1] 학생 답변: 음... int 연산이 double보다 빠르다고 생각해서 그렇게 한 건데, 정확도 측면에서는 합이 int의 최대값을 넘으면 오버플로우가 발생할 수 있을 것 같습니다. 처음부터 ",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  }
+]
