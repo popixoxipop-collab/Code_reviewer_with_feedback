@@ -1,36 +1,39 @@
+import java.util.List;
 import java.util.Scanner;
 
 /**
- * 학생 3명의 시험 점수를 입력받아 평균과 최고점을 계산해 출력하는 프로그램의 진입점.
+ * 학생 3명의 점수를 입력받아 평균/최고점/등급을 계산하고 기록을 출력하는 프로그램의 진입점.
  */
 public class Main {
-
-    private static final int STUDENT_COUNT = 3;
-
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
+        System.out.println("===== 학생 성적 관리 프로그램 =====");
+
         GradeInputHandler inputHandler = new GradeInputHandler(scanner);
-        Student[] students = inputHandler.inputStudents(STUDENT_COUNT);
+        ScoreCalculator scoreCalculator = new ScoreCalculator();
+        GradeRanker gradeRanker = new GradeRanker(scoreCalculator);
+        InputHistory inputHistory = new InputHistory();
 
-        ScoreCalculator calculator = new ScoreCalculator();
-        double average = calculator.calculateAverage(students);
-        Student topStudent = calculator.findTopStudent(students);
+        List<Student> students = inputHandler.inputStudents(3);
+        inputHistory.addAll(students);
 
-        printResult(students, average, topStudent);
+        double average = scoreCalculator.calculateAverage(students);
+        int max = scoreCalculator.calculateMax(students);
 
-        scanner.close();
-    }
+        System.out.println("\n===== 결과 =====");
+        System.out.printf("평균 점수: %.2f%n", average);
+        System.out.println("최고 점수: " + max);
 
-    private static void printResult(Student[] students, double average, Student topStudent) {
-        System.out.println();
-        System.out.println("========== 성적 처리 결과 ==========");
-        for (Student s : students) {
-            System.out.printf("%-10s : %6.2f 점%n", s.getName(), s.getScore());
+        System.out.println("\n===== 학생별 등급 =====");
+        for (Student student : students) {
+            String grade = gradeRanker.determineGrade(student, students);
+            System.out.println(student.getName() + " - " + student.getScore() + "점 - 등급: " + grade);
         }
-        System.out.println("-------------------------------------");
-        System.out.printf("평균 점수 : %6.2f 점%n", average);
-        System.out.printf("최고 점수 : %s (%.2f 점)%n", topStudent.getName(), topStudent.getScore());
-        System.out.println("=====================================");
+
+        inputHistory.printHistory();
+
+        System.out.println("\n프로그램을 종료합니다.");
+        scanner.close();
     }
 }

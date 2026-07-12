@@ -1,12 +1,11 @@
 /**
- * 학생 한 명의 이름과 시험 점수를 담는 데이터 클래스.
+ * 학생 이름과 점수를 담는 데이터 클래스.
  */
 public class Student {
-
     private String name;
-    private double score;
+    private int score;
 
-    public Student(String name, double score) {
+    public Student(String name, int score) {
         this.name = name;
         this.score = score;
     }
@@ -15,12 +14,20 @@ public class Student {
         return name;
     }
 
-    public double getScore() {
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getScore() {
         return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 
     @Override
     public String toString() {
-        return name + " : " + score + "점";
+        return "Student{name='" + name + "', score=" + score + "}";
     }
 }
