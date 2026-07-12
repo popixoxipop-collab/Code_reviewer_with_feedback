@@ -301,6 +301,22 @@ def generate_hook_file(student_id, round_num, findings_path, transcript_path, un
         c.pop("_evidence_text", None)
 
     merged_rules = merge_with_previous(kept, prev_version_path)
+    if len(merged_rules) > RULE_BUDGET:
+        # D125: RULE_BUDGET=10 is a cap on the FILE's total rule count, not just
+        # this round's new-candidate batch -- apply_rule_budget() above only ever
+        # sees `candidates` (this round's own list), so a round whose candidates
+        # merge mostly as new (axis,trigger) keys instead of folding into existing
+        # entries can silently push the merged total past 10 (found live at gamma
+        # round4: v3=10 -> 4 new candidates, 1 didn't fold -> merged=11 unless
+        # trimmed here). Trim from the end: merge_with_previous() builds
+        # merged_rules as prev_rules (already-validated, carried forward) followed
+        # by this round's genuinely-new entries, so cutting the tail drops only
+        # brand-new/not-yet-seen-by-the-student candidates, never anything already
+        # committed to a prior Hook File version.
+        overflow = merged_rules[RULE_BUDGET:]
+        merged_rules = merged_rules[:RULE_BUDGET]
+        deferred = deferred + overflow
+        log(f"post-merge budget trim: {len(overflow)} rule(s) pushed to deferred_rules (merged total was {len(merged_rules) + len(overflow)})")
     version = 1
     if prev_version_path and Path(prev_version_path).exists():
         version = json.loads(Path(prev_version_path).read_text(encoding="utf-8"))["version"] + 1
