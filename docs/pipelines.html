@@ -334,6 +334,39 @@
     max-width: 90ch;
   }
   .attrition .lesson b { color: var(--ink); }
+
+  /* D117: 4축 결과 표 -- index.html/아티팩트와 동일 데이터, 글이 아니라 표로 */
+  .axis-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    margin: 18px 0;
+  }
+  .axis-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+    font-family: var(--mono);
+  }
+  .axis-table th, .axis-table td {
+    padding: 7px 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .axis-table thead th {
+    color: var(--ink-faint);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 0.68rem;
+    border-bottom: 1px solid var(--line-strong);
+  }
+  .axis-table tbody tr:last-child td { border-bottom: none; }
+  .axis-table td.note { white-space: normal; color: var(--ink-faint); font-family: var(--sans); font-size: 0.74rem; }
+  .axis-table td.composite { color: var(--ink); font-weight: 700; }
+
   @media (max-width: 920px) {
     .tier-list li { grid-template-columns: 1fr; gap: 4px; }
   }
@@ -521,12 +554,34 @@
       핵심 교훈: <b>"낮은 성공률 = 나쁜 모델"이 아니다.</b> 16개 중 우리 설정이 원인이었던 게 2개(둘 다 근본수정 완료),
       무료 티어 인프라가 원인인 게 4개, 모델 결함이 2개 — 라이브 벤치마크에서 원인 분리 없이 순위만 읽으면
       nemotron(0%&rarr;95.8%)·mistral-large-3(4%&rarr;100%) 같은 모델을 억울하게 탈락시키게 된다.
-      최종 순위는 <b>4축 벤치마크</b>(안정성=질문생성&times;채점 end-to-end · 정밀도(자기채점) · 재현성 100회 반복 · 속도, D116 마감):
-      <b>step-3.5-flash 0.866</b> &gt; mistral-medium-3.5 0.749 &gt; qwen3-next-80b 0.742 &gt;
-      nemotron-3-super 0.663(범위 밖 점수 출력 — 100회가 3회보다 이 결함을 더 정확히 잡음) &gt; qwen3.5-122b 0.589 &gt;
-      nemotron-49b 0.531 &gt; deepseek-v4-pro 0.487(총량 쿼타 버킷 소진 — 몇 시간 전엔 100%) &gt;
-      maverick 0.248(서빙 장애) &gt; mistral-large-3 0.229(채점기 퇴행 루프) &gt;
-      glm-5.2 0.104(총량 쿼타 버킷 소진) &gt; minimax-m3 0.1(DEGRADED 재발).
+      최종 순위는 <b>4축 벤치마크</b>(안정성=질문생성&times;채점 end-to-end · 정밀도(자기채점) · 재현성 100회 반복 · 속도, D116 마감) — 아래 표.
+    </p>
+
+    <div class="axis-table-wrap">
+      <table class="axis-table">
+        <thead>
+          <tr>
+            <th>#</th><th>Model</th><th>안정성(질문생성&times;채점)</th><th>정밀도</th>
+            <th>재현성(100회)</th><th>속도</th><th>종합</th><th>비고</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>step-3.5-flash</td><td>0.953 (0.958&times;0.995)</td><td>1</td><td>0.286</td><td>10.5s</td><td class="composite">0.866</td><td class="note"></td></tr>
+          <tr><td>2</td><td>mistral-medium-3.5</td><td>0.951 (0.958&times;0.993)</td><td>1</td><td>0.615</td><td>178.9s</td><td class="composite">0.749</td><td class="note"></td></tr>
+          <tr><td>3</td><td>qwen3-next-80b</td><td>0.951 (0.958&times;0.993)</td><td>1</td><td>0.273</td><td>90.3s</td><td class="composite">0.742</td><td class="note">팀 Locked 모델</td></tr>
+          <tr><td>4</td><td>nemotron-3-super-120b</td><td>0.729 (0.958&times;0.761)</td><td>1</td><td>0</td><td>29.6s</td><td class="composite">0.663</td><td class="note">범위 밖 점수 출력 — 100회가 3회보다 이 결함을 더 정확히 잡음</td></tr>
+          <tr><td>5</td><td>qwen3.5-122b</td><td>0.68 (0.833&times;0.816)</td><td>1</td><td>&mdash;</td><td>70.4s</td><td class="composite">0.589</td><td class="note"></td></tr>
+          <tr><td>6</td><td>nemotron-super-49b</td><td>0.791 (0.958&times;0.826)</td><td>1</td><td>0</td><td>129.1s</td><td class="composite">0.531</td><td class="note"></td></tr>
+          <tr><td>7</td><td>deepseek-v4-pro</td><td>0.284 (1&times;0.284)</td><td>1</td><td>0</td><td>69.2s</td><td class="composite">0.487</td><td class="note">총량 쿼타 버킷 소진 — 몇 시간 전엔 100%</td></tr>
+          <tr><td>8</td><td>llama-4-maverick</td><td>0 (0.875&times;0)</td><td>&mdash;</td><td>&mdash;</td><td>11.7s</td><td class="composite">0.248</td><td class="note">NVIDIA 서빙 장애(측정 불가)</td></tr>
+          <tr><td>9</td><td>mistral-large-3</td><td>0 (1&times;0)</td><td>&mdash;</td><td>&mdash;</td><td>24.7s</td><td class="composite">0.229</td><td class="note">채점기 퇴행 루프(결함)</td></tr>
+          <tr><td>10</td><td>glm-5.2</td><td>0.089 (0.875&times;0.102)</td><td>&mdash;</td><td>0</td><td>124.4s</td><td class="composite">0.104</td><td class="note">총량 쿼타 버킷 소진</td></tr>
+          <tr><td>11</td><td>minimax-m3</td><td>0 (0.958&times;0)</td><td>&mdash;</td><td>&mdash;</td><td>111.7s</td><td class="composite">0.1</td><td class="note">REPEATS=100 도중 DEGRADED 재발(종료 후 정상 확인)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="lesson">
       하위 3개(deepseek·glm·minimax)는 100회 재현성 측정 중 한 모델에 30~40분간 2000+콜을 몰아치자
       무너진 것 — <b>재현성이 아니라 인프라 붕괴</b>이고, mistral-large-3에서만 봤던 "모델별 총량 쿼타 버킷"이
       더 넓게 존재한다는 새 발견이다. 정밀도는 채점 성공 모델 전원 1.00 — 승부처는 재현성(temp=0인데도
