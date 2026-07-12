@@ -853,6 +853,13 @@ python3 pipeline/compare_methodologies.py
   - COST: M1 커밋 이후 재스캔 없이 이 두 P02 버그를 발견 — M1의 Java 관련 세부 finding_id 재검증이 이 세션 범위 밖으로 남음(아래 미해결 항목 추가).
   - EXIT: M1 Java 코퍼스 재검증이 필요해지면 `judgment_4axis_benchmark.py --stability`(39 repo 재실행, 콜 0건)만 다시 돌리면 새 fan_in/hub 로직이 자동 반영됨 — 별도 코드 변경 불필요.
 
+- **D126** ([`hookfile/db/schema_personal.sql`](./hookfile/db/schema_personal.sql), [`hookfile/db/schema_company.sql`](./hookfile/db/schema_company.sql), [`hookfile/db/store.py`](./hookfile/db/store.py), [`hookfile/db/sync_to_db.py`](./hookfile/db/sync_to_db.py), [`hookfile/db/migrate_existing.py`](./hookfile/db/migrate_existing.py), [`hookfile/db/export_student.py`](./hookfile/db/export_student.py)) — γ k=4 완료 직후 사용자 요구로 Hook File 저장소를 개인용/회사자산용으로 이원화(SQLite, `EXECUTION_PLAN_4AXIS_HOOKFILE.md` §8).
+  - `personal.db`: 기존 JSON 산출물(hookfile_v{N}/findings/interview_scores/audit)을 정규화 적재. 새 데이터를 만들지 않는 파생 레이어 — `loop_runner.py`/`generate_hook_file.py`의 D123 temporal firewall(git 커밋 기반)은 그대로 유지, DB는 그 뒤에 별도 `sync_to_db.py` 스텝으로 붙는다. `export_student.py`가 한 학생의 전체 데이터를 기존 셰이프의 이식 가능한 번들로 재구성 — 이게 실제 "학생이 가져가는" 산출물(DB 파일 자체가 아니라 export 결과물을 공유).
+  - `company_assets.db`: `generalized_rules` 테이블 하나, **스키마 자체에 student_id 컬럼이 없음** — 개인/회사 소유 경계를 코드 리뷰가 아니라 물리적 파일+스키마로 강제.
+  - WHY: 사용자가 "규칙 텍스트를 모아두는" 개인 DB(학생 휴대 가능)와 "일반화한" 회사자산을 명시적으로 분리 요구.
+  - COST: 일반화(개인 규칙 → 회사자산 승격) 로직은 이번 스코프 밖 — 학생이 gamma_s1 1명뿐이라 "여러 학생 반복 패턴"을 검증할 데이터 자체가 없음(사용자 확인 완료: "저장소 분리 스키마만 우선"). `company_assets.db`는 스키마만 존재, 0행.
+  - EXIT: 학생 수가 늘어 일반화가 의미를 가지면, `personal.db`를 읽어 후보를 뽑아 `generalized_rules`에 candidate로 적재하는 승격 스크립트를 추가(자동 빈도기반 vs 사람 큐레이션은 그때 결정). 마이그레이션/검증 로그는 아래 "다음 단계" 참고.
+
 
 ## 다음 단계 (미해결)
 

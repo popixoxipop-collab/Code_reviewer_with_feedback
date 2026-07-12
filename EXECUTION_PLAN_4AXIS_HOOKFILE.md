@@ -340,3 +340,16 @@
 | INTV-06, DASH-07 | 측정 중 처방 금지의 보호 대상 (5.2, 5.4) |
 | DASH-15 (기술영역 분류) | Hook File `tech_area` 필드 |
 | RPT-02 (수료 산출물) | Hook File의 제품 위치 — 실험은 이 사이클의 k회 반복 인스턴스 (5.2) |
+
+---
+
+## §8 — 저장소 이원화: 개인용 DB vs 회사자산용 DB (D126, γ k=4 완료 후 추가)
+
+γ 4라운드가 전부 끝난 뒤 사용자가 명시적으로 요구: Hook File이 쌓는 규칙 텍스트를 **개인 저장소**(학생이 가져갈 수 있는 자산)와 **회사자산 저장소**(일반화된, 회사가 소유하는 자산)로 물리적으로 분리해야 한다.
+
+- **개인 저장소** (`hookfile/db/personal.db`, SQLite): 지금까지의 `hookfile_v{N}.json`/`findings.json`/`interview_scores.json`/`audit_v{N}_vs_r{N+1}.json`을 정규화해 담는다. 새 데이터를 만들지 않는다 — 이미 git에 커밋된 JSON의 파생 조회/휴대 레이어. `export_student.py`가 한 학생의 전체 데이터를 기존 셰이프의 이식 가능한 번들로 재구성한다(이게 실제 "학생이 가져가는" 산출물 — DB 파일 자체를 공유하지 않는다).
+- **회사자산 저장소** (`hookfile/db/company_assets.db`): `generalized_rules` 테이블 하나. **스키마 자체에 student_id 컬럼이 없다** — 개인 소유/회사 소유 경계를 코드 리뷰가 아니라 물리적 파일+스키마 구조로 강제(D123의 측정기 불변식과 같은 원칙).
+- **일반화(개인 규칙 → 회사자산 승격) 메커니즘은 이번 스코프 밖**: 학생이 gamma_s1 1명뿐이라 "여러 학생에서 반복되는 패턴" 자체를 검증할 데이터가 없다. 스키마만 준비해두고 0행 상태로 둔다 — 학생 수가 늘어나면 별도 승격 스크립트를 추가한다(자동 빈도기반 승격 vs 사람 큐레이션은 그때 결정).
+- 기존 측정 파이프라인(`loop_runner.py`/`generate_hook_file.py`의 temporal firewall)은 그대로 JSON+git 기반 유지 — DB는 대체가 아니라 추가 레이어.
+
+세부 스키마: `hookfile/db/schema_personal.sql`, `hookfile/db/schema_company.sql`. 구현/검증 로그: README D126.

@@ -16,3 +16,7 @@ deepseek_track_b_fill.log
 deepseek_track_b.json
 mistral_large_fill.log
 mistral_large_track_b.json
+
+# D126 -- Hook File 개인/회사자산 DB. 개인 데이터는 export_student.py로 뽑은 번들만
+# 공유하고, DB 파일 자체는 repo에 안 둔다(company_assets.db도 재생성 가능한 파생물).
+hookfile/db/*.db
