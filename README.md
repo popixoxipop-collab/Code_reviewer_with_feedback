@@ -828,6 +828,22 @@ python3 pipeline/compare_methodologies.py
   - EXIT: HTTP 400 폭풍의 근본원인이 진짜 "일시적 NVIDIA 장애"인지 이 코드베이스의 잠재 버그인지는 여전히 100% 확정 아님 — 다음에 재현되면(특히 실행 초반에 집중되는 패턴이 또 나오면) `_retry_transient`의 marker 목록과 backoff를 첫 대응으로 쓰되, D103/D116 계보처럼 "모델별 총량 쿼타"로 재분류할 근거(예: 격리 단발 호출도 실패)가 나오면 annotation 정정.
   - 다음(M3): Hook File 스키마/생성기 구축, 이후 M4(hook 루프 실험).
 
+- **D121** ([`hookfile/HOOKFILE_SCHEMA.md`](./hookfile/HOOKFILE_SCHEMA.md), [`hookfile/generate_hook_file.py`](./hookfile/generate_hook_file.py), [`hookfile/render_targets.py`](./hookfile/render_targets.py), [`hookfile/audit_checklist.py`](./hookfile/audit_checklist.py)) — Hook File 스키마+생성기+렌더러+감사기 구현(M3, "ㅇㅇ" 지시로 계속).
+  - **스키마**: 파일레벨(student_id/version/generated_at/source_round/canary_uuid/coverage/provenance_commit/deferred_rules) + 규칙레벨(rule_id/channel/취약축/finding_refs/transcript_refs/curriculum_refs/trigger/checkable_condition/지침_본문/provenance_hash). 그릇은 D125 확정대로 정적 파일 1차 — 스키마 필드 자체를 Claude Code Hooks의 event→matcher→handler(trigger=matcher, checkable_condition=handler 판정)에 맞춰 설계해 나중에 Hooks JSON으로 무손실 2차 렌더 가능하게 함.
+  - **설계 갭 발견+해소**: P02(3축: design_intent/question_value/risk)와 P03(FR-04-01 5축)는 서로 다른 축 체계를 각자 독립적으로 써 왔다 — Hook File이 두 채널을 하나의 `취약축` 공간으로 합치려면 P02 finding kind → FR축 매핑이 필요한데, 이 코드베이스 어디에도 존재하지 않았다. `FINDING_KIND_TO_FR_AXIS` 딕셔너리로 최초 정의(cognition-isolation→코드_이해, architecture-diffusion/repeated-pattern→대안_비교, tier-b-risk→반례_대응) — 휴리스틱이며 사람 표본 대조 검증은 아직 없음(WHY/COST/EXIT를 코드 주석에 직접 기록).
+  - **생성 방식 검증**: 증거 필드(finding_refs/transcript_refs/curriculum_refs)는 결정론 조립, LLM은 지침_본문 문장화에만 1콜(배치, 후보 규칙 전부를 한 프롬프트에) — 실제로 real P02 findings(python/Elevator 재스캔, 3건) + synthetic P03 예시(4축) + real P01 unit_map(D120 캐시)으로 end-to-end 실행: 5개 후보 전부 예산(10) 이내라 전량 채택, coverage=1.0, LLM이 finding evidence("fan_in=2, 허브 미연결")를 그대로 반영한 구체적 지침문("io.py가 constants.py와 연결되어 있는지 확인하고...") 생성 확인. `render_targets.py --target static`으로 실제 읽을 수 있는 마크다운 산출까지 확인.
+  - `audit_checklist.py`도 synthetic 다음회차(코드 재발 1건/미재발 1건, 인터뷰 점수 상승 1축/하락 1축/동일 1축)로 검증 — pass_rate=0.6(3/5)이 손계산과 정확히 일치, 5.3 지표3의 진단 분리(준수↑+품질↑=hook유효 등) 설계 그대로 동작.
+  - WHY: 결정론 조립+최소 LLM 원칙(§5.1)을 실측으로 지켰다는 걸 증명하는 게 이 단계의 핵심 — 근거 없이 지침을 만들 수 없는 구조(프롬프트에 evidence만 주입)가 실제로 evidence-grounded 결과를 냄.
+  - COST: `_find_curriculum_ref()`는 1차 구현이 finding과 무관하게 unit_map의 첫 unit을 그대로 씀(교안 근거 정합성 미검증) — P01 provenance-precision 감사 결과와 교차하는 로직은 아직 없음, 정직하게 코드 주석에 한계로 명시.
+  - EXIT: FINDING_KIND_TO_FR_AXIS 매핑이 틀렸다는 신호(특정 kind 규칙이 항상 무시됨)는 audit_checklist.py 통과율로 감지 가능 — 매핑 딕셔너리만 교체하면 됨. curriculum_refs 정합성은 curriculum_provenance_audit.json의 tier1_pass/tier2 grounded 결과와 교차하도록 후속 구현 필요.
+
+- **D123** ([`hookfile/canary.py`](./hookfile/canary.py), `~/.claude/hooks/scripts/hookfile-isolation-guard.py`) — 측정 오염 방지 4중 장치 중 1번(canary)+2번(경로 격리) 구현+실측 검증.
+  - **1번 canary**: `issue_canary()`/`scan_for_contamination()`/`assert_clean()`/`full_corpus_audit()` 구현. 발급된 토큰이 페이로드에 있으면(또는 canary 형태인데 미등록이면) 오염 확정 — 실제 오염 시나리오(canary가 프롬프트에 섞인 경우)로 `assert_clean()`이 `ContaminationError`를 정확히 raise하는 것 확인.
+  - **2번 경로 격리**: 신규 훅 `hookfile-isolation-guard.py`(repo 밖, `~/.claude/hooks/`) — 측정 스크립트 이름(turn_engine.py/score_findings.py/curriculum_4axis_benchmark.py 등) 목록과 `experiments/hook_loop/*/hookfile/` 경로가 같은 명령에 동시 등장하면 차단, hookfile/ 자체 도구는 예외. `settings.json`의 Bash PreToolUse 배열에 nvidia-keypool-guard.py 바로 뒤에 등록. **3가지 시나리오 전부 실제 Bash 툴콜로 라이브 검증**: (측정스크립트+hookfile 경로) 차단 확인, (hookfile 도구 자체) 통과 확인, (무관 명령) 통과 확인, `HOOKFILE_ISOLATION_OK=1` 우회 확인 — 파일에만 쓰고 끝내지 않고 실제 권한 프롬프트 레벨에서 동작 확인(watcher가 이미 이 세션 시작 전부터 settings.json을 보고 있어 재시작 없이 즉시 적용됨).
+  - WHY: canary만으로는 "콘텐츠가 실제로 섞였을 때"만 잡는다 — 경로 격리는 그 전 단계(애초에 측정 스크립트가 hookfile 디렉토리를 읽으려는 시도 자체)를 막아 두 층이 서로 다른 실패 모드를 커버한다(D96 사고 계보: 가드 없던 경로로 오염이 전파된 전례).
+  - COST: 3번(temporal firewall)은 D121의 `generate_hook_file.py`에 이미 구현·검증됨(별도 D 번호 없이 D121에 포함). 4번(사후 전수 감사)은 `canary.full_corpus_audit()`으로 함수는 존재하나, 실제 프롬프트 스냅샷 로그를 남기는 측정 콜 사이트 개조는 아직 안 됨(M4에서 실제 루프가 돌 때 필요).
+  - EXIT: 4번을 실제로 쓰려면 P01/P02/P03 각 측정 콜 사이트에 프롬프트 원문 로깅을 추가하고, 실험 종료 후 `canary.full_corpus_audit(log_paths)`를 돌리면 됨 — 함수 자체는 이미 완성.
+
 
 ## 다음 단계 (미해결)
 
