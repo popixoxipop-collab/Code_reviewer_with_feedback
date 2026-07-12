@@ -1,0 +1,328 @@
+{
+  "a": [
+    {
+      "label": "c_cpp/EasyQtSql",
+      "reps": 100,
+      "ok_reps": 100,
+      "errors": 0,
+      "unique_signatures": 1,
+      "identical_rate": 1.0,
+      "elapsed_s": 15.0
+    },
+    {
+      "label": "c_cpp/cavalieri",
+      "reps": 100,
+      "ok_reps": 100,
+      "errors": 0,
+      "unique_signatures": 1,
+      "identical_rate": 1.0,
+      "elapsed_s": 11.4
+    },
+    {
+      "label": "java/Lancelot",
+      "reps": 100,
+      "ok_reps": 100,
+      "errors": 0,
+      "unique_signatures": 1,
+      "identical_rate": 1.0,
+      "elapsed_s": 14.7
+    },
+    {
+      "label": "java/LibraryManageSystem",
+      "reps": 100,
+      "ok_reps": 100,
+      "errors": 0,
+      "unique_signatures": 1,
+      "identical_rate": 1.0,
+      "elapsed_s": 9.8
+    },
+    {
+      "label": "javascript/FarmAssist",
+      "reps": 100,
+      "ok_reps": 100,
+      "errors": 0,
+      "unique_signatures": 1,
+      "identical_rate": 1.0,
+      "elapsed_s": 14.9
+    },
+    {
+      "label": "javascript/SHIELD",
+      "reps": 100,
+      "ok_reps": 100,
+      "errors": 0,
+      "unique_signatures": 1,
+      "identical_rate": 1.0,
+      "elapsed_s": 7.8
+    },
+    {
+      "label": "python/API-Manager",
+      "reps": 100,
+      "ok_reps": 100,
+      "errors": 0,
+      "unique_signatures": 1,
+      "identical_rate": 1.0,
+      "elapsed_s": 14.2
+    },
+    {
+      "label": "python/Elevator",
+      "reps": 100,
+      "ok_reps": 100,
+      "errors": 0,
+      "unique_signatures": 1,
+      "identical_rate": 1.0,
+      "elapsed_s": 11.5
+    }
+  ],
+  "b": {
+    "empty_state": [
+      {
+        "label": "c_cpp/EasyQtSql",
+        "n_findings": 12,
+        "buckets": {
+          "design_intent": {
+            "중": 11,
+            "하": 1
+          },
+          "question_value": {
+            "상": 12
+          },
+          "risk": {
+            "하": 11,
+            "상": 1
+          }
+        }
+      },
+      {
+        "label": "c_cpp/cavalieri",
+        "n_findings": 1,
+        "buckets": {
+          "design_intent": {
+            "중": 1
+          },
+          "question_value": {
+            "상": 1
+          },
+          "risk": {
+            "하": 1
+          }
+        }
+      },
+      {
+        "label": "java/Lancelot",
+        "n_findings": 1,
+        "buckets": {
+          "design_intent": {
+            "중": 1
+          },
+          "question_value": {
+            "상": 1
+          },
+          "risk": {
+            "하": 1
+          }
+        }
+      },
+      {
+        "label": "java/LibraryManageSystem",
+        "n_findings": 9,
+        "buckets": {
+          "design_intent": {
+            "중": 9
+          },
+          "question_value": {
+            "상": 9
+          },
+          "risk": {
+            "하": 9
+          }
+        }
+      },
+      {
+        "label": "javascript/FarmAssist",
+        "n_findings": 11,
+        "buckets": {
+          "design_intent": {
+            "중": 11
+          },
+          "question_value": {
+            "상": 11
+          },
+          "risk": {
+            "하": 10,
+            "상": 1
+          }
+        }
+      },
+      {
+        "label": "javascript/SHIELD",
+        "n_findings": 3,
+        "buckets": {
+          "design_intent": {
+            "중": 3
+          },
+          "question_value": {
+            "상": 3
+          },
+          "risk": {
+            "하": 3
+          }
+        }
+      },
+      {
+        "label": "python/API-Manager",
+        "n_findings": 1,
+        "buckets": {
+          "design_intent": {
+            "중": 1
+          },
+          "question_value": {
+            "상": 1
+          },
+          "risk": {
+            "하": 1
+          }
+        }
+      },
+      {
+        "label": "python/Elevator",
+        "n_findings": 3,
+        "buckets": {
+          "design_intent": {
+            "중": 3
+          },
+          "question_value": {
+            "상": 3
+          },
+          "risk": {
+            "하": 3
+          }
+        }
+      }
+    ],
+    "current_state": [
+      {
+        "label": "c_cpp/EasyQtSql",
+        "n_findings": 12,
+        "buckets": {
+          "design_intent": {
+            "중": 11,
+            "하": 1
+          },
+          "question_value": {
+            "상": 12
+          },
+          "risk": {
+            "하": 11,
+            "상": 1
+          }
+        }
+      },
+      {
+        "label": "c_cpp/cavalieri",
+        "n_findings": 1,
+        "buckets": {
+          "design_intent": {
+            "중": 1
+          },
+          "question_value": {
+            "상": 1
+          },
+          "risk": {
+            "하": 1
+          }
+        }
+      },
+      {
+        "label": "java/Lancelot",
+        "n_findings": 1,
+        "buckets": {
+          "design_intent": {
+            "중": 1
+          },
+          "question_value": {
+            "상": 1
+          },
+          "risk": {
+            "하": 1
+          }
+        }
+      },
+      {
+        "label": "java/LibraryManageSystem",
+        "n_findings": 9,
+        "buckets": {
+          "design_intent": {
+            "중": 9
+          },
+          "question_value": {
+            "상": 9
+          },
+          "risk": {
+            "하": 9
+          }
+        }
+      },
+      {
+        "label": "javascript/FarmAssist",
+        "n_findings": 11,
+        "buckets": {
+          "design_intent": {
+            "중": 11
+          },
+          "question_value": {
+            "상": 11
+          },
+          "risk": {
+            "하": 10,
+            "상": 1
+          }
+        }
+      },
+      {
+        "label": "javascript/SHIELD",
+        "n_findings": 3,
+        "buckets": {
+          "design_intent": {
+            "중": 3
+          },
+          "question_value": {
+            "상": 3
+          },
+          "risk": {
+            "하": 3
+          }
+        }
+      },
+      {
+        "label": "python/API-Manager",
+        "n_findings": 1,
+        "buckets": {
+          "design_intent": {
+            "중": 1
+          },
+          "question_value": {
+            "상": 1
+          },
+          "risk": {
+            "하": 1
+          }
+        }
+      },
+      {
+        "label": "python/Elevator",
+        "n_findings": 3,
+        "buckets": {
+          "design_intent": {
+            "중": 3
+          },
+          "question_value": {
+            "상": 3
+          },
+          "risk": {
+            "하": 3
+          }
+        }
+      }
+    ]
+  }
+}

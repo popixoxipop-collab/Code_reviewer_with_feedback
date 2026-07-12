@@ -1,0 +1,91 @@
+{
+  "per_case": {
+    "c_cpp/EasyQtSql:ParamDirectionWrapper.h": {
+      "runs": 2,
+      "ok_runs": 2,
+      "reference_note": "P02: cognition-isolation:EasyQtSql_ParamDirectionWrapper.h (허브 미연결, cross-file 신호 -- D69가 이 종류 신호를 단일파일 추출기가 원천적으로 못 잡는다고 실측한 바로 그 패턴)",
+      "covers_p02_reference": [
+        true,
+        true
+      ],
+      "n_points_mean": 5.0,
+      "mean_elapsed_s": 13.8,
+      "is_cross_file_signal": true
+    },
+    "java/Modern-API...:Auth.js": {
+      "runs": 2,
+      "ok_runs": 2,
+      "reference_note": "P02: tier-b-risk:Auth.js (인증정보 JSON.stringify 유출) -- 단일 파일 신호, 커버 가능해야 함",
+      "covers_p02_reference": [
+        true,
+        true
+      ],
+      "n_points_mean": 8.0,
+      "mean_elapsed_s": 21.5,
+      "is_cross_file_signal": false
+    },
+    "javascript/FarmAssist:AppImage.jsx": {
+      "runs": 2,
+      "ok_runs": 2,
+      "reference_note": "P02: cognition-isolation:AppImage.jsx (허브 AppIcon.jsx로 가는 edge 없음, cross-file 신호)",
+      "covers_p02_reference": [
+        false,
+        false
+      ],
+      "n_points_mean": 3.0,
+      "mean_elapsed_s": 8.1,
+      "is_cross_file_signal": true
+    },
+    "java/springboot_security...:BaseEntity.java": {
+      "runs": 2,
+      "ok_runs": 2,
+      "reference_note": "P02: architecture-diffusion:BaseEntity.java (fan_in=3, 여러 컴포넌트 공유)",
+      "covers_p02_reference": [
+        true,
+        true
+      ],
+      "n_points_mean": 4.0,
+      "mean_elapsed_s": 10.2,
+      "is_cross_file_signal": true
+    },
+    "c_cpp/EasyQtSql:navtree.js": {
+      "runs": 2,
+      "ok_runs": 2,
+      "reference_note": "P02: tier-b-risk:navtree.js:dangerous-html (eval( 패턴)",
+      "covers_p02_reference": [
+        true,
+        true
+      ],
+      "n_points_mean": 11.5,
+      "mean_elapsed_s": 33.4,
+      "is_cross_file_signal": false
+    },
+    "c_cpp/libinotify-kqueue:utils.h": {
+      "runs": 2,
+      "ok_runs": 2,
+      "reference_note": "P02: architecture-diffusion:utils.h (fan_in=8, 여러 컴포넌트 공유)",
+      "covers_p02_reference": [
+        false,
+        false
+      ],
+      "n_points_mean": 11.0,
+      "mean_elapsed_s": 30.7,
+      "is_cross_file_signal": true
+    },
+    "python/whoogle-search:cse_client.py": {
+      "runs": 2,
+      "ok_runs": 2,
+      "reference_note": "P02: tier-b-risk:cse_client.py:secret (시크릿 패턴 매치, 오탐 가능성 자체가 P02의 flag)",
+      "covers_p02_reference": [
+        false,
+        false
+      ],
+      "n_points_mean": 8.0,
+      "mean_elapsed_s": 29.5,
+      "is_cross_file_signal": false
+    }
+  },
+  "single_file_signal_coverage": "2/3",
+  "cross_file_signal_coverage": "2/4",
+  "d69_finding_reproduced": true
+}

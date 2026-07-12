@@ -1,0 +1,877 @@
+[
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "c_cpp/EasyQtSql:ParamDirectionWrapper.h",
+    "run": "run1",
+    "ok": true,
+    "elapsed_s": 15.2,
+    "decision_points": [
+      {
+        "file": "EasyQtSql_ParamDirectionWrapper.h",
+        "function": "ParamDirectionWrapper",
+        "judgment_type": "상태 관리 방식",
+        "evidence": "const QVariant value; const QString alias; // 두 필드를 const로 선언하여 생성 후 변경 불가능하게 설계",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "EasyQtSql_ParamDirectionWrapper.h",
+        "function": "In",
+        "judgment_type": "데이터 모델링",
+        "evidence": "ParamDirectionWrapper(value, alias.trimmed().toLower()) // alias를 toLower()로 변환하여 대소문자 구분 없이 처리",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "EasyQtSql_ParamDirectionWrapper.h",
+        "function": "Out",
+        "judgment_type": "에러 처리",
+        "evidence": "ParamDirectionWrapper(QVariant(), alias) // Out은 값이 없으므로 QVariant()를 전달, 이는 SQL OUT 파라미터의 초기값이 null임을 암시",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "EasyQtSql_ParamDirectionWrapper.h",
+        "function": "ParamDirectionWrapper",
+        "judgment_type": "아키텍처 선택",
+        "evidence": "virtual void doesNothing() const = 0; // 추상 메서드를 통해 클래스를 추상화하고, 직접 인스턴스화를 방지",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "EasyQtSql_ParamDirectionWrapper.h",
+        "function": "ParamDirectionWrapper",
+        "judgment_type": "보안 판단",
+        "evidence": "alias(aliasName.trimmed()) // 입력 alias를 trim()으로 공백 제거하여 SQL 인젝션 또는 파싱 오류 방지",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      }
+    ],
+    "n_points": 5,
+    "covers_p02_reference": true,
+    "p02_reference_note": "P02: cognition-isolation:EasyQtSql_ParamDirectionWrapper.h (허브 미연결, cross-file 신호 -- D69가 이 종류 신호를 단일파일 추출기가 원천적으로 못 잡는다고 실측한 바로 그 패턴)"
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "java/Modern-API...:Auth.js",
+    "run": "run1",
+    "ok": true,
+    "elapsed_s": 17.0,
+    "decision_points": [
+      {
+        "file": "Auth.js",
+        "function": "loginUser",
+        "judgment_type": "에러 처리",
+        "evidence": "if (!response.ok) { return { success: false, error: json }; } this.storeTokens(json); return { success: true, data: json }; }",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "Auth.js",
+        "function": "refreshToken",
+        "judgment_type": "상태 관리 방식",
+        "evidence": "if (!response.ok) { this.clearTokens(); return { success: false, error: json }; } this.storeTokens(json); return { success: true, data: json }; }",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "Auth.js",
+        "function": "logoutUser",
+        "judgment_type": "에러 처리",
+        "evidence": ".then(this.handleResponseError.bind(this)) .catch((e) => { this.handleError(e); });",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "Auth.js",
+        "function": "handleResponseError",
+        "judgment_type": "에러 처리",
+        "evidence": "const error = response.json(); console.log(error); throw Error(error);",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "Auth.js",
+        "function": "handleError",
+        "judgment_type": "에러 처리",
+        "evidence": "const err = new Map([ [TypeError, \"Can't connect to server.\"], [SyntaxError, \"There was a problem parsing the response.\"], [Error, error.message], ]).get(error.constructor);",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "Auth.js",
+        "function": "storeTokens",
+        "judgment_type": "데이터 모델링",
+        "evidence": "this.setToken(json); this.config.storeAccessToken(json.accessToken);",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "Auth.js",
+        "function": "clearTokens",
+        "judgment_type": "상태 관리 방식",
+        "evidence": "this.config.storeAccessToken(\"\"); this.setToken(null);",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      }
+    ],
+    "n_points": 7,
+    "covers_p02_reference": true,
+    "p02_reference_note": "P02: tier-b-risk:Auth.js (인증정보 JSON.stringify 유출) -- 단일 파일 신호, 커버 가능해야 함"
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "javascript/FarmAssist:AppImage.jsx",
+    "run": "run1",
+    "ok": true,
+    "elapsed_s": 7.3,
+    "decision_points": [
+      {
+        "file": "AppImage.jsx",
+        "function": "Image",
+        "judgment_type": "에러 처리",
+        "evidence": "onError={(e) => { e.target.src = \"/assets/images/no_image.png\" }}",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "AppImage.jsx",
+        "function": "Image",
+        "judgment_type": "데이터 모델링",
+        "evidence": "alt = \"Image Name\"",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "AppImage.jsx",
+        "function": "Image",
+        "judgment_type": "성능 트레이드오프",
+        "evidence": "className = \"\"",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      }
+    ],
+    "n_points": 3,
+    "covers_p02_reference": false,
+    "p02_reference_note": "P02: cognition-isolation:AppImage.jsx (허브 AppIcon.jsx로 가는 edge 없음, cross-file 신호)"
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "java/springboot_security...:BaseEntity.java",
+    "run": "run1",
+    "ok": true,
+    "elapsed_s": 9.9,
+    "decision_points": [
+      {
+        "file": "BaseEntity.java",
+        "function": "BaseEntity",
+        "judgment_type": "데이터 모델링",
+        "evidence": "@Id\n@GeneratedValue(strategy = GenerationType.IDENTITY)\nprivate Long id;",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "BaseEntity.java",
+        "function": "BaseEntity",
+        "judgment_type": "보안 판단",
+        "evidence": "@Version\n@GsonIgnored\nprivate Long version;",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "BaseEntity.java",
+        "function": "BaseEntity",
+        "judgment_type": "아키텍처 선택",
+        "evidence": "@MappedSuperclass\npublic abstract class BaseEntity implements Serializable {",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "BaseEntity.java",
+        "function": "BaseEntity",
+        "judgment_type": "성능 트레이드오프",
+        "evidence": "private static final long serialVersionUID = 100L;",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      }
+    ],
+    "n_points": 4,
+    "covers_p02_reference": true,
+    "p02_reference_note": "P02: architecture-diffusion:BaseEntity.java (fan_in=3, 여러 컴포넌트 공유)"
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "c_cpp/EasyQtSql:navtree.js",
+    "run": "run1",
+    "ok": true,
+    "elapsed_s": 30.6,
+    "decision_points": [
+      {
+        "file": "navtree.js",
+        "function": "getData",
+        "judgment_type": "보안 판단",
+        "evidence": "return eval(n.replace(/\\-/g,'_'));",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "navtree.js",
+        "function": "stripPath2",
+        "judgment_type": "아키텍처 선택",
+        "evidence": "var m = uri.substring(0,i+1).match(/\\/d\\w\\/d\\w\\w\\/$/); return m ? uri.substring(i-6) : s;",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "navtree.js",
+        "function": "hashValue",
+        "judgment_type": "데이터 모델링",
+        "evidence": "return $(location).attr('hash').substring(1).replace(/[^\\w\\-]/g,'');",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "navtree.js",
+        "function": "pathName",
+        "judgment_type": "데이터 모델링",
+        "evidence": "return $(location).attr('pathname').replace(/[^-A-Za-z0-9+&@#/%?=~_|!:,.;\\(\\)]/g, '');",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "navtree.js",
+        "function": "getScript",
+        "judgment_type": "성능 트레이드오프",
+        "evidence": "if ($.browser.msie && $.browser.version<=8) { // script.onload does not work with older versions of IE script.onreadystatechange = function() { if (script.readyState=='complete' || script.readyState=='loaded') { func(); if (show) showRoot(); } } }",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "navtree.js",
+        "function": "createIndent",
+        "judgment_type": "상태 관리 방식",
+        "evidence": "var level=-1; var n = node; while (n.parentNode) { level++; n=n.parentNode; }",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "navtree.js",
+        "function": "expandNode",
+        "judgment_type": "성능 트레이드오프",
+        "evidence": "if (imm || ($.browser.msie && $.browser.version>8)) { // somehow slideDown jumps to the start of tree for IE9 :-( $(node.getChildrenUL()).show(); } else { $(node.getChildrenUL()).slideDown(\"fast\"); }",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "navtree.js",
+        "function": "showNode",
+        "judgment_type": "상태 관리 방식",
+        "evidence": "if (typeof(n.childrenData)==='string') { var varName = n.childrenData; getScript(n.relpath+varName,function(){ n.childrenData = getData(varName); node.expanded=false; showNode(o,node,index,hash); // retry with child node expanded },true); }",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "navtree.js",
+        "function": "navTo",
+        "judgment_type": "아키텍처 선택",
+        "evidence": "var i=-1; while (NAVTREEINDEX[i+1]<=url) i++; if (i==-1) { i=0; root=NAVTREE[0][1]; } // fallback: show index",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "navtree.js",
+        "function": "initNavTree",
+        "judgment_type": "보안 판단",
+        "evidence": "if (localStorageSupported()) { var navSync = $('#nav-sync'); if (cachedLink()) { showSyncOff(navSync,relpath); navSync.removeClass('sync'); } else { showSyncOn(navSync,relpath); } navSync.click(function(){ toggleSyncButton(relpath); }); }",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      }
+    ],
+    "n_points": 10,
+    "covers_p02_reference": true,
+    "p02_reference_note": "P02: tier-b-risk:navtree.js:dangerous-html (eval( 패턴)"
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "c_cpp/libinotify-kqueue:utils.h",
+    "run": "run1",
+    "ok": true,
+    "elapsed_s": 32.5,
+    "decision_points": [
+      {
+        "file": "utils.h",
+        "function": "perror_msg",
+        "judgment_type": "에러 처리/디버깅 전략",
+        "evidence": "#ifdef ENABLE_PERRORS\nextern pthread_mutex_t perror_msg_mutex;\nchar *perror_msg_printf (const char *fmt, ...);\n#define perror_msg(msg) \\\ndo { \\\nint saved_errno_ = errno; \\\nchar *buf_; \\\npthread_mutex_lock (&perror_msg_mutex); \\\nbuf_ = perror_msg_printf msg; \\\nfprintf (stderr, \"%s.%d: %s: %d (%s)\\n\", __FILE__, __LINE__, buf_, \\\nsaved_errno_, strerror (saved_errno_)); \\\npthread_mutex_unlock (&perror_msg_mutex); \\\nerrno = saved_errno_; \\\n} while (0)\n#else\n#define perror_msg(msg)\n#endif",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "utils.h",
+        "function": "perror_msg",
+        "judgment_type": "성능 트레이드오프",
+        "evidence": "#ifdef ENABLE_PERRORS\nextern pthread_mutex_t perror_msg_mutex;\nchar *perror_msg_printf (const char *fmt, ...);\n#define perror_msg(msg) \\\ndo { \\\nint saved_errno_ = errno; \\\nchar *buf_; \\\npthread_mutex_lock (&perror_msg_mutex); \\\nbuf_ = perror_msg_printf msg; \\\nfprintf (stderr, \"%s.%d: %s: %d (%s)\\n\", __FILE__, __LINE__, buf_, \\\nsaved_errno_, strerror (saved_errno_)); \\\npthread_mutex_unlock (&perror_msg_mutex); \\\nerrno = saved_errno_; \\\n} while (0)\n#else\n#define perror_msg(msg)\n#endif",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "utils.h",
+        "function": "create_inotify_event",
+        "judgment_type": "데이터 모델링",
+        "evidence": "struct inotify_event* create_inotify_event (int wd, uint32_t mask, uint32_t cookie, const char *name, size_t *event_len);",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "utils.h",
+        "function": "sendv",
+        "judgment_type": "성능 트레이드오프",
+        "evidence": "ssize_t sendv (int fd, struct iovec iov[], int iovcnt, int flags);",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "utils.h",
+        "function": "is_opened",
+        "judgment_type": "보안 판단",
+        "evidence": "int is_opened (int fd);",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "utils.h",
+        "function": "is_deleted",
+        "judgment_type": "보안 판단",
+        "evidence": "int is_deleted (int fd);",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "utils.h",
+        "function": "set_cloexec_flag",
+        "judgment_type": "보안 판단",
+        "evidence": "int set_cloexec_flag (int fd, int value);",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "utils.h",
+        "function": "set_nonblock_flag",
+        "judgment_type": "성능 트레이드오프",
+        "evidence": "int set_nonblock_flag (int fd, int value);",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "utils.h",
+        "function": "set_sndbuf_size",
+        "judgment_type": "성능 트레이드오프",
+        "evidence": "int set_sndbuf_size (int fd, int len);",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "utils.h",
+        "function": "dup_cloexec",
+        "judgment_type": "보안 판단",
+        "evidence": "int dup_cloexec (int oldd);",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "utils.h",
+        "function": "fdreopendir",
+        "judgment_type": "자원 관리/보안 판단",
+        "evidence": "DIR *fdreopendir (int oldd);",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      }
+    ],
+    "n_points": 11,
+    "covers_p02_reference": false,
+    "p02_reference_note": "P02: architecture-diffusion:utils.h (fan_in=8, 여러 컴포넌트 공유)"
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "c_cpp/EasyQtSql:ParamDirectionWrapper.h",
+    "run": "run2",
+    "ok": true,
+    "elapsed_s": 12.3,
+    "decision_points": [
+      {
+        "file": "EasyQtSql_ParamDirectionWrapper.h",
+        "function": "ParamDirectionWrapper",
+        "judgment_type": "아키텍처 선택",
+        "evidence": "struct ParamDirectionWrapper { ... virtual void doesNothing() const = 0; };",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "EasyQtSql_ParamDirectionWrapper.h",
+        "function": "In",
+        "judgment_type": "데이터 모델링",
+        "evidence": "In(const QVariant &value, const QString &alias = QString()) : ParamDirectionWrapper(value, alias.trimmed().toLower()) { }",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "EasyQtSql_ParamDirectionWrapper.h",
+        "function": "Out",
+        "judgment_type": "데이터 모델링",
+        "evidence": "explicit Out(const QString &alias) : ParamDirectionWrapper(QVariant(), alias) { }",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "EasyQtSql_ParamDirectionWrapper.h",
+        "function": "InOut",
+        "judgment_type": "상태 관리 방식",
+        "evidence": "InOut(const QVariant &value, const QString &alias) : ParamDirectionWrapper(value, alias) { }",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "EasyQtSql_ParamDirectionWrapper.h",
+        "function": "ParamDirectionWrapper",
+        "judgment_type": "보안 판단",
+        "evidence": "const QVariant value; const QString alias;",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      }
+    ],
+    "n_points": 5,
+    "covers_p02_reference": true,
+    "p02_reference_note": "P02: cognition-isolation:EasyQtSql_ParamDirectionWrapper.h (허브 미연결, cross-file 신호 -- D69가 이 종류 신호를 단일파일 추출기가 원천적으로 못 잡는다고 실측한 바로 그 패턴)"
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "python/whoogle-search:cse_client.py",
+    "run": "run1",
+    "ok": true,
+    "elapsed_s": 26.4,
+    "decision_points": [
+      {
+        "file": "cse_client.py",
+        "function": "CSEError",
+        "judgment_type": "데이터 모델링",
+        "evidence": "@dataclass class CSEError: ... @property def is_quota_exceeded(self) -> bool: return self.code == 429 or 'quota' in self.message.lower() @property def is_invalid_key(self) -> bool: return self.code == 400 or 'invalid' in self.message.lower()",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "cse_client.py",
+        "function": "CSEClient.search",
+        "judgment_type": "에러 처리",
+        "evidence": "except httpx.TimeoutException: return CSEResponse(... error=CSEError(code=408, message='Request timed out') ... except httpx.RequestError as e: return CSEResponse(... error=CSEError(code=500, message=f'Request failed: {str(e)}') ... except Exception as e: return CSEResponse(... error=CSEError(code=500, message=f'Unexpected error: {str(e)}')",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "cse_client.py",
+        "function": "CSEClient.search",
+        "judgment_type": "성능 트레이드오프",
+        "evidence": "'num': min(num, 10), # API max is 10",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "cse_client.py",
+        "function": "cse_results_to_html",
+        "judgment_type": "보안 판단",
+        "evidence": "def _escape_html(text: str) -> str: ... return (text .replace('&', '&amp;') .replace('<', '&lt;') .replace('>', '&gt;') .replace('",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "cse_client.py",
+        "function": "cse_results_to_html",
+        "judgment_type": "아키텍처 선택",
+        "evidence": "return render_template('imageresults.html', ...)",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "cse_client.py",
+        "function": "CSEClient.__init__",
+        "judgment_type": "상태 관리 방식",
+        "evidence": "self._client = httpx.Client(timeout=timeout)",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "cse_client.py",
+        "function": "CSEClient.search",
+        "judgment_type": "데이터 모델링",
+        "evidence": "results.append(CSEResult( ... image_url=item.get('link') if is_image else None, thumbnail_url=image_data.get('thumbnailLink'), image_width=image_data.get('width'), image_height=image_data.get('height'), context_link=image_data.get('contextLink') ))",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "cse_client.py",
+        "function": "cse_results_to_html",
+        "judgment_type": "아키텍처 선택",
+        "evidence": "return f''' <html> <body> <div id=\"main\" data-cse=\"true\"> ... </div> </body> </html> '''",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      }
+    ],
+    "n_points": 8,
+    "covers_p02_reference": false,
+    "p02_reference_note": "P02: tier-b-risk:cse_client.py:secret (시크릿 패턴 매치, 오탐 가능성 자체가 P02의 flag)"
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "c_cpp/libinotify-kqueue:utils.h",
+    "run": "run2",
+    "ok": true,
+    "elapsed_s": 28.9,
+    "decision_points": [
+      {
+        "file": "utils.h",
+        "function": "perror_msg",
+        "judgment_type": "에러 처리/디버깅 전략",
+        "evidence": "#ifdef ENABLE_PERRORS\nextern pthread_mutex_t perror_msg_mutex;\nchar *perror_msg_printf (const char *fmt, ...);\n#define perror_msg(msg) \\\ndo { \\\nint saved_errno_ = errno; \\\nchar *buf_; \\\npthread_mutex_lock (&perror_msg_mutex); \\\nbuf_ = perror_msg_printf msg; \\\nfprintf (stderr, \"%s.%d: %s: %d (%s)\\n\", __FILE__, __LINE__, buf_, \\\nsaved_errno_, strerror (saved_errno_)); \\\npthread_mutex_unlock (&perror_msg_mutex); \\\nerrno = saved_errno_; \\\n} while (0)\n#else\n#define perror_msg(msg)\n#endif",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "utils.h",
+        "function": "perror_msg",
+        "judgment_type": "성능 트레이드오프",
+        "evidence": "#ifdef ENABLE_PERRORS\nextern pthread_mutex_t perror_msg_mutex;\nchar *perror_msg_printf (const char *fmt, ...);\n#define perror_msg(msg) \\\ndo { \\\nint saved_errno_ = errno; \\\nchar *buf_; \\\npthread_mutex_lock (&perror_msg_mutex); \\\nbuf_ = perror_msg_printf msg; \\\nfprintf (stderr, \"%s.%d: %s: %d (%s)\\n\", __FILE__, __LINE__, buf_, \\\nsaved_errno_, strerror (saved_errno_)); \\\npthread_mutex_unlock (&perror_msg_mutex); \\\nerrno = saved_errno_; \\\n} while (0)\n#else\n#define perror_msg(msg)\n#endif",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "utils.h",
+        "function": "create_inotify_event",
+        "judgment_type": "데이터 모델링",
+        "evidence": "struct inotify_event* create_inotify_event (int wd, uint32_t mask, uint32_t cookie, const char *name, size_t *event_len);",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "utils.h",
+        "function": "sendv",
+        "judgment_type": "인터페이스 설계",
+        "evidence": "ssize_t sendv (int fd, struct iovec iov[], int iovcnt, int flags);",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "utils.h",
+        "function": "is_opened",
+        "judgment_type": "보안 판단",
+        "evidence": "int is_opened (int fd);",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "utils.h",
+        "function": "is_deleted",
+        "judgment_type": "보안 판단",
+        "evidence": "int is_deleted (int fd);",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "utils.h",
+        "function": "set_cloexec_flag",
+        "judgment_type": "보안 판단",
+        "evidence": "int set_cloexec_flag (int fd, int value);",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "utils.h",
+        "function": "set_nonblock_flag",
+        "judgment_type": "성능 트레이드오프",
+        "evidence": "int set_nonblock_flag (int fd, int value);",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "utils.h",
+        "function": "set_sndbuf_size",
+        "judgment_type": "성능 트레이드오프",
+        "evidence": "int set_sndbuf_size (int fd, int len);",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "utils.h",
+        "function": "dup_cloexec",
+        "judgment_type": "보안 판단",
+        "evidence": "int dup_cloexec (int oldd);",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "utils.h",
+        "function": "fdreopendir",
+        "judgment_type": "자원 관리",
+        "evidence": "DIR *fdreopendir (int oldd);",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      }
+    ],
+    "n_points": 11,
+    "covers_p02_reference": false,
+    "p02_reference_note": "P02: architecture-diffusion:utils.h (fan_in=8, 여러 컴포넌트 공유)"
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "java/springboot_security...:BaseEntity.java",
+    "run": "run2",
+    "ok": true,
+    "elapsed_s": 10.5,
+    "decision_points": [
+      {
+        "file": "BaseEntity.java",
+        "function": "BaseEntity",
+        "judgment_type": "데이터 모델링",
+        "evidence": "@Id\n@GeneratedValue(strategy = GenerationType.IDENTITY)\nprivate Long id;",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "BaseEntity.java",
+        "function": "BaseEntity",
+        "judgment_type": "보안 판단",
+        "evidence": "@Version\n@GsonIgnored private Long version;",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "BaseEntity.java",
+        "function": "BaseEntity",
+        "judgment_type": "아키텍처 선택",
+        "evidence": "@MappedSuperclass\npublic abstract class BaseEntity implements Serializable",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "BaseEntity.java",
+        "function": "BaseEntity",
+        "judgment_type": "성능 트레이드오프",
+        "evidence": "private static final long serialVersionUID = 100L;",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      }
+    ],
+    "n_points": 4,
+    "covers_p02_reference": true,
+    "p02_reference_note": "P02: architecture-diffusion:BaseEntity.java (fan_in=3, 여러 컴포넌트 공유)"
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "c_cpp/EasyQtSql:navtree.js",
+    "run": "run2",
+    "ok": true,
+    "elapsed_s": 36.2,
+    "decision_points": [
+      {
+        "file": "navtree.js",
+        "function": "getData",
+        "judgment_type": "보안 판단",
+        "evidence": "return eval(n.replace(/\\-/g,'_'));",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "navtree.js",
+        "function": "stripPath2",
+        "judgment_type": "아키텍처 선택",
+        "evidence": "var m = uri.substring(0,i+1).match(/\\/d\\w\\/d\\w\\w\\/$/); return m ? uri.substring(i-6) : s;",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "navtree.js",
+        "function": "hashValue",
+        "judgment_type": "데이터 모델링",
+        "evidence": "return $(location).attr('hash').substring(1).replace(/[^\\w\\-]/g,'');",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "navtree.js",
+        "function": "pathName",
+        "judgment_type": "데이터 모델링",
+        "evidence": "return $(location).attr('pathname').replace(/[^-A-Za-z0-9+&@#/%?=~_|!:,.;\\(\\)]/g, '');",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "navtree.js",
+        "function": "localStorageSupported",
+        "judgment_type": "성능 트레이드오프",
+        "evidence": "try { return 'localStorage' in window && window['localStorage'] !== null && window.localStorage.getItem; } catch(e) { return false; }",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "navtree.js",
+        "function": "getScript",
+        "judgment_type": "에러 처리",
+        "evidence": "if ($.browser.msie && $.browser.version<=8) { // script.onload does not work with older versions of IE script.onreadystatechange = function() { if (script.readyState=='complete' || script.readyState=='loaded') { func(); if (show) showRoot(); } } }",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "navtree.js",
+        "function": "createIndent",
+        "judgment_type": "상태 관리 방식",
+        "evidence": "var level=-1; var n = node; while (n.parentNode) { level++; n=n.parentNode; }",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "navtree.js",
+        "function": "gotoAnchor",
+        "judgment_type": "성능 트레이드오프",
+        "evidence": "var dist = Math.abs(Math.min( pos-docContent.offset().top, docContent[0].scrollHeight- docContent.height()-docContent.scrollTop())); animationInProgress=true; docContent.animate({ scrollTop: pos + docContent.scrollTop() - docContent.offset().top },Math.max(50,Math.min(500,dist)),function(){ ... });",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "navtree.js",
+        "function": "newNode",
+        "judgment_type": "아키텍처 선택",
+        "evidence": "node.childrenUL = null; node.getChildrenUL = function() { if (!node.childrenUL) { node.childrenUL = document.createElement(\"ul\"); node.childrenUL.className = \"children_ul\"; node.childrenUL.style.display = \"none\"; node.li.appendChild(node.childrenUL); } return node.childrenUL; };",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "navtree.js",
+        "function": "expandNode",
+        "judgment_type": "성능 트레이드오프",
+        "evidence": "if (imm || ($.browser.msie && $.browser.version>8)) { // somehow slideDown jumps to the start of tree for IE9 :-( $(node.getChildrenUL()).show(); } else { $(node.getChildrenUL()).slideDown(\"fast\"); }",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "navtree.js",
+        "function": "showNode",
+        "judgment_type": "에러 처리",
+        "evidence": "if (typeof(n.childrenData)==='string') { var varName = n.childrenData; getScript(n.relpath+varName,function(){ n.childrenData = getData(varName); node.expanded=false; showNode(o,node,index,hash); // retry with child node expanded },true); }",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "navtree.js",
+        "function": "navTo",
+        "judgment_type": "아키텍처 선택",
+        "evidence": "var i=-1; while (NAVTREEINDEX[i+1]<=url) i++; if (i==-1) { i=0; root=NAVTREE[0][1]; } // fallback: show index",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "navtree.js",
+        "function": "initNavTree",
+        "judgment_type": "상태 관리 방식",
+        "evidence": "if (localStorageSupported()) { var navSync = $('#nav-sync'); if (cachedLink()) { showSyncOff(navSync,relpath); navSync.removeClass('sync'); } else { showSyncOn(navSync,relpath); } navSync.click(function(){ toggleSyncButton(relpath); }); }",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      }
+    ],
+    "n_points": 13,
+    "covers_p02_reference": true,
+    "p02_reference_note": "P02: tier-b-risk:navtree.js:dangerous-html (eval( 패턴)"
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "javascript/FarmAssist:AppImage.jsx",
+    "run": "run2",
+    "ok": true,
+    "elapsed_s": 8.8,
+    "decision_points": [
+      {
+        "file": "AppImage.jsx",
+        "function": "Image",
+        "judgment_type": "에러 처리",
+        "evidence": "onError={(e) => { e.target.src = \"/assets/images/no_image.png\" }}",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "AppImage.jsx",
+        "function": "Image",
+        "judgment_type": "데이터 모델링",
+        "evidence": "alt = \"Image Name\"",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "AppImage.jsx",
+        "function": "Image",
+        "judgment_type": "성능 트레이드오프",
+        "evidence": "...props를 사용하여 모든 추가 속성을 img 엘리먼트에 전달",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      }
+    ],
+    "n_points": 3,
+    "covers_p02_reference": false,
+    "p02_reference_note": "P02: cognition-isolation:AppImage.jsx (허브 AppIcon.jsx로 가는 edge 없음, cross-file 신호)"
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "java/Modern-API...:Auth.js",
+    "run": "run2",
+    "ok": true,
+    "elapsed_s": 26.0,
+    "decision_points": [
+      {
+        "file": "Auth.js",
+        "function": "loginUser",
+        "judgment_type": "에러 처리",
+        "evidence": "if (!response.ok) { return { success: false, error: json }; } ... .catch((e) => { return this.handleError(e); });",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "Auth.js",
+        "function": "refreshToken",
+        "judgment_type": "에러 처리",
+        "evidence": "if (!response.ok) { this.clearTokens(); return { success: false, error: json }; } ... .catch((e) => { return this.handleError(e); });",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "Auth.js",
+        "function": "logoutUser",
+        "judgment_type": "에러 처리",
+        "evidence": ".then(this.handleResponseError.bind(this)) .catch((e) => { this.handleError(e); });",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "Auth.js",
+        "function": "handleResponseError",
+        "judgment_type": "에러 처리",
+        "evidence": "handleResponseError(response) { this.clearTokens(); if (!response.ok) { const error = response.json(); console.log(error); throw Error(error); } return response; }",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "Auth.js",
+        "function": "handleError",
+        "judgment_type": "에러 처리",
+        "evidence": "handleError(error) { this.clearTokens(); const err = new Map([ [TypeError, \"Can't connect to server.\"], [SyntaxError, \"There was a problem parsing the response.\"], [Error, error.message], ]).get(error.constructor); console.log(err); return err; }",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "Auth.js",
+        "function": "storeTokens",
+        "judgment_type": "상태 관리 방식",
+        "evidence": "storeTokens(json) { this.setToken(json); this.config.storeAccessToken(json.accessToken); }",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "Auth.js",
+        "function": "clearTokens",
+        "judgment_type": "상태 관리 방식",
+        "evidence": "clearTokens() { this.config.storeAccessToken(\"\"); this.setToken(null); }",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "Auth.js",
+        "function": "Auth",
+        "judgment_type": "아키텍처 선택",
+        "evidence": "constructor(argToken, argSetToken) { this.token = argToken; this.setToken = argSetToken; this.config = new Config(); }",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "Auth.js",
+        "function": "logoutUser",
+        "judgment_type": "API 설계",
+        "evidence": "fetch(this.config.LOGIN_URL, { method: \"DELETE\", ... body: JSON.stringify(refreshToken), })",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      }
+    ],
+    "n_points": 9,
+    "covers_p02_reference": true,
+    "p02_reference_note": "P02: tier-b-risk:Auth.js (인증정보 JSON.stringify 유출) -- 단일 파일 신호, 커버 가능해야 함"
+  },
+  {
+    "model": "qwen/qwen3-next-80b-a3b-instruct",
+    "label": "python/whoogle-search:cse_client.py",
+    "run": "run2",
+    "ok": true,
+    "elapsed_s": 32.6,
+    "decision_points": [
+      {
+        "file": "cse_client.py",
+        "function": "CSEError",
+        "judgment_type": "에러 처리",
+        "evidence": "@property def is_quota_exceeded(self) -> bool:\n        return self.code == 429 or 'quota' in self.message.lower()\n    \n    @property def is_invalid_key(self) -> bool:\n        return self.code == 400 or 'invalid' in self.message.lower()",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "cse_client.py",
+        "function": "search",
+        "judgment_type": "성능 트레이드오프",
+        "evidence": "'num': min(num, 10),  # API max is 10",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "cse_client.py",
+        "function": "search",
+        "judgment_type": "데이터 모델링",
+        "evidence": "results.append(CSEResult(\n            title=item.get('title', ''),\n            link=item.get('link', ''),\n            snippet=item.get('snippet', ''),\n            display_link=item.get('displayLink', ''),\n            html_title=item.get('htmlTitle'),\n            html_snippet=item.get('htmlSnippet'),\n            # Image fields\n            image_url=item.get('link') if is_image else None,\n            thumbnail_url=image_data.get('thumbnailLink'),\n            image_width=image_data.get('width'),\n            image_height=image_data.get('height'),\n            context_link=image_data.get('contextLink')\n        ))",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "cse_client.py",
+        "function": "cse_results_to_html",
+        "judgment_type": "보안 판단",
+        "evidence": "def _escape_html(text: str) -> str:\n    \"\"\"Escape HTML special characters\"\"\"\n    if not text:\n        return ''\n    return (text\n            .replace('&', '&amp;')\n            .replace('<', '&lt;')\n            .replace('>', '&gt;')\n            .replace('\"', '&quot;')\n            .replace(\"'\", '&#39;'))",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "cse_client.py",
+        "function": "cse_results_to_html",
+        "judgment_type": "아키텍처 선택",
+        "evidence": "return render_template(\n    'imageresults.html',\n    length=len(results),\n    results=results,\n    view_label=\"View Image\",\n    next_link=next_link\n)",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "cse_client.py",
+        "function": "CSEClient",
+        "judgment_type": "상태 관리 방식",
+        "evidence": "self._client = httpx.Client(timeout=timeout)\n\n    def close(self):\n        \"\"\"Close the HTTP client\"\"\"\n        self._client.close()\n\n    def __enter__(self):\n        return self\n\n    def __exit__(self, *args):\n        self.close()",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "cse_client.py",
+        "function": "search",
+        "judgment_type": "에러 처리",
+        "evidence": "except httpx.TimeoutException:\n        return CSEResponse(\n            results=[],\n            total_results='0',\n            search_time=0.0,\n            query=query,\n            start_index=start,\n            error=CSEError(code=408, message='Request timed out')\n        )\n    except httpx.RequestError as e:\n        return CSEResponse(\n            results=[],\n            total_results='0',\n            search_time=0.0,\n            query=query,\n            start_index=start,\n            error=CSEError(code=500, message=f'Request failed: {str(e)}')\n        )\n    except Exception as e:\n        return CSEResponse(\n            results=[],\n            total_results='0',\n            search_time=0.0,\n            query=query,\n            start_index=start,\n            error=CSEError(code=500, message=f'Unexpected error: {str(e)}')\n        )",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      },
+      {
+        "file": "cse_client.py",
+        "function": "cse_results_to_html",
+        "judgment_type": "아키텍처 선택",
+        "evidence": "return f''' <html> <body> <div id=\"main\" data-cse=\"true\"> <div id=\"cnt\"> <div id=\"rcnt\"> <div id=\"center_col\"> <div id=\"res\"> <div id=\"search\"> <div id=\"rso\"> {''.join(results_html)} </div> </div> </div> {pagination_html} </div> </div> </div> </div> </body> </html> '''",
+        "linked_requirement": "이 파일이 속한 오픈소스 프로젝트의 일반적인 코드 품질/설계/보안 기준"
+      }
+    ],
+    "n_points": 8,
+    "covers_p02_reference": false,
+    "p02_reference_note": "P02: tier-b-risk:cse_client.py:secret (시크릿 패턴 매치, 오탐 가능성 자체가 P02의 flag)"
+  }
+]

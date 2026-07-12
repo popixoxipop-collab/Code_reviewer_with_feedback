@@ -1,0 +1,366 @@
+{
+  "all_on_current_state": [
+    {
+      "label": "c_cpp/EasyQtSql",
+      "n_findings": 12,
+      "finding_ids": [
+        "architecture-diffusion:EasyQtSql_NonQueryResult.h",
+        "cognition-isolation:EasyQtSql_DBException.h",
+        "cognition-isolation:EasyQtSql_DeleteQuery.h",
+        "cognition-isolation:EasyQtSql_InsertQuery.h",
+        "cognition-isolation:EasyQtSql_NonQueryResult.h",
+        "cognition-isolation:EasyQtSql_ParamDirectionWrapper.h",
+        "cognition-isolation:EasyQtSql_PreparedQuery.h",
+        "cognition-isolation:EasyQtSql_QueryResult.h",
+        "cognition-isolation:EasyQtSql_SqlFactory.h",
+        "cognition-isolation:EasyQtSql_Transaction.h",
+        "cognition-isolation:EasyQtSql_UpdateQuery.h",
+        "tier-b-risk:navtree.js:dangerous-html"
+      ]
+    },
+    {
+      "label": "c_cpp/cavalieri",
+      "n_findings": 1,
+      "finding_ids": [
+        "architecture-diffusion:driver.h"
+      ]
+    },
+    {
+      "label": "java/Lancelot",
+      "n_findings": 1,
+      "finding_ids": [
+        "architecture-diffusion:FrontendConnection.java"
+      ]
+    },
+    {
+      "label": "java/LibraryManageSystem",
+      "n_findings": 9,
+      "finding_ids": [
+        "architecture-diffusion:ConnectDatabase.java",
+        "cognition-isolation:AlterPassword_JDialog.java",
+        "cognition-isolation:Book.java",
+        "cognition-isolation:ConnectDatabase.java",
+        "cognition-isolation:ImageIO.java",
+        "cognition-isolation:JtableUpdate.java",
+        "cognition-isolation:Reader.java",
+        "cognition-isolation:ReaderFunction_Interface.java",
+        "cognition-isolation:Student.java"
+      ]
+    },
+    {
+      "label": "javascript/FarmAssist",
+      "n_findings": 11,
+      "finding_ids": [
+        "architecture-diffusion:Button.jsx",
+        "cognition-isolation:AppImage.jsx",
+        "cognition-isolation:Input.jsx",
+        "cognition-isolation:LanguageContext.jsx",
+        "cognition-isolation:LanguageSelector.jsx",
+        "cognition-isolation:Routes.jsx",
+        "cognition-isolation:Select.jsx",
+        "cognition-isolation:VoiceAssistant.jsx",
+        "cognition-isolation:cn.js",
+        "cognition-isolation:useTranslation.js",
+        "tier-b-risk:VoiceAssistant-spec.jsx"
+      ]
+    },
+    {
+      "label": "javascript/SHIELD",
+      "n_findings": 3,
+      "finding_ids": [
+        "architecture-diffusion:utils.ts",
+        "cognition-isolation:packageInfo.ts",
+        "cognition-isolation:wasm.ts"
+      ]
+    },
+    {
+      "label": "python/API-Manager",
+      "n_findings": 1,
+      "finding_ids": [
+        "architecture-diffusion:api.py"
+      ]
+    },
+    {
+      "label": "python/Elevator",
+      "n_findings": 3,
+      "finding_ids": [
+        "architecture-diffusion:db.py",
+        "cognition-isolation:io.py",
+        "cognition-isolation:patterns.py"
+      ]
+    }
+  ],
+  "idiom_filter_off": [
+    {
+      "label": "c_cpp/EasyQtSql",
+      "n_findings": 12,
+      "finding_ids": [
+        "architecture-diffusion:EasyQtSql_NonQueryResult.h",
+        "cognition-isolation:EasyQtSql_DBException.h",
+        "cognition-isolation:EasyQtSql_DeleteQuery.h",
+        "cognition-isolation:EasyQtSql_InsertQuery.h",
+        "cognition-isolation:EasyQtSql_NonQueryResult.h",
+        "cognition-isolation:EasyQtSql_ParamDirectionWrapper.h",
+        "cognition-isolation:EasyQtSql_PreparedQuery.h",
+        "cognition-isolation:EasyQtSql_QueryResult.h",
+        "cognition-isolation:EasyQtSql_SqlFactory.h",
+        "cognition-isolation:EasyQtSql_Transaction.h",
+        "cognition-isolation:EasyQtSql_UpdateQuery.h",
+        "tier-b-risk:navtree.js:dangerous-html"
+      ]
+    },
+    {
+      "label": "c_cpp/cavalieri",
+      "n_findings": 1,
+      "finding_ids": [
+        "architecture-diffusion:driver.h"
+      ]
+    },
+    {
+      "label": "java/Lancelot",
+      "n_findings": 1,
+      "finding_ids": [
+        "architecture-diffusion:FrontendConnection.java"
+      ]
+    },
+    {
+      "label": "java/LibraryManageSystem",
+      "n_findings": 9,
+      "finding_ids": [
+        "architecture-diffusion:ConnectDatabase.java",
+        "cognition-isolation:AlterPassword_JDialog.java",
+        "cognition-isolation:Book.java",
+        "cognition-isolation:ConnectDatabase.java",
+        "cognition-isolation:ImageIO.java",
+        "cognition-isolation:JtableUpdate.java",
+        "cognition-isolation:Reader.java",
+        "cognition-isolation:ReaderFunction_Interface.java",
+        "cognition-isolation:Student.java"
+      ]
+    },
+    {
+      "label": "javascript/FarmAssist",
+      "n_findings": 11,
+      "finding_ids": [
+        "architecture-diffusion:Button.jsx",
+        "cognition-isolation:AppImage.jsx",
+        "cognition-isolation:Input.jsx",
+        "cognition-isolation:LanguageContext.jsx",
+        "cognition-isolation:LanguageSelector.jsx",
+        "cognition-isolation:Routes.jsx",
+        "cognition-isolation:Select.jsx",
+        "cognition-isolation:VoiceAssistant.jsx",
+        "cognition-isolation:cn.js",
+        "cognition-isolation:useTranslation.js",
+        "tier-b-risk:VoiceAssistant-spec.jsx"
+      ]
+    },
+    {
+      "label": "javascript/SHIELD",
+      "n_findings": 3,
+      "finding_ids": [
+        "architecture-diffusion:utils.ts",
+        "cognition-isolation:packageInfo.ts",
+        "cognition-isolation:wasm.ts"
+      ]
+    },
+    {
+      "label": "python/API-Manager",
+      "n_findings": 1,
+      "finding_ids": [
+        "architecture-diffusion:api.py"
+      ]
+    },
+    {
+      "label": "python/Elevator",
+      "n_findings": 3,
+      "finding_ids": [
+        "architecture-diffusion:db.py",
+        "cognition-isolation:io.py",
+        "cognition-isolation:patterns.py"
+      ]
+    }
+  ],
+  "tier_b_suppression_off": [
+    {
+      "label": "c_cpp/EasyQtSql",
+      "n_findings": 12,
+      "finding_ids": [
+        "architecture-diffusion:EasyQtSql_NonQueryResult.h",
+        "cognition-isolation:EasyQtSql_DBException.h",
+        "cognition-isolation:EasyQtSql_DeleteQuery.h",
+        "cognition-isolation:EasyQtSql_InsertQuery.h",
+        "cognition-isolation:EasyQtSql_NonQueryResult.h",
+        "cognition-isolation:EasyQtSql_ParamDirectionWrapper.h",
+        "cognition-isolation:EasyQtSql_PreparedQuery.h",
+        "cognition-isolation:EasyQtSql_QueryResult.h",
+        "cognition-isolation:EasyQtSql_SqlFactory.h",
+        "cognition-isolation:EasyQtSql_Transaction.h",
+        "cognition-isolation:EasyQtSql_UpdateQuery.h",
+        "tier-b-risk:navtree.js:dangerous-html"
+      ]
+    },
+    {
+      "label": "c_cpp/cavalieri",
+      "n_findings": 1,
+      "finding_ids": [
+        "architecture-diffusion:driver.h"
+      ]
+    },
+    {
+      "label": "java/Lancelot",
+      "n_findings": 1,
+      "finding_ids": [
+        "architecture-diffusion:FrontendConnection.java"
+      ]
+    },
+    {
+      "label": "java/LibraryManageSystem",
+      "n_findings": 9,
+      "finding_ids": [
+        "architecture-diffusion:ConnectDatabase.java",
+        "cognition-isolation:AlterPassword_JDialog.java",
+        "cognition-isolation:Book.java",
+        "cognition-isolation:ConnectDatabase.java",
+        "cognition-isolation:ImageIO.java",
+        "cognition-isolation:JtableUpdate.java",
+        "cognition-isolation:Reader.java",
+        "cognition-isolation:ReaderFunction_Interface.java",
+        "cognition-isolation:Student.java"
+      ]
+    },
+    {
+      "label": "javascript/FarmAssist",
+      "n_findings": 11,
+      "finding_ids": [
+        "architecture-diffusion:Button.jsx",
+        "cognition-isolation:AppImage.jsx",
+        "cognition-isolation:Input.jsx",
+        "cognition-isolation:LanguageContext.jsx",
+        "cognition-isolation:LanguageSelector.jsx",
+        "cognition-isolation:Routes.jsx",
+        "cognition-isolation:Select.jsx",
+        "cognition-isolation:VoiceAssistant.jsx",
+        "cognition-isolation:cn.js",
+        "cognition-isolation:useTranslation.js",
+        "tier-b-risk:VoiceAssistant-spec.jsx"
+      ]
+    },
+    {
+      "label": "javascript/SHIELD",
+      "n_findings": 3,
+      "finding_ids": [
+        "architecture-diffusion:utils.ts",
+        "cognition-isolation:packageInfo.ts",
+        "cognition-isolation:wasm.ts"
+      ]
+    },
+    {
+      "label": "python/API-Manager",
+      "n_findings": 1,
+      "finding_ids": [
+        "architecture-diffusion:api.py"
+      ]
+    },
+    {
+      "label": "python/Elevator",
+      "n_findings": 3,
+      "finding_ids": [
+        "architecture-diffusion:db.py",
+        "cognition-isolation:io.py",
+        "cognition-isolation:patterns.py"
+      ]
+    }
+  ],
+  "subrubric_weights_default": [
+    {
+      "label": "c_cpp/EasyQtSql",
+      "n_findings": 12,
+      "finding_ids": [
+        "architecture-diffusion:EasyQtSql_NonQueryResult.h",
+        "cognition-isolation:EasyQtSql_DBException.h",
+        "cognition-isolation:EasyQtSql_DeleteQuery.h",
+        "cognition-isolation:EasyQtSql_InsertQuery.h",
+        "cognition-isolation:EasyQtSql_NonQueryResult.h",
+        "cognition-isolation:EasyQtSql_ParamDirectionWrapper.h",
+        "cognition-isolation:EasyQtSql_PreparedQuery.h",
+        "cognition-isolation:EasyQtSql_QueryResult.h",
+        "cognition-isolation:EasyQtSql_SqlFactory.h",
+        "cognition-isolation:EasyQtSql_Transaction.h",
+        "cognition-isolation:EasyQtSql_UpdateQuery.h",
+        "tier-b-risk:navtree.js:dangerous-html"
+      ]
+    },
+    {
+      "label": "c_cpp/cavalieri",
+      "n_findings": 1,
+      "finding_ids": [
+        "architecture-diffusion:driver.h"
+      ]
+    },
+    {
+      "label": "java/Lancelot",
+      "n_findings": 1,
+      "finding_ids": [
+        "architecture-diffusion:FrontendConnection.java"
+      ]
+    },
+    {
+      "label": "java/LibraryManageSystem",
+      "n_findings": 9,
+      "finding_ids": [
+        "architecture-diffusion:ConnectDatabase.java",
+        "cognition-isolation:AlterPassword_JDialog.java",
+        "cognition-isolation:Book.java",
+        "cognition-isolation:ConnectDatabase.java",
+        "cognition-isolation:ImageIO.java",
+        "cognition-isolation:JtableUpdate.java",
+        "cognition-isolation:Reader.java",
+        "cognition-isolation:ReaderFunction_Interface.java",
+        "cognition-isolation:Student.java"
+      ]
+    },
+    {
+      "label": "javascript/FarmAssist",
+      "n_findings": 11,
+      "finding_ids": [
+        "architecture-diffusion:Button.jsx",
+        "cognition-isolation:AppImage.jsx",
+        "cognition-isolation:Input.jsx",
+        "cognition-isolation:LanguageContext.jsx",
+        "cognition-isolation:LanguageSelector.jsx",
+        "cognition-isolation:Routes.jsx",
+        "cognition-isolation:Select.jsx",
+        "cognition-isolation:VoiceAssistant.jsx",
+        "cognition-isolation:cn.js",
+        "cognition-isolation:useTranslation.js",
+        "tier-b-risk:VoiceAssistant-spec.jsx"
+      ]
+    },
+    {
+      "label": "javascript/SHIELD",
+      "n_findings": 3,
+      "finding_ids": [
+        "architecture-diffusion:utils.ts",
+        "cognition-isolation:packageInfo.ts",
+        "cognition-isolation:wasm.ts"
+      ]
+    },
+    {
+      "label": "python/API-Manager",
+      "n_findings": 1,
+      "finding_ids": [
+        "architecture-diffusion:api.py"
+      ]
+    },
+    {
+      "label": "python/Elevator",
+      "n_findings": 3,
+      "finding_ids": [
+        "architecture-diffusion:db.py",
+        "cognition-isolation:io.py",
+        "cognition-isolation:patterns.py"
+      ]
+    }
+  ]
+}

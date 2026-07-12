@@ -1,0 +1,314 @@
+[
+  {
+    "ok": true,
+    "elapsed_s": 0.22435688972473145,
+    "label": "c_cpp/EasyQtSql",
+    "lang_tag": "c_cpp",
+    "n_findings": 12,
+    "cost_saved_ratio": 0.994
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.1399669647216797,
+    "label": "c_cpp/cavalieri",
+    "lang_tag": "c_cpp",
+    "n_findings": 1,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.09625720977783203,
+    "label": "c_cpp/glasnost",
+    "lang_tag": "c_cpp",
+    "n_findings": 1,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.10305476188659668,
+    "label": "c_cpp/libinotify-kqueue",
+    "lang_tag": "c_cpp",
+    "n_findings": 1,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.09662485122680664,
+    "label": "c_cpp/libofx",
+    "lang_tag": "c_cpp",
+    "n_findings": 1,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.11549067497253418,
+    "label": "c_cpp/libv4l",
+    "lang_tag": "c_cpp",
+    "n_findings": 1,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.25202107429504395,
+    "label": "c_cpp/loki",
+    "lang_tag": "c_cpp",
+    "n_findings": 7,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.08444809913635254,
+    "label": "c_cpp/mathopd",
+    "lang_tag": "c_cpp",
+    "n_findings": 1,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.1840200424194336,
+    "label": "c_cpp/reveldb",
+    "lang_tag": "c_cpp",
+    "n_findings": 1,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.09858512878417969,
+    "label": "c_cpp/rt-tests",
+    "lang_tag": "c_cpp",
+    "n_findings": 1,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.0753629207611084,
+    "label": "c_cpp/turnstile",
+    "lang_tag": "c_cpp",
+    "n_findings": 0,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.17278432846069336,
+    "label": "java/Lancelot",
+    "lang_tag": "java",
+    "n_findings": 1,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.11141777038574219,
+    "label": "java/LibraryManageSystem",
+    "lang_tag": "java",
+    "n_findings": 9,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 1.3324437141418457,
+    "label": "java/Modern-API-Development-with-Spring-6-and-Spring-Boot-3",
+    "lang_tag": "java",
+    "n_findings": 13,
+    "cost_saved_ratio": 0.998
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.5376851558685303,
+    "label": "java/base-ai-assistant",
+    "lang_tag": "java",
+    "n_findings": 2,
+    "cost_saved_ratio": 0.996
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.2137899398803711,
+    "label": "java/efgs-federation-gateway",
+    "lang_tag": "java",
+    "n_findings": 1,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.3148231506347656,
+    "label": "java/off-coupon",
+    "lang_tag": "java",
+    "n_findings": 1,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.09699296951293945,
+    "label": "java/springboot_security_restful_api",
+    "lang_tag": "java",
+    "n_findings": 1,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.18149304389953613,
+    "label": "java/springbootmicroservicedailybuffer",
+    "lang_tag": "java",
+    "n_findings": 1,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.17065691947937012,
+    "label": "java/zgc-ems",
+    "lang_tag": "java",
+    "n_findings": 1,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.16949987411499023,
+    "label": "javascript/FarmAssist",
+    "lang_tag": "javascript",
+    "n_findings": 11,
+    "cost_saved_ratio": 0.985
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.08818197250366211,
+    "label": "javascript/SHIELD",
+    "lang_tag": "javascript",
+    "n_findings": 3,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.9728050231933594,
+    "label": "javascript/Warehouse-Stock-Inventory-Management-System--NextJS-FullStack",
+    "lang_tag": "javascript",
+    "n_findings": 6,
+    "cost_saved_ratio": 0.991
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.27219104766845703,
+    "label": "javascript/chargebee-node",
+    "lang_tag": "javascript",
+    "n_findings": 5,
+    "cost_saved_ratio": 0.977
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.0940241813659668,
+    "label": "javascript/copa-backend",
+    "lang_tag": "javascript",
+    "n_findings": 1,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.08167099952697754,
+    "label": "javascript/janusQL",
+    "lang_tag": "javascript",
+    "n_findings": 1,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.10385799407958984,
+    "label": "javascript/mwn",
+    "lang_tag": "javascript",
+    "n_findings": 1,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.07393789291381836,
+    "label": "javascript/nhentai-telegram-bot",
+    "lang_tag": "javascript",
+    "n_findings": 0,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.17182397842407227,
+    "label": "python/API-Manager",
+    "lang_tag": "python",
+    "n_findings": 1,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.13505291938781738,
+    "label": "python/Elevator",
+    "lang_tag": "python",
+    "n_findings": 3,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.06561279296875,
+    "label": "python/ExchangeRates",
+    "lang_tag": "python",
+    "n_findings": 0,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.08101582527160645,
+    "label": "python/SocialScraper",
+    "lang_tag": "python",
+    "n_findings": 2,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.06981778144836426,
+    "label": "python/auto_coding",
+    "lang_tag": "python",
+    "n_findings": 1,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.06448078155517578,
+    "label": "python/django-tutorial",
+    "lang_tag": "python",
+    "n_findings": 0,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.08548808097839355,
+    "label": "python/ecourts",
+    "lang_tag": "python",
+    "n_findings": 1,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.07517385482788086,
+    "label": "python/httpbin",
+    "lang_tag": "python",
+    "n_findings": 1,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.09461688995361328,
+    "label": "python/renamarr",
+    "lang_tag": "python",
+    "n_findings": 4,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.07232093811035156,
+    "label": "python/webhookinbox",
+    "lang_tag": "python",
+    "n_findings": 0,
+    "cost_saved_ratio": 1.0
+  },
+  {
+    "ok": true,
+    "elapsed_s": 0.09853506088256836,
+    "label": "python/whoogle-search",
+    "lang_tag": "python",
+    "n_findings": 2,
+    "cost_saved_ratio": 0.974
+  }
+]

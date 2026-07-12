@@ -1,0 +1,140 @@
+{
+  "note": "P02 4-axis (D119). Zero NVIDIA calls. Stability=scan+judge crash-free+schema-valid rate over freshly-cloned examples/ corpus (39 repos, lms/shadowbroker/study_match excluded -- no PROVENANCE.json to reclone from). Reproducibility(a)=fixed-state 100x identical-signature rate on a 2-per-language stratified sample. Reproducibility(b)=bucket sensitivity between empty vs current-accumulated correction-hook state. Precision axis intentionally absent here -- pending human-labeling sprint (D119 3.1), see judgment_precision_labels.jsonl. Speed=mean scan+judge wall-clock.",
+  "stability": {
+    "n_total": 39,
+    "n_ok": 39,
+    "rate": 1.0,
+    "failures_by_stage": {}
+  },
+  "speed": {
+    "mean_elapsed_s": 0.192,
+    "mean_cost_saved_ratio": 0.998,
+    "n": 39
+  },
+  "reproducibility": {
+    "a_fixed_state_100x": {
+      "per_repo": [
+        {
+          "label": "c_cpp/EasyQtSql",
+          "reps": 100,
+          "ok_reps": 100,
+          "errors": 0,
+          "unique_signatures": 1,
+          "identical_rate": 1.0,
+          "elapsed_s": 15.0
+        },
+        {
+          "label": "c_cpp/cavalieri",
+          "reps": 100,
+          "ok_reps": 100,
+          "errors": 0,
+          "unique_signatures": 1,
+          "identical_rate": 1.0,
+          "elapsed_s": 11.4
+        },
+        {
+          "label": "java/Lancelot",
+          "reps": 100,
+          "ok_reps": 100,
+          "errors": 0,
+          "unique_signatures": 1,
+          "identical_rate": 1.0,
+          "elapsed_s": 14.7
+        },
+        {
+          "label": "java/LibraryManageSystem",
+          "reps": 100,
+          "ok_reps": 100,
+          "errors": 0,
+          "unique_signatures": 1,
+          "identical_rate": 1.0,
+          "elapsed_s": 9.8
+        },
+        {
+          "label": "javascript/FarmAssist",
+          "reps": 100,
+          "ok_reps": 100,
+          "errors": 0,
+          "unique_signatures": 1,
+          "identical_rate": 1.0,
+          "elapsed_s": 14.9
+        },
+        {
+          "label": "javascript/SHIELD",
+          "reps": 100,
+          "ok_reps": 100,
+          "errors": 0,
+          "unique_signatures": 1,
+          "identical_rate": 1.0,
+          "elapsed_s": 7.8
+        },
+        {
+          "label": "python/API-Manager",
+          "reps": 100,
+          "ok_reps": 100,
+          "errors": 0,
+          "unique_signatures": 1,
+          "identical_rate": 1.0,
+          "elapsed_s": 14.2
+        },
+        {
+          "label": "python/Elevator",
+          "reps": 100,
+          "ok_reps": 100,
+          "errors": 0,
+          "unique_signatures": 1,
+          "identical_rate": 1.0,
+          "elapsed_s": 11.5
+        }
+      ],
+      "mean_identical_rate": 1.0,
+      "repeats": 100
+    },
+    "b_state_sensitivity": {
+      "empty_state": {
+        "n_repos": 8,
+        "mean_findings": 5.12
+      },
+      "current_state": {
+        "n_repos": 8,
+        "mean_findings": 5.12
+      },
+      "per_repo_finding_count_delta_current_minus_empty": {
+        "c_cpp/EasyQtSql": 0,
+        "c_cpp/cavalieri": 0,
+        "java/Lancelot": 0,
+        "java/LibraryManageSystem": 0,
+        "javascript/FarmAssist": 0,
+        "javascript/SHIELD": 0,
+        "python/API-Manager": 0,
+        "python/Elevator": 0
+      }
+    }
+  },
+  "precision": {
+    "status": "pending_human_labeling_sprint",
+    "auto_reference_set_coverage": null
+  },
+  "ablation_P02_T1": {
+    "all_on_current_state": {
+      "n_repos": 8,
+      "mean_findings": 5.12,
+      "total_findings": 41
+    },
+    "idiom_filter_off": {
+      "n_repos": 8,
+      "mean_findings": 5.12,
+      "total_findings": 41
+    },
+    "tier_b_suppression_off": {
+      "n_repos": 8,
+      "mean_findings": 5.12,
+      "total_findings": 41
+    },
+    "subrubric_weights_default": {
+      "n_repos": 8,
+      "mean_findings": 5.12,
+      "total_findings": 41
+    }
+  }
+}
