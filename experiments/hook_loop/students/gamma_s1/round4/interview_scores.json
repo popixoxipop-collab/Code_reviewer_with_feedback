@@ -1,0 +1,62 @@
+[
+  {
+    "finding_id": "architecture-diffusion:Product.java",
+    "ok": true,
+    "axis": "구조_인지도",
+    "fr_axis": "코드_이해",
+    "score": 5,
+    "criterion": "구성 요소 간 관계와 데이터 흐름을 정확히 설명",
+    "evidence": "[L1] 질문: Product.java의 getAmount() 메서드에서 왜 int 타입인 price와 quantity를 long으로 캐스팅한 후 곱하는 방식을 선택했나요? 이 설계 결정은 어떤 오버플로우 시나리오를 방지하기 위한 것인지, 코드 주석에서 언급된 '3,000,000원 상품 1,000개' 예시를 바탕으로 구체적으로 설명해 주세요.\n[L1] 학생 답변: 네, 라인 61을 보면 `(long) price * (long) quantity`로 캐스팅한 이유는 int 범위를 넘지 않기 위함인데요 — price가 3,000,000원",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "architecture-diffusion:Product.java",
+    "ok": true,
+    "axis": "트레이드오프_인지도",
+    "fr_axis": "반례_대응",
+    "score": 5,
+    "criterion": "반례를 스스로 먼저 언급하거나, 던졌을 때 즉각 인지",
+    "evidence": "[L1] 질문: Product.java의 getAmount() 메서드에서 왜 int 타입인 price와 quantity를 long으로 캐스팅한 후 곱하는 방식을 선택했나요? 이 설계 결정은 어떤 오버플로우 시나리오를 방지하기 위한 것인지, 코드 주석에서 언급된 '3,000,000원 상품 1,000개' 예시를 바탕으로 구체적으로 설명해 주세요.\n[L1] 학생 답변: 네, 라인 61을 보면 `(long) price * (long) quantity`로 캐스팅한 이유는 int 범위를 넘지 않기 위함인데요 — price가 3,000,000원",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "architecture-diffusion:Product.java",
+    "ok": true,
+    "axis": "대안_탐색_능력",
+    "fr_axis": "대안_비교",
+    "score": 4,
+    "criterion": "대안 방향은 명확하나 구현 방법 일부 불명확",
+    "evidence": "[L1] 질문: Product.java의 getAmount() 메서드에서 왜 int 타입인 price와 quantity를 long으로 캐스팅한 후 곱하는 방식을 선택했나요? 이 설계 결정은 어떤 오버플로우 시나리오를 방지하기 위한 것인지, 코드 주석에서 언급된 '3,000,000원 상품 1,000개' 예시를 바탕으로 구체적으로 설명해 주세요.\n[L1] 학생 답변: 네, 라인 61을 보면 `(long) price * (long) quantity`로 캐스팅한 이유는 int 범위를 넘지 않기 위함인데요 — price가 3,000,000원",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "architecture-diffusion:Product.java",
+    "ok": true,
+    "axis": "설계_논리",
+    "fr_axis": "설계_논리",
+    "score": 5,
+    "criterion": "설계 의도와 제약조건(성능/시간/팀 상황 등)을 연결해 명확히 설명",
+    "evidence": "[L1] 질문: Product.java의 getAmount() 메서드에서 왜 int 타입인 price와 quantity를 long으로 캐스팅한 후 곱하는 방식을 선택했나요? 이 설계 결정은 어떤 오버플로우 시나리오를 방지하기 위한 것인지, 코드 주석에서 언급된 '3,000,000원 상품 1,000개' 예시를 바탕으로 구체적으로 설명해 주세요.\n[L1] 학생 답변: 네, 라인 61을 보면 `(long) price * (long) quantity`로 캐스팅한 이유는 int 범위를 넘지 않기 위함인데요 — price가 3,000,000원",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "architecture-diffusion:Product.java",
+    "ok": true,
+    "axis": "자기_수정",
+    "fr_axis": "자기_수정",
+    "score": 5,
+    "criterion": "자기오류인식+이유설명+새판단+구체적개선안 4개 신호 전부 스스로 제시",
+    "evidence": "[L1] 질문: Product.java의 getAmount() 메서드에서 왜 int 타입인 price와 quantity를 long으로 캐스팅한 후 곱하는 방식을 선택했나요? 이 설계 결정은 어떤 오버플로우 시나리오를 방지하기 위한 것인지, 코드 주석에서 언급된 '3,000,000원 상품 1,000개' 예시를 바탕으로 구체적으로 설명해 주세요.\n[L1] 학생 답변: 네, 라인 61을 보면 `(long) price * (long) quantity`로 캐스팅한 이유는 int 범위를 넘지 않기 위함인데요 — price가 3,000,000원",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  }
+]
