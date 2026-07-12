@@ -115,13 +115,21 @@ def _weakest_fr_axes(transcript_scores, n=TOP_AXES):
     return [axis for axis, _ in ranked[:n]]
 
 
-def build_candidate_rules(findings, transcript_scores, unit_map, round_num):
-    """증거 필드를 결정론적으로 조립 -- LLM 관여 없음."""
+def build_candidate_rules(findings, transcript_scores, unit_map, round_num, seq_by_axis=None):
+    """증거 필드를 결정론적으로 조립 -- LLM 관여 없음.
+
+    D122(gamma R2 실측 발견): seq_by_axis를 매번 0부터 새로 세면, R2에서 새로 만드는
+    rule_id가 R1에서 이미 쓴 rule_id와 우연히 같아질 수 있다(예: 서로 다른 파일을
+    가리키는 두 규칙이 둘 다 "대안_비교-01") -- merge_with_previous()는 (취약축,trigger)
+    키로만 중복 판정해서 이 경우 진짜 다른 두 규칙이 같은 rule_id로 공존하게 됨.
+    caller(generate_hook_file)가 prev_version의 기존 rule_id에서 축별 최대 seq를
+    미리 계산해 넘겨주면 이어서 번호를 매긴다.
+    """
     weak_axes = _weakest_fr_axes(transcript_scores) if transcript_scores else list(FR_AXES[:TOP_AXES])
     log(f"weakest FR axes this round: {weak_axes}")
 
     candidates = []
-    seq_by_axis = {}
+    seq_by_axis = dict(seq_by_axis) if seq_by_axis else {}
 
     # 코드 채널(P02): finding kind -> FR axis 매핑으로 후보 생성, priority가 높은 순
     priority_rank = {"최우선": 0, "Important(🔴)": 1, "질문 대상": 2, "검토 대상(자동 신뢰 금지)": 3}
@@ -265,7 +273,18 @@ def generate_hook_file(student_id, round_num, findings_path, transcript_path, un
     transcript_scores = json.loads(Path(transcript_path).read_text(encoding="utf-8")) if transcript_path else []
     unit_map = json.loads(Path(unit_map_path).read_text(encoding="utf-8")) if unit_map_path else {}
 
-    candidates, weak_axes = build_candidate_rules(findings, transcript_scores, unit_map, round_num)
+    starting_seq_by_axis = {}
+    if prev_version_path and Path(prev_version_path).exists():
+        prev_rules = json.loads(Path(prev_version_path).read_text(encoding="utf-8")).get("rules", [])
+        for r in prev_rules:
+            axis, _, seq_str = r["rule_id"].rpartition("-")
+            try:
+                seq = int(seq_str)
+            except ValueError:
+                continue
+            starting_seq_by_axis[axis] = max(starting_seq_by_axis.get(axis, 0), seq)
+
+    candidates, weak_axes = build_candidate_rules(findings, transcript_scores, unit_map, round_num, seq_by_axis=starting_seq_by_axis)
     for c in candidates:
         src_path = findings_path if c["channel"] == "code" else transcript_path
         c["provenance_hash"] = _file_hash(src_path) if src_path else None
