@@ -37,6 +37,26 @@ SKIP_DIRS = {
 #   "투명하고 디버깅 가능"이라는 이유는 그대로 유지됨. 상세: SUBRUBRIC_DRAFT.md(D27/D28)
 
 ENTRY_POINT_HINTS = ("main.", "index.")
+
+# D122(gamma 실측 발견): ENTRY_POINT_HINTS 매치가 대소문자 구분(startswith)이라 Java의
+#   표준 관례인 "Main.java"(대문자 M, 파일명이 public class명과 반드시 일치해야 하는 Java
+#   언어 규칙상 클래스명 컨벤션인 PascalCase를 그대로 따름)를 절대 못 잡는다 -- "main."은
+#   JS/TS 관례(main.tsx 등, 소문자)만 염두에 두고 만들어졌던 것으로 보인다. 결과: Java
+#   프로젝트에서는 find_hub가 진짜 entry point를 후보에서 못 뺴고(Main이 fan_in=0이라
+#   보통 hub로 안 뽑히긴 하지만), 더 크게는 find_routed_peers가 entry_srcs를 아예 못 찾아
+#   cognition-isolation류 finding이 Java에서는 원천적으로 하나도 안 나왔을 가능성이 높다
+#   (실측: gamma_s1 라운드1 4클래스 학생 과제 + M1 java 코퍼스 9개 repo 전부 대소문자
+#   불일치로 무효화됐을 것으로 추정 -- M1 자체의 4축 집계 점수는 안 바뀌지만 개별
+#   finding_id는 재스캔하면 바뀔 수 있음, README에 정직하게 캐비어트로 기록).
+#   WHY: 대소문자 무시 매치로 바꾸면 Java(Main.java)/JS(main.tsx)/기타 모두 한 규칙으로 커버.
+#   COST: 아주 드물게 클래스명이 우연히 "Main"으로 시작(예: MainMenu.java)하면 오탐 가능 --
+#        기존 JS 쪽도 이미 같은 종류의 접두어-prefix 위험을 안고 있었으므로 새로운 종류의
+#        리스크는 아님.
+#   EXIT: 오탐이 실측되면 접두어 매치를 "정확히 그 이름"(Main.java/Index.java 등 전체일치)
+#        으로 좁히면 됨 -- ENTRY_POINT_HINTS 상수만 바꾸면 두 사용처 다 반영됨.
+def _matches_entry_hint(filename):
+    lower = filename.lower()
+    return any(lower.startswith(h) for h in ENTRY_POINT_HINTS)
 REPEATED_PATTERN_MIN_FILES = 2
 REPEATED_PATTERN_MIN_HITS = 2
 
@@ -59,7 +79,7 @@ def find_hub(fan_in, edges):
 
     fan_in이 동점이면 fan_out이 낮은(자기는 남을 덜 의존하는, sink에 가까운) 쪽을 우선한다.
     """
-    candidates = {k: v for k, v in fan_in.items() if not any(k.startswith(h) for h in ENTRY_POINT_HINTS)}
+    candidates = {k: v for k, v in fan_in.items() if not _matches_entry_hint(k)}
     if not candidates:
         return None
     fan_out = {k: 0 for k in candidates}
@@ -83,7 +103,7 @@ def find_hub(fan_in, edges):
 #        BFS 깊이만 늘리면 됨
 def find_routed_peers(edges):
     """entry point가 import하는 루트 컴포넌트(들)가 직접 import하는 파일 집합 = 비교 대상 형제 그룹."""
-    entry_srcs = {src for src, dst in edges if any(src.startswith(h) for h in ENTRY_POINT_HINTS)}
+    entry_srcs = {src for src, dst in edges if _matches_entry_hint(src)}
     roots = {dst for src, dst in edges if src in entry_srcs}
     peers = {dst for src, dst in edges if src in roots}
     return peers

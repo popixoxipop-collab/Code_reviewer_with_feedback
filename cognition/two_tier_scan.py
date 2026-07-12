@@ -118,6 +118,31 @@ def extract_java_targets(text):
     return [m.group(1).split(".")[-1] for m in JAVA_IMPORT_RE.finditer(text)]
 
 
+# D122(gamma 실측 발견): default package(패키지 선언 없음) Java 코드는 같은 디렉터리의
+#   다른 클래스를 참조할 때 import문이 필요 없다(Java 언어 자체가 그렇다) -- JAVA_IMPORT_RE는
+#   그래서 이런 파일 사이의 edge를 전혀 못 잡는다(실측: 4클래스 학생 과제, fan_in 전부 0,
+#   edges=[] -- Main이 GradeInputHandler/ScoreCalculator/Student를 실제로 다 쓰는데도).
+#   WHY: 이 프로젝트가 다루는 examples/java/*의 실제 repo들은 대부분 package 선언+명시적
+#        import가 있어(D74/D75 정상 동작 확인) 지금까지 이 gap이 안 드러났다 -- 그런데
+#        커리큘럼 초급 과제(패키지 없이 클래스 몇 개)는 정확히 이 gap에 걸린다. Swift(136번
+#        줄)처럼 "원천적으로 스캔 불가"가 아니라 "이 파일 하나만 봐선 부족하고 형제 파일
+#        이름 목록이 필요하다"는 차이라 별도 해결 가능.
+#   COST: 단어 경계(\b) 매치라 흔한 이름(예: 클래스명이 "Test"처럼 JDK/일반 English 단어와
+#        겹치면) 오탐 가능 -- idiom_filter/tier_b_suppression처럼 재귀 억제 루프가 없어
+#        오탐이 나면 지금은 그냥 감수해야 함(발생 빈도 보고 필요시 hook화).
+#   EXIT: 오탐이 실측되면 클래스 선언(`class ClassName`) 패턴이 있는 파일만 fan_in_keys
+#        후보로 좁히거나, 문자열/주석 안 매치를 제외하도록 정교화.
+def extract_java_same_package_targets(text, sibling_class_stems, own_stem):
+    """import문 없이 참조되는 형제 클래스(default package)를 단어 경계 매치로 탐지."""
+    targets = []
+    for stem in sibling_class_stems:
+        if stem == own_stem:
+            continue
+        if re.search(rf"\b{re.escape(stem)}\b", text):
+            targets.append(stem)
+    return targets
+
+
 def extract_c_targets(text):
     return [m.group(1) for m in C_INCLUDE_RE.finditer(text)]
 
@@ -159,6 +184,7 @@ def tier_a_structural_scan(files):
     여러 줄로 나눠 import해도 fan-in이 한 번만 올라간다.
     """
     fan_in_keys = [os.path.basename(f) for f in files]
+    java_stems = [os.path.splitext(k)[0] for k in fan_in_keys if k.endswith(".java")]
     edge_set = set()
     for fp in files:
         text = open(fp, encoding="utf-8", errors="ignore").read()
@@ -167,6 +193,12 @@ def tier_a_structural_scan(files):
             for dst in resolve_matches(target, fan_in_keys):
                 if dst != src:
                     edge_set.add((src, dst))
+        if src.endswith(".java"):
+            own_stem = os.path.splitext(src)[0]
+            for target in extract_java_same_package_targets(text, java_stems, own_stem):
+                for dst in resolve_matches(target, fan_in_keys):
+                    if dst != src:
+                        edge_set.add((src, dst))
 
     fan_in = {k: 0 for k in fan_in_keys}
     for _src, dst in edge_set:

@@ -844,6 +844,15 @@ python3 pipeline/compare_methodologies.py
   - COST: 3번(temporal firewall)은 D121의 `generate_hook_file.py`에 이미 구현·검증됨(별도 D 번호 없이 D121에 포함). 4번(사후 전수 감사)은 `canary.full_corpus_audit()`으로 함수는 존재하나, 실제 프롬프트 스냅샷 로그를 남기는 측정 콜 사이트 개조는 아직 안 됨(M4에서 실제 루프가 돌 때 필요).
   - EXIT: 4번을 실제로 쓰려면 P01/P02/P03 각 측정 콜 사이트에 프롬프트 원문 로깅을 추가하고, 실험 종료 후 `canary.full_corpus_audit(log_paths)`를 돌리면 됨 — 함수 자체는 이미 완성.
 
+- **D122 (M4 γ 라운드1 실행 중 실측 발견 3건)** — 에이전트 시뮬레이션(γ) 라운드1을 실제로 돌리면서 설계 문서만으로는 안 보였던 문제 3개를 코드 실행 도중 잡았다. 아직 라운드1 측정을 완결 못한 상태(아래 "다음 단계" 참고).
+  1. **경로 오염 사고(수정 완료)**: student-agent가 `experiments/hook_loop/GAMMA_DESIGN.md`·`persona.txt`를 상위 디렉터리 탐색 중 실제로 발견 — D123 격리 가드가 "측정 스크립트의 hookfile 접근"만 위협 모델에 넣고 "student-agent의 실험문서 접근"은 놓쳤던 것. 미커밋 상태라 데이터로 안 남기고 폐기, student-agent 작업공간을 repo 밖 세션 scratchpad(공통 조상 디렉터리 없음)로 이전 — 상세는 `experiments/hook_loop/_lab/GAMMA_DESIGN.md`의 "D122 정정" 참고.
+  2. **`cognition/two_tier_scan.py` — Java same-package(default package) 파일간 edge 미탐지(수정 완료)**: `extract_java_targets`는 명시적 `import`문만 파싱하는데, 같은(무명) 패키지 안의 Java 클래스는 언어 자체가 import 없이 참조 가능하다 — 학생 4클래스 과제(Student/GradeInputHandler/ScoreCalculator/Main, 전부 package 선언 없음)가 fan_in 전부 0으로 나옴(edges=[]). `extract_java_same_package_targets()`(단어경계 매치로 형제 클래스명 탐지) 추가, 수정 후 재스캔하니 Student.java fan_in 3으로 정상 검출. **회귀 확인**: 이미 검증된 M1 java 코퍼스 2개(springboot_security_restful_api/Lancelot)에서도 fan_in이 유의미하게 더 잡힘(springboot: nonzero fan_in 파일수 20→38, max fan_in 3→11, edges 32→더 많음) — 즉 패키지가 있는 "정상" 프로젝트에서도 같은 패키지 내 무-import 참조가 이 사이즈로 누락되고 있었다는 뜻. **M1의 4축 집계 점수(안정성/속도/재현성)는 이 fan_in 계산과 무관해 안 바뀌지만, 개별 finding_id(어떤 파일이 hub/고립으로 뽑혔는지)는 재스캔하면 달라질 수 있음 — M1 Java 관련 세부 finding은 잠정으로 간주할 것.**
+  3. **`judgment/score_findings.py` — `ENTRY_POINT_HINTS` 대소문자 구분 매치 버그(수정 완료)**: `("main.", "index.")`를 `str.startswith()`로 매치하는데 Java 관례(`Main.java`, 대문자 M — 파일명이 public class명과 일치해야 하는 언어 규칙상 필연)는 절대 못 잡음(JS 관례 `main.tsx`만 염두에 둔 상수였던 것으로 보임). `_matches_entry_hint()`로 대소문자 무시 매치로 교체. **이 버그는 Java 프로젝트에서 `cognition-isolation` finding이 사실상 한 번도 정상 발동한 적이 없었을 가능성을 시사**(entry_srcs를 못 찾으면 find_routed_peers가 항상 빈 집합 반환) — M1의 java 코퍼스(9 repo) cognition-isolation 관련 수치도 잠정.
+  - 위 2, 3 두 버그를 다 고친 뒤에도 라운드1 4클래스 과제는 여전히 **0 finding**(fan_in/hub 계산은 이제 맞지만, 이 정도로 작고 잘 정리된 "별 모양"(Main→3개 헬퍼, 헬퍼들→Student) 구조에서는 애초에 "고립"이나 "2차 확산점"이 성립할 여지가 구조적으로 없음) — 이건 버그가 아니라 **γ 과제 자체가 P02 구조 신호가 나타나기엔 너무 작다는 실측 결과**. 다음 단계 결정 필요(아래).
+  - WHY: 설계 문서 리뷰만으로는 이 세 문제 중 어느 것도 안 드러났다 — 실제로 학생 코드를 만들고 실제로 스캔을 돌려봐야만 나오는 종류의 결함(verification-grounding 원칙 그대로).
+  - COST: M1 커밋 이후 재스캔 없이 이 두 P02 버그를 발견 — M1의 Java 관련 세부 finding_id 재검증이 이 세션 범위 밖으로 남음(아래 미해결 항목 추가).
+  - EXIT: M1 Java 코퍼스 재검증이 필요해지면 `judgment_4axis_benchmark.py --stability`(39 repo 재실행, 콜 0건)만 다시 돌리면 새 fan_in/hub 로직이 자동 반영됨 — 별도 코드 변경 불필요.
+
 
 ## 다음 단계 (미해결)
 
@@ -867,6 +876,7 @@ python3 pipeline/compare_methodologies.py
 18. ~~`NVIDIA_API_KEY_1`을 확보해 라이브 실행~~ — **2026-07-06 완료(D58)**: 87개 모델 전수조사, 19개 모델이 tool_choice 100% 준수 확인. `nemotron-3-nano-omni-30b-a3b-reasoning`은 실제로 산문 응답(예견된 실패 경로가 라이브로 확인됨), `nemotron-3.3-super-49b-v1.5`는 tool_calls는 왔지만 arguments가 깨진 JSON(신규 실패 유형). Anthropic 대비 품질 비교는 여전히 미확인(ANTHROPIC_API_KEY 필요). 상세: [`SURVEY_RESULTS.md`](./SURVEY_RESULTS.md)
 19. **신규(D57)**: 새로 만든 "설계_논리"·"자기_수정" 2축은 아직 실제 학생/지원자 답변으로 단 한 건도 채점해본 적이 없음 — `auto_score_self_correction()`을 D37 실측 케이스(Bookshelf.jsx XSS 답변)에 돌려본 결과 1/5점(오류를 전혀 인정하지 않음)으로 나온 것도 그 케이스가 애초에 `reflection_signal.py` 재현율 문제의 예시였기 때문(D34 COST와 동일한 한계 — self_error_recognition confirmed 패턴이 1개뿐이라 과소탐지). 실제 다양한 답변으로 자동 초안과 사람 판정이 얼마나 어긋나는지 비교하는 게 다음 검증 순서
 20. **신규(D59)**: Depth Ladder 7단계 → FR-5.7의 L1~L5 이해단계 압축 규칙이 어디에도 정의돼 있지 않음(L1=What·L5=Transfer만 명명, L4=Trade-off는 예시로만 등장, L2·L3는 공백). 5축 채점 프레임워크도 FR스펙/`interview_rubric.py`/팀 ROAF 문서(`코드이해도_평가_질문및채점기준.md`) 3곳이 서로 다름(축 이름·척도 1~5 vs 1~3 모두 불일치). A안(김만서)/B안(박진용) 원본 문서도 로컬에 없어 팀 자체 하이브리드 권고(`TEAM_POC_SUMMARY.md`)를 당장 착수할 수 없음. 상세 근거와 회의 안건은 [`METHODOLOGY_AUDIT_HANDOFF.md`](./METHODOLOGY_AUDIT_HANDOFF.md) 참고 — 전부 팀 결정 필요, 코드로 해소 불가
+21. **신규(D122, γ 라운드1 실측)**: M1(D119) Java 코퍼스(9 repo)의 `cognition-isolation`/`architecture-diffusion` finding_id는 이 세션에서 고친 두 fan_in 계산 버그(same-package edge 미탐지, ENTRY_POINT_HINTS 대소문자 매치) 이전 데이터라 잠정으로 간주 — M1의 4축 집계 점수(안정성/속도/재현성) 자체는 이 버그와 무관해 그대로 유효하지만, "어떤 파일이 hub/고립으로 뽑혔는가" 같은 세부 finding 라벨은 재검증 전까지 확정으로 인용하지 말 것. 재검증은 `judgment_4axis_benchmark.py --stability`(콜 0건) 재실행이면 충분.
 
 ## 발표용 라이브 데모 실행 순서 (검증됨)
 
