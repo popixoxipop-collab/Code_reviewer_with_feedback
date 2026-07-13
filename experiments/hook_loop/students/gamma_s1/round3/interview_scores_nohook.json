@@ -1,0 +1,122 @@
+[
+  {
+    "finding_id": "cognition-isolation:TaxDeduction.java",
+    "ok": true,
+    "axis": "구조_인지도",
+    "fr_axis": "코드_이해",
+    "score": 4,
+    "criterion": "흐름은 맞지만 일부 연결 관계 불명확",
+    "evidence": "[L1] 질문: TaxDeduction.java의 calculateTax 메서드에서 세율을 고정값 0.10(10%)으로 하드코딩한 이유는 무엇인가요? 이 설계 결정은 PayrollCalculator와의 관계(fan-in=1)와 어떻게 연결되나요?\n[L1] 학생 답변: 일단은... 계산을 간단하게 하려고 처음에 10% 고정으로 놨는데, PayrollCalculator에서만 호출되니까(fan_in=1) 그걸로 충분할 거라고 생각했어요. 근데 생각해보니 세율이 실제론 달라질 수 있어서 나중에 설정값이나 매개변수로 받아야 할 것 같긴 합니",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "cognition-isolation:TaxDeduction.java",
+    "ok": true,
+    "axis": "트레이드오프_인지도",
+    "fr_axis": "반례_대응",
+    "score": 5,
+    "criterion": "반례를 스스로 먼저 언급하거나, 던졌을 때 즉각 인지",
+    "evidence": "[L1] 질문: TaxDeduction.java의 calculateTax 메서드에서 세율을 고정값 0.10(10%)으로 하드코딩한 이유는 무엇인가요? 이 설계 결정은 PayrollCalculator와의 관계(fan-in=1)와 어떻게 연결되나요?\n[L1] 학생 답변: 일단은... 계산을 간단하게 하려고 처음에 10% 고정으로 놨는데, PayrollCalculator에서만 호출되니까(fan_in=1) 그걸로 충분할 거라고 생각했어요. 근데 생각해보니 세율이 실제론 달라질 수 있어서 나중에 설정값이나 매개변수로 받아야 할 것 같긴 합니",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "cognition-isolation:TaxDeduction.java",
+    "ok": true,
+    "axis": "대안_탐색_능력",
+    "fr_axis": "대안_비교",
+    "score": 4,
+    "criterion": "대안 방향은 명확하나 구현 방법 일부 불명확",
+    "evidence": "[L1] 질문: TaxDeduction.java의 calculateTax 메서드에서 세율을 고정값 0.10(10%)으로 하드코딩한 이유는 무엇인가요? 이 설계 결정은 PayrollCalculator와의 관계(fan-in=1)와 어떻게 연결되나요?\n[L1] 학생 답변: 일단은... 계산을 간단하게 하려고 처음에 10% 고정으로 놨는데, PayrollCalculator에서만 호출되니까(fan_in=1) 그걸로 충분할 거라고 생각했어요. 근데 생각해보니 세율이 실제론 달라질 수 있어서 나중에 설정값이나 매개변수로 받아야 할 것 같긴 합니",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "cognition-isolation:TaxDeduction.java",
+    "ok": true,
+    "axis": "설계_논리",
+    "fr_axis": "설계_논리",
+    "score": 4,
+    "criterion": "설계 의도는 설명하나 제약조건과의 연결은 부분적",
+    "evidence": "[L1] 질문: TaxDeduction.java의 calculateTax 메서드에서 세율을 고정값 0.10(10%)으로 하드코딩한 이유는 무엇인가요? 이 설계 결정은 PayrollCalculator와의 관계(fan-in=1)와 어떻게 연결되나요?\n[L1] 학생 답변: 일단은... 계산을 간단하게 하려고 처음에 10% 고정으로 놨는데, PayrollCalculator에서만 호출되니까(fan_in=1) 그걸로 충분할 거라고 생각했어요. 근데 생각해보니 세율이 실제론 달라질 수 있어서 나중에 설정값이나 매개변수로 받아야 할 것 같긴 합니",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "cognition-isolation:TaxDeduction.java",
+    "ok": true,
+    "axis": "자기_수정",
+    "fr_axis": "자기_수정",
+    "score": 5,
+    "criterion": "자기오류인식+이유설명+새판단+구체적개선안 4개 신호 전부 스스로 제시",
+    "evidence": "[L1] 질문: TaxDeduction.java의 calculateTax 메서드에서 세율을 고정값 0.10(10%)으로 하드코딩한 이유는 무엇인가요? 이 설계 결정은 PayrollCalculator와의 관계(fan-in=1)와 어떻게 연결되나요?\n[L1] 학생 답변: 일단은... 계산을 간단하게 하려고 처음에 10% 고정으로 놨는데, PayrollCalculator에서만 호출되니까(fan_in=1) 그걸로 충분할 거라고 생각했어요. 근데 생각해보니 세율이 실제론 달라질 수 있어서 나중에 설정값이나 매개변수로 받아야 할 것 같긴 합니",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "architecture-diffusion:PayrollReport.java",
+    "ok": true,
+    "axis": "구조_인지도",
+    "fr_axis": "코드_이해",
+    "score": 4,
+    "criterion": "흐름은 맞지만 일부 연결 관계 불명확",
+    "evidence": "[L1] 질문: PayrollReport 클래스의 printPayslip 메서드에서 archive.addRecord()를 호출하면서 Employee 객체의 getName()과 getHoursWorked()를 직접 사용하고 있는데, 이 설계는 Employee 클래스의 내부 구현에 강하게 의존하고 있습니다. 이 의존성을 왜 허용했나요? 만약 Employee가 나중에 이름이나 근무 시간을 다른 방식으로 제공하도록 변경된다면, 이 코드는 어떻게 영향을 받을까요? 그리고 이 설계를 변경하려면 어떤 대안을 고려했나요?\n[L1] 학생 답변: 네",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "architecture-diffusion:PayrollReport.java",
+    "ok": true,
+    "axis": "트레이드오프_인지도",
+    "fr_axis": "반례_대응",
+    "score": 5,
+    "criterion": "반례를 스스로 먼저 언급하거나, 던졌을 때 즉각 인지",
+    "evidence": "[L1] 질문: PayrollReport 클래스의 printPayslip 메서드에서 archive.addRecord()를 호출하면서 Employee 객체의 getName()과 getHoursWorked()를 직접 사용하고 있는데, 이 설계는 Employee 클래스의 내부 구현에 강하게 의존하고 있습니다. 이 의존성을 왜 허용했나요? 만약 Employee가 나중에 이름이나 근무 시간을 다른 방식으로 제공하도록 변경된다면, 이 코드는 어떻게 영향을 받을까요? 그리고 이 설계를 변경하려면 어떤 대안을 고려했나요?\n[L1] 학생 답변: 네",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "architecture-diffusion:PayrollReport.java",
+    "ok": true,
+    "axis": "대안_탐색_능력",
+    "fr_axis": "대안_비교",
+    "score": 4,
+    "criterion": "대안 방향은 명확하나 구현 방법 일부 불명확",
+    "evidence": "[L1] 질문: PayrollReport 클래스의 printPayslip 메서드에서 archive.addRecord()를 호출하면서 Employee 객체의 getName()과 getHoursWorked()를 직접 사용하고 있는데, 이 설계는 Employee 클래스의 내부 구현에 강하게 의존하고 있습니다. 이 의존성을 왜 허용했나요? 만약 Employee가 나중에 이름이나 근무 시간을 다른 방식으로 제공하도록 변경된다면, 이 코드는 어떻게 영향을 받을까요? 그리고 이 설계를 변경하려면 어떤 대안을 고려했나요?\n[L1] 학생 답변: 네",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "architecture-diffusion:PayrollReport.java",
+    "ok": true,
+    "axis": "설계_논리",
+    "fr_axis": "설계_논리",
+    "score": 4,
+    "criterion": "설계 의도는 설명하나 제약조건과의 연결은 부분적",
+    "evidence": "[L1] 질문: PayrollReport 클래스의 printPayslip 메서드에서 archive.addRecord()를 호출하면서 Employee 객체의 getName()과 getHoursWorked()를 직접 사용하고 있는데, 이 설계는 Employee 클래스의 내부 구현에 강하게 의존하고 있습니다. 이 의존성을 왜 허용했나요? 만약 Employee가 나중에 이름이나 근무 시간을 다른 방식으로 제공하도록 변경된다면, 이 코드는 어떻게 영향을 받을까요? 그리고 이 설계를 변경하려면 어떤 대안을 고려했나요?\n[L1] 학생 답변: 네",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "architecture-diffusion:PayrollReport.java",
+    "ok": true,
+    "axis": "자기_수정",
+    "fr_axis": "자기_수정",
+    "score": 5,
+    "criterion": "자기오류인식+이유설명+새판단+구체적개선안 4개 신호 전부 스스로 제시",
+    "evidence": "[L1] 질문: PayrollReport 클래스의 printPayslip 메서드에서 archive.addRecord()를 호출하면서 Employee 객체의 getName()과 getHoursWorked()를 직접 사용하고 있는데, 이 설계는 Employee 클래스의 내부 구현에 강하게 의존하고 있습니다. 이 의존성을 왜 허용했나요? 만약 Employee가 나중에 이름이나 근무 시간을 다른 방식으로 제공하도록 변경된다면, 이 코드는 어떻게 영향을 받을까요? 그리고 이 설계를 변경하려면 어떤 대안을 고려했나요?\n[L1] 학생 답변: 네",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  }
+]

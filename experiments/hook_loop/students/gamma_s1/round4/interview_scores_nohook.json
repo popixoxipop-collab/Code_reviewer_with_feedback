@@ -1,0 +1,62 @@
+[
+  {
+    "finding_id": "architecture-diffusion:Product.java",
+    "ok": true,
+    "axis": "구조_인지도",
+    "fr_axis": "코드_이해",
+    "score": 5,
+    "criterion": "구성 요소 간 관계와 데이터 흐름을 정확히 설명",
+    "evidence": "[L1] 질문: Product.java의 getAmount() 메서드에서 왜 int 타입인 price와 quantity를 long으로 캐스팅한 후 곱하는 방식을 선택했으며, 이 결정이 Inventory와 InventoryReport에서 중복 코드를 방지하는 데 어떤 구체적인 역할을 하나요? (코드 라인: 35-42)\n[L1] 학생 답변: 가격이랑 수량이 int인데 바로 곱하면 2,147,483,647을 넘으면 오버플로우가 되니까 미리 long으로 캐스팅해서 계산하는 거 같습니다. 그래서 Inventory랑 InventoryRepor",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "architecture-diffusion:Product.java",
+    "ok": true,
+    "axis": "트레이드오프_인지도",
+    "fr_axis": "반례_대응",
+    "score": 5,
+    "criterion": "반례를 스스로 먼저 언급하거나, 던졌을 때 즉각 인지",
+    "evidence": "[L1] 질문: Product.java의 getAmount() 메서드에서 왜 int 타입인 price와 quantity를 long으로 캐스팅한 후 곱하는 방식을 선택했으며, 이 결정이 Inventory와 InventoryReport에서 중복 코드를 방지하는 데 어떤 구체적인 역할을 하나요? (코드 라인: 35-42)\n[L1] 학생 답변: 가격이랑 수량이 int인데 바로 곱하면 2,147,483,647을 넘으면 오버플로우가 되니까 미리 long으로 캐스팅해서 계산하는 거 같습니다. 그래서 Inventory랑 InventoryRepor",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "architecture-diffusion:Product.java",
+    "ok": true,
+    "axis": "대안_탐색_능력",
+    "fr_axis": "대안_비교",
+    "score": 4,
+    "criterion": "대안 방향은 명확하나 구현 방법 일부 불명확",
+    "evidence": "[L1] 질문: Product.java의 getAmount() 메서드에서 왜 int 타입인 price와 quantity를 long으로 캐스팅한 후 곱하는 방식을 선택했으며, 이 결정이 Inventory와 InventoryReport에서 중복 코드를 방지하는 데 어떤 구체적인 역할을 하나요? (코드 라인: 35-42)\n[L1] 학생 답변: 가격이랑 수량이 int인데 바로 곱하면 2,147,483,647을 넘으면 오버플로우가 되니까 미리 long으로 캐스팅해서 계산하는 거 같습니다. 그래서 Inventory랑 InventoryRepor",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "architecture-diffusion:Product.java",
+    "ok": true,
+    "axis": "설계_논리",
+    "fr_axis": "설계_논리",
+    "score": 5,
+    "criterion": "설계 의도와 제약조건(성능/시간/팀 상황 등)을 연결해 명확히 설명",
+    "evidence": "[L1] 질문: Product.java의 getAmount() 메서드에서 왜 int 타입인 price와 quantity를 long으로 캐스팅한 후 곱하는 방식을 선택했으며, 이 결정이 Inventory와 InventoryReport에서 중복 코드를 방지하는 데 어떤 구체적인 역할을 하나요? (코드 라인: 35-42)\n[L1] 학생 답변: 가격이랑 수량이 int인데 바로 곱하면 2,147,483,647을 넘으면 오버플로우가 되니까 미리 long으로 캐스팅해서 계산하는 거 같습니다. 그래서 Inventory랑 InventoryRepor",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "architecture-diffusion:Product.java",
+    "ok": true,
+    "axis": "자기_수정",
+    "fr_axis": "자기_수정",
+    "score": 5,
+    "criterion": "자기오류인식+이유설명+새판단+구체적개선안 4개 신호 전부 스스로 제시",
+    "evidence": "[L1] 질문: Product.java의 getAmount() 메서드에서 왜 int 타입인 price와 quantity를 long으로 캐스팅한 후 곱하는 방식을 선택했으며, 이 결정이 Inventory와 InventoryReport에서 중복 코드를 방지하는 데 어떤 구체적인 역할을 하나요? (코드 라인: 35-42)\n[L1] 학생 답변: 가격이랑 수량이 int인데 바로 곱하면 2,147,483,647을 넘으면 오버플로우가 되니까 미리 long으로 캐스팅해서 계산하는 거 같습니다. 그래서 Inventory랑 InventoryRepor",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  }
+]
