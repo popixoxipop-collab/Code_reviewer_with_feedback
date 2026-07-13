@@ -20,3 +20,5 @@
 {"canary_uuid": "HOOKFILE-CANARY-9f88e6d8-68c8-4120-8376-9857d834633e", "student_id": "gamma_s1", "version": 4, "issued_at": "2026-07-13T01:07:20.485251+00:00"}
 {"canary_uuid": "HOOKFILE-CANARY-5506f016-65bc-4918-b455-eed1a793935a", "student_id": "llmops_pilot1", "version": 1, "issued_at": "2026-07-13T04:32:39.570107+00:00"}
 {"canary_uuid": "HOOKFILE-CANARY-0e846777-eec6-4468-9641-400774fb1f75", "student_id": "llmops_pilot1", "version": 1, "issued_at": "2026-07-13T04:32:54.116617+00:00"}
+{"canary_uuid": "HOOKFILE-CANARY-73afede2-43fa-4a95-be14-27b340184650", "student_id": "llmops_pilot1", "version": 2, "issued_at": "2026-07-13T05:12:38.335616+00:00"}
+{"canary_uuid": "HOOKFILE-CANARY-10bec176-ccfb-4bf7-8eda-f1bf9e0e204d", "student_id": "llmops_pilot1", "version": 2, "issued_at": "2026-07-13T05:13:00.776430+00:00"}
