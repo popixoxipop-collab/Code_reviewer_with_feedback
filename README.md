@@ -897,6 +897,12 @@ python3 pipeline/compare_methodologies.py
   - WHY: 이 시스템이 Java 부트캠프에 한정된 원포프 도구가 아니라 실제로 다른 과정에도 일반화되는지 검증 — 하드코딩된 "Java" 문구·`.ipynb` 미지원·단일노트북 구조맹점·언어별 정규식 사각지대까지, 코드로 읽어서는 안 보이던 가정들이 전부 실측으로 드러남.
   - COST: 이번 회차는 1회차뿐이라 Hook File 루프(정착률/재발곡선)는 아직 관측 불가 — 2회차 이상 추가 자료가 있어야 D127류 종합 분석 가능. `find_duplicate_definitions()`는 본문 유사도 없이 이름만 보는 1차 구현(COST는 함수 주석에 기록).
   - EXIT: 2회차 이후 자료가 생기면 이 커리큘럼에서도 회차별 정착/재발 곡선을 볼 수 있음. `find_duplicate_definitions()`의 이름-only 판정은 오탐 실측되면 본문 유사도로 확장.
+  - **라운드2 추가(사용자 지시: "2회차까지 계속해")**: 미니프로젝트 브리프 PDF에서 **실제 Step2 미션 스펙**(미션③ LangSmith 모니터링/Trace 필수, 미션④ Agent 품질 고도화, 미션⑤ 대시보드 고도화)을 찾아 그대로 사용 — 가짜 과제를 지어내지 않고 실자료 기반으로 라운드 구성. 코딩 에이전트에게 Step1 코드(시작점, v1.0→v2.0 확장) + Hook File v1 조건화 체크리스트("State/load_api_keys 복붙 대신 import로 공유하라")를 그대로 줌.
+    - 에이전트가 체크리스트를 실제로 반영: 신규 `config.py`(DATA_DIR/DB_PATH/load_api_keys 단일화)로 `app.py`의 복붙 정의 제거하고 import로 교체 — 라운드1이 지적한 정확한 문제를 다음 회차에서 고친 첫 사례. 부수적으로 진짜 잠재버그(`display(df)`가 Colab 전용이라 순수 python 실행 시 NameError)도 발견해 `print(df)`로 수정.
+    - **P02 결과 반전**: 라운드1의 8건 중복정의 finding 전부 사라짐(고쳐졌으니까) — 대신 새 finding 3건 등장(`config.py`가 새 허브(fan_in=3)가 되면서 `nodes.py`/`state.py`가 그 허브에 안 붙어 `cognition-isolation`으로 잡힘, `db.py`가 fan_in=2로 2차 확산점). **회귀가 아니라 정직한 동역학**: 근본 문제를 고친 그래프 위상 변화가 다른 탐지 패턴을 건드린 사례 — nodes/state는 애초에 config보다 하위 레벨이라 의존할 필요가 없는데도 "허브 미연결"로 잡힘.
+    - **감사 v1_baseline→r2: pass_rate=1.0(10/10)**, 이번엔 코드채널 공허함 caveat조차 없음(v1이 전부 인터뷰 채널이었으므로) — 6/10 규칙이 4→5로 진짜 개선, 4/10은 5→5 유지, 회귀 0건. gamma_s1·llmops_pilot1 통틀어 가장 깨끗한 정착 결과.
+    - RULE_BUDGET 병합 트림에서 대안_비교 축 전체(구·신 규칙 포함)가 잘려나가 coverage=0.667로 하락 — 병합 순서상 우연히 꼬리에 몰린 결과, 축 하나가 통째로 커버리지에서 빠질 수 있다는 새 메커니즘 관측(수정 안 함, 관찰만 기록).
+    - DB 확인: `llmops_pilot1` 4행(2라운드×2variant) 정상 적재.
 
 
 ## 다음 단계 (미해결)
