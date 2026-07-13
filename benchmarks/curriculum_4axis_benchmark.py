@@ -396,17 +396,31 @@ def cmd_t1():
 TOKEN_RE = re.compile(r"[A-Za-z0-9가-힣]{2,}")
 
 
-def cmd_precision():
+# D131(LLMOps pilot): cmd_precision()을 다른 unit_map/PDF에도 쓸 수 있게 파라미터화.
+#   기본값은 전부 기존 Java 상수 그대로라 curriculum_4axis_benchmark.py --precision
+#   CLI 호출은 무변경 하위호환. graph_path 대신 graph 딕셔너리를 직접 넘길 수도 있게 해서
+#   (LLMOps처럼 아직 "_curriculum_fixed_graph_for_qgen_repro.json" 캐시가 없는 새 커리큘럼도
+#   build_graph(unit_map, refine_audits) 결과를 바로 넘겨 재사용 가능.
+#   judge_model도 파라미터화(D131 LLMOps 실측): mistral-medium-3.5-128b가 이 시점에
+#   단발 격리 호출조차 60초 타임아웃(TimeoutError)에 걸릴 만큼 느려져 있던 걸 확인 후
+#   추가 -- 기본값은 그대로 유지(자바 정밀도 재현 시 하위호환), 느려진 모델을 새로 만난
+#   호출부는 이 인자로 다른(그러나 여전히 생성기 qwen과는 다른) 모델을 넘기면 됨.
+def cmd_precision(graph_path=None, graph=None, pdf_path=None, pdf_password=None, out_path=None,
+                   judge_model=None, max_tier2_items=None):
     """2-tier provenance precision: (1) deterministic token match of concept
     name/summary against the actual pdftotext text of its cited source_pages,
     (2) for tier-1 mismatches only, judge with a DIFFERENT model than the
     generator (self-confirmation 방지)."""
     client = get_client()
-    graph_path = BENCH_DIR / "_curriculum_fixed_graph_for_qgen_repro.json"
-    if not graph_path.exists():
-        log("[precision] no fixed graph found -- run --reproducibility (qgen) first, or run this after it")
-        return None
-    graph = json.loads(graph_path.read_text())
+    pdf_path = pdf_path or PDF
+    pdf_password = pdf_password if pdf_password is not None else PDF_PASSWORD
+    out_path = out_path or PROVENANCE_AUDIT
+    if graph is None:
+        graph_path = graph_path or (BENCH_DIR / "_curriculum_fixed_graph_for_qgen_repro.json")
+        if not Path(graph_path).exists():
+            log("[precision] no fixed graph found -- run --reproducibility (qgen) first, or run this after it")
+            return None
+        graph = json.loads(Path(graph_path).read_text())
 
     items = [n for n in graph["nodes"] if n["type"] in ("concept", "code_example", "caution") and n.get("source_pages")]
     log(f"[precision] auditing {len(items)} concept/code/caution nodes")
@@ -416,9 +430,9 @@ def cmd_precision():
         pages_text = ""
         for p in it["source_pages"]:
             cmd = ["pdftotext", "-layout"]
-            if PDF_PASSWORD:
-                cmd.extend(["-upw", PDF_PASSWORD])
-            cmd.extend(["-f", str(p), "-l", str(p), str(PDF), "-"])
+            if pdf_password:
+                cmd.extend(["-upw", pdf_password])
+            cmd.extend(["-f", str(p), "-l", str(p), str(pdf_path), "-"])
             r = subprocess.run(cmd, capture_output=True, text=True, timeout=30)  # timeout-guard: allow (local pdftotext)
             pages_text += r.stdout.lower()
         label_tokens = set(TOKEN_RE.findall((it["label"] + " " + it.get("summary", "")).lower()))
@@ -431,11 +445,24 @@ def cmd_precision():
 
     mismatches = [r for r in tier1_results if not r["tier1_pass"]]
     log(f"[precision] tier1: {len(tier1_results) - len(mismatches)}/{len(tier1_results)} pass, {len(mismatches)} need tier2 judge")
+    n_mismatches_total = len(mismatches)
+    if max_tier2_items and len(mismatches) > max_tier2_items:
+        # D131(LLMOps 실측): 균등 간격 표집 -- 앞에서부터 자르면 unit_map의 dict 순서상
+        # unit 01만 뽑힐 위험이 있음(6개 유닛 중 다른 유닛은 하나도 안 들어감). "no silent
+        # caps" 원칙대로 몇 건이 왜 빠졌는지 로그에 명시.
+        step = len(mismatches) / max_tier2_items
+        mismatches = [mismatches[int(i * step)] for i in range(max_tier2_items)]
+        log(f"[precision] SCOPE REDUCTION: {n_mismatches_total} mismatches -> stratified sample of "
+            f"{len(mismatches)} (max_tier2_items={max_tier2_items}) -- final_precision_rate is an "
+            f"estimate from this sample, not the full corpus")
 
     # D120: same bare-name bug as T1 (COMPARE_MODELS) -- NVIDIA Build needs the
     #   provider prefix, confirmed via benchmark_4axis_regrade.py's RELIABLE_MODELS.
     #   All 194 tier2 calls in the first precision run silently failed on this.
-    JUDGE_MODEL = "mistralai/mistral-medium-3.5-128b"  # generator(qwen)와 다른 모델 -- 자기확증 방지
+    # D131(LLMOps 실측): judge_model 파라미터화 -- mistral-medium-3.5-128b가 단발 격리
+    #   호출조차 60초 타임아웃에 걸릴 만큼 느려진 걸 실측 확인(TimeoutError), step-3.5-flash
+    #   (이 프로젝트 P03 벤치마크 1위, 평균 10.5초/콜)로 교체. 기본값은 그대로 유지.
+    JUDGE_MODEL = judge_model or "mistralai/mistral-medium-3.5-128b"  # generator(qwen)와 다른 모델 -- 자기확증 방지
     tier2_results = []
     node_by_id = {n["id"]: n for n in graph["nodes"]}
     def judge_one(m):
@@ -443,9 +470,9 @@ def cmd_precision():
         pages_text = ""
         for p in node["source_pages"]:
             cmd = ["pdftotext", "-layout"]
-            if PDF_PASSWORD:
-                cmd.extend(["-upw", PDF_PASSWORD])
-            cmd.extend(["-f", str(p), "-l", str(p), str(PDF), "-"])
+            if pdf_password:
+                cmd.extend(["-upw", pdf_password])
+            cmd.extend(["-f", str(p), "-l", str(p), str(pdf_path), "-"])
             r = subprocess.run(cmd, capture_output=True, text=True, timeout=30)  # timeout-guard: allow (local pdftotext)
             pages_text += r.stdout
         prompt = (
@@ -461,7 +488,13 @@ def cmd_precision():
                 max_tokens=DEFAULT_MAX_TOKENS, temperature=0.0,
                 response_format={"type": "json_object"},
             )
-            content = resp["choices"][0]["message"].get("content") or "{}"
+            msg = resp["choices"][0]["message"]
+            # D131(LLMOps 실측): step-3.5-flash는 reasoning 모델이라 JSON 모드에서도
+            #   실제 답이 content가 아니라 reasoning_content/reasoning에 들어올 수 있다
+            #   (실측: content=None, reasoning_content에 완전한 JSON 존재) -- content만
+            #   보면 매번 "{}" 로 폴백해 예외 없이 grounded=None만 320건 조용히 쌓였다.
+            #   D120의 "bare model name -> 조용한 실패" 계보와 같은 클래스(에러 없이 실패).
+            content = msg.get("content") or msg.get("reasoning_content") or msg.get("reasoning") or "{}"
             return json.loads(content)
 
         try:
@@ -488,8 +521,8 @@ def cmd_precision():
         "note": "tier1은 결정론 토큰매치(0콜), tier2는 mismatch만 다른 모델(judge)로 재판정. "
                 "검증기 자체의 신뢰도(사람 표본 대조)는 별도 사람 감사 필요 -- 미착수, 이 필드는 그 결과 없이 자동 판정만 반영",
     }
-    PROVENANCE_AUDIT.write_text(json.dumps(audit, ensure_ascii=False, indent=2))
-    log(f"wrote {PROVENANCE_AUDIT}: precision_rate={audit['final_precision_rate']}")
+    Path(out_path).write_text(json.dumps(audit, ensure_ascii=False, indent=2))
+    log(f"wrote {out_path}: precision_rate={audit['final_precision_rate']}")
     return audit
 
 

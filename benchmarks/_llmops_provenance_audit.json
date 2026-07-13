@@ -1,0 +1,4775 @@
+{
+  "n_items": 342,
+  "tier1_pass": 22,
+  "tier1_mismatch_needing_tier2": 320,
+  "tier2_judge_model": "stepfun-ai/step-3.5-flash",
+  "tier2_grounded": 185,
+  "tier2_not_grounded": 127,
+  "final_precision_rate": 0.605,
+  "tier1_detail": [
+    {
+      "id": "concepts:01:1",
+      "label": "LLMOps definition",
+      "source_pages": [
+        9
+      ],
+      "tier1_match_ratio": 0.812,
+      "tier1_pass": true
+    },
+    {
+      "id": "concepts:01:2",
+      "label": "MLOps vs LLMOps",
+      "source_pages": [
+        9
+      ],
+      "tier1_match_ratio": 0.467,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:3",
+      "label": "non-deterministic outputs",
+      "source_pages": [
+        10
+      ],
+      "tier1_match_ratio": 0.308,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:4",
+      "label": "cost management",
+      "source_pages": [
+        10
+      ],
+      "tier1_match_ratio": 0.438,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:5",
+      "label": "latency and UX",
+      "source_pages": [
+        10
+      ],
+      "tier1_match_ratio": 0.308,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:6",
+      "label": "hallucination risk",
+      "source_pages": [
+        10
+      ],
+      "tier1_match_ratio": 0.231,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:7",
+      "label": "LLMOps focus areas",
+      "source_pages": [
+        10
+      ],
+      "tier1_match_ratio": 0.385,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:8",
+      "label": "course objective",
+      "source_pages": [
+        5
+      ],
+      "tier1_match_ratio": 0.474,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:9",
+      "label": "DevOps analogy",
+      "source_pages": [
+        8
+      ],
+      "tier1_match_ratio": 0.5,
+      "tier1_pass": true
+    },
+    {
+      "id": "concepts:01:10",
+      "label": "agent system skills",
+      "source_pages": [
+        10
+      ],
+      "tier1_match_ratio": 0.118,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:11",
+      "label": "Controllable Agent",
+      "source_pages": [
+        11
+      ],
+      "tier1_match_ratio": 0.263,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:12",
+      "label": "LLMOps Cycle",
+      "source_pages": [
+        11,
+        12
+      ],
+      "tier1_match_ratio": 0.556,
+      "tier1_pass": true
+    },
+    {
+      "id": "concepts:01:13",
+      "label": "Technical Debt",
+      "source_pages": [
+        14,
+        16
+      ],
+      "tier1_match_ratio": 0.222,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:14",
+      "label": "Design Without AI Overreliance",
+      "source_pages": [
+        17
+      ],
+      "tier1_match_ratio": 0.136,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:15",
+      "label": "Agent Design Process",
+      "source_pages": [
+        18
+      ],
+      "tier1_match_ratio": 0.15,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:16",
+      "label": "Design Documentation",
+      "source_pages": [
+        20
+      ],
+      "tier1_match_ratio": 0.278,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:17",
+      "label": "LLMOps Phases",
+      "source_pages": [
+        13
+      ],
+      "tier1_match_ratio": 0.333,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:18",
+      "label": "HITL Design",
+      "source_pages": [
+        11
+      ],
+      "tier1_match_ratio": 0.176,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:19",
+      "label": "State Management",
+      "source_pages": [
+        11,
+        19,
+        20
+      ],
+      "tier1_match_ratio": 0.176,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:20",
+      "label": "Decision Policy",
+      "source_pages": [
+        11,
+        20
+      ],
+      "tier1_match_ratio": 0.263,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:21",
+      "label": "Observability",
+      "source_pages": [
+        11
+      ],
+      "tier1_match_ratio": 0.067,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:22",
+      "label": "AI Interview Agent Goal",
+      "source_pages": [
+        21
+      ],
+      "tier1_match_ratio": 0.087,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:23",
+      "label": "System Workflow Stages",
+      "source_pages": [
+        23
+      ],
+      "tier1_match_ratio": 0.095,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:24",
+      "label": "Preparation Agent",
+      "source_pages": [
+        24
+      ],
+      "tier1_match_ratio": 0.067,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:25",
+      "label": "Interview Agent Components",
+      "source_pages": [
+        24
+      ],
+      "tier1_match_ratio": 0.05,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:26",
+      "label": "Agent Role Definition",
+      "source_pages": [
+        25
+      ],
+      "tier1_match_ratio": 0.056,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:27",
+      "label": "State Flow",
+      "source_pages": [
+        27
+      ],
+      "tier1_match_ratio": 0.235,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:28",
+      "label": "Decision Logic",
+      "source_pages": [
+        28
+      ],
+      "tier1_match_ratio": 0.15,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:29",
+      "label": "Prompt Specification",
+      "source_pages": [
+        29,
+        30
+      ],
+      "tier1_match_ratio": 0.167,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:30",
+      "label": "Workflow Loop Structure",
+      "source_pages": [
+        26
+      ],
+      "tier1_match_ratio": 0.0,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:31",
+      "label": "Exit Condition",
+      "source_pages": [
+        26
+      ],
+      "tier1_match_ratio": 0.0,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:32",
+      "label": "AI Document Analysis Agent",
+      "source_pages": [
+        31,
+        32
+      ],
+      "tier1_match_ratio": 0.095,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:33",
+      "label": "Business Needs for AI Document Analysis",
+      "source_pages": [
+        31
+      ],
+      "tier1_match_ratio": 0.053,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:34",
+      "label": "Supervisor Pattern",
+      "source_pages": [
+        32,
+        35
+      ],
+      "tier1_match_ratio": 0.067,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:35",
+      "label": "Design Documentation for AI Agents",
+      "source_pages": [
+        34,
+        35
+      ],
+      "tier1_match_ratio": 0.368,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:36",
+      "label": "Planner Agent",
+      "source_pages": [
+        37
+      ],
+      "tier1_match_ratio": 0.111,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:37",
+      "label": "Executor Agent",
+      "source_pages": [
+        38
+      ],
+      "tier1_match_ratio": 0.105,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:38",
+      "label": "Critic Agent",
+      "source_pages": [
+        39
+      ],
+      "tier1_match_ratio": 0.105,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:39",
+      "label": "Role-Based Separation",
+      "source_pages": [
+        37,
+        38,
+        39
+      ],
+      "tier1_match_ratio": 0.235,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:40",
+      "label": "POC Scope: Contract Analysis",
+      "source_pages": [
+        32,
+        33
+      ],
+      "tier1_match_ratio": 0.158,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:41",
+      "label": "Prompt Specification",
+      "source_pages": [
+        34,
+        35
+      ],
+      "tier1_match_ratio": 0.111,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:42",
+      "label": "State Definition",
+      "source_pages": [
+        34,
+        35
+      ],
+      "tier1_match_ratio": 0.176,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:43",
+      "label": "Decision Policy",
+      "source_pages": [
+        34,
+        35
+      ],
+      "tier1_match_ratio": 0.267,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:44",
+      "label": "Supervisor Pattern",
+      "source_pages": [
+        41,
+        42,
+        43,
+        45
+      ],
+      "tier1_match_ratio": 0.412,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:45",
+      "label": "Role Separation",
+      "source_pages": [
+        41,
+        42,
+        45
+      ],
+      "tier1_match_ratio": 0.125,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:46",
+      "label": "Loose Coupling",
+      "source_pages": [
+        41,
+        43
+      ],
+      "tier1_match_ratio": 0.267,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:47",
+      "label": "Centralized Control",
+      "source_pages": [
+        41,
+        43,
+        45,
+        46
+      ],
+      "tier1_match_ratio": 0.538,
+      "tier1_pass": true
+    },
+    {
+      "id": "concepts:01:48",
+      "label": "HITL (Human In The Loop)",
+      "source_pages": [
+        46,
+        48,
+        49,
+        50
+      ],
+      "tier1_match_ratio": 0.444,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:49",
+      "label": "HITL vs Reactive Intervention",
+      "source_pages": [
+        48
+      ],
+      "tier1_match_ratio": 0.333,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:50",
+      "label": "Critic Limitation",
+      "source_pages": [
+        43,
+        45
+      ],
+      "tier1_match_ratio": 0.353,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:51",
+      "label": "Failure Traceability",
+      "source_pages": [
+        41,
+        43
+      ],
+      "tier1_match_ratio": 0.154,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:52",
+      "label": "Cost Control via HITL",
+      "source_pages": [
+        49
+      ],
+      "tier1_match_ratio": 0.304,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:53",
+      "label": "HITL as Policy",
+      "source_pages": [
+        51
+      ],
+      "tier1_match_ratio": 0.143,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:54",
+      "label": "Supervisor Pattern",
+      "source_pages": [
+        51,
+        52,
+        56
+      ],
+      "tier1_match_ratio": 0.333,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:55",
+      "label": "Human as External Tool",
+      "source_pages": [
+        52
+      ],
+      "tier1_match_ratio": 0.375,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:56",
+      "label": "HITL Design Checklist",
+      "source_pages": [
+        57
+      ],
+      "tier1_match_ratio": 0.133,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:57",
+      "label": "HITL Scalability Strategies",
+      "source_pages": [
+        57
+      ],
+      "tier1_match_ratio": 0.222,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:58",
+      "label": "HITL Integration in Practice",
+      "source_pages": [
+        58
+      ],
+      "tier1_match_ratio": 0.143,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:59",
+      "label": "HITL as Control Layer",
+      "source_pages": [
+        60
+      ],
+      "tier1_match_ratio": 0.429,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:60",
+      "label": "Non-deterministic LLM Systems",
+      "source_pages": [
+        61
+      ],
+      "tier1_match_ratio": 0.0,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:61",
+      "label": "Snapshot Definition",
+      "source_pages": [
+        62
+      ],
+      "tier1_match_ratio": 0.222,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:62",
+      "label": "Snapshot Contents",
+      "source_pages": [
+        62
+      ],
+      "tier1_match_ratio": 0.111,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:63",
+      "label": "Multi-Agent Debugging Challenge",
+      "source_pages": [
+        63
+      ],
+      "tier1_match_ratio": 0.059,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:64",
+      "label": "State as Evidence",
+      "source_pages": [
+        63
+      ],
+      "tier1_match_ratio": 0.067,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:65",
+      "label": "Snapshot History Flow",
+      "source_pages": [
+        63
+      ],
+      "tier1_match_ratio": 0.167,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:66",
+      "label": "MemorySaver",
+      "source_pages": [
+        64
+      ],
+      "tier1_match_ratio": 0.143,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:67",
+      "label": "Snapshot Metadata",
+      "source_pages": [
+        66
+      ],
+      "tier1_match_ratio": 0.357,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:68",
+      "label": "Debugging with Snapshots",
+      "source_pages": [
+        69
+      ],
+      "tier1_match_ratio": 0.111,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:69",
+      "label": "Reproducibility via Snapshots",
+      "source_pages": [
+        69
+      ],
+      "tier1_match_ratio": 0.125,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:70",
+      "label": "Evaluation via Iteration Tracking",
+      "source_pages": [
+        69
+      ],
+      "tier1_match_ratio": 0.111,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:71",
+      "label": "Agent Accountability in Multi-Agent Systems",
+      "source_pages": [
+        69,
+        70
+      ],
+      "tier1_match_ratio": 0.188,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:72",
+      "label": "Snapshot",
+      "source_pages": [
+        71,
+        74
+      ],
+      "tier1_match_ratio": 0.429,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:73",
+      "label": "Checkpoint ID",
+      "source_pages": [
+        73
+      ],
+      "tier1_match_ratio": 0.1,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:74",
+      "label": "get_state_history",
+      "source_pages": [
+        74
+      ],
+      "tier1_match_ratio": 0.133,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:75",
+      "label": "LangSmith",
+      "source_pages": [
+        75,
+        77
+      ],
+      "tier1_match_ratio": 0.714,
+      "tier1_pass": true
+    },
+    {
+      "id": "concepts:01:76",
+      "label": "Supervisor pattern tracing",
+      "source_pages": [
+        85,
+        86,
+        87
+      ],
+      "tier1_match_ratio": 0.467,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:77",
+      "label": "Waterfall visualization",
+      "source_pages": [
+        88
+      ],
+      "tier1_match_ratio": 0.067,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:78",
+      "label": "Snapshot vs Trace",
+      "source_pages": [
+        91,
+        93
+      ],
+      "tier1_match_ratio": 0.4,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:79",
+      "label": "Reproducibility Difference",
+      "source_pages": [
+        91,
+        93
+      ],
+      "tier1_match_ratio": 0.05,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:80",
+      "label": "Multi-Agent Analysis Focus",
+      "source_pages": [
+        91,
+        93
+      ],
+      "tier1_match_ratio": 0.263,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:81",
+      "label": "Operational Use Cases",
+      "source_pages": [
+        91,
+        93
+      ],
+      "tier1_match_ratio": 0.059,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:82",
+      "label": "LangSmith Purpose",
+      "source_pages": [
+        92,
+        93
+      ],
+      "tier1_match_ratio": 0.471,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:83",
+      "label": "Agent Evaluation Complexity",
+      "source_pages": [
+        96
+      ],
+      "tier1_match_ratio": 0.2,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:84",
+      "label": "Agent Evaluation Framework",
+      "source_pages": [
+        97
+      ],
+      "tier1_match_ratio": 0.529,
+      "tier1_pass": true
+    },
+    {
+      "id": "concepts:01:85",
+      "label": "Rule-based Evaluation",
+      "source_pages": [
+        97
+      ],
+      "tier1_match_ratio": 0.158,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:86",
+      "label": "LLM-as-Judge",
+      "source_pages": [
+        98
+      ],
+      "tier1_match_ratio": 0.2,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:87",
+      "label": "Evaluation Method Mapping",
+      "source_pages": [
+        99
+      ],
+      "tier1_match_ratio": 0.522,
+      "tier1_pass": true
+    },
+    {
+      "id": "concepts:01:88",
+      "label": "test_dataset_construction",
+      "source_pages": [
+        101
+      ],
+      "tier1_match_ratio": 0.0,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:89",
+      "label": "evaluator_return_structure",
+      "source_pages": [
+        103
+      ],
+      "tier1_match_ratio": 0.316,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:90",
+      "label": "dashboard_evaluation_display",
+      "source_pages": [
+        105
+      ],
+      "tier1_match_ratio": 0.368,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:91",
+      "label": "code_evaluator_registration",
+      "source_pages": [
+        106,
+        107
+      ],
+      "tier1_match_ratio": 0.368,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:92",
+      "label": "agent_workflow_with_evaluation",
+      "source_pages": [
+        109
+      ],
+      "tier1_match_ratio": 0.077,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:93",
+      "label": "langgraph_agent_implementation",
+      "source_pages": [
+        109,
+        110
+      ],
+      "tier1_match_ratio": 0.176,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:94",
+      "label": "LLM-as-Judge Evaluator",
+      "source_pages": [
+        111,
+        112,
+        113
+      ],
+      "tier1_match_ratio": 0.4,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:95",
+      "label": "Rubric Definition",
+      "source_pages": [
+        112
+      ],
+      "tier1_match_ratio": 0.176,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:96",
+      "label": "Instructions for Evaluation",
+      "source_pages": [
+        112
+      ],
+      "tier1_match_ratio": 0.111,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:97",
+      "label": "Reminder for Evaluation",
+      "source_pages": [
+        112
+      ],
+      "tier1_match_ratio": 0.111,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:98",
+      "label": "Feedback Configuration",
+      "source_pages": [
+        114
+      ],
+      "tier1_match_ratio": 0.111,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:99",
+      "label": "Agent Execution Tracing",
+      "source_pages": [
+        115,
+        116
+      ],
+      "tier1_match_ratio": 0.167,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:100",
+      "label": "Challenges in Agent Evaluation",
+      "source_pages": [
+        117
+      ],
+      "tier1_match_ratio": 0.174,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:101",
+      "label": "Evaluation Methods",
+      "source_pages": [
+        117
+      ],
+      "tier1_match_ratio": 0.188,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:102",
+      "label": "Dataset Purpose",
+      "source_pages": [
+        117
+      ],
+      "tier1_match_ratio": 0.056,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:103",
+      "label": "Operational Issues in Agent Systems",
+      "source_pages": [
+        118
+      ],
+      "tier1_match_ratio": 0.111,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:104",
+      "label": "Problem Measurement Strategy",
+      "source_pages": [
+        118
+      ],
+      "tier1_match_ratio": 0.0,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:105",
+      "label": "Operational Dashboard",
+      "source_pages": [
+        120
+      ],
+      "tier1_match_ratio": 0.0,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:106",
+      "label": "LLMOps 운영 루프",
+      "source_pages": [
+        121
+      ],
+      "tier1_match_ratio": 0.25,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:107",
+      "label": "Prompt 개선",
+      "source_pages": [
+        121
+      ],
+      "tier1_match_ratio": 0.667,
+      "tier1_pass": true
+    },
+    {
+      "id": "concepts:01:108",
+      "label": "멀티 Agent 패턴",
+      "source_pages": [
+        121
+      ],
+      "tier1_match_ratio": 0.357,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:109",
+      "label": "정책 개선 (Decision Policy)",
+      "source_pages": [
+        121
+      ],
+      "tier1_match_ratio": 0.4,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:110",
+      "label": "실패 케이스 데이터셋 축적",
+      "source_pages": [
+        121
+      ],
+      "tier1_match_ratio": 0.375,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:111",
+      "label": "A/B 테스트",
+      "source_pages": [
+        121
+      ],
+      "tier1_match_ratio": 0.214,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:112",
+      "label": "모델 드리프트",
+      "source_pages": [
+        122
+      ],
+      "tier1_match_ratio": 0.0,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:113",
+      "label": "데이터 드리프트",
+      "source_pages": [
+        124
+      ],
+      "tier1_match_ratio": 0.231,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:114",
+      "label": "개념 드리프트",
+      "source_pages": [
+        124
+      ],
+      "tier1_match_ratio": 0.167,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:115",
+      "label": "모델 드리프트",
+      "source_pages": [
+        124
+      ],
+      "tier1_match_ratio": 0.455,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:116",
+      "label": "예측값 드리프트",
+      "source_pages": [
+        124
+      ],
+      "tier1_match_ratio": 0.182,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:117",
+      "label": "JSON 형식",
+      "source_pages": [
+        127
+      ],
+      "tier1_match_ratio": 0.0,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:118",
+      "label": "JSON serialization",
+      "source_pages": [
+        131
+      ],
+      "tier1_match_ratio": 0.286,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:119",
+      "label": "JSON in Agent systems",
+      "source_pages": [
+        131
+      ],
+      "tier1_match_ratio": 0.278,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:120",
+      "label": "SQLite overview",
+      "source_pages": [
+        132
+      ],
+      "tier1_match_ratio": 0.111,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:121",
+      "label": "Pandas DataFrame vs SQLite Table",
+      "source_pages": [
+        135
+      ],
+      "tier1_match_ratio": 0.095,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:122",
+      "label": "Streamlit overview",
+      "source_pages": [
+        141
+      ],
+      "tier1_match_ratio": 0.118,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:123",
+      "label": "Streamlit execution structure",
+      "source_pages": [
+        141
+      ],
+      "tier1_match_ratio": 0.062,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:124",
+      "label": "Local vs server execution",
+      "source_pages": [
+        142
+      ],
+      "tier1_match_ratio": 0.158,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:125",
+      "label": "Cloudflare Tunnel",
+      "source_pages": [
+        143,
+        144
+      ],
+      "tier1_match_ratio": 0.286,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:126",
+      "label": "Streamlit widget interaction",
+      "source_pages": [
+        147
+      ],
+      "tier1_match_ratio": 0.368,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:127",
+      "label": "st.write() functionality",
+      "source_pages": [
+        147
+      ],
+      "tier1_match_ratio": 0.412,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:128",
+      "label": "st.container() for UI grouping",
+      "source_pages": [
+        148
+      ],
+      "tier1_match_ratio": 0.059,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:129",
+      "label": "st.multiselect() and st.toggle()",
+      "source_pages": [
+        148
+      ],
+      "tier1_match_ratio": 0.067,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:130",
+      "label": "Data caching and filtering",
+      "source_pages": [
+        148
+      ],
+      "tier1_match_ratio": 0.059,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:131",
+      "label": "Charting with matplotlib/seaborn",
+      "source_pages": [
+        149
+      ],
+      "tier1_match_ratio": 0.231,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:01:132",
+      "label": "UI layout with columns",
+      "source_pages": [
+        149
+      ],
+      "tier1_match_ratio": 0.529,
+      "tier1_pass": true
+    },
+    {
+      "id": "concepts:01:133",
+      "label": "design_run_trace_improve_cycle",
+      "source_pages": [
+        154
+      ],
+      "tier1_match_ratio": 0.125,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:1",
+      "label": "Prompt Specification",
+      "source_pages": [
+        20
+      ],
+      "tier1_match_ratio": 0.111,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:2",
+      "label": "Template-Driven Design",
+      "source_pages": [
+        34
+      ],
+      "tier1_match_ratio": 0.059,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:3",
+      "label": "Example Code for Role-Based Design",
+      "source_pages": [
+        40
+      ],
+      "tier1_match_ratio": 0.222,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:4",
+      "label": "HITL Use Cases",
+      "source_pages": [
+        50
+      ],
+      "tier1_match_ratio": 0.524,
+      "tier1_pass": true
+    },
+    {
+      "id": "code_examples:01:5",
+      "label": "HITL Trigger Condition",
+      "source_pages": [
+        54
+      ],
+      "tier1_match_ratio": 0.333,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:6",
+      "label": "human_review Node",
+      "source_pages": [
+        55
+      ],
+      "tier1_match_ratio": 0.222,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:7",
+      "label": "AgentState for HITL",
+      "source_pages": [
+        53
+      ],
+      "tier1_match_ratio": 0.133,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:8",
+      "label": "Supervisor Decision Logic",
+      "source_pages": [
+        56
+      ],
+      "tier1_match_ratio": 0.5,
+      "tier1_pass": true
+    },
+    {
+      "id": "code_examples:01:9",
+      "label": "graph.get_state",
+      "source_pages": [
+        64,
+        65,
+        66
+      ],
+      "tier1_match_ratio": 0.385,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:10",
+      "label": "graph.get_state_history",
+      "source_pages": [
+        64,
+        67,
+        68
+      ],
+      "tier1_match_ratio": 0.4,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:11",
+      "label": "Resume from checkpoint",
+      "source_pages": [
+        72
+      ],
+      "tier1_match_ratio": 0.176,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:12",
+      "label": "API Key Setup",
+      "source_pages": [
+        79,
+        80
+      ],
+      "tier1_match_ratio": 0.364,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:13",
+      "label": "LangSmith tracing setup",
+      "source_pages": [
+        82
+      ],
+      "tier1_match_ratio": 0.077,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:14",
+      "label": "Agent execution with LangSmith",
+      "source_pages": [
+        83
+      ],
+      "tier1_match_ratio": 0.267,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:15",
+      "label": "Tool call tracing",
+      "source_pages": [
+        89
+      ],
+      "tier1_match_ratio": 0.071,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:16",
+      "label": "Agent Evaluation Scenario",
+      "source_pages": [
+        100
+      ],
+      "tier1_match_ratio": 0.095,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:17",
+      "label": "Network Pattern Lab",
+      "source_pages": [
+        91,
+        92
+      ],
+      "tier1_match_ratio": 0.25,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:18",
+      "label": "rule_based_evaluator_function",
+      "source_pages": [
+        102
+      ],
+      "tier1_match_ratio": 0.0,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:19",
+      "label": "target_fn_wrapper",
+      "source_pages": [
+        104
+      ],
+      "tier1_match_ratio": 0.111,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:20",
+      "label": "API Key Configuration",
+      "source_pages": [
+        113
+      ],
+      "tier1_match_ratio": 0.238,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:21",
+      "label": "Multi-Agent Report Generation",
+      "source_pages": [
+        116
+      ],
+      "tier1_match_ratio": 0.048,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:22",
+      "label": "KS-Test",
+      "source_pages": [
+        126
+      ],
+      "tier1_match_ratio": 0.333,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:23",
+      "label": "Chi-square Test",
+      "source_pages": [
+        126
+      ],
+      "tier1_match_ratio": 0.308,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:24",
+      "label": "json.dumps and json.loads",
+      "source_pages": [
+        131
+      ],
+      "tier1_match_ratio": 0.364,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:25",
+      "label": "json.dump and json.load",
+      "source_pages": [
+        131
+      ],
+      "tier1_match_ratio": 0.333,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:26",
+      "label": "SQLite connection and cursor",
+      "source_pages": [
+        134
+      ],
+      "tier1_match_ratio": 0.235,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:27",
+      "label": "SQLite table creation",
+      "source_pages": [
+        134
+      ],
+      "tier1_match_ratio": 0.056,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:28",
+      "label": "SQLite INSERT with placeholders",
+      "source_pages": [
+        136
+      ],
+      "tier1_match_ratio": 0.211,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:29",
+      "label": "SQLite bulk INSERT",
+      "source_pages": [
+        136
+      ],
+      "tier1_match_ratio": 0.0,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:30",
+      "label": "Pandas to_sql for SQLite",
+      "source_pages": [
+        137
+      ],
+      "tier1_match_ratio": 0.267,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:31",
+      "label": "SQLite SELECT with cursor",
+      "source_pages": [
+        138
+      ],
+      "tier1_match_ratio": 0.222,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:32",
+      "label": "SQLite SELECT with pandas",
+      "source_pages": [
+        138
+      ],
+      "tier1_match_ratio": 0.438,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:33",
+      "label": "SQLite UPDATE and DELETE",
+      "source_pages": [
+        139
+      ],
+      "tier1_match_ratio": 0.353,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:34",
+      "label": "Cloudflare Tunnel installation",
+      "source_pages": [
+        143
+      ],
+      "tier1_match_ratio": 0.056,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:35",
+      "label": "Streamlit server startup command",
+      "source_pages": [
+        144
+      ],
+      "tier1_match_ratio": 0.056,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:36",
+      "label": "Hello Streamlit example",
+      "source_pages": [
+        145
+      ],
+      "tier1_match_ratio": 0.125,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:37",
+      "label": "Tabbed interface with st.tabs()",
+      "source_pages": [
+        146,
+        148
+      ],
+      "tier1_match_ratio": 0.412,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:38",
+      "label": "data_caching_with_st_cache_data",
+      "source_pages": [
+        151
+      ],
+      "tier1_match_ratio": 0.333,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:39",
+      "label": "st_radio_for_single_selection",
+      "source_pages": [
+        151
+      ],
+      "tier1_match_ratio": 0.111,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:40",
+      "label": "st_slider_for_range_selection",
+      "source_pages": [
+        151
+      ],
+      "tier1_match_ratio": 0.176,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:41",
+      "label": "st_columns_for_layout",
+      "source_pages": [
+        151
+      ],
+      "tier1_match_ratio": 0.133,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:42",
+      "label": "sequential_filtering_with_ui_inputs",
+      "source_pages": [
+        152
+      ],
+      "tier1_match_ratio": 0.389,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:43",
+      "label": "st_divider_for_visual_separation",
+      "source_pages": [
+        152,
+        153
+      ],
+      "tier1_match_ratio": 0.267,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:44",
+      "label": "st_pyplot_for_seaborn_charts",
+      "source_pages": [
+        153
+      ],
+      "tier1_match_ratio": 0.176,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:45",
+      "label": "st_bar_chart_for_categorical_counts",
+      "source_pages": [
+        153
+      ],
+      "tier1_match_ratio": 0.176,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:46",
+      "label": "st_expander_for_collapsible_data_view",
+      "source_pages": [
+        153
+      ],
+      "tier1_match_ratio": 0.067,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:01:47",
+      "label": "st_dataframe_for_interactive_data_display",
+      "source_pages": [
+        153
+      ],
+      "tier1_match_ratio": 0.125,
+      "tier1_pass": false
+    },
+    {
+      "id": "cautions:01:1",
+      "label": "Time Savings from Automation",
+      "source_pages": [
+        31
+      ],
+      "tier1_match_ratio": 0.053,
+      "tier1_pass": false
+    },
+    {
+      "id": "cautions:01:2",
+      "label": "Inconsistent Document Formats",
+      "source_pages": [
+        31
+      ],
+      "tier1_match_ratio": 0.053,
+      "tier1_pass": false
+    },
+    {
+      "id": "cautions:01:3",
+      "label": "Worker Must Not Call HITL",
+      "source_pages": [
+        52
+      ],
+      "tier1_match_ratio": 0.214,
+      "tier1_pass": false
+    },
+    {
+      "id": "cautions:01:4",
+      "label": "Branch Consideration",
+      "source_pages": [
+        72
+      ],
+      "tier1_match_ratio": 0.182,
+      "tier1_pass": false
+    },
+    {
+      "id": "cautions:01:5",
+      "label": "Session persistence of environment variables",
+      "source_pages": [
+        84
+      ],
+      "tier1_match_ratio": 0.062,
+      "tier1_pass": false
+    },
+    {
+      "id": "cautions:01:6",
+      "label": "Project creation order",
+      "source_pages": [
+        84
+      ],
+      "tier1_match_ratio": 0.2,
+      "tier1_pass": false
+    },
+    {
+      "id": "cautions:01:7",
+      "label": "async_evaluation_behavior",
+      "source_pages": [
+        107
+      ],
+      "tier1_match_ratio": 0.077,
+      "tier1_pass": false
+    },
+    {
+      "id": "cautions:01:8",
+      "label": "evaluation_delay_and_drop",
+      "source_pages": [
+        108
+      ],
+      "tier1_match_ratio": 0.053,
+      "tier1_pass": false
+    },
+    {
+      "id": "cautions:01:9",
+      "label": "Python dict vs JSON",
+      "source_pages": [
+        130
+      ],
+      "tier1_match_ratio": 0.5,
+      "tier1_pass": true
+    },
+    {
+      "id": "cautions:01:10",
+      "label": "Single-element tuple in SQLite",
+      "source_pages": [
+        139
+      ],
+      "tier1_match_ratio": 0.188,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:1",
+      "label": "LLMOps definition",
+      "source_pages": [
+        9
+      ],
+      "tier1_match_ratio": 0.812,
+      "tier1_pass": true
+    },
+    {
+      "id": "concepts:02:2",
+      "label": "MLOps vs LLMOps",
+      "source_pages": [
+        9
+      ],
+      "tier1_match_ratio": 0.467,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:3",
+      "label": "non-deterministic outputs",
+      "source_pages": [
+        10
+      ],
+      "tier1_match_ratio": 0.308,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:4",
+      "label": "cost management",
+      "source_pages": [
+        10
+      ],
+      "tier1_match_ratio": 0.438,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:5",
+      "label": "latency and UX",
+      "source_pages": [
+        10
+      ],
+      "tier1_match_ratio": 0.308,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:6",
+      "label": "hallucination risk",
+      "source_pages": [
+        10
+      ],
+      "tier1_match_ratio": 0.231,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:7",
+      "label": "LLMOps focus areas",
+      "source_pages": [
+        10
+      ],
+      "tier1_match_ratio": 0.385,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:8",
+      "label": "course objective",
+      "source_pages": [
+        5
+      ],
+      "tier1_match_ratio": 0.474,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:9",
+      "label": "DevOps analogy",
+      "source_pages": [
+        8
+      ],
+      "tier1_match_ratio": 0.5,
+      "tier1_pass": true
+    },
+    {
+      "id": "concepts:02:10",
+      "label": "agent system skills",
+      "source_pages": [
+        10
+      ],
+      "tier1_match_ratio": 0.118,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:11",
+      "label": "Controllable Agent",
+      "source_pages": [
+        11
+      ],
+      "tier1_match_ratio": 0.263,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:12",
+      "label": "LLMOps Cycle",
+      "source_pages": [
+        11,
+        12
+      ],
+      "tier1_match_ratio": 0.556,
+      "tier1_pass": true
+    },
+    {
+      "id": "concepts:02:13",
+      "label": "Technical Debt",
+      "source_pages": [
+        14,
+        16
+      ],
+      "tier1_match_ratio": 0.222,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:14",
+      "label": "Design Without AI Overreliance",
+      "source_pages": [
+        17
+      ],
+      "tier1_match_ratio": 0.136,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:15",
+      "label": "Agent Design Process",
+      "source_pages": [
+        18
+      ],
+      "tier1_match_ratio": 0.15,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:16",
+      "label": "Design Documentation",
+      "source_pages": [
+        20
+      ],
+      "tier1_match_ratio": 0.278,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:17",
+      "label": "LLMOps Phases",
+      "source_pages": [
+        13
+      ],
+      "tier1_match_ratio": 0.333,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:18",
+      "label": "HITL Design",
+      "source_pages": [
+        11
+      ],
+      "tier1_match_ratio": 0.176,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:19",
+      "label": "State Management",
+      "source_pages": [
+        11,
+        19,
+        20
+      ],
+      "tier1_match_ratio": 0.176,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:20",
+      "label": "Decision Policy",
+      "source_pages": [
+        11,
+        20
+      ],
+      "tier1_match_ratio": 0.263,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:21",
+      "label": "Observability",
+      "source_pages": [
+        11
+      ],
+      "tier1_match_ratio": 0.067,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:22",
+      "label": "AI Interview Agent Goal",
+      "source_pages": [
+        21
+      ],
+      "tier1_match_ratio": 0.087,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:23",
+      "label": "System Workflow Stages",
+      "source_pages": [
+        23
+      ],
+      "tier1_match_ratio": 0.095,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:24",
+      "label": "Preparation Agent",
+      "source_pages": [
+        24
+      ],
+      "tier1_match_ratio": 0.067,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:25",
+      "label": "Interview Agent Components",
+      "source_pages": [
+        24
+      ],
+      "tier1_match_ratio": 0.05,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:26",
+      "label": "Agent Role Definition",
+      "source_pages": [
+        25
+      ],
+      "tier1_match_ratio": 0.056,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:27",
+      "label": "State Flow",
+      "source_pages": [
+        27
+      ],
+      "tier1_match_ratio": 0.235,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:28",
+      "label": "Decision Logic",
+      "source_pages": [
+        28
+      ],
+      "tier1_match_ratio": 0.15,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:29",
+      "label": "Prompt Specification",
+      "source_pages": [
+        29,
+        30
+      ],
+      "tier1_match_ratio": 0.167,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:30",
+      "label": "Workflow Loop Structure",
+      "source_pages": [
+        26
+      ],
+      "tier1_match_ratio": 0.0,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:31",
+      "label": "Exit Condition",
+      "source_pages": [
+        26
+      ],
+      "tier1_match_ratio": 0.0,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:32",
+      "label": "AI Document Analysis Agent",
+      "source_pages": [
+        31,
+        32
+      ],
+      "tier1_match_ratio": 0.095,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:33",
+      "label": "Business Needs for AI Document Analysis",
+      "source_pages": [
+        31
+      ],
+      "tier1_match_ratio": 0.053,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:34",
+      "label": "Supervisor Pattern",
+      "source_pages": [
+        32,
+        35
+      ],
+      "tier1_match_ratio": 0.067,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:35",
+      "label": "Design Documentation for AI Agents",
+      "source_pages": [
+        34,
+        35
+      ],
+      "tier1_match_ratio": 0.368,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:36",
+      "label": "Planner Agent",
+      "source_pages": [
+        37
+      ],
+      "tier1_match_ratio": 0.111,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:37",
+      "label": "Executor Agent",
+      "source_pages": [
+        38
+      ],
+      "tier1_match_ratio": 0.105,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:38",
+      "label": "Critic Agent",
+      "source_pages": [
+        39
+      ],
+      "tier1_match_ratio": 0.105,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:39",
+      "label": "Role-Based Separation",
+      "source_pages": [
+        37,
+        38,
+        39
+      ],
+      "tier1_match_ratio": 0.235,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:40",
+      "label": "POC Scope: Contract Analysis",
+      "source_pages": [
+        32,
+        33
+      ],
+      "tier1_match_ratio": 0.158,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:41",
+      "label": "Prompt Specification",
+      "source_pages": [
+        34,
+        35
+      ],
+      "tier1_match_ratio": 0.111,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:42",
+      "label": "State Definition",
+      "source_pages": [
+        34,
+        35
+      ],
+      "tier1_match_ratio": 0.176,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:43",
+      "label": "Decision Policy",
+      "source_pages": [
+        34,
+        35
+      ],
+      "tier1_match_ratio": 0.267,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:44",
+      "label": "Snapshot",
+      "source_pages": [
+        71,
+        74
+      ],
+      "tier1_match_ratio": 0.429,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:45",
+      "label": "Checkpoint ID",
+      "source_pages": [
+        73
+      ],
+      "tier1_match_ratio": 0.1,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:46",
+      "label": "get_state_history",
+      "source_pages": [
+        74
+      ],
+      "tier1_match_ratio": 0.133,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:47",
+      "label": "LangSmith",
+      "source_pages": [
+        75,
+        77
+      ],
+      "tier1_match_ratio": 0.714,
+      "tier1_pass": true
+    },
+    {
+      "id": "concepts:02:48",
+      "label": "Snapshot vs Trace",
+      "source_pages": [
+        91,
+        93
+      ],
+      "tier1_match_ratio": 0.4,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:49",
+      "label": "Reproducibility Difference",
+      "source_pages": [
+        91,
+        93
+      ],
+      "tier1_match_ratio": 0.05,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:50",
+      "label": "Multi-Agent Analysis Focus",
+      "source_pages": [
+        91,
+        93
+      ],
+      "tier1_match_ratio": 0.263,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:51",
+      "label": "Operational Use Cases",
+      "source_pages": [
+        91,
+        93
+      ],
+      "tier1_match_ratio": 0.059,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:52",
+      "label": "LangSmith Purpose",
+      "source_pages": [
+        92,
+        93
+      ],
+      "tier1_match_ratio": 0.471,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:53",
+      "label": "Agent Evaluation Complexity",
+      "source_pages": [
+        96
+      ],
+      "tier1_match_ratio": 0.2,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:54",
+      "label": "Agent Evaluation Framework",
+      "source_pages": [
+        97
+      ],
+      "tier1_match_ratio": 0.529,
+      "tier1_pass": true
+    },
+    {
+      "id": "concepts:02:55",
+      "label": "Rule-based Evaluation",
+      "source_pages": [
+        97
+      ],
+      "tier1_match_ratio": 0.158,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:56",
+      "label": "LLM-as-Judge",
+      "source_pages": [
+        98
+      ],
+      "tier1_match_ratio": 0.2,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:57",
+      "label": "Evaluation Method Mapping",
+      "source_pages": [
+        99
+      ],
+      "tier1_match_ratio": 0.522,
+      "tier1_pass": true
+    },
+    {
+      "id": "concepts:02:58",
+      "label": "LLMOps 운영 루프",
+      "source_pages": [
+        121
+      ],
+      "tier1_match_ratio": 0.25,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:59",
+      "label": "Prompt 개선",
+      "source_pages": [
+        121
+      ],
+      "tier1_match_ratio": 0.667,
+      "tier1_pass": true
+    },
+    {
+      "id": "concepts:02:60",
+      "label": "멀티 Agent 패턴",
+      "source_pages": [
+        121
+      ],
+      "tier1_match_ratio": 0.357,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:61",
+      "label": "정책 개선 (Decision Policy)",
+      "source_pages": [
+        121
+      ],
+      "tier1_match_ratio": 0.4,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:62",
+      "label": "실패 케이스 데이터셋 축적",
+      "source_pages": [
+        121
+      ],
+      "tier1_match_ratio": 0.375,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:63",
+      "label": "A/B 테스트",
+      "source_pages": [
+        121
+      ],
+      "tier1_match_ratio": 0.214,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:64",
+      "label": "모델 드리프트",
+      "source_pages": [
+        122
+      ],
+      "tier1_match_ratio": 0.0,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:65",
+      "label": "데이터 드리프트",
+      "source_pages": [
+        124
+      ],
+      "tier1_match_ratio": 0.231,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:66",
+      "label": "개념 드리프트",
+      "source_pages": [
+        124
+      ],
+      "tier1_match_ratio": 0.167,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:67",
+      "label": "모델 드리프트",
+      "source_pages": [
+        124
+      ],
+      "tier1_match_ratio": 0.455,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:68",
+      "label": "예측값 드리프트",
+      "source_pages": [
+        124
+      ],
+      "tier1_match_ratio": 0.182,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:69",
+      "label": "JSON 형식",
+      "source_pages": [
+        127
+      ],
+      "tier1_match_ratio": 0.0,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:70",
+      "label": "JSON serialization",
+      "source_pages": [
+        131
+      ],
+      "tier1_match_ratio": 0.286,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:71",
+      "label": "JSON in Agent systems",
+      "source_pages": [
+        131
+      ],
+      "tier1_match_ratio": 0.278,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:72",
+      "label": "SQLite overview",
+      "source_pages": [
+        132
+      ],
+      "tier1_match_ratio": 0.111,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:02:73",
+      "label": "Pandas DataFrame vs SQLite Table",
+      "source_pages": [
+        135
+      ],
+      "tier1_match_ratio": 0.095,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:02:1",
+      "label": "Prompt Specification",
+      "source_pages": [
+        20
+      ],
+      "tier1_match_ratio": 0.111,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:02:2",
+      "label": "Template-Driven Design",
+      "source_pages": [
+        34
+      ],
+      "tier1_match_ratio": 0.059,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:02:3",
+      "label": "Example Code for Role-Based Design",
+      "source_pages": [
+        40
+      ],
+      "tier1_match_ratio": 0.222,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:02:4",
+      "label": "Resume from checkpoint",
+      "source_pages": [
+        72
+      ],
+      "tier1_match_ratio": 0.176,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:02:5",
+      "label": "API Key Setup",
+      "source_pages": [
+        79,
+        80
+      ],
+      "tier1_match_ratio": 0.364,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:02:6",
+      "label": "Agent Evaluation Scenario",
+      "source_pages": [
+        100
+      ],
+      "tier1_match_ratio": 0.095,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:02:7",
+      "label": "Network Pattern Lab",
+      "source_pages": [
+        91,
+        92
+      ],
+      "tier1_match_ratio": 0.25,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:02:8",
+      "label": "KS-Test",
+      "source_pages": [
+        126
+      ],
+      "tier1_match_ratio": 0.333,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:02:9",
+      "label": "Chi-square Test",
+      "source_pages": [
+        126
+      ],
+      "tier1_match_ratio": 0.308,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:02:10",
+      "label": "json.dumps and json.loads",
+      "source_pages": [
+        131
+      ],
+      "tier1_match_ratio": 0.364,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:02:11",
+      "label": "json.dump and json.load",
+      "source_pages": [
+        131
+      ],
+      "tier1_match_ratio": 0.333,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:02:12",
+      "label": "SQLite connection and cursor",
+      "source_pages": [
+        134
+      ],
+      "tier1_match_ratio": 0.235,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:02:13",
+      "label": "SQLite table creation",
+      "source_pages": [
+        134
+      ],
+      "tier1_match_ratio": 0.056,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:02:14",
+      "label": "SQLite INSERT with placeholders",
+      "source_pages": [
+        136
+      ],
+      "tier1_match_ratio": 0.211,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:02:15",
+      "label": "SQLite bulk INSERT",
+      "source_pages": [
+        136
+      ],
+      "tier1_match_ratio": 0.0,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:02:16",
+      "label": "Pandas to_sql for SQLite",
+      "source_pages": [
+        137
+      ],
+      "tier1_match_ratio": 0.267,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:02:17",
+      "label": "SQLite SELECT with cursor",
+      "source_pages": [
+        138
+      ],
+      "tier1_match_ratio": 0.222,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:02:18",
+      "label": "SQLite SELECT with pandas",
+      "source_pages": [
+        138
+      ],
+      "tier1_match_ratio": 0.438,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:02:19",
+      "label": "SQLite UPDATE and DELETE",
+      "source_pages": [
+        139
+      ],
+      "tier1_match_ratio": 0.353,
+      "tier1_pass": false
+    },
+    {
+      "id": "cautions:02:1",
+      "label": "Time Savings from Automation",
+      "source_pages": [
+        31
+      ],
+      "tier1_match_ratio": 0.053,
+      "tier1_pass": false
+    },
+    {
+      "id": "cautions:02:2",
+      "label": "Inconsistent Document Formats",
+      "source_pages": [
+        31
+      ],
+      "tier1_match_ratio": 0.053,
+      "tier1_pass": false
+    },
+    {
+      "id": "cautions:02:3",
+      "label": "Branch Consideration",
+      "source_pages": [
+        72
+      ],
+      "tier1_match_ratio": 0.182,
+      "tier1_pass": false
+    },
+    {
+      "id": "cautions:02:4",
+      "label": "Python dict vs JSON",
+      "source_pages": [
+        130
+      ],
+      "tier1_match_ratio": 0.5,
+      "tier1_pass": true
+    },
+    {
+      "id": "cautions:02:5",
+      "label": "Single-element tuple in SQLite",
+      "source_pages": [
+        139
+      ],
+      "tier1_match_ratio": 0.188,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:03:1",
+      "label": "AI Interview Agent Goal",
+      "source_pages": [
+        21
+      ],
+      "tier1_match_ratio": 0.087,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:03:2",
+      "label": "System Workflow Stages",
+      "source_pages": [
+        23
+      ],
+      "tier1_match_ratio": 0.095,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:03:3",
+      "label": "Preparation Agent",
+      "source_pages": [
+        24
+      ],
+      "tier1_match_ratio": 0.067,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:03:4",
+      "label": "Interview Agent Components",
+      "source_pages": [
+        24
+      ],
+      "tier1_match_ratio": 0.05,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:03:5",
+      "label": "Agent Role Definition",
+      "source_pages": [
+        25
+      ],
+      "tier1_match_ratio": 0.056,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:03:6",
+      "label": "State Flow",
+      "source_pages": [
+        27
+      ],
+      "tier1_match_ratio": 0.235,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:03:7",
+      "label": "Decision Logic",
+      "source_pages": [
+        28
+      ],
+      "tier1_match_ratio": 0.15,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:03:8",
+      "label": "Prompt Specification",
+      "source_pages": [
+        29,
+        30
+      ],
+      "tier1_match_ratio": 0.167,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:03:9",
+      "label": "Workflow Loop Structure",
+      "source_pages": [
+        26
+      ],
+      "tier1_match_ratio": 0.0,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:03:10",
+      "label": "Exit Condition",
+      "source_pages": [
+        26
+      ],
+      "tier1_match_ratio": 0.0,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:03:11",
+      "label": "LLMOps 운영 루프",
+      "source_pages": [
+        121
+      ],
+      "tier1_match_ratio": 0.25,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:03:12",
+      "label": "Prompt 개선",
+      "source_pages": [
+        121
+      ],
+      "tier1_match_ratio": 0.667,
+      "tier1_pass": true
+    },
+    {
+      "id": "concepts:03:13",
+      "label": "멀티 Agent 패턴",
+      "source_pages": [
+        121
+      ],
+      "tier1_match_ratio": 0.357,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:03:14",
+      "label": "정책 개선 (Decision Policy)",
+      "source_pages": [
+        121
+      ],
+      "tier1_match_ratio": 0.4,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:03:15",
+      "label": "실패 케이스 데이터셋 축적",
+      "source_pages": [
+        121
+      ],
+      "tier1_match_ratio": 0.375,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:03:16",
+      "label": "A/B 테스트",
+      "source_pages": [
+        121
+      ],
+      "tier1_match_ratio": 0.214,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:03:17",
+      "label": "모델 드리프트",
+      "source_pages": [
+        122
+      ],
+      "tier1_match_ratio": 0.0,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:03:18",
+      "label": "데이터 드리프트",
+      "source_pages": [
+        124
+      ],
+      "tier1_match_ratio": 0.231,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:03:19",
+      "label": "개념 드리프트",
+      "source_pages": [
+        124
+      ],
+      "tier1_match_ratio": 0.167,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:03:20",
+      "label": "모델 드리프트",
+      "source_pages": [
+        124
+      ],
+      "tier1_match_ratio": 0.455,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:03:21",
+      "label": "예측값 드리프트",
+      "source_pages": [
+        124
+      ],
+      "tier1_match_ratio": 0.182,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:03:22",
+      "label": "JSON 형식",
+      "source_pages": [
+        127
+      ],
+      "tier1_match_ratio": 0.0,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:03:1",
+      "label": "KS-Test",
+      "source_pages": [
+        126
+      ],
+      "tier1_match_ratio": 0.333,
+      "tier1_pass": false
+    },
+    {
+      "id": "code_examples:03:2",
+      "label": "Chi-square Test",
+      "source_pages": [
+        126
+      ],
+      "tier1_match_ratio": 0.308,
+      "tier1_pass": false
+    },
+    {
+      "id": "cautions:03:1",
+      "label": "Python dict vs JSON",
+      "source_pages": [
+        130
+      ],
+      "tier1_match_ratio": 0.5,
+      "tier1_pass": true
+    },
+    {
+      "id": "concepts:04:1",
+      "label": "AI Interview Agent Goal",
+      "source_pages": [
+        21
+      ],
+      "tier1_match_ratio": 0.087,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:04:2",
+      "label": "System Workflow Stages",
+      "source_pages": [
+        23
+      ],
+      "tier1_match_ratio": 0.095,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:04:3",
+      "label": "Preparation Agent",
+      "source_pages": [
+        24
+      ],
+      "tier1_match_ratio": 0.067,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:04:4",
+      "label": "Interview Agent Components",
+      "source_pages": [
+        24
+      ],
+      "tier1_match_ratio": 0.05,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:04:5",
+      "label": "Agent Role Definition",
+      "source_pages": [
+        25
+      ],
+      "tier1_match_ratio": 0.056,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:04:6",
+      "label": "State Flow",
+      "source_pages": [
+        27
+      ],
+      "tier1_match_ratio": 0.235,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:04:7",
+      "label": "Decision Logic",
+      "source_pages": [
+        28
+      ],
+      "tier1_match_ratio": 0.15,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:04:8",
+      "label": "Prompt Specification",
+      "source_pages": [
+        29,
+        30
+      ],
+      "tier1_match_ratio": 0.167,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:04:9",
+      "label": "Workflow Loop Structure",
+      "source_pages": [
+        26
+      ],
+      "tier1_match_ratio": 0.0,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:04:10",
+      "label": "Exit Condition",
+      "source_pages": [
+        26
+      ],
+      "tier1_match_ratio": 0.0,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:05:1",
+      "label": "AI Interview Agent Goal",
+      "source_pages": [
+        21
+      ],
+      "tier1_match_ratio": 0.087,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:05:2",
+      "label": "System Workflow Stages",
+      "source_pages": [
+        23
+      ],
+      "tier1_match_ratio": 0.095,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:05:3",
+      "label": "Preparation Agent",
+      "source_pages": [
+        24
+      ],
+      "tier1_match_ratio": 0.067,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:05:4",
+      "label": "Interview Agent Components",
+      "source_pages": [
+        24
+      ],
+      "tier1_match_ratio": 0.05,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:05:5",
+      "label": "Agent Role Definition",
+      "source_pages": [
+        25
+      ],
+      "tier1_match_ratio": 0.056,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:05:6",
+      "label": "State Flow",
+      "source_pages": [
+        27
+      ],
+      "tier1_match_ratio": 0.235,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:05:7",
+      "label": "Decision Logic",
+      "source_pages": [
+        28
+      ],
+      "tier1_match_ratio": 0.15,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:05:8",
+      "label": "Prompt Specification",
+      "source_pages": [
+        29,
+        30
+      ],
+      "tier1_match_ratio": 0.167,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:05:9",
+      "label": "Workflow Loop Structure",
+      "source_pages": [
+        26
+      ],
+      "tier1_match_ratio": 0.0,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:05:10",
+      "label": "Exit Condition",
+      "source_pages": [
+        26
+      ],
+      "tier1_match_ratio": 0.0,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:06:1",
+      "label": "AI Interview Agent Goal",
+      "source_pages": [
+        21
+      ],
+      "tier1_match_ratio": 0.087,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:06:2",
+      "label": "System Workflow Stages",
+      "source_pages": [
+        23
+      ],
+      "tier1_match_ratio": 0.095,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:06:3",
+      "label": "Preparation Agent",
+      "source_pages": [
+        24
+      ],
+      "tier1_match_ratio": 0.067,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:06:4",
+      "label": "Interview Agent Components",
+      "source_pages": [
+        24
+      ],
+      "tier1_match_ratio": 0.05,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:06:5",
+      "label": "Agent Role Definition",
+      "source_pages": [
+        25
+      ],
+      "tier1_match_ratio": 0.056,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:06:6",
+      "label": "State Flow",
+      "source_pages": [
+        27
+      ],
+      "tier1_match_ratio": 0.235,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:06:7",
+      "label": "Decision Logic",
+      "source_pages": [
+        28
+      ],
+      "tier1_match_ratio": 0.15,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:06:8",
+      "label": "Prompt Specification",
+      "source_pages": [
+        29,
+        30
+      ],
+      "tier1_match_ratio": 0.167,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:06:9",
+      "label": "Workflow Loop Structure",
+      "source_pages": [
+        26
+      ],
+      "tier1_match_ratio": 0.0,
+      "tier1_pass": false
+    },
+    {
+      "id": "concepts:06:10",
+      "label": "Exit Condition",
+      "source_pages": [
+        26
+      ],
+      "tier1_match_ratio": 0.0,
+      "tier1_pass": false
+    }
+  ],
+  "tier2_detail": [
+    {
+      "id": "concepts:01:2",
+      "grounded": true,
+      "reason": "인용 원문에 MLOps와 LLMOps의 차이점이 표로 명시되어 있으며, 요약된 개념과 일치함"
+    },
+    {
+      "id": "concepts:01:3",
+      "grounded": true,
+      "reason": "인용 원문에 '같은 입력에도 다른 결과를 생성하는 LLM의 특성'과 '비 결정론적 출력'이 명시되어 있으며, 이로 인해 '테스트/검증이 어려워지고, 결과 품질을 일정하게 유지하기 어려움'이라고 설명되어 개념과 일치합니다."
+    },
+    {
+      "id": "concepts:01:4",
+      "grounded": true,
+      "reason": "인용 원문에 '토큰 기반 과금 구조 : 호출이 늘어날수록 비용 급증'과 '체인/멀티 Agent 구조에서 호출이 누적되며 비용 통제 어려움'이 명시적으로 언급되어 있음."
+    },
+    {
+      "id": "concepts:01:6",
+      "grounded": true,
+      "reason": "인용 원문에 '환각' 항목 하위에 '예외 상황에서 오류 증폭 (Agent 간 잘못된 결과 전파)'이 명시되어 있어, 제시된 개념이 직접 근거함."
+    },
+    {
+      "id": "concepts:01:7",
+      "grounded": true,
+      "reason": "인용 원문에서 LLMOps가 통제, 비용, 안정성에 집중하는 이유를 비결정론적 출력, 비용과 지연 시간, 환각 문제로 설명하고 있어 개념과 일치함."
+    },
+    {
+      "id": "concepts:01:11",
+      "grounded": true,
+      "reason": "인용된 원문에서 '통제 가능한 Agent'의 정의와 조건(투명성, 재현성, 개입 가능성)이 제시되었으며, '잘 작동하는 Agent'와의 차이점과 목표가 명시되어 있음. 요약된 개념이 원문 내용과 일치함."
+    },
+    {
+      "id": "concepts:01:5",
+      "grounded": null,
+      "error": "HTTP Error 504: Gateway Timeout"
+    },
+    {
+      "id": "concepts:01:14",
+      "grounded": false,
+      "reason": "인용된 원문은 AI 사용으로 인한 기술 부채(코드 복사/붙여넣기 증가, 중복 코드 증가, 리팩토링 감소, 재작업 비율 증가)를 강조하지만, 'Design Without AI Overreliance' 개념에서 언급된 '설계 부재로 인한 혼란, 역할 불분명, 워크플로우 통제 불가'에 대한 직접적 근거는 없음. 원문은 AI 의존의 부정적 결과를 기술 부채 관점에서 다루고 있을 뿐, 설계 프로세스나 역할/워크플로우 문제를 언급하지 않음."
+    },
+    {
+      "id": "concepts:01:8",
+      "grounded": null,
+      "error": "HTTP Error 504: Gateway Timeout"
+    },
+    {
+      "id": "concepts:01:10",
+      "grounded": null,
+      "error": "HTTP Error 504: Gateway Timeout"
+    },
+    {
+      "id": "concepts:01:16",
+      "grounded": true,
+      "reason": "인용된 원문에 제시된 항목(Agent 역할 정의서, Workflow Spec, State 정의서, Decision Policy, Prompt Spec)이 개념의 요약에 언급된 필수 설계 문서(role definitions, workflow specs, state definitions, decision policies, prompt specifications)와 완전히 일치함."
+    },
+    {
+      "id": "concepts:01:17",
+      "grounded": true,
+      "reason": "인용된 원문에 'Design → Run → Trace → Evaluate → Improve가 반복되는구조'라는 명시적 표현이 있어, 요약된 개념이 원문에 근거함."
+    },
+    {
+      "id": "concepts:01:13",
+      "grounded": null,
+      "error": "HTTP Error 504: Gateway Timeout"
+    },
+    {
+      "id": "concepts:01:18",
+      "grounded": true,
+      "reason": "인용 원문에서 '통제 가능한(Controllable) 시스템의 조건'으로 '개입 가능성(Intervention)'을 명시하고 있으며, 이는 HITL Design의 핵심 개념인 인간 개입 가능성과 직접적으로 일치합니다. 또한 '문제가 생겨도 Controllable Agent를 만드는 것'을 목표로 제시하여, 인간 개입을 통한 오류 수정과 시스템 신뢰성 향상을 강조하고 있습니다."
+    },
+    {
+      "id": "concepts:01:20",
+      "grounded": true,
+      "reason": "인용 원문에서 'Decision Policy (의사결정기준)'을 '라우팅, 분기, 다음 행동을 결정하는 규칙 정의'로 명시하고 있어, 제시된 개념과 일치함."
+    },
+    {
+      "id": "concepts:01:21",
+      "grounded": false,
+      "reason": "인용 원문에서는 '투명성(Transparency)'을 실행 흐름과 판단 과정을 확인 가능한 것으로 정의하며, 이는 로깅과 추적(trace)을 포함할 수 있지만, 구체적으로 'I/O, 메타데이터, 토큰/지연 시간 메트릭'을 언급하지 않았습니다. 또한 '재현성'과 '개입 가능성'은 로깅과 직접 연결되지 않을 수 있습니다. 따라서 주어진 개념이 원문에 정확히 근거한다고 보기 어렵습니다."
+    },
+    {
+      "id": "concepts:01:23",
+      "grounded": true,
+      "reason": "인용 원문에 '서류 검토', '면접 전략 수립', '질문 및 답변', '면접 평가' 단계가 명시되어 있으며, 이는 요약의 'resume upload, analysis, strategy planning, question generation, answer evaluation, and report generation'에 각각 대응됨. 원문의 '서류 검토'는 'resume upload/analysis'에, '면접 전략 수립'은 'strategy planning'에, '질문 및 답변'은 'question generation/answer evaluation'에, '면접 평가'는 'report generation'에 해당함."
+    },
+    {
+      "id": "concepts:01:24",
+      "grounded": false,
+      "reason": "인용된 원문에는 'Preparation Agent'라는 용어가 명시적으로 등장하지 않으며, '사전준비Agent'는 '질문 전략 수립' 및 '도입 질문 생성'과 같은 작업을 수행하는 것으로 보이지만, 이는 'resume 분석'과 직접 연결되지 않는다. 원문의 다이어그램에서는 'Resume 분석'이 별도의 단계로 표시되어 있고, '사전준비Agent'는 '질문 전략 수립' 및 '도입 질문 생성'에 관여하는 것으로 해석된다. 따라서 주어진 개념인 'Preparation Agent analyzes resumes and cover letters to extract key keywords and design interview strategies'는 원문에 명시적으로 근거하지 않는다."
+    },
+    {
+      "id": "concepts:01:25",
+      "grounded": false,
+      "reason": "인용된 원문에는 'Interview Agent'가 네 가지 하위 에이전트(질문 생성, 답변 평가, 보고서 생성, 후속 질문 분기 논리)로 구성된다는 명시적 설명이 없으며, 다이어그램과 흐름만 제시되어 있음."
+    },
+    {
+      "id": "concepts:01:26",
+      "grounded": true,
+      "reason": "인용된 원문은 AI 면접관 Agent의 역할을 사전준비Agent와 면접Agent로 구분하고, 각 하위 에이전트의 구체적인 기능(분석, 전략수립, 질문생성, 답변평가, 보고서생성 등)을 명시함으로써 역할, 책임, 입력/출력(예: 이력서/자소서 분석, 키워드 도출, 질문 생성, 평가, 보고서 생성)을 정의하고 있음. 이는 제시된 개념인 'Agent Role Definition'이 역할, 책임, 입력, 출력, 모델, 제약조건 등을 명확히 정의하여 예측 가능성과 통제를 보장하는 것과 일치함."
+    },
+    {
+      "id": "concepts:01:27",
+      "grounded": true,
+      "reason": "인용 원문의 '상태 흐름 (State Flow)' 항목에서 '각 단계에서 생성된 데이터가 다음 단계로 어떻게 전달되는지 정의'라고 명시되어 있으며, 예시로 resume_summary, question_strategy, evaluation_result 등 구조화된 데이터의 전달을 설명하고 있음. 이는 제시된 개념 'State defines the structured data passed between agents, including resume text, summary, strengths, and message history'와 일치함."
+    },
+    {
+      "id": "concepts:01:28",
+      "grounded": false,
+      "reason": "인용된 원문은 상태(State) 정의서로, 데이터 구조와 에이전트 간 전달 항목을 나열하고 있을 뿐, Decision Logic나 워크플로우의 분기/루oping에 대한 조건(라운드 수, 답변 품질, 최대 질문 수 등)을 언급하지 않음."
+    },
+    {
+      "id": "concepts:01:22",
+      "grounded": true,
+      "reason": "인용된 원문에서 구직자들이 면접 중 '강점 설명' 질문에 가장 어려움을 느낀다는 조사 결과(37.5%)를 명시하고 있으며, 이는 AI Interview Agent가 해당 문제를 해결하기 위해 설계되었다는 요약 내용과 일치합니다."
+    },
+    {
+      "id": "concepts:01:19",
+      "grounded": true,
+      "reason": "인용 원문에서 '재현성(Reproducibility)'을 '동일 입력 + 상태 → 동일 결과 재현 가능'으로 명시하고, 'State 정의서'를 '전체 시스템에서 공유되는 데이터 구조 설계(어떤 데이터가 언제 생성/수정/사용되는지 정의)'로 설명하여, 상태의 명시적 정의와 추적이 재현성과 스냅샷 기반 복구/분석을 가능하게 함을 강조하고 있음. 따라서 주어진 개념이 원문에 근거함."
+    },
+    {
+      "id": "concepts:01:30",
+      "grounded": false,
+      "reason": "인용된 원문은 Agent 역할 정의서로, Workflow Loop Structure에 대한 언급이 없으며, 질문-답변-평가 루프 구조에 대한 설명이 포함되어 있지 않습니다."
+    },
+    {
+      "id": "concepts:01:31",
+      "grounded": false,
+      "reason": "인용된 원문에는 'Exit Condition'에 대한 언급이 없으며, 인터뷰 종료 조건(최대 라운드, 충분한 평가, 최대 질문 수)과 관련된 내용이 전혀 포함되어 있지 않습니다."
+    },
+    {
+      "id": "concepts:01:33",
+      "grounded": true,
+      "reason": "인용 원문에 '비즈니스니즈' 항목으로 동일한 요구사항(즉시 분석, 표준화된 정보 추출, 품질 검증, 유연한 워크플로우)이 명시되어 있음."
+    },
+    {
+      "id": "concepts:01:34",
+      "grounded": true,
+      "reason": "인용된 원문에 '계획수립 Agent', '요청사항처리 Agent', '검토 Agent'로 구분된 역할 기반 에이전트 구조와, 검토 Agent가 결과를 검증하고 부족 시 자동 재실행하는 품질 보증 메커니즘이 명시되어 있어 Supervisor Pattern의 정의(역할 기반 에이전트 아키텍처에서 감독자가 전문 에이전트들을 조정)와 일치합니다."
+    },
+    {
+      "id": "concepts:01:35",
+      "grounded": true,
+      "reason": "인용된 원문에서 'Agent 정의서', 'Workflow Spec', 'State 정의서', 'Decision Policy', 'Prompt Spec'이라는 다섯 가지 문서를 작성하도록 명시하고 있으며, 이는 요약된 개념의 각 구성 요소와 정확히 일치합니다."
+    },
+    {
+      "id": "concepts:01:36",
+      "grounded": true,
+      "reason": "인용 원문에서 Planner는 복잡한 문제 해결을 위한 역할 분리 구조(Planner/Executor/Critic) 중 하나로 명시되며, 문제 분해와 실행 계획 수립 기능을 수행하는 것으로 기술되어 있음. 요약된 개념(Planner가 작업을 단계별 계획으로 분해하고 도구를 식별하며 실패 시 재계획을 트리거함)은 원문의 '문제 분해' 및 역할 분리 구조와 일치함."
+    },
+    {
+      "id": "concepts:01:37",
+      "grounded": false,
+      "reason": "인용된 원문에는 Executor Agent에 대한 설명이 없고 Planner Agent에 대한 설명만 있습니다."
+    },
+    {
+      "id": "concepts:01:38",
+      "grounded": false,
+      "reason": "인용된 원문에는 'Critic Agent' 개념이 언급되어 있지 않으며, Executor의 역할과 기능만 설명되어 있습니다."
+    },
+    {
+      "id": "concepts:01:39",
+      "grounded": true,
+      "reason": "인용된 원문은 '역할 기반 분리'의 목적, 권장 구조(Planner/Executor/Critic), 그리고 장점(책임 분리, 역할 특화, 흐름 통제)을 명시적으로 설명하고 있으며, 이는 제시된 개념과 일치합니다."
+    },
+    {
+      "id": "concepts:01:32",
+      "grounded": true,
+      "reason": "인용 원문은 AI 기반 문서 자동 분석 Agent의 구축을 통해 법무/구매팀의 대량 문서 검토 부담을 해결하고, 자동 문서 타입 식별, 컨텍스트 기반 정보 추출, 품질 보증, 유연한 요청 처리 등의 핵심 기능을 제공한다고 설명하고 있으며, 이는 제시된 개념(법정 및 비즈니스 문서의 분류, 추출, 요약 자동화를 통한 수동 검토 부담 감소)과 일치한다."
+    },
+    {
+      "id": "concepts:01:41",
+      "grounded": true,
+      "reason": "인용된 원문에서 'Prompt Spec'이 AI Agent 시스템 설계 문서 중 하나로 명시되어 있으며, 'Prompt Specification' 개념이 정확한 프롬프트 설계가 에이전트 동작을 안내하고 일관된 출력을 보장한다는 점과 일치합니다."
+    },
+    {
+      "id": "concepts:01:42",
+      "grounded": true,
+      "reason": "인용된 원문에서 'State 정의서'가 AI Agent 시스템 설계 문서 중 하나로 명시되어 있으며, 개념 설명인 'State defines the current condition of the agent system, enabling tracking of progress and decision-making during workflows'와 일치한다."
+    },
+    {
+      "id": "concepts:01:15",
+      "grounded": true,
+      "reason": "인용 원문은 설계의 중요성을 강조하며, 상태(State), 프롬프트, 역할, 워크플로우, 평가 등 Agent 설계의 핵심 구성요소를 지적하고 있어, 제시된 개념과 일치합니다."
+    },
+    {
+      "id": "concepts:01:29",
+      "grounded": true,
+      "reason": "인용된 원문의 'Prompt Spec' 섹션에 '역할', '작업 지침', '출력 형식' 등이 명시되어 있으며, 이는 요약된 개념인 'Prompt Specification'이 LLM의 페르소나, 작업 지침, 출력 형식, 제약 조건을 정의하여 일관되고 자동화 가능한 응답을 보장한다는 내용과 정확히 일치합니다."
+    },
+    {
+      "id": "concepts:01:40",
+      "grounded": true,
+      "reason": "인용된 원문에서 POC 범위가 '문서 중 계약서에 대해서 자동 분석하는 Agent'로 명시되어 있고, 핵심 기능 중 '컨텍스트기반 정보 추출'에서 '계약서→ 발주-수주회사/금액/기간'을 추출한다고 기술되어 있으며, 예시 출력에서도 '계약 당사자, 계약 기간, 계약 금액'을 추출하고 요약한 결과를 보여줌. 따라서 주어진 개념이 원문에 근거함."
+    },
+    {
+      "id": "concepts:01:43",
+      "grounded": true,
+      "reason": "인용 원문에서 'Decision Policy(조건 분기, 반복 정책)'로 명시되어 있으며, 요약의 'Decision Policy defines conditional logic and retry rules for agent workflows based on evaluation outcomes.'와 일치함."
+    },
+    {
+      "id": "concepts:01:45",
+      "grounded": true,
+      "reason": "인용된 원문에서 Supervisor 패턴 하에 Planner, Executor, Critic의 역할을 명시적으로 분리하고, 각 구성 요소가 특정 기능(계획 수립, 실행, 평가)만 수행하며, Supervisor가 중앙 조정자로서 역할을 조율한다고 설명하고 있어, 제시된 개념과 일치합니다."
+    },
+    {
+      "id": "concepts:01:44",
+      "grounded": true,
+      "reason": "인용된 원문은 Supervisor 패턴을 중앙 조정자(Supvervisor)가 Planner, Executor, Critic과 같은 하위 에이전트(Worker)를 호출하고 전체 흐름을 통제하는 아키텍처로 명시하고 있으며, 역할 분리와 운영 제어(반복/종료 통제, max_iteration 등)를 중앙에서 통합적으로 다룬다고 설명합니다. 이는 제시된 개념 요약과 완전히 일치합니다."
+    },
+    {
+      "id": "concepts:01:49",
+      "grounded": true,
+      "reason": "인용 원문에서 HITL을 '문제 발생 가능 지점을 미리 정의(Proactive Control)'하는 것으로 명시하고, '단순 개입(Reactive)'과 대비하여 설명하므로, 제시된 개념이 원문에 근거함."
+    },
+    {
+      "id": "concepts:01:48",
+      "grounded": true,
+      "reason": "인용된 원문에서 HITL을 'LLM 시스템의 의사결정을 통제하기 위한 Control Layer'로 정의하고, '문제 발생 가능 지점을 미리 정의(Proactive Control)'하는 점을 강조하며, '사람은 시스템 외부가 아니라 하나의 구성요소(Component)로 설계됨'이라고 설명함. 이는 제시된 개념('의사결정을 미리 정의된 지점에서 인간이 개입하여 통제하는 프로액티브한 제어 계층')과 완전히 일치함."
+    },
+    {
+      "id": "concepts:01:50",
+      "grounded": true,
+      "reason": "인용 원문에서 '기존 조건부루프'와 'Supervisor 구조'를 비교하며, 기존 방식에서는 Critic이 직접 분기하고, Supervisor 구조에서는 Critic이 결과만 반환하며 반복/종료 정책은 Supervisor가 전담한다고 명시되어 있음. 이는 제시된 개념 'Critic Limitation'과 Supervisor 패턴이 이를 분리한다는 설명과 일치함."
+    },
+    {
+      "id": "concepts:01:51",
+      "grounded": true,
+      "reason": "인용 원문에 'Failure 위치 추적'이 구조적 장점으로 명시되어 있음"
+    },
+    {
+      "id": "concepts:01:52",
+      "grounded": true,
+      "reason": "인용 원문에서 'Case② 비용 통제'와 '무한 재시도(iteration 폭증) → 비용 증가'를 명시적으로 언급하여 HITL이 비용 증가 방지와 관련이 있음을 설명하고 있음."
+    },
+    {
+      "id": "concepts:01:53",
+      "grounded": true,
+      "reason": "인용된 원문에 'HITL은 특정 단계가 아니라 전체 운영 사이클을 관통하는 정책'이라는 문구가 명시적으로 존재하며, 이는 제시된 개념 'HITL as Policy'가 원문에 근거함을 보여줍니다."
+    },
+    {
+      "id": "concepts:01:54",
+      "grounded": true,
+      "reason": "인용 원문에서 'Supervisor 패턴'이 HITL을 중앙에서 통제하며, Agent 실행 흐름과 HITL 개입을 모두 제어하는 중앙 의사결정자로 명시적으로 설명되고 있음. 이는 제시된 개념 'Supervisor Pattern: The Supervisor pattern centralizes control over both agent execution and HITL intervention'과 일치함."
+    },
+    {
+      "id": "concepts:01:55",
+      "grounded": true,
+      "reason": "인용 원문에서 'Human Node = deterministic하지 않은 External Tool' 및 'latency 큼, 비용 큼, 판단 품질 높음'이라는 설명이 개념의 정의와 정확히 일치함."
+    },
+    {
+      "id": "concepts:01:56",
+      "grounded": false,
+      "reason": "인용된 원문은 HITL 설계의 Supervisor 패턴에 대한 예제 코드와 흐름 결정 로직을 보여주지만, 'HITL conditions must combine quantitative and policy-based criteria to balance safety and usability'라는 개념에 대한 직접적인 언급이나 설명이 없습니다. 원문은 상태 기반 및 인간/비판 결과 기반 흐름 제어를 구현하는 코드에 초점이 맞춰져 있어, 제시된 개념에 대한 근거를 찾기 어렵습니다."
+    },
+    {
+      "id": "concepts:01:57",
+      "grounded": false,
+      "reason": "인용된 원문은 HITL 설계의 Supervisor 패턴 예제 코드와 관련된 흐름 결정 로직을 보여주지만, 'HITL Scalability Strategies' 개념에서 언급된 'push-based approval, batch workflow review, scoped intervention levels'에 대한 직접적인 설명이나 전략이 포함되어 있지 않습니다. 원문은 상태 기반 결정과 인간/비판자 결정 처리에 초점을 맞추고 있어, 제시된 개념에 대한 근거로 부족합니다."
+    },
+    {
+      "id": "concepts:01:58",
+      "grounded": true,
+      "reason": "인용 원문에서 HITL 설계 시 'REJECTED' 상태에 대한 인간 검토 개입 방안(예: APPROVE, REVISE, ABORT)과 개입 이후 흐름(재계획, 종료, 에스컬레이션)을 명시하고 있어, 'REJECTED를 인간 검토로 대체한다'는 개념이 원문에 근거함."
+    },
+    {
+      "id": "concepts:01:59",
+      "grounded": true,
+      "reason": "인용 원문에서 'HITL 은 LLM 시스템의 의사결정을 통제하기 위한 Control Layer'라고 명시되어 있으며, HITL Trigger와 Supervisor 패턴을 통해 인간 개입이 통제되고 최종 의사결정을 내린다는 내용이 개념과 일치합니다."
+    },
+    {
+      "id": "concepts:01:60",
+      "grounded": false,
+      "reason": "인용된 원문은 '시점 관리(Snapshot)'와 관련된 내용으로 보이며, Non-deterministic LLM Systems에 대한 설명을 포함하고 있지 않습니다. 따라서 주어진 개념에 대한 근거가 되지 않습니다."
+    },
+    {
+      "id": "concepts:01:61",
+      "grounded": false,
+      "reason": "인용된 원문은 스냅샷 정의와 직접적으로 관련된 내용이 없으며, LLM 시스템의 비결정성과 상태 변화 추적에 대한 운영 관점만을 다루고 있음."
+    },
+    {
+      "id": "concepts:01:63",
+      "grounded": false,
+      "reason": "인용된 원문은 'Snapshot'의 정의와 포함 내용을 설명하고 있을 뿐, 'Multi-Agent Debugging Challenge' 개념이나 디버깅의 어려움에 대한 언급이 없습니다."
+    },
+    {
+      "id": "concepts:01:62",
+      "grounded": false,
+      "reason": "인용된 원문에는 'Snapshot Contents'라는 용어나 'plan, execution_result, critique, iteration details, next_step'과 같은 구체적인 스냅샷 구성 요소에 대한 언급이 없습니다. 원문은 시점(스냅샷) 관리의 중요성과 운영 목표(상태 변화 추적과 통제)에 대해 설명하고 있을 뿐, 스냅샷이 포함해야 할 구체적인 내용을 열거하지 않았습니다."
+    },
+    {
+      "id": "concepts:01:66",
+      "grounded": false,
+      "reason": "인용된 원문에는 MemorySaver라는 용어나 구성 요소에 대한 언급이 없으며, 스냅샷과 상태 이력 관리에 대한 설명만 있습니다."
+    },
+    {
+      "id": "concepts:01:64",
+      "grounded": false,
+      "reason": "인용된 원문은 'Snapshot'을 특정 시점의 전체 상태를 캡처한 기록으로 정의하고, 그 내용으로 plan, execution_result 등을 예시로 들고 있다. 그러나 'State as Evidence' 개념은 '시스템 상태가 에이전트 간 워크플로우에서 증거 및 통신 기록으로 기능한다'는 주장으로, 원문에는 '증거(evidence)'나 '통신 기록(communication history)'에 대한 언급이 없으며, 단순히 상태 저장의 기술적 정의만을 제공하고 있다."
+    },
+    {
+      "id": "concepts:01:65",
+      "grounded": true,
+      "reason": "인용 원문은 Snapshot이 특정 시점의 전체 상태(State)를 캡처한 기록이며, plan, execution_result, critique, iteration, next_step 등을 포함한다고 설명합니다. 이는 'Snapshot History Flow' 개념이 'supervisor loop의 각 반복에서 스냅샷을 저장하여 운영 흐름을 명확하고 추적 가능하게 만든다'는 요약과 일치합니다. 원문에 반복(iteration)과 다음 흐름(next_step)이 명시적으로 언급되어 있어, 개념이 원문에 근거함을 확인할 수 있습니다."
+    },
+    {
+      "id": "concepts:01:67",
+      "grounded": true,
+      "reason": "인용된 원문에서 snapshot.metadata에 source, step, parents 정보가 포함되어 있음이 명시되어 있고, 이는 개념에서 설명한 Snapshot Metadata의 구성 요소와 일치합니다."
+    },
+    {
+      "id": "concepts:01:68",
+      "grounded": false,
+      "reason": "인용된 원문은 스냅샷을 통해 상태 변화를 추적하는 방법을 보여주지만, '정상에서 결함으로 상태가 전환되는 정확한 지점을 추적한다'는 개념에 대한 직접적인 언급이나 설명이 없습니다. 원문은 스냅샷을 사용해 상태 기록을 확인하는 코드 예시만 제공하고 있습니다."
+    },
+    {
+      "id": "concepts:01:69",
+      "grounded": true,
+      "reason": "인용된 원문은 graph.get_state_history(config)를 통해 스냅샷 히스토리를 가져와 각 단계(step)의 상태를 확인하고 있으며, 이는 스냅샷 저장 후 재시작을 통한 재현 가능성을 보여줍니다. 특히 step -1, 0, 1 등의 상태를 출력하며 스냅샷 기반 실행 재개를 시연하고 있습니다."
+    },
+    {
+      "id": "concepts:01:70",
+      "grounded": false,
+      "reason": "인용된 원문은 스냅샷 히스토리를 통해 상태 변화를 보여주지만, 'APPROVED/REJECTED'와 같은 critic 결과나 반복적 비교를 명시적으로 언급하지 않음. 개념의 핵심인 'critic 결과 추적을 통한 반복 간 품질 비교'에 대한 직접적 근거가 없음."
+    },
+    {
+      "id": "concepts:01:72",
+      "grounded": true,
+      "reason": "인용 원문에서 'Snapshot'을 '특정 시점의 State 저장 지점'으로 명시적으로 정의하고 있으며, 멀티 에이전트 디버깅에서 특정 단계 이후 재실행을 위해 snapshot의 history를 확인하는 용도로 언급되어 제시된 개념과 일치합니다."
+    },
+    {
+      "id": "concepts:01:71",
+      "grounded": true,
+      "reason": "인용된 원문에서 'Snapshot 활용' 섹션의 4번 항목 '멀티 에이전트 분석'에 명시적으로 '어떤 Agent 가 문제를 만들었는지 확인' 및 '누가(Agent) 언제(step) 상태를 바꿨는지 추적'이라고 기술되어 있어, 제시된 개념 'Agent Accountability in Multi-Agent Systems'가 스냅샷을 통해 에이전트의 상태 변경 시점과 책임 소재를 추적한다는 내용과 정확히 일치합니다."
+    },
+    {
+      "id": "concepts:01:73",
+      "grounded": true,
+      "reason": "인용 원문에서 '특정 step의 체크포인트정보로 실행' 및 '저장한 실행시점'과 같이 checkpoint_id에 해당하는 고유 식별자를 통해 상태를 저장하고 재개하는 개념이 명시되어 있음."
+    },
+    {
+      "id": "concepts:01:74",
+      "grounded": false,
+      "reason": "인용된 원문은 체크포인트(Checkpoint)와 parent_checkpoint_id 개념을 설명하고 있지만, graph.get_state_history(config) 함수나 노드 실행 직후 상태 스냅샷 저장 및 역순 반환에 대한 직접적인 언급이 없습니다."
+    },
+    {
+      "id": "concepts:01:76",
+      "grounded": true,
+      "reason": "인용된 원문에서 'Supervisor 패턴'을 추적하는 예제를 다루며, 추적된 실행에 대한 정보로 error, latency, Tokens, Cost 등을 제공한다고 명시하고 있으므로, 'LangSmith traces multi-agent Supervisor patterns, showing execution trees, latency, tokens, and cost'라는 개념에 근거합니다."
+    },
+    {
+      "id": "concepts:01:77",
+      "grounded": false,
+      "reason": "인용된 원문에는 'Waterfall visualization'이나 'waterfall charts'라는 용어가 없으며, 실행 트리와 스냅샷에 대한 설명만 있음"
+    },
+    {
+      "id": "concepts:01:80",
+      "grounded": true,
+      "reason": "인용된 원문의 표에서 '멀티 Agent 분석' 항목에 '어떤 상태에서 실패했는지 확인'은 Snapshot에, '어떤 Agent(혹은 Tool)이 실행됐는지 확인'은 LangSmith Trace에 명시적으로 대응되어, 주어진 개념이 정확히 근거하고 있습니다."
+    },
+    {
+      "id": "concepts:01:79",
+      "grounded": true,
+      "reason": "인용된 원문의 표에서 '재현성' 항목에 '동일 상태로 재실행 가능'과 '재현 어려움(환경, 호출 영향)'으로 명시되어 있어, 요약의 'Snapshots allow reproducible execution from identical states, while traces are hard to reproduce due to environmental and call dependencies'와 정확히 일치함."
+    },
+    {
+      "id": "concepts:01:81",
+      "grounded": true,
+      "reason": "인용된 원문의 '운영 관점 활용' 행에서 Snapshot은 '내부 디버깅/ 상태 검증', LangSmith Trace는 '모니터링, 비용 및 성능 분석'로 명시되어 있어 요약 내용과 일치합니다."
+    },
+    {
+      "id": "concepts:01:82",
+      "grounded": true,
+      "reason": "인용된 원문에서 LangSmith를 'LLM/Agent 시스템을 위한 Observability & Evaluation 플랫폼'으로 명시하고, 추적(trace) 확인 절차와 snapshot/trace 비교 표를 통해 관측 및 성능 분석 기능을 설명하고 있으므로, 제시된 개념이 원문에 근거함."
+    },
+    {
+      "id": "concepts:01:83",
+      "grounded": true,
+      "reason": "인용 원문에 비결정성, 멀티스텝 실행(도구 사용 및 중간 상태), 외부 의존성, 모호한 정답 등 제시된 개념의 모든 요소가 명시적으로 언급되어 있음."
+    },
+    {
+      "id": "concepts:01:86",
+      "grounded": true,
+      "reason": "인용 원문에 LLM-as-Judge를 'LLM이 평가자 역할 수행, AI Agent의 결과 품질을 판단하는 방식'으로 명시하고, '결과가 질문에 적절하게 답했는지 평가', '답변의 정확성, 관련성, 논리성 등을 자연어로 판단'하며 '사람이 평가하기 어려운 자연어 품질 평가에 유용'하다고 설명하여, 제시된 개념과 완전히 일치함."
+    },
+    {
+      "id": "concepts:01:88",
+      "grounded": true,
+      "reason": "인용된 원문에서 '추적을 설정하고 실행한 결과들 중 테스트 데이터셋으로 구성할 항목을 선택하여 구성'이라고 명시되어 있어, 테스트 데이터셋이 추적 실행 결과 중 선택하여 구성된다는 점이 일치합니다. 다만 원문에는 '이름과 설명을 정의'에 대한 직접적 언급은 없지만, 일반적인 데이터셋 생성 절차로 포함될 수 있어 전체적으로 근거한다고 판단합니다."
+    },
+    {
+      "id": "concepts:01:89",
+      "grounded": false,
+      "reason": "인용된 원문에는 'evaluator_return_structure'라는 용어나 'key', 'score', 'comment' 필드를 반환해야 한다는 명시적 언급이 없습니다. 원문은 평가 함수의 로직(파싱, 형식 검증 등)을 보여주지만, 반환 구조에 대한 일반적인 규칙을 기술하지 않았습니다."
+    },
+    {
+      "id": "concepts:01:85",
+      "grounded": true,
+      "reason": "인용 원문에 '정확성(Correctness)'이 Output Quality 평가 영역의 주요 지표로 명시되어 있어, Rule-based Evaluation이 정의한 '정확도(accuracy)'와 직접적으로 일치함."
+    },
+    {
+      "id": "concepts:01:91",
+      "grounded": true,
+      "reason": "인용된 원문에 'Tracing > project > Evaluators탭 > Code Evaluator'라고 명시되어 있어, Code Evaluators가 LangSmith의 Tracing > Evaluators 탭에 등록된다는 개념과 일치합니다."
+    },
+    {
+      "id": "concepts:01:92",
+      "grounded": false,
+      "reason": "인용된 원문은 '평가2 : Agent 실행 추적 시 평가 수행'라는 제목 아래 평가 결과의 형식과 소요 시간, 주의사항을 설명하고 있지만, 'agent_workflow_with_evaluation' 개념에서 언급된 'input, generation, evaluation, and iterative correction if evaluation fails'와 같은 전체적인 워크플로우 구조(입력, 생성, 평가, 평가 실패 시 반복적 수정)에 대한 직접적인 설명은 포함되어 있지 않습니다. 원문은 평가 단계의 실행과 결과 형식에 초점을 맞추고 있어, 개념의 전반적인 흐름을 뒷받침하기에는 불충분합니다."
+    },
+    {
+      "id": "concepts:01:90",
+      "grounded": null,
+      "reason": null
+    },
+    {
+      "id": "concepts:01:93",
+      "grounded": true,
+      "reason": "인용 원문에 LangGraph를 사용하여 Agent를 구현하고, 실행 및 추적, 평가를 LangSmith로 처리한다는 내용이 명시되어 있음."
+    },
+    {
+      "id": "concepts:01:94",
+      "grounded": true,
+      "reason": "인용된 원문은 LLM-as-Judge Evaluator의 구성 요소(Rubric, Instructions, Reminder)와 설정 방법(모델 지정, 메시지 수정 등)을 명시적으로 보여주며, 개념의 정의와 일치합니다."
+    },
+    {
+      "id": "concepts:01:95",
+      "grounded": false,
+      "reason": "인용된 원문은 LLM-AS-JUDGE 평가 방법의 구현 세부사항(메시지 수정, 모델 지정 등)을 설명할 뿐, 루브릭(rubric)의 정의나 평가 기준에 대한 설명이 없습니다."
+    },
+    {
+      "id": "concepts:01:96",
+      "grounded": false,
+      "reason": "인용된 원문은 '평가2 : Agent 실행 추적 시 평가 수행'라는 제목 아래 LLM-AS-JUDGE 방식의 '의미 기반 평가'를 설명하고 있지만, 'Instructions for Evaluation'이라는 개념에서 강조된 '평가 단계와 우선순위를 명시적으로 개요화하는 평가 지시서'에 대한 직접적인 언급이나 설명이 없습니다. 원문은 모델 지정(gpt-5.4) 및 메시지 구성 같은 기술적 설정에 초점이 맞춰져 있어, 개념의 핵심인 '평가 지시서'의 역할과 내용을 뒷받침하지 않습니다."
+    },
+    {
+      "id": "concepts:01:97",
+      "grounded": false,
+      "reason": "인용된 원문은 'Reminder for Evaluation' 개념과 직접적으로 연관된 내용을 포함하고 있지 않다. 원문은 LLM-AS-JUDGE 평가 방법의 구현 세부사항(메시지 수정, 모델 지정 등)을 설명하고 있을 뿐, '리마인더'가 평가의 형식보다 내용에 집중하거나 공정하고 엄격한 평가 기준을 유지하도록 보장한다는 개념은 언급되지 않았다."
+    },
+    {
+      "id": "concepts:01:99",
+      "grounded": true,
+      "reason": "인용 원문에서 'Agent 실행 후, 추적 및 평가 확인'이라고 명시되어 있어, Agent execution traces를 사용하여 배포 후 행동을 모니터링하고 평가하는 개념과 일치합니다."
+    },
+    {
+      "id": "concepts:01:100",
+      "grounded": false,
+      "reason": "인용된 원문은 '멀티 Agent 추적 및 평가' 실습 내용으로, 보고서 생성 Agent의 구현 및 평가 절차(LangGraph, LangSmith 활용)를 설명하고 있으나, 'Challenges in Agent Evaluation' 개념에서 언급된 비결정성(non-determinism), 다단계 실행(multi-step execution), 단일 정답 부재(absence of a single correct answer)에 대한 직접적 논의나 근거는 포함되어 있지 않음."
+    },
+    {
+      "id": "concepts:01:101",
+      "grounded": true,
+      "reason": "인용 원문에 '실행 결과 평가(LangSmith) : LLM-AS-JUDGE'라는 명시적 언급이 있어 LLM-as-Judge 평가 방법이 근거로 제시됨. 그러나 rule-based(exact match)에 대한 언급은 없음."
+    },
+    {
+      "id": "concepts:01:102",
+      "grounded": false,
+      "reason": "인용된 원문은 멀티 Agent 추적 및 평가 실습 내용으로, Dataset Purpose 개념(입력+출력 쌍 데이터셋이 개발 중 시스템 개선 및 배포 시 기준 설정에 사용됨)에 대한 직접적인 언급이 없음. 원문은 보고서 생성 Agent의 구현 및 평가 과정(LangGraph, LangSmith 활용)을 설명할 뿐 데이터셋 용도에 대한 설명이 없음."
+    },
+    {
+      "id": "concepts:01:103",
+      "grounded": false,
+      "reason": "인용된 원문에는 Operational Issues(품질, 비용, 성능, 워크플로우 문제)에 대한 직접적인 언급이 없으며, AI Agent 평가의 어려움과 평가 방법, 데이터셋 구성에 관한 내용만 포함되어 있음."
+    },
+    {
+      "id": "concepts:01:104",
+      "grounded": false,
+      "reason": "인용된 원문에는 'Problem Measurement Strategy'라는 용어나 '품질/흐름 문제는 평가자로, 비용/성능 문제는 추적으로 측정'이라는 내용이 없습니다. 원문은 AI 에이전트 평가의 어려움과 평가 방법(rule-based, LLM-as-Judge), 데이터셋 구성에 대해 설명하고 있습니다."
+    },
+    {
+      "id": "concepts:01:105",
+      "grounded": true,
+      "reason": "인용 원문에 '운영 대시보드'가 명시적으로 언급되어 있으며, 앞서 설명된 운영 문제(품질, 비용, 성능, 흐름)의 측정과 가시화 수단으로 제시되어 Operational Dashboard 개념과 일치합니다."
+    },
+    {
+      "id": "concepts:01:106",
+      "grounded": true,
+      "reason": "인용된 원문은 '개선 작업'을 주요 항목으로 제시하고, 하위 항목으로 Prompt 개선, 구조 개선, 정책 개선, 데이터&평가 기반 개선을 나열하며, 각각의 세부 내용(예: 지침 강화, 출력 포맷 고정, 실패 케이스 기반 수정, 멀티 Agent 패턴, HITL 조건 추가, A/B 테스트 등)을 구체적으로 설명하고 있습니다. 이는 '설계-실행-관측-평가-개선'의 반복 구조 중 '개선' 단계에 해당하는 내용으로, 요약된 개념 'LLMOps 운영 루프'의 반복 구조를 뒷받침하는 구체적인 사례를 보여줍니다. 따라서 원문에 개념이 근거합니다."
+    },
+    {
+      "id": "concepts:01:46",
+      "grounded": true,
+      "reason": "인용 원문에서 '역할 간 직접 의존 없음 (느슨한 결합)'이라고 명시적으로 언급되어 있음"
+    },
+    {
+      "id": "concepts:01:108",
+      "grounded": true,
+      "reason": "인용 원문에 '멀티 Agent 패턴'이 구조 개선(Workflow / Agent 구조) 항목으로 명시되어 있으며, 답변 품질 개선을 위한 워크플로우 설계 방법으로 제시됨"
+    },
+    {
+      "id": "concepts:01:78",
+      "grounded": true,
+      "reason": "인용된 원문에 Snapshot과 Trace의 비교 표가 명시적으로 포함되어 있으며, 요약된 개념(상태 변화 vs 실행 흐름, 단일 상태 객체 vs 트리 구조, iteration 기반 vs 호출 흐름 기반 등)이 원문의 표 내용과 정확히 일치합니다."
+    },
+    {
+      "id": "concepts:01:109",
+      "grounded": true,
+      "reason": "인용 원문에 '정책(Decision Policy) 개선' 항목이 명시적으로 존재하며, 하위 항목으로 'routing 기준 수정', '반복 조건', 'HITL 조건 추가'가 제시되어 있고, 상위 섹션에서 '측정 (LLM-as-Judge)' 및 'A/B 테스트'가 언급되어 요약된 개념과 일치합니다."
+    },
+    {
+      "id": "concepts:01:111",
+      "grounded": true,
+      "reason": "인용 원문에 'A/B 테스트'가 명시적으로 언급되어 있으며, 이는 '데이터& 평가 기반 개선' 항목 하위로 제시되어 있어 개념과 일치합니다."
+    },
+    {
+      "id": "concepts:01:112",
+      "grounded": false,
+      "reason": "인용된 원문은 LLMOps 운영 개선 루프의 단계(설계, 실행, 관측, 평가, 개선)와 관련된 내용을 설명하고 있으며, 모델 드리프트(시간에 따른 데이터/모델 통계 변화로 인한 성능 저하)에 대한 직접적인 언급이나 설명이 없습니다."
+    },
+    {
+      "id": "concepts:01:113",
+      "grounded": true,
+      "reason": "인용 원문에서 '드리프트'를 언급하며 모델 성능 저하와 MLOps의 핵심 과제로 설명하고, 정기적인 모니터링과 재학습을 통한 대응을 제시하고 있어 데이터 드리프트 개념과 일치합니다."
+    },
+    {
+      "id": "concepts:01:110",
+      "grounded": true,
+      "reason": "인용 원문에 '실패 케이스dataset 축적'이라는 표현이 명시적으로 등장하며, 이는 '실패 케이스 데이터셋 축적' 개념과 동일한 용어로 사용되었고, '재 검증'과의 연계성도 확인됨."
+    },
+    {
+      "id": "concepts:01:114",
+      "grounded": true,
+      "reason": "인용 원문에서 '모델 드리프트'를 설명하며 입력과 출력 관계 변화로 인한 성능 저하를 언급하고, 모니터링과 재학습을 통한 대응을 강조함. 개념 드리프트의 정의와 일치."
+    },
+    {
+      "id": "concepts:01:115",
+      "grounded": true,
+      "reason": "인용 원문에서 모델 드리프트를 '모델 성능 및 신뢰도 급격히 저하'로 언급하고, 대응으로 정기적인 모니터링과 재학습을 제시하여 개념의 정의와 일치함."
+    },
+    {
+      "id": "concepts:01:116",
+      "grounded": false,
+      "reason": "인용된 원문에는 '예측값 드리프트'라는 용어나 예측값 분포 변화에 대한 직접적 설명이 없으며, 모델 드리프트 일반론과 대응 방안만 언급됨"
+    },
+    {
+      "id": "concepts:01:117",
+      "grounded": false,
+      "reason": "인용된 원문은 모델 드리프트 감지 기법 6가지를 나열하고 있을 뿐, JSON 형식에 대한 언급이 전혀 없습니다."
+    },
+    {
+      "id": "concepts:01:120",
+      "grounded": false,
+      "reason": "인용된 원문은 JSON의 용도와 활용 예를 설명하고 있으며, SQLite 개요에 대한 내용을 포함하고 있지 않습니다."
+    },
+    {
+      "id": "concepts:01:119",
+      "grounded": false,
+      "reason": "인용된 원문은 JSON을 파일이나 문자열로 변환하는 기본적인 사용법을 설명하고 있지만, Agent systems에서 내부 상태를 딕셔너리로 저장하고 JSON 문자열로 변환하여 데이터베이스에 삽입한다는 구체적인 개념은 언급되지 않았습니다."
+    },
+    {
+      "id": "concepts:01:118",
+      "grounded": true,
+      "reason": "인용된 원문은 JSON serialization(직렬화)과 deserialization(역직렬화)을 설명하며, Python 데이터 구조를 JSON 문자열로 변환(dumps)하고 JSON 문자열을 Python 데이터 구조로 변환(loads)하는 방법을 보여줍니다. 또한 파일에 저장(dump)하고 파일에서 읽는(load) 방법도 포함되어 있어, 'JSON is used to serialize Python data structures for external communication or storage'라는 개념을 명확히 지원합니다."
+    },
+    {
+      "id": "concepts:01:98",
+      "grounded": false,
+      "reason": "인용된 원문에는 'Feedback Configuration'이라는 용어나 정의(평가 지표, 출력 형식, 엄격한 스키마 적용 여부)에 대한 설명이 없음. 원문은 '의미 기반 평가: LLM-AS-JUDGE' 설정 방법(API 키 추가)에 대한 안내임."
+    },
+    {
+      "id": "concepts:01:123",
+      "grounded": false,
+      "reason": "인용된 원문은 Streamlit을 단순히 나열만 하고 있을 뿐, 실행 구조나 웹 서버, localhost, 대화형 데이터 시각화에 대한 설명이 없습니다."
+    },
+    {
+      "id": "concepts:01:121",
+      "grounded": false,
+      "reason": "인용된 원문은 SQLite 테이블 생성 방법에 대한 코드 예시와 설명만 포함되어 있으며, Pandas DataFrame에 대한 언급이 전혀 없습니다. 또한 'Pandas DataFrame은 분석과 임시 사용을 위해, SQLite 테이블은 영구적이고 일관된 저장을 위해 사용된다'는 개념은 원문에서 근거를 찾을 수 없습니다."
+    },
+    {
+      "id": "concepts:01:125",
+      "grounded": true,
+      "reason": "인용 원문에서 'Cloudflare Tunnel : 로컬에서 실행 중인 웹 서버를 외부에서 접속할 수 있도록 임시 공개 URL을 만들어 주는 도구'라고 명시되어 있어, 주어진 개념과 일치합니다."
+    },
+    {
+      "id": "concepts:01:126",
+      "grounded": false,
+      "reason": "인용된 원문은 Streamlit 위젯의 사용 예시를 보여주지만, 스크립트가 위젯 상호작용 시 전체 스크립트를 다시 실행한다는 메커니즘에 대한 직접적인 설명은 포함되어 있지 않습니다."
+    },
+    {
+      "id": "concepts:01:127",
+      "grounded": true,
+      "reason": "인용된 원문에서 st.write()를 사용하여 텍스트와 링크를 직접 렌더링하는 예시가 명시적으로 포함되어 있음. 요약된 개념(텍스트, 데이터프레임, 딕셔너리 등 여러 타입을 명시적 타입 핸들링 없이 UI에 렌더링)은 원문의 st.write() 사용 예시와 일치하며, 이는 Streamlit 공식 문서의 일반적인 용도와도 부합함."
+    },
+    {
+      "id": "concepts:01:128",
+      "grounded": false,
+      "reason": "인용된 원문에는 st.container()에 대한 언급이 없으며, UI 그룹화나 borders에 관한 설명도 없습니다. 원문은 st.write()의 기능과 Streamlit의 재실행 방식만 설명하고 있습니다."
+    },
+    {
+      "id": "concepts:01:129",
+      "grounded": false,
+      "reason": "인용된 원문에는 st.multiselect()와 st.toggle()에 대한 설명이 없으며, st.write()와 Streamlit의 핵심 동작 방식만 언급되어 있음."
+    },
+    {
+      "id": "concepts:01:130",
+      "grounded": false,
+      "reason": "인용된 원문에는 'Data caching and filtering', 'rolling averages', 'dynamically transform data based on user input'에 대한 언급이 없습니다. 원문은 st.write() 사용법과 Streamlit의 핵심 동작 방식(위젯 조작 시 스크립트 전체 재실행)만 설명하고 있습니다."
+    },
+    {
+      "id": "concepts:01:131",
+      "grounded": false,
+      "reason": "인용된 원문에는 matplotlib나 seaborn에 대한 언급이 없으며, Streamlit의 내장 차트 함수(line_chart, dataframe)만 사용되고 있음."
+    },
+    {
+      "id": "concepts:01:133",
+      "grounded": false,
+      "reason": "인용된 페이지 원문은 Streamlit을 사용한 차트 및 데이터 조회 예시에 불과하며, 'design_run_trace_improve_cycle' 개념이나 ML 워크플로우 사이클에 대한 언급이 전혀 없습니다."
+    },
+    {
+      "id": "code_examples:01:1",
+      "grounded": true,
+      "reason": "인용된 원문의 'Prompt Spec (프롬프트설계)' 항목에 '각 Agent의 지침, 출력 형식, 제약 조건 정의(구조화된Prompt)'라고 명시되어 있어, 제시된 개념 'Prompt Specification'이 원문에 근거함."
+    },
+    {
+      "id": "code_examples:01:2",
+      "grounded": true,
+      "reason": "인용된 원문은 AI 에이전트 설계를 위해 표준화된 양식(템플릿)을 사용하도록 명시하고 있으며, 이는 템플릿 기반 설계(Template-Driven Design) 개념의 실제 적용 사례에 해당한다."
+    },
+    {
+      "id": "code_examples:01:3",
+      "grounded": true,
+      "reason": "인용된 원문에 '예제 코드 : Ch04. [Design] 역할 기반 설계.ipynb > 2.간단한역할 기반 설계'라는 명시적 참조가 있으며, Critic의 개념과 핵심 기능이 제시된 후 예제 코드가 위치함을 나타내므로, 'Example Code for Role-Based Design' 개념은 원문에 근거함."
+    },
+    {
+      "id": "code_examples:01:5",
+      "grounded": false,
+      "reason": "인용 원문에는 HITL 트리거 조건(위험 키워드 감지 또는 거절이 최대 반복 횟수 초과)에 대한 명시적 언급이 없고, 상태 정의만 포함되어 있음."
+    },
+    {
+      "id": "code_examples:01:6",
+      "grounded": false,
+      "reason": "인용된 원문에는 'human_review node'라는 용어나 개념이 명시적으로 언급되지 않았으며, HITL(인간-루프) 트리거 조건에 대한 설명만 존재합니다."
+    },
+    {
+      "id": "code_examples:01:7",
+      "grounded": false,
+      "reason": "인용된 원문에는 'AgentState', 'human_decision', 'human_reason', 'next_step'과 같은 키(key)나 구조에 대한 명시적 언급이 없으며, HITL 흐름과 Supervisor 패턴의 개요만 설명하고 있음."
+    },
+    {
+      "id": "code_examples:01:9",
+      "grounded": true,
+      "reason": "인용된 원문에서 'graph.get_state(config)'가 '현재(가장 최신) 상태를 가져옴'이라고 명시되어 있으며, 예제 코드와 설명에서 '마지막 노드 실행 후의 snapshot(그래프 전체 실행)'을 반환한다고 기술되어 있다. 이는 주어진 개념 'graph.get_state(config) retrieves the most recent snapshot of the entire graph's state after execution'과 완전히 일치한다."
+    },
+    {
+      "id": "code_examples:01:10",
+      "grounded": true,
+      "reason": "인용된 원문에서 graph.get_state_history(config)가 최신 순서(역순)로 모든 스냅샷을 가져온다고 명시되어 있으며, 예시 코드와 출력 결과를 통해 스냅샷 이력을 확인하는 방법이 설명되어 있습니다. 이는 제시된 개념과 일치합니다."
+    },
+    {
+      "id": "code_examples:01:11",
+      "grounded": true,
+      "reason": "인용된 원문에서 특정 step(4)의 체크포인트 정보를 확인하고, 해당 체크포인트의 config를 출력하여 이전 상태에서 실행을 재개할 수 있는 방법을 구체적으로 설명하고 있음. 'None 입력은 저장된 상태에서 이어서 실행함'이라는 개념은 원문에 직접 명시되어 있지는 않지만, 체크포인트를 통해 이전 상태로 돌아가 실행을 재개하는 방법이 설명되어 있어 개념에 부합함."
+    },
+    {
+      "id": "code_examples:01:13",
+      "grounded": true,
+      "reason": "인용된 원문에서 LangSmith 프로젝트 추가와 프로젝트 이름 설정을 언급하고 있으며, 이는 환경 변수를 통한 LangSmith 추적 설정의 일부에 해당합니다."
+    },
+    {
+      "id": "code_examples:01:14",
+      "grounded": true,
+      "reason": "인용된 원문은 LANGSMITH_TRACING, LANGSMITH_PROJECT, LANGSMITH_ENDPOINT 환경 변수를 설정하는 코드를 보여주며, 이는 LLM agent 실행 시 LangSmith 추적을 활성화하는 방법을 설명합니다. 요약된 개념 'Agent execution with LangSmith'와 일치합니다."
+    },
+    {
+      "id": "code_examples:01:15",
+      "grounded": false,
+      "reason": "인용된 원문에는 'Tool call tracing'이나 'LangSmith'에 대한 언급이 없으며, 오직 'Agent 실행 추적'과 'Waterfall' 방식에 대한 설명만 있습니다."
+    },
+    {
+      "id": "code_examples:01:16",
+      "grounded": true,
+      "reason": "인용된 원문에 '시나리오: 기분 상태를 입력하면, 영화 2편을 추천해주는 간단한 Agent'와 '평가1: 테스트 데이터셋으로 평가', '평가2: Agent 실행 추적 시 평가 수행'이 명시되어 있어, 제시된 개념이 원문에 근거함."
+    },
+    {
+      "id": "code_examples:01:17",
+      "grounded": true,
+      "reason": "인용된 원문에서 'Network 패턴'과 '멀티 Agent'를 구축하고 LangSmith에서 추적 결과를 관찰하는 실습이 명시되어 있으며, 개념의 요약 내용(고객 요청 처리, receipt/refund/tech support, LangSmith traces 관측)과 정확히 일치함."
+    },
+    {
+      "id": "concepts:01:122",
+      "grounded": false,
+      "reason": "인용된 원문은 'Streamlit'을 단순히 나열만 했을 뿐, Streamlit이 Python 기반 프레임워크이며 데이터 앱과 대시보드를 HTML/JS 없이 구축할 수 있다는 설명을 포함하고 있지 않습니다."
+    },
+    {
+      "id": "code_examples:01:19",
+      "grounded": false,
+      "reason": "인용된 원문에는 'target_fn_wrapper'라는 용어나 개념이 언급되어 있지 않습니다. 원문은 'perform_eval' 함수를 사용한 규칙 평가 방법과 그 반환 구조에 대해 설명하고 있을 뿐, 'target_fn_wrapper'나 LangSmith의 evaluate 함수를 통한 배치 평가와의 연결에 대한 내용은 포함되어 있지 않습니다."
+    },
+    {
+      "id": "code_examples:01:12",
+      "grounded": true,
+      "reason": "인용된 원문에 'Settings > API Keys > + API Key'로 API 키를 생성하고, 'api_key.txt 파일 안에 추가'하며 'LANGSMITH_API_KEY =...' 형식으로 저장하는 내용이 명시되어 있으므로, 제시된 개념이 원문에 근거합니다."
+    },
+    {
+      "id": "code_examples:01:20",
+      "grounded": false,
+      "reason": "인용된 원문에는 'API Key Configuration'이나 'OpenAI API key', 'provider secrets', 'system settings'와 관련된 내용이 전혀 언급되지 않았습니다. 원문은 LLM-as-Judge 평가를 위한 루브릭과 지침만을 설명하고 있습니다."
+    },
+    {
+      "id": "code_examples:01:21",
+      "grounded": false,
+      "reason": "인용된 원문은 'Agent 실행 추적 시 평가 수행'과 '의미 기반 평가 : LLM-AS-JUDGE'에 대해 설명하고 있을 뿐, 'Multi-Agent Report Generation' 개념에서 언급된 '초안 작성과 검토 반복을 통한 보고서 생성'에 대한 내용은 포함되어 있지 않습니다."
+    },
+    {
+      "id": "code_examples:01:23",
+      "grounded": false,
+      "reason": "인용된 원문에는 'Chi-square Test'라는 용어나 카이제곱 검정에 대한 직접적인 언급이 없으며, 데이터 드리프트의 개념과 분류만 설명하고 있습니다. 따라서 주어진 개념이 원문에 근거한다고 볼 수 없습니다."
+    },
+    {
+      "id": "code_examples:01:22",
+      "grounded": false,
+      "reason": "인용된 원문에는 'KS-Test'라는 용어나 KS 검정에 대한 직접적인 언급이 없으며, '수치형 변수의 분포 변화를 검정'하는 구체적인 방법으로 KS-Test가 명시되어 있지 않음. 원문은 데이터 드리프트의 개념과 분류만 설명하고 있음."
+    },
+    {
+      "id": "code_examples:01:24",
+      "grounded": true,
+      "reason": "인용된 원문에 json.dumps와 json.loads의 설명과 예시가 명시적으로 포함되어 있으며, 각 함수의 역할(파이썬 객체를 JSON 문자열로 변환, JSON 문자열을 파이썬 객체로 파싱)이 정확히 기술되어 있습니다."
+    },
+    {
+      "id": "code_examples:01:25",
+      "grounded": true,
+      "reason": "인용된 원문에 json.dump와 json.load의 사용 예시와 설명이 명시적으로 포함되어 있으며, 개념 설명과 일치합니다."
+    },
+    {
+      "id": "code_examples:01:27",
+      "grounded": false,
+      "reason": "인용된 원문은 SQLite의 일반적인 특징(파일 기반, 표준 SQL 지원, 트랜잭션 처리 등)을 설명하고 있을 뿐, 구체적인 테이블 생성 방법(CREATE TABLE 구문, cursor.execute() 실행, commit)에 대한 내용은 포함되어 있지 않습니다."
+    },
+    {
+      "id": "code_examples:01:28",
+      "grounded": false,
+      "reason": "인용된 페이지 원문은 pandas 데이터프레임과 DB 테이블의 비교에 관한 내용이며, SQLite의 INSERT 문에서 플레이스홀더(?)를 사용하는 방법에 대한 언급이 없습니다."
+    },
+    {
+      "id": "code_examples:01:29",
+      "grounded": false,
+      "reason": "인용된 원문은 pandas 데이터프레임과 DB 테이블의 비교에 관한 내용으로, SQLite의 cursor.executemany()를 사용한 대량 INSERT에 대한 언급이 없습니다."
+    },
+    {
+      "id": "code_examples:01:30",
+      "grounded": false,
+      "reason": "인용된 원문은 SQLite의 cursor.execute 및 executemany를 사용한 직접적인 SQL 삽입 방법만 설명하고 있으며, pandas의 DataFrame.to_sql() 메서드나 SQLite에 데이터를 쓰는 옵션(append/replace)에 대한 언급이 없습니다."
+    },
+    {
+      "id": "code_examples:01:31",
+      "grounded": false,
+      "reason": "인용된 원문은 pandas의 to_sql 함수를 사용한 데이터 입력(INSERT)에 관한 내용으로, SQLite SELECT와 커서(cursor) 사용에 대한 설명이 없습니다. 요약된 개념은 cursor.execute()와 fetchall()을 사용한 SELECT 문 실행 방법이지만, 원문에는 해당 내용이 포함되어 있지 않습니다."
+    },
+    {
+      "id": "concepts:01:124",
+      "grounded": null,
+      "error": "HTTP Error 504: Gateway Timeout"
+    },
+    {
+      "id": "code_examples:01:33",
+      "grounded": false,
+      "reason": "인용된 원문은 SELECT 문을 사용한 데이터 조회 방법만 설명하고 있으며, UPDATE 및 DELETE 문과 WHERE 절, 커밋에 대한 내용은 포함되어 있지 않습니다."
+    },
+    {
+      "id": "code_examples:01:34",
+      "grounded": false,
+      "reason": "인용된 원문에는 Cloudflare Tunnel 설치 방법(wget, dpkg)에 대한 내용이 없으며, Streamlit 실행 방법과 로컬/서버 접근 시나리오만 설명하고 있습니다."
+    },
+    {
+      "id": "code_examples:01:35",
+      "grounded": false,
+      "reason": "인용된 원문은 Cloudflare Tunnel을 사용한 Streamlit 서버 접속 방법에 대해 설명하고 있지만, 'Streamlit server startup command' 개념에서 언급된 특정 플래그(--headless, --disable-cors, --server.enableXsrfProtection=false 등)에 대한 내용은 포함되어 있지 않습니다."
+    },
+    {
+      "id": "code_examples:01:36",
+      "grounded": false,
+      "reason": "인용된 원문은 Streamlit 서버 실행 방법과 cloudflared 터널 설정에 관한 것이며, 'Hello Streamlit example' 개념에서 언급된 '기본 Streamlit 앱이 제목과 마크다운 텍스트를 표시하고 버튼을 통해 애니메이션 풍선을 트리거한다'는 내용과 직접적인 연관성이 없습니다."
+    },
+    {
+      "id": "code_examples:01:37",
+      "grounded": false,
+      "reason": "인용된 원문에는 st.tabs()에 대한 언급이 없으며, 탭 인터페이스나 차트와 데이터 뷰를 분리하는 내용이 없습니다. 원문은 st.title, st.markdown, st.button 등의 기본 위젯 사용 예시만 포함하고 있습니다."
+    },
+    {
+      "id": "code_examples:01:38",
+      "grounded": true,
+      "reason": "인용된 원문에 '@st.cache_data'를 사용해 데이터를 캐싱하고, 필터 변화 시 다시 로딩하지 않는다는 내용이 명시적으로 포함되어 있음."
+    },
+    {
+      "id": "code_examples:01:39",
+      "grounded": false,
+      "reason": "인용된 원문에는 st.radio에 대한 설명이나 예제가 없으며, 데이터 캐싱(@st.cache_data)과 데이터 로드에 관한 내용만 포함되어 있음."
+    },
+    {
+      "id": "code_examples:01:18",
+      "grounded": null,
+      "error": "Unterminated string starting at: line 4 column 18 (char 242)"
+    },
+    {
+      "id": "code_examples:01:40",
+      "grounded": false,
+      "reason": "인용된 페이지 원문에는 st.slider를 사용한 범위 슬라이더 예제나 튜플 기본값을 사용한 내용이 없으며, 데이터 캐싱(@st.cache_data)과 타이타닉 데이터 로드에 대한 내용만 있습니다."
+    },
+    {
+      "id": "code_examples:01:42",
+      "grounded": true,
+      "reason": "인용 원문에 UI 구성 요소(라디오 버튼, 슬라이더)와 변수 할당(sex, embarked, age_range)이 명시되어 있으며, 이를 통해 DataFrame을 필터링하는 sequential filtering 개념이 직접적으로 구현되어 있음."
+    },
+    {
+      "id": "code_examples:01:26",
+      "grounded": false,
+      "reason": "인용된 원문은 SQLite의 일반적인 특징(파일 기반, 경량, 표준 SQL 지원 등)을 설명하고 있을 뿐, Python의 sqlite3 모듈을 사용한 연결(connection)과 커서(cursor) 객체에 대한 구체적인 내용은 포함되어 있지 않습니다."
+    },
+    {
+      "id": "code_examples:01:43",
+      "grounded": true,
+      "reason": "인용된 원문에서 '구분자: st.divider()'라고 명시되어 있고, 실제 코드 예시로 'st.divider()'가 사용되었기 때문에 개념 'st_divider_for_visual_separation'은 원문에 근거합니다."
+    },
+    {
+      "id": "code_examples:01:45",
+      "grounded": false,
+      "reason": "인용된 원문에는 st.bar_chart를 사용한 예시나 범주형 값의 카운트를 표시하는 내용이 없으며, 필터링과 데이터 건수 표시에 관한 내용만 있습니다."
+    },
+    {
+      "id": "code_examples:01:41",
+      "grounded": false,
+      "reason": "인용된 원문에는 st_columns_for_layout라는 용어나 st.columns()를 사용한 레이아웃 분할에 대한 설명이 없으며, 데이터 캐싱(@st.cache_data)과 데이터 로딩에 대한 내용만 포함되어 있음."
+    },
+    {
+      "id": "code_examples:01:44",
+      "grounded": false,
+      "reason": "인용된 원문에는 seaborn 차트를 matplotlib figure로 저장한 후 st.pyplot()로 렌더링하는 방법에 대한 설명이 없으며, 필터링 및 st.divider() 사용 예시만 포함되어 있음."
+    },
+    {
+      "id": "code_examples:01:47",
+      "grounded": false,
+      "reason": "인용된 원문에서는 필터링된 데이터의 개수만 표시하고 st.divider()를 사용했을 뿐, st.dataframe을 사용하여 필터링된 DataFrame을 대화형 테이블로 렌더링하는 코드가 없습니다."
+    },
+    {
+      "id": "cautions:01:2",
+      "grounded": true,
+      "reason": "인용 원문에서 '거래 업체마다 양식이 상이함'이라고 명시되어 있어 inconsistent document formats(다양한 문서 형식) 문제가 직접 언급되었습니다."
+    },
+    {
+      "id": "code_examples:01:46",
+      "grounded": false,
+      "reason": "인용된 원문에는 st.expander를 사용한 내용이 없으며, 필터링 결과를 표시하고 구분자(st.divider)를 사용하는 내용만 있습니다."
+    },
+    {
+      "id": "cautions:01:1",
+      "grounded": true,
+      "reason": "인용 원문에서 '1건당 평균 20분 소요'와 '업무 처리 일관성 부족'이 명시되어 있어, 제시된 개념이 원문에 근거함."
+    },
+    {
+      "id": "cautions:01:4",
+      "grounded": true,
+      "reason": "인용된 원문은 '특정 step 이후부터 다시 실행시키기'를 설명하며, 특정 스텝(4)의 체크포인트 정보를 확인하고 그 지점부터 재실행하는 방법을 보여줍니다. 이는 'Branch Consideration' 개념에서 언급된 '특정 스텝 재실행'에 정확히 부합합니다."
+    },
+    {
+      "id": "cautions:01:6",
+      "grounded": false,
+      "reason": "인용된 원문에는 'Project creation order' 개념에 대한 설명이 없으며, LangSmith 프로젝트 생성 순서나 UI에서 먼저 생성한 후 코드에서 참조해야 한다는 내용이 포함되어 있지 않습니다. 원문은 LLM 실행과 트레이스 확인 방법만 보여줍니다."
+    },
+    {
+      "id": "cautions:01:3",
+      "grounded": true,
+      "reason": "인용 원문에서 'Worker 는 사람을 호출하지 않음' 및 'Worker 가 HITL 호출하면: 흐름이 분산됨 → 정책 통제가 깨짐'이라고 명시되어 Worker가 HITL을 직접 호출해서는 안 된다는 정책 통제 원칙이 직접 언급되었습니다."
+    },
+    {
+      "id": "cautions:01:8",
+      "grounded": false,
+      "reason": "인용 원문은 평가의 비동기 실행과 문제 발생 시 에이전트 실행과의 분리를 언급하지만, '2-5분 소요'나 '평가가 silently drop되는 현상'에 대한 내용은 없음."
+    },
+    {
+      "id": "cautions:01:10",
+      "grounded": false,
+      "reason": "인용된 원문은 SQLite에서 SELECT 문을 실행하는 기본적인 방법(cursor.execute 및 pandas 사용)만 설명하고 있으며, 'Single-element tuple'이나 'trailing comma'에 대한 언급이 전혀 없습니다. 따라서 주어진 개념은 인용된 페이지 원문에 근거하지 않습니다."
+    },
+    {
+      "id": "cautions:01:5",
+      "grounded": false,
+      "reason": "인용된 페이지 원문에는 'Session persistence of environment variables'에 대한 언급이 없으며, 환경 변수가 세션 동안 변경되면 안 된다는 내용도 없습니다. 원문은 LangSmith 추적 설정 방법과 LLM 실행 및 트레이스 확인 방법만 보여줍니다."
+    },
+    {
+      "id": "concepts:02:2",
+      "grounded": true,
+      "reason": "인용 원문에 MLOps와 LLMOps의 차이점이 표로 명시되어 있으며, 요약된 개념과 일치함"
+    },
+    {
+      "id": "cautions:01:7",
+      "grounded": false,
+      "reason": "인용된 원문은 '평가2 : Agent 실행 추적 시 평가 수행'이라는 제목과 LangSmith에서 Evaluator를 등록하는 방법에 대해 설명하고 있지만, 'async_evaluation_behavior' 개념(평가가 비동기적으로 실행되고 평가 실패가 agent 실행을 중단시키지 않음)에 대한 직접적인 언급이 없습니다. 원문은 평가의 등록 방법과 유형(규칙 기반/의미 기반)만을 다루고 있습니다."
+    },
+    {
+      "id": "code_examples:01:32",
+      "grounded": false,
+      "reason": "인용된 원문은 데이터 입력(INSERT)에 관한 내용으로, pandas의 to_sql() 함수를 사용한 데이터프레임을 SQLite 테이블에 삽입하는 방법을 설명하고 있습니다. 그러나 요청된 개념은 SELECT 쿼리 실행과 pandas DataFrame 반환에 관한 것으로, pd.read_sql() 함수 사용법과 관련이 있습니다. 원문에는 SELECT나 read_sql()에 대한 언급이 없으므로, 해당 개념에 대한 근거가 되지 않습니다."
+    },
+    {
+      "id": "concepts:02:6",
+      "grounded": true,
+      "reason": "인용 원문에 '환각' 항목 하위에 '예외 상황에서 오류 증폭 (Agent 간 잘못된 결과 전파)'이 명시되어 있어, 제시된 개념이 직접 근거함."
+    },
+    {
+      "id": "concepts:02:7",
+      "grounded": true,
+      "reason": "인용 원문에서 LLMOps가 통제, 비용, 안정성에 집중하는 이유를 비결정론적 출력, 비용과 지연 시간, 환각 문제로 설명하고 있어 개념의 요약과 일치함."
+    },
+    {
+      "id": "concepts:02:3",
+      "grounded": true,
+      "reason": "인용 원문에 '같은 입력에도 다른 결과를 생성하는 LLM의 특성'과 '비 결정론적 출력'이 명시되어 있으며, 이로 인해 '테스트/검증이 어려워지고, 결과 품질을 일정하게 유지하기 어려움'이라고 설명되어 개념과 일치합니다."
+    },
+    {
+      "id": "concepts:02:8",
+      "grounded": true,
+      "reason": "인용된 원문의 1일차, 2일차, 3일차 일정이 각각 'LLM 시스템 설계', 'LLM 시스템 실행 및 관측', 'LLM 시스템 평가'로 구성되어 있고, 하위 항목으로 'LLMOps 개념 이해', 'AI Agent 설계 절차', '역할 기반 설계', 'Human In The Loop', 'AI Agent 시스템 시점 관리(Snapshot)', 'AI Agent 시스템 추적(Trace)', 'AI Agent 시스템 평가 방법', '시스템 운영 및 개선', '시스템 구축을 위한 필요 기술들'이 제시되어 있다. 이는 요약된 개념인 'LLM 시스템 설계, 운영, 평가를 위한 핵심 요소 이해'와 '규칙 기반 평가 및 시점 관리 역량'에 직접적으로 대응되므로, 원문에 근거한다."
+    },
+    {
+      "id": "concepts:02:11",
+      "grounded": true,
+      "reason": "인용된 원문에서 '통제 가능한 Agent'의 정의와 조건(투명성, 재현성, 개입 가능성)이 제시되었으며, '잘 작동하는 Agent'와의 차이점과 목표가 명시되어 있음. 요약된 개념이 원문 내용과 일치함."
+    },
+    {
+      "id": "concepts:02:13",
+      "grounded": true,
+      "reason": "인용 원문에서 워드 커닝햄의 기술 부채 정의와 '빠르게 만들기 위해 생략한 설계와 구조가 나중에 더 큰 수정 비용으로 돌아오는 것'이라는 설명이 명시적으로 언급되어, 주어진 개념 요약과 일치합니다."
+    },
+    {
+      "id": "concepts:02:14",
+      "grounded": false,
+      "reason": "인용된 원문은 AI 사용으로 인한 기술 부채(코드 복사/붙여넣기 증가, 중복 코드 증가, 리팩토링 감소, 재작업 비율 증가)를 강조하지만, 'Design Without AI Overreliance' 개념에서 언급된 '설계 부재로 인한 혼란, 역할 불분명, 워크플로우 통제 불가'에 대한 직접적 근거는 없음. 원문은 AI 의존의 부정적 결과를 기술 부채 관점에서 설명할 뿐, 설계 프로세스나 역할/워크플로우 문제를 다루지 않음."
+    },
+    {
+      "id": "concepts:02:15",
+      "grounded": true,
+      "reason": "인용 원문은 설계의 중요성을 강조하며, 상태(State), 프롬프트, 에이전트 역할, 워크플로우 통제, 평가 기준 등 Agent Design Process의 핵심 구성 요소를 직접적으로 언급하고 있습니다."
+    },
+    {
+      "id": "concepts:02:10",
+      "grounded": false,
+      "reason": "인용된 원문은 LLMOps의 통제, 비용, 안정성에 집중하는 이유와 LLM 애플리케이션의 어려움(비결정론적 출력, 비용과 지연 시간, 환각 문제)을 설명하고 있지만, 'agent system skills'라는 용어나 '설계, 실행, 관측, 평가, 개선'과 같은 LLMOps 단계에 대한 직접적인 언급이 없음. 따라서 주어진 개념이 원문에 근거한다고 보기 어려움."
+    },
+    {
+      "id": "concepts:02:16",
+      "grounded": true,
+      "reason": "인용된 원문에 제시된 항목(Agent 역할 정의서, Workflow Spec, State 정의서, Decision Policy, Prompt Spec)이 개념의 요약에 명시된 필수 설계 문서 항목과 정확히 일치합니다."
+    },
+    {
+      "id": "concepts:02:17",
+      "grounded": true,
+      "reason": "인용된 원문에 'Design → Run → Trace → Evaluate → Improve가 반복되는구조'라고 명시되어 있어, 요약의 'Design to Improve'와 각 챕터가 LLMOps 수명 주기의 단계에 해당한다는 주장이 직접적으로 근거합니다."
+    },
+    {
+      "id": "concepts:02:19",
+      "grounded": true,
+      "reason": "인용 원문에서 '재현성(Reproducibility)'을 '동일 입력 + 상태 → 동일 결과 재현 가능'으로 명시하고, 'State 정의서'를 '전체 시스템에서 공유되는 데이터 구조 설계(어떤 데이터가 언제 생성/수정/사용되는지 정의)'로 설명하여, 상태의 명시적 정의와 추적이 재현성과 스냅샷 기반 복구/분석을 가능하게 한다는 개념과 일치합니다."
+    },
+    {
+      "id": "concepts:02:18",
+      "grounded": true,
+      "reason": "인용 원문에서 '통제 가능한(Controllable) 시스템의 조건'으로 '개입 가능성(Intervention)'을 명시하고 있으며, 이는 HITL Design의 핵심 개념인 인간 개입 가능성과 직접적으로 일치합니다. 또한 '재현성'과 '투명성'은 HITL 시스템의 신뢰성 향상을 위한 필수 요소로 설명되어 개념의 요약을 지지합니다."
+    },
+    {
+      "id": "concepts:02:21",
+      "grounded": false,
+      "reason": "인용 원문에서는 '투명성(Transparency)'을 실행 흐름과 판단 과정을 확인 가능한 것으로 정의하며, '재현성'과 '개입 가능성'을 조건으로 제시하지만, 'Observability'라는 용어 자체를 명시적으로 언급하지 않았고, 로깅(I/O, 메타데이터, 토큰/지연 시간 메트릭)에 대한 구체적인 설명도 없음. 따라서 주어진 개념이 원문에 직접 근거한다고 보기 어려움."
+    },
+    {
+      "id": "concepts:02:20",
+      "grounded": true,
+      "reason": "인용 원문에서 'Decision Policy (의사결정기준)'을 '라우팅, 분기, 다음 행동을 결정하는 규칙 정의'로 명시하고 있어, 제시된 개념과 일치함."
+    },
+    {
+      "id": "concepts:02:23",
+      "grounded": true,
+      "reason": "인용된 원문에 AI 면접관 Agent의 워크플로우 단계가 순차적으로 명시되어 있으며, 요약된 내용(서류 제출, 분석, 전략 수립, 질문 생성, 답변 평가, 보고서 생성)과 원문의 단계(서류 검토, 면접 전략 수립, 질문 및 답변, 면접 평가)가 개념적으로 일치함."
+    },
+    {
+      "id": "concepts:02:24",
+      "grounded": true,
+      "reason": "인용된 원문에 '사전준비Agent'가 표시되어 있으며, 이는 'Preparation Agent'에 해당하며, 이력서 분석과 질문 전략 수립을 포함한 작업 흐름에 관여하고 있으므로 개념에 부합한다."
+    },
+    {
+      "id": "concepts:02:25",
+      "grounded": false,
+      "reason": "인용된 원문에는 'Interview Agent'가 네 가지 하위 에이전트(질문 생성, 답변 평가, 보고서 생성, 후속 질문 분기 논리)로 구성된다는 명시적 설명이 없으며, 다이어그램과 흐름만 제시되어 있음."
+    },
+    {
+      "id": "concepts:02:26",
+      "grounded": true,
+      "reason": "인용된 원문은 AI 면접관 Agent의 역할을 사전준비Agent와 면접Agent로 구분하고, 각 하위 역할(분석, 전략수립, 질문생성, 답변평가, 보고서생성 등)의 구체적인 책임과 기능을 명시함. 이는 '역할, 책임, 입력/출력, 모델, 제약조건'을 정의하는 Agent Role Definition 개념과 일치함."
+    },
+    {
+      "id": "concepts:02:27",
+      "grounded": true,
+      "reason": "인용된 원문에서 '상태 흐름 (State Flow)' 항목이 명시적으로 정의되어 있으며, '각 단계에서 생성된 데이터가 다음 단계로 어떻게 전달되는지 정의'라고 설명하고, 예시로 resume_summary → question_strategy → evaluation_result를 제시하고 있음. 이는 요약된 개념 'State defines the structured data passed between agents, including resume text, summary, strengths, and message history'와 일치함."
+    },
+    {
+      "id": "concepts:02:5",
+      "grounded": true,
+      "reason": "인용 원문에 '응답 지연 증가 → 사용자 경험(UX) 저하' 및 '구조가 복잡해 질수록 비용과 속도가 동시에 악화'라는 명시적 진술이 있어, 주어진 개념이 근거를 갖춤."
+    },
+    {
+      "id": "concepts:02:29",
+      "grounded": true,
+      "reason": "인용된 원문의 'Prompt Spec' 섹션에 '역할', '작업 지침', '출력 형식' 등이 명시되어 있으며, 이는 Prompt Specification의 정의(LLM의 페르소나, 작업 지침, 출력 형식, 제약 조건)와 일치합니다."
+    },
+    {
+      "id": "concepts:02:30",
+      "grounded": false,
+      "reason": "인용된 원문은 Agent 역할 정의서로, Workflow Loop Structure에 대한 언급이 없으며, 질문-답변-평가 루프 구조를 설명하지 않는다."
+    },
+    {
+      "id": "concepts:02:31",
+      "grounded": false,
+      "reason": "인용된 원문에는 'Exit Condition'에 대한 언급이 없으며, 인터뷰 종료 조건(최대 라운드, 충분한 평가, 최대 질문 수)과 관련된 내용이 전혀 포함되어 있지 않습니다."
+    },
+    {
+      "id": "concepts:02:32",
+      "grounded": true,
+      "reason": "인용 원문은 AI 기반 문서 자동 분석 Agent의 구축을 통해 법무/구매팀의 대량 문서 검토 부담을 해결하고, 자동 문서 타입 식별, 컨텍스트 기반 정보 추출, 품질 보증 메커니즘, 유연한 요청 처리 등의 핵심 기능을 제공한다고 설명하고 있으며, 이는 제시된 개념 'AI Document Analysis Agent'가 법정 및 비즈니스 문서의 분류, 추출, 요약을 자동화하여 수동 검토 부담을 줄이는 시스템이라는 설명과 일치합니다."
+    },
+    {
+      "id": "concepts:02:28",
+      "grounded": false,
+      "reason": "인용된 원문은 상태(State) 정의서로, 데이터 구조와 사용 Agent를 설명하고 있을 뿐, Decision Logic나 워크플로우의 분기/반복에 대한 정책을 언급하지 않음."
+    },
+    {
+      "id": "concepts:02:33",
+      "grounded": true,
+      "reason": "인용 원문에 '비즈니스니즈' 항목으로 동일한 요구사항이 명시되어 있음"
+    },
+    {
+      "id": "concepts:02:35",
+      "grounded": true,
+      "reason": "인용된 원문에서 'Agent 정의서', 'Workflow Spec', 'State 정의서', 'Decision Policy', 'Prompt Spec'이라는 다섯 가지 문서를 작성하도록 명시하고 있어, 요약된 개념이 원문에 정확히 근거함."
+    },
+    {
+      "id": "concepts:02:34",
+      "grounded": true,
+      "reason": "인용 원문에 '계획수립 Agent', '요청사항처리 Agent', '검토 Agent'로 구분된 역할 기반 에이전트 구조와, 검토 Agent가 결과를 검증하고 부족 시 자동 재실행하는 품질 보증 메커니즘이 명시되어 있어 Supervisor Pattern의 역할 기반 조정 및 검증 개념과 일치합니다."
+    },
+    {
+      "id": "concepts:02:37",
+      "grounded": false,
+      "reason": "인용된 원문에는 Executor Agent에 대한 설명이 없고, Planner Agent의 역할과 기능만 설명되어 있습니다."
+    },
+    {
+      "id": "concepts:02:36",
+      "grounded": true,
+      "reason": "인용 원문에서 Planner는 복잡한 문제 해결을 위한 역할 분리 구조(Planner/Executor/Critic) 중 하나로 명시되며, 문제 분해와 실행 계획 수립 기능을 수행한다고 설명합니다. 이는 제시된 개념(Planner Agent가 복잡한 작업을 단계별 계획으로 분해하고 도구를 식별하며 실패 시 재계획을 트리거함)과 일치합니다."
+    },
+    {
+      "id": "concepts:02:38",
+      "grounded": false,
+      "reason": "인용된 원문에는 Executor에 대한 설명만 있고 Critic Agent에 대한 언급이 없습니다."
+    },
+    {
+      "id": "concepts:02:40",
+      "grounded": true,
+      "reason": "인용 원문에서 POC 범위가 '문서 중 계약서에 대해서 자동 분석하는 Agent'로 명시되어 있고, 핵심 기능 중 '컨텍스트기반 정보 추출'에서 '계약서→ 발주-수주회사/금액/기간'을 추출한다고 기술되어 있으며, 예시에서도 계약 당사자, 기간, 금액을 추출하고 요약하는 결과를 보여주므로, 주어진 개념이 원문에 근거함."
+    },
+    {
+      "id": "concepts:02:39",
+      "grounded": true,
+      "reason": "인용된 원문은 역할 기반 분리(Role-Based Separation)의 개념을 Planner/Executor/Critic 구조로 설명하며, 문제 분해, 실행 및 검증 절차에 대한 역할 분리가 필요하다고 명시하고 있다. 또한 책임 분리, 역할 특화, 흐름 통제 등의 장점을 제시하고 있어, 제시된 개념이 원문에 명확히 근거한다."
+    },
+    {
+      "id": "concepts:02:41",
+      "grounded": true,
+      "reason": "인용된 원문에서 'Prompt Spec'이 AI Agent 시스템 설계 문서 중 하나로 명시되어 있으며, 'Prompt Specification' 개념이 정확한 프롬프트가 에이전트 행동을 안내하고 일관된 출력을 보장하는 중요한 설계 산출물임을 강조하고 있기 때문에 개념이 원문에 근거합니다."
+    },
+    {
+      "id": "concepts:02:42",
+      "grounded": true,
+      "reason": "인용 원문에서 'State 정의서'가 AI Agent 시스템 설계 문서 중 하나로 명시되어 있으며, 개념 설명인 'State defines the current condition of the agent system, enabling tracking of progress and decision-making during workflows'와 일치한다."
+    },
+    {
+      "id": "concepts:02:43",
+      "grounded": true,
+      "reason": "인용 원문에서 'Decision Policy(조건 분기, 반복 정책)'로 명시되어 있으며, 요약의 'Decision Policy defines conditional logic and retry rules for agent workflows based on evaluation outcomes.'와 일치함."
+    },
+    {
+      "id": "concepts:02:44",
+      "grounded": true,
+      "reason": "인용 원문에서 'Snapshot'을 '특정 시점의 State 저장 지점'으로 명시적으로 정의하고 있으며, 멀티 에이전트 디버깅에서 'snapshot의 history를 확인'하는 용도로 언급되어 제시된 개념과 일치합니다."
+    },
+    {
+      "id": "concepts:02:45",
+      "grounded": true,
+      "reason": "인용 원문에서 '특정 step의 체크포인트정보로 실행' 및 '저장한 실행시점'이라는 표현을 통해 checkpoint가 고유한 정보로 상태를 저장하고 재실행에 사용됨을 확인할 수 있으며, 이는 checkpoint_id를 통한 상태 이력 추적 개념과 일치합니다."
+    },
+    {
+      "id": "concepts:02:46",
+      "grounded": false,
+      "reason": "인용된 원문은 체크포인트(Checkpoint)와 parent_checkpoint_id 개념을 설명하고 있지만, graph.get_state_history(config) 함수나 노드 실행 직후 상태 저장, 저장 순서 역순 반환에 대한 언급이 없습니다."
+    },
+    {
+      "id": "concepts:02:48",
+      "grounded": true,
+      "reason": "인용된 원문에 Snapshot과 Trace의 비교표가 명시적으로 포함되어 있으며, 요약된 개념(상태 변화 vs 실행 흐름, 단일 상태 객체 vs 트리 구조, iteration 기반 vs 호출 흐름 기반 등)이 원문의 표 내용과 정확히 일치합니다."
+    },
+    {
+      "id": "concepts:02:22",
+      "grounded": true,
+      "reason": "인용된 원문에서 구직자들이 면접 중 '강점 설명' 질문에 가장 어려움을 느낀다는 조사 결과(37.5%)를 명시하고 있으며, 이는 AI Interview Agent가 해당 문제를 해결하기 위해 설계되었다는 요약 내용과 일치합니다."
+    },
+    {
+      "id": "concepts:02:50",
+      "grounded": true,
+      "reason": "인용된 원문의 표에서 '멀티 Agent 분석' 항목에 '어떤 상태에서 실패했는지 확인'은 Snapshot에, '어떤 Agent(혹은 Tool)이 실행됐는지 확인'은 LangSmith Trace에 명시적으로 대응되어, 주어진 개념이 정확히 근거하고 있습니다."
+    },
+    {
+      "id": "concepts:02:52",
+      "grounded": true,
+      "reason": "인용된 원문에서 LangSmith를 'LLM/Agent 시스템을 위한 Observability & Evaluation 플랫폼'으로 명시하고, 추적(trace) 결과 관찰 및 멀티 Agent 실행 흐름 분석 등 관찰 가능성(observability) 기능을 설명하고 있으므로, 제시된 개념이 원문에 근거함."
+    },
+    {
+      "id": "concepts:02:51",
+      "grounded": true,
+      "reason": "인용된 원문의 '운영 관점 활용' 행에서 Snapshot은 '내부 디버깅/ 상태 검증', LangSmith Trace는 '모니터링, 비용 및 성능 분석'으로 명시되어 있어 요약 내용과 일치합니다."
+    },
+    {
+      "id": "concepts:02:53",
+      "grounded": true,
+      "reason": "인용 원문에 비결정성, 멀티스텝 실행(도구 사용 및 중간 상태), 외부 의존성, 모호한 정답 등 제시된 개념의 모든 요소가 명시적으로 언급되어 있음."
+    },
+    {
+      "id": "concepts:02:55",
+      "grounded": true,
+      "reason": "인용 원문에 '정확성(Correctness)'이 Output Quality 평가 영역의 주요 지표로 명시되어 있어, Rule-based Evaluation이 정의한 '정확도(accuracy)'와 직접적으로 일치함."
+    },
+    {
+      "id": "concepts:02:56",
+      "grounded": true,
+      "reason": "인용 원문에 LLM-as-Judge가 LLM이 평가자 역할을 수행하여 AI Agent 결과의 품질(정확성, 관련성, 논리성 등)을 자연어로 판단하는 방식으로 설명되어 있으며, 이는 제시된 개념과 일치합니다."
+    },
+    {
+      "id": "concepts:02:58",
+      "grounded": true,
+      "reason": "인용된 원문은 '개선 작업'을 주요 항목으로 제시하고, 하위 항목으로 Prompt 개선, 구조 개선, 정책 개선, 데이터&평가 기반 개선을 구체적으로 나열하며, 각 항목이 설계-실행-관측-평가-개선의 반복 구조와 일치하는 내용을 포함하고 있음. 특히 '실패 케이스 dataset 축적', 'A/B 테스트', 'LLM-as-Judge' 등의 평가 및 개선 활동이 명시되어 있어 요약된 개념에 근거함."
+    },
+    {
+      "id": "concepts:02:60",
+      "grounded": true,
+      "reason": "인용 원문에 '멀티 Agent 패턴'이 구조 개선(Workflow / Agent 구조) 항목으로 명시되어 있으며, 답변 품질 개선을 위한 워크플로우 설계 방법으로 설명되고 있기 때문에 개념과 일치합니다."
+    },
+    {
+      "id": "concepts:02:61",
+      "grounded": true,
+      "reason": "인용 원문에 '정책(Decision Policy) 개선' 항목이 명시적으로 존재하며, 하위 항목으로 'routing 기준 수정', '반복 조건 (iteration, max_iter)', 'HITL 조건 추가'가 제시되어 있음. 또한 '측정 (LLM-as-Judge)'과 'A/B 테스트'가 개선 방법으로 언급되어 요약된 개념과 일치함."
+    },
+    {
+      "id": "concepts:02:62",
+      "grounded": true,
+      "reason": "인용 원문에 '실패 케이스dataset 축적'이라는 표현이 명시적으로 등장하며, 이는 '실패 케이스 데이터셋 축적' 개념과 동일한 용어로 사용되었고, '재 검증'과의 연계성도 확인됨."
+    },
+    {
+      "id": "concepts:02:64",
+      "grounded": false,
+      "reason": "인용된 원문은 LLMOps 운영 개선 루프의 단계와 요소를 설명하고 있으나, '모델 드리프트'라는 용어나 시간에 따른 통계적 변화로 인한 성능 저하 현상에 대한 직접적인 언급이 없음."
+    },
+    {
+      "id": "concepts:02:65",
+      "grounded": true,
+      "reason": "인용 원문에서 '드리프트'를 언급하며 모델 성능 저하와 MLOps의 핵심 과제로 설명하고, 정기적인 모니터링과 재학습을 통한 대응을 강조함. 이는 '데이터 드리프트'가 입력 데이터 분포 변화로 모델 성능에 영향을 준다는 개념과 일치함."
+    },
+    {
+      "id": "concepts:02:66",
+      "grounded": true,
+      "reason": "인용 원문에서 '모델 드리프트'를 설명하며 입력과 출력 관계 변화로 인한 성능 저하를 언급하고, 모니터링과 재학습을 통한 대응을 강조함. 개념 드리프트의 정의와 일치."
+    },
+    {
+      "id": "concepts:02:67",
+      "grounded": true,
+      "reason": "인용 원문은 모델 드리프트를 '모델의 예측 성능(AUC, 정확도 등)이 시간에 따라 감소하는 현상'으로 정의하고, 그로 인한 업무/비즈니스 리스크와 기술적 문제, 대응 방안을 설명하고 있으므로, 제시된 개념에 정확히 부합한다."
+    },
+    {
+      "id": "concepts:02:68",
+      "grounded": false,
+      "reason": "인용된 원문에는 '예측값 드리프트'라는 용어나 예측값 분포 변화에 대한 직접적 언급이 없으며, 모델 드리프트 일반론과 대응 방안만 기술되어 있음."
+    },
+    {
+      "id": "concepts:02:69",
+      "grounded": false,
+      "reason": "인용된 원문은 모델 드리프트 감지 기법 6가지를 나열하고 있을 뿐, JSON 형식에 대한 언급이 전혀 없습니다."
+    },
+    {
+      "id": "concepts:02:63",
+      "grounded": true,
+      "reason": "인용 원문에 'A/B 테스트'가 명시적으로 언급되어 있으며, 개선 작업의 일환으로 데이터 및 평가 기반 개선 항목에 포함되어 있음."
+    },
+    {
+      "id": "concepts:02:71",
+      "grounded": false,
+      "reason": "인용된 원문은 JSON을 파일이나 문자열로 변환하는 기본적인 사용법을 보여주지만, Agent systems에서 내부 상태를 딕셔너리로 저장하고 JSON 문자열로 변환하여 데이터베이스에 삽입한다는 구체적인 개념에 대한 직접적인 언급이나 예시가 없습니다."
+    },
+    {
+      "id": "concepts:02:4",
+      "grounded": true,
+      "reason": "인용 원문에 '토큰 기반 과금 구조 : 호출이 늘어날수록 비용 급증'과 '체인/멀티 Agent 구조에서 호출이 누적되며 비용 통제 어려움'이 명시적으로 언급되어 있음."
+    },
+    {
+      "id": "concepts:02:72",
+      "grounded": false,
+      "reason": "인용된 원문은 JSON의 용도와 활용 예를 설명하고 있으며, SQLite 개요에 대한 내용을 포함하고 있지 않습니다."
+    },
+    {
+      "id": "code_examples:02:1",
+      "grounded": true,
+      "reason": "인용된 원문의 'Prompt Spec (프롬프트설계)' 항목에 '각 Agent의 지침, 출력 형식, 제약 조건 정의(구조화된 Prompt)'라고 명시되어 있어, 제시된 개념 'Prompt Specification'이 원문에 근거함."
+    },
+    {
+      "id": "code_examples:02:2",
+      "grounded": true,
+      "reason": "인용된 원문에서 AI 에이전트 설계 문서 작성 시 표준화된 양식(Excel 템플릿)을 사용하도록 명시하고 있어, 템플릿 기반 설계(Template-Driven Design) 개념과 일치함."
+    },
+    {
+      "id": "code_examples:02:3",
+      "grounded": true,
+      "reason": "인용된 원문에 '예제 코드 : Ch04. [Design] 역할 기반 설계.ipynb > 2.간단한역할 기반 설계'라는 명시적 표기가 존재하며, 해당 예제가 Planner, Executor, Critic 구성요소를 포함한 역할 기반 에이전트 시스템을 보여준다는 요약 내용과 일치함."
+    },
+    {
+      "id": "code_examples:02:4",
+      "grounded": true,
+      "reason": "인용된 원문에서 특정 step(4)의 체크포인트 정보를 확인하고, 해당 체크포인트의 config를 사용하여 실행을 재개할 수 있는 방법을 보여줌. None 입력에 대한 직접적인 언급은 없지만, 체크포인트를 통해 이전 상태에서 실행을 재개하는 개념이 명시되어 있음."
+    },
+    {
+      "id": "code_examples:02:5",
+      "grounded": true,
+      "reason": "인용된 원문에 'Settings > API Keys > + API Key'로 API 키 생성 방법과 'api_key.txt 파일 안에 추가' 및 'LANGSMITH_API_KEY =...' 형식으로 저장하는 방법이 명시되어 있으므로, 주어진 개념이 원문에 근거합니다."
+    },
+    {
+      "id": "concepts:02:49",
+      "grounded": null,
+      "error": "HTTP Error 504: Gateway Timeout"
+    },
+    {
+      "id": "code_examples:02:6",
+      "grounded": true,
+      "reason": "인용된 원문에 '시나리오: 기분 상태를 입력하면, 영화 2편을 추천해주는 간단한 Agent'와 '평가1: 테스트 데이터셋으로 평가', '평가2: Agent 실행 추적 시 평가 수행'이 명시되어 있어, 제시된 개념이 원문에 근거함."
+    },
+    {
+      "id": "code_examples:02:8",
+      "grounded": false,
+      "reason": "인용된 원문에는 'KS-Test'라는 용어나 KS 검정에 대한 직접적인 언급이 없으며, '수치형 변수의 분포 변화를 검정'하는 방법으로 KS-Test가 명시적으로 제시되지 않았습니다. 원문은 데이터 드리프트의 유형을 분류하고 모니터링하는 개념을 설명할 뿐, 구체적인 검정 방법으로 KS-Test를 언급하지 않았습니다."
+    },
+    {
+      "id": "code_examples:02:7",
+      "grounded": true,
+      "reason": "인용된 원문에서 'Network 패턴의 멀티 Agent를 구축 후 실행 관측하기'와 '고객의 요청사항에 대해 접수, 환불지원, 기술지원을 수행'이라는 내용이 개념의 요약과 정확히 일치합니다. 또한 LangSmith 트레이스를 통한 관측이 명시되어 있습니다."
+    },
+    {
+      "id": "code_examples:02:9",
+      "grounded": false,
+      "reason": "인용된 원문에는 'Chi-square Test'라는 용어나 카이제곱 검정에 대한 직접적인 언급이 없으며, 데이터 드리프트의 개념과 분류만 설명하고 있습니다. 원문은 범주형 변수의 분포 변화를 검정하는 방법으로 카이제곱 검정을 명시적으로 제시하지 않았습니다."
+    },
+    {
+      "id": "code_examples:02:11",
+      "grounded": true,
+      "reason": "인용된 원문에 json.dump와 json.load의 사용 예시와 설명이 명시적으로 포함되어 있으며, 요약된 개념과 일치합니다."
+    },
+    {
+      "id": "code_examples:02:12",
+      "grounded": false,
+      "reason": "인용된 원문은 SQLite의 일반적인 특징(파일 기반, 경량, 표준 SQL 지원 등)을 설명하고 있을 뿐, Python의 sqlite3 모듈을 사용한 연결(connection)과 커서(cursor) 객체에 대한 구체적인 내용은 포함되어 있지 않습니다."
+    },
+    {
+      "id": "code_examples:02:10",
+      "grounded": true,
+      "reason": "인용된 원문에 json.dumps와 json.loads의 설명과 예시가 명시적으로 포함되어 있으며, 개념 설명과 일치합니다."
+    },
+    {
+      "id": "code_examples:02:14",
+      "grounded": false,
+      "reason": "인용된 페이지 원문은 pandas 데이터프레임과 DB 테이블의 비교에 관한 내용이며, SQLite의 INSERT 문에서 플레이스홀더(?)를 사용하는 방법에 대한 설명이 없습니다."
+    },
+    {
+      "id": "code_examples:02:15",
+      "grounded": false,
+      "reason": "인용된 페이지 원문은 pandas 데이터프레임과 DB 테이블의 비교에 관한 내용이며, SQLite의 bulk INSERT나 cursor.executemany()에 대한 언급이 없습니다."
+    },
+    {
+      "id": "code_examples:02:16",
+      "grounded": false,
+      "reason": "인용된 원문은 SQLite의 cursor.execute 및 executemany를 사용한 직접적인 SQL 삽입 방법만 설명하고 있으며, pandas의 DataFrame.to_sql() 메서드나 SQLite에 데이터를 쓰는 옵션(append/replace)에 대한 언급이 없습니다."
+    },
+    {
+      "id": "code_examples:02:13",
+      "grounded": false,
+      "reason": "인용된 원문은 SQLite의 일반적인 특징(파일 기반, 경량, 표준 SQL 지원 등)을 설명하고 있을 뿐, 테이블 생성 방법(CREATE TABLE, cursor.execute(), commit)에 대한 구체적인 내용을 포함하고 있지 않습니다."
+    },
+    {
+      "id": "code_examples:02:18",
+      "grounded": false,
+      "reason": "인용된 원문은 데이터 입력(INSERT)에 관한 내용으로, pandas의 to_sql() 함수를 사용하여 DataFrame을 SQLite 데이터베이스에 삽입하는 방법을 설명하고 있습니다. 그러나 요청된 개념은 SELECT 쿼리를 실행하고 pandas DataFrame을 반환하는 pd.read_sql() 함수에 관한 것이므로, 원문은 해당 개념에 대한 근거가 되지 않습니다."
+    },
+    {
+      "id": "concepts:02:70",
+      "grounded": true,
+      "reason": "인용된 원문은 JSON serialization 개념을 설명하며, json.dumps와 json.loads를 사용한 문자열 변환과 json.dump와 json.load를 사용한 파일 저장/읽기를 예시로 보여줌. 이는 'JSON is used to serialize Python data structures for external communication or storage'라는 요약과 일치함."
+    },
+    {
+      "id": "concepts:02:73",
+      "grounded": false,
+      "reason": "인용된 원문은 SQLite 테이블 생성 방법에 대한 코드 예시와 설명만 포함되어 있으며, Pandas DataFrame에 대한 언급이 전혀 없습니다. 또한 'Pandas DataFrame은 분석과 임시 사용을 위해, SQLite 테이블은 영구적이고 일관된 저장을 위해 사용된다'는 개념은 원문에서 근거를 찾을 수 없습니다."
+    },
+    {
+      "id": "cautions:02:1",
+      "grounded": true,
+      "reason": "인용 원문에서 '1건당 평균 20분 소요'로 수동 문서 검토 시간이 명시되어 있고, '긴급 건 처리 지연'과 '업무 처리 일관성 부족'이 문제점으로 제시되어 개념과 일치함."
+    },
+    {
+      "id": "code_examples:02:17",
+      "grounded": false,
+      "reason": "인용된 원문은 pandas의 to_sql 함수를 사용한 데이터 입력(INSERT)에 관한 내용으로, SQLite SELECT와 커서(cursor) 사용에 대한 설명이 없습니다. 요약된 개념은 cursor.execute()와 fetchall()을 사용한 SELECT 조회 방법을 설명하지만, 원문에는 해당 내용이 없습니다."
+    },
+    {
+      "id": "cautions:02:3",
+      "grounded": true,
+      "reason": "인용된 원문은 '특정 step 이후부터 다시 실행시키기'를 다루며, 특정 스텝(step 4)의 체크포인트 정보를 확인하고 재실행하는 방법을 보여줌. 이는 'Branch Consideration' 개념에서 언급된 '특정 스텝 재실행'에 정확히 부합함."
+    },
+    {
+      "id": "cautions:02:5",
+      "grounded": false,
+      "reason": "인용된 원문은 SQLite에서 SELECT 문을 실행하는 기본적인 방법(cursor.execute, pandas read_sql)만 설명하고 있으며, 'Single-element tuple'이나 'trailing comma'에 대한 언급이 전혀 없습니다. 따라서 주어진 개념은 인용된 페이지 원문에 근거하지 않습니다."
+    },
+    {
+      "id": "concepts:03:1",
+      "grounded": true,
+      "reason": "인용된 원문에서 구직자들이 면접 중 가장 어려워하는 질문으로 '강점 설명'을 꼽았으며, 이에 맞춰 AI 면접관 에이전트가 개인화된 피드백을 제공하는 목표를 설정한 개념과 일치합니다."
+    },
+    {
+      "id": "concepts:03:2",
+      "grounded": true,
+      "reason": "인용 원문에 '서류 검토', '면접 전략 수립', '질문 및 답변', '면접 평가' 단계가 명시되어 있으며, 이는 요약된 개념의 'resume upload, analysis, strategy planning, question generation, answer evaluation, and report generation'에 각각 대응됨. 원문의 단계가 개념의 단계와 순서 및 내용이 일치함."
+    },
+    {
+      "id": "cautions:02:2",
+      "grounded": true,
+      "reason": "인용 원문에서 '거래 업체마다 양식이 상이함'이라고 명시되어 있어, 공급업체 간 계약서 형식의 변동성(Inconsistent Document Formats)이 문제점으로 지적되고 있음. 이로 인해 수동 정보 추출의 신뢰성 부족이 발생하며, AI 기반 자동 분석을 통한 표준화된 정보 추출 필요성이 제기됨."
+    },
+    {
+      "id": "concepts:03:4",
+      "grounded": false,
+      "reason": "인용된 원문에는 'Interview Agent'가 네 가지 하위 에이전트(질문 생성, 답변 평가, 보고서 생성, 후속 질문 분기 논리)로 구성된다는 명시적 설명이 없으며, 다이어그램과 흐름만 제시되어 있음"
+    },
+    {
+      "id": "concepts:03:6",
+      "grounded": true,
+      "reason": "인용된 원문의 '상태 흐름 (State Flow)' 항목에서 '각 단계에서 생성된 데이터가 다음 단계로 어떻게 전달되는지 정의'라고 명시되어 있으며, 예시로 resume_summary, question_strategy, evaluation_result 등 구조화된 데이터의 전달을 설명하고 있음. 이는 제시된 개념 'State defines the structured data passed between agents, including resume text, summary, strengths, and message history'와 일치함."
+    },
+    {
+      "id": "concepts:03:7",
+      "grounded": false,
+      "reason": "인용된 원문은 상태(State) 정의서로, 데이터 구조와 사용 Agent를 설명하고 있을 뿐, Decision Logic나 워크플로우의 분기/반복에 대한 정책을 언급하지 않음."
+    },
+    {
+      "id": "concepts:03:3",
+      "grounded": false,
+      "reason": "인용된 원문에는 'Preparation Agent'라는 용어나 이에 대한 설명이 명시적으로 존재하지 않으며, '사전준비Agent'라는 유사한 표현이 있지만, 이는 '질문 전략 수립' 및 '도입 질문 생성'과 같은 구체적인 작업을 수행하는 것으로 묘사되어, 제시된 개념의 정의(이력서와 자기소개서 분석을 통한 키워드 추출 및 인터뷰 전략 설계)와 완전히 일치하지 않습니다."
+    },
+    {
+      "id": "concepts:03:8",
+      "grounded": true,
+      "reason": "인용된 원문의 'Prompt Spec' 섹션에 '역할', '작업 지침', '출력 형식' 등이 명시되어 있으며, 이는 Prompt Specification이 LLM의 페르소나, 작업 지침, 출력 형식을 정의하여 일관된 출력을 보장한다는 개념과 정확히 일치합니다."
+    },
+    {
+      "id": "concepts:03:9",
+      "grounded": false,
+      "reason": "인용된 원문은 Agent 역할 정의서로, Workflow Loop Structure에 대한 언급이 없으며, 질문-답변-평가 루프 구조를 설명하지 않는다."
+    },
+    {
+      "id": "concepts:03:5",
+      "grounded": true,
+      "reason": "인용된 원문은 AI 면접관 Agent의 역할을 사전준비Agent와 면접Agent로 구분하고, 각 하위 에이전트의 구체적인 기능(분석, 전략수립, 질문생성, 답변평가, 보고서생성 등)을 명시함으로써 역할, 책임, 입력/출력(예: 이력서/자소서 분석, 키워드 도출, 질문 생성, 평가, 보고서 생성)을 정의하고 있음. 이는 제시된 개념인 'Agent Role Definition'이 역할, 책임, 입력, 출력, 모델, 제약조건 등을 명확히 정의하여 예측 가능성과 통제를 보장하는 것과 일치함."
+    },
+    {
+      "id": "concepts:03:10",
+      "grounded": false,
+      "reason": "인용된 원문에는 'Exit Condition'에 대한 언급이 없으며, 인터뷰 종료 조건(최대 라운드, 충분한 평가, 최대 질문 수)과 관련된 내용이 전혀 포함되어 있지 않습니다."
+    },
+    {
+      "id": "concepts:03:14",
+      "grounded": true,
+      "reason": "인용 원문에 '정책(Decision Policy) 개선' 항목이 명시적으로 존재하며, 측정(LLM-as-Judge), HITL 조건 추가, A/B 테스트 등 요약된 개념의 요소들이 동일한 맥락에서 제시되어 있음."
+    },
+    {
+      "id": "concepts:03:13",
+      "grounded": true,
+      "reason": "인용 원문에 '멀티 Agent 패턴'이 구조 개선(Workflow / Agent 구조) 항목으로 명시되어 있으며, 답변 품질 개선을 위한 워크플로우 설계 방법으로 설명되고 있기 때문에 개념과 일치합니다."
+    },
+    {
+      "id": "concepts:03:16",
+      "grounded": true,
+      "reason": "인용 원문에 'A/B 테스트'가 명시적으로 언급되어 있으며, 개선 작업의 일환으로 데이터 및 평가 기반 개선 항목에 포함되어 있음."
+    },
+    {
+      "id": "concepts:03:15",
+      "grounded": true,
+      "reason": "인용 원문에 '실패 케이스dataset 축적'이라는 표현이 명시적으로 등장하며, 이는 '실패 케이스 데이터셋 축적' 개념과 동일한 용어로 사용되었습니다. 또한 '재 검증'과 연결되어 체계적 수집 및 재학습 목적을 함의하고 있어 개념의 핵심 요소를 모두 포함합니다."
+    },
+    {
+      "id": "concepts:03:18",
+      "grounded": true,
+      "reason": "인용 원문에서 '드리프트'를 언급하며 모델 성능 저하와 MLOps의 핵심 과제로 설명하고, 정기적인 모니터링과 재학습을 통한 대응을 강조함. 이는 '데이터 드리프트' 개념(입력 데이터 분포 변화로 인한 모델 성능 영향)과 일치함."
+    },
+    {
+      "id": "concepts:03:19",
+      "grounded": true,
+      "reason": "인용 원문에서 '모델 드리프트'를 설명하며 입력과 출력 관계 변화로 인한 성능 저하를 언급하고, 모니터링과 재학습을 통한 대응을 강조함. 이는 개념 드리프트 정의와 일치함."
+    },
+    {
+      "id": "concepts:03:20",
+      "grounded": true,
+      "reason": "인용 원문은 모델 드리프트를 '모델 성능 및 신뢰도 급격히 저하'로 언급하며, 요약의 '예측 성능 감소'와 일치하고, 드리프트 대응으로 재학습을 제시하는 등 개념을 정확히 반영함."
+    },
+    {
+      "id": "concepts:03:21",
+      "grounded": false,
+      "reason": "인용된 원문에는 '예측값 드리프트'라는 용어나 예측값 분포 변화에 대한 직접적 설명이 없으며, 모델 드리프트 일반론과 대응 방안만 언급됨"
+    },
+    {
+      "id": "concepts:03:22",
+      "grounded": false,
+      "reason": "인용된 원문은 모델 드리프트 감지 기법 6가지를 나열하고 있을 뿐, JSON 형식에 대한 언급이 전혀 없습니다."
+    },
+    {
+      "id": "code_examples:03:1",
+      "grounded": false,
+      "reason": "인용된 원문에는 'KS-Test'라는 용어나 KS 검정에 대한 직접적인 언급이 없으며, 데이터 드리프트 탐지 방법으로 '수치형 변수, 범주형 변수의 분포 변화'만을 일반적으로 언급하고 있음. 따라서 주어진 개념이 원문에 근거한다고 보기 어려움."
+    },
+    {
+      "id": "code_examples:03:2",
+      "grounded": false,
+      "reason": "인용된 원문에는 'Chi-square Test'라는 용어나 카이제곱 검정에 대한 직접적인 언급이 없으며, 데이터 드리프트의 개념과 분류만 설명하고 있습니다. 따라서 주어진 개념이 원문에 근거한다고 볼 수 없습니다."
+    },
+    {
+      "id": "concepts:04:1",
+      "grounded": true,
+      "reason": "인용된 원문에서 구직자들이 면접 중 가장 어려워하는 질문으로 '강점 설명'을 꼽았으며, 이에 맞춰 AI 면접관 에이전트가 개인화된 피드백을 제공하는 목표를 설정한 개념과 일치합니다."
+    },
+    {
+      "id": "concepts:04:2",
+      "grounded": true,
+      "reason": "인용 원문에 '서류 검토', '면접 전략 수립', '질문 및 답변', '면접 평가' 단계가 명시되어 있으며, 이는 요약의 'resume upload, analysis, strategy planning, question generation, answer evaluation, and report generation'에 각각 대응됨. 원문의 '서류 검토'는 'resume upload/analysis'에, '면접 전략 수립'은 'strategy planning'에, '질문 및 답변'은 'question generation/answer evaluation'에, '면접 평가'는 'report generation'에 해당함."
+    },
+    {
+      "id": "concepts:03:11",
+      "grounded": true,
+      "reason": "인용된 원문은 '개선 작업'을 주요 항목으로 제시하고, 하위 항목으로 Prompt 개선, 구조 개선, 정책 개선, 데이터&평가 기반 개선을 나열하며, 각각의 세부 내용(예: 지침 강화, 출력 포맷 고정, 실패 케이스 기반 수정, 멀티 Agent 패턴, routing 기준 수정, HITL 조건 추가, 실패 케이스 dataset 축적, A/B 테스트 등)을 구체적으로 설명하고 있습니다. 이는 '설계-실행-관측-평가-개선'의 반복 구조 중 '개선' 단계에 해당하는 내용으로, 제시된 개념 'LLMOps 운영 루프'의 반복 구조와 일치합니다. 따라서 원문에 개념이 근거합니다."
+    },
+    {
+      "id": "concepts:04:3",
+      "grounded": false,
+      "reason": "인용된 원문에는 'Preparation Agent'라는 용어나 이에 대한 설명이 없으며, '사전준비Agent'는 존재하지만 'resume와 cover letter를 분석하여 키워드 추출 및 인터뷰 전략 수립'이라는 구체적인 기능 설명이 없음"
+    },
+    {
+      "id": "concepts:04:4",
+      "grounded": false,
+      "reason": "인용된 원문에는 'Interview Agent'가 네 가지 하위 에이전트(질문 생성, 답변 평가, 보고서 생성, 후속 질문 분기 논리)로 구성된다는 명시적 설명이 없으며, 다이어그램과 흐름만 제시되어 있음"
+    },
+    {
+      "id": "concepts:04:5",
+      "grounded": true,
+      "reason": "인용된 원문은 AI 면접관 Agent의 역할을 사전준비Agent와 면접Agent로 구분하고, 각각의 하위 역할(분석, 전략수립, 질문생성, 답변평가, 보고서생성 등)과 분기 로직을 명시함으로써, 역할별 책임, 입력/출력(예: 이력서 분석, 질문 생성, 평가, 보고서), 사용 모델(명시적 언급은 없으나 역할 정의에 포함), 제약 조건(분기 조건 등)을 구체적으로 정의하고 있음. 이는 요약된 개념(역할 명확화, 예측성과 통제 보장, 책임/입력/출력/모델/제약 명시)과 일치함."
+    },
+    {
+      "id": "concepts:04:7",
+      "grounded": false,
+      "reason": "인용된 원문은 상태(State) 정의서로, 데이터 구조와 사용 Agent를 설명하고 있을 뿐, Decision Logic나 워크플로우의 분기/반복에 대한 조건(라운드 수, 답변 품질, 최대 질문 수 등)을 언급하지 않음."
+    },
+    {
+      "id": "concepts:04:8",
+      "grounded": true,
+      "reason": "인용된 원문의 'Prompt Spec' 섹션에 '역할', '작업 지침', '출력 형식' 등이 명시되어 있으며, 이는 Prompt Specification의 정의(LLM의 페르소나, 작업 지침, 출력 형식, 제약 조건)와 일치합니다."
+    },
+    {
+      "id": "concepts:04:9",
+      "grounded": false,
+      "reason": "인용된 원문은 Agent 역할 정의서로, Workflow Loop Structure에 대한 언급이 없으며, 질문-답변-평가 루프 구조에 대한 설명을 찾을 수 없습니다."
+    },
+    {
+      "id": "concepts:04:6",
+      "grounded": true,
+      "reason": "인용된 원문에서 '상태 흐름 (State Flow)' 항목이 명시적으로 정의되어 있으며, '각 단계에서 생성된 데이터가 다음 단계로 어떻게 전달되는지 정의'라고 설명하고, 예시로 resume_summary → question_strategy → evaluation_result를 제시하고 있음. 이는 요약된 개념 'State defines the structured data passed between agents, including resume text, summary, strengths, and message history'와 일치함."
+    },
+    {
+      "id": "concepts:04:10",
+      "grounded": false,
+      "reason": "인용된 원문에는 'Exit Condition'에 대한 언급이 없으며, 인터뷰 종료 조건(최대 라운드, 충분한 평가, 최대 질문 수)과 관련된 내용이 전혀 포함되어 있지 않습니다."
+    },
+    {
+      "id": "code_examples:02:19",
+      "grounded": false,
+      "reason": "인용된 원문은 SELECT 문을 사용한 데이터 조회 방법만 설명하고 있으며, UPDATE 및 DELETE 문과 WHERE 절, 커밋에 대한 내용은 포함되어 있지 않습니다."
+    },
+    {
+      "id": "concepts:05:1",
+      "grounded": true,
+      "reason": "인용 원문에서 구직자들이 면접 중 가장 어려워하는 질문으로 '강점 설명'을 꼽았으며, 이에 맞춰 AI 면접관 에이전트가 개인화된 피드백을 제공하는 목표를 설정한 것이 일치합니다."
+    },
+    {
+      "id": "concepts:05:3",
+      "grounded": true,
+      "reason": "인용된 원문에 '사전준비Agent'가 등장하며, 이는 이력서 분석과 질문 전략 수립을 담당하는 것으로 묘사된다. 개념의 'Preparation Agent'가 이력서와 자기소개서를 분석해 키워드를 추출하고 인터뷰 전략을 설계한다는 설명과 일치한다."
+    },
+    {
+      "id": "concepts:05:5",
+      "grounded": true,
+      "reason": "인용된 원문은 AI 면접관 Agent의 역할을 사전준비Agent와 면접Agent로 구분하고, 각 하위 에이전트의 구체적인 기능(분석, 전략수립, 질문생성, 답변평가, 보고서생성 등)을 명시함으로써 역할 정의, 책임, 입력/출력, 모델, 제약조건 등이 명확히 정의되었음을 보여줌."
+    },
+    {
+      "id": "concepts:05:6",
+      "grounded": true,
+      "reason": "인용 원문에서 '상태 흐름 (State Flow)'을 '각 단계에서 생성된 데이터가 다음 단계로 어떻게 전달되는지 정의'로 설명하고, 예시로 resume_summary → question_strategy → evaluation_result를 제시하여 State가 구조화된 데이터(요약, 전략, 평가 결과 등)로 정의되고 에이전트 간에 전달되는 흐름을 설명하고 있음. 이는 제시된 개념 'State defines the structured data passed between agents, including resume text, summary, strengths, and message history'와 일치함."
+    },
+    {
+      "id": "concepts:05:4",
+      "grounded": false,
+      "reason": "인용된 원문에는 'Interview Agent'가 네 가지 하위 에이전트(질문 생성, 답변 평가, 보고서 생성, 후속 질문 분기 논리)로 구성된다는 명시적 설명이 없으며, 다이어그램과 흐름만 제시되어 있음"
+    },
+    {
+      "id": "concepts:05:8",
+      "grounded": true,
+      "reason": "인용된 원문의 'Prompt Spec' 섹션에 '역할', '작업 지침', '출력 형식' 등이 명시되어 있어, Prompt Specification의 구성 요소(페르소나, 작업 지침, 출력 형식)와 일치합니다."
+    },
+    {
+      "id": "concepts:05:9",
+      "grounded": false,
+      "reason": "인용된 원문은 Agent 역할 정의서로, Workflow Loop Structure에 대한 언급이 없으며, 질문-답변-평가 루프 구조를 설명하지 않는다."
+    },
+    {
+      "id": "concepts:05:10",
+      "grounded": false,
+      "reason": "인용된 원문에는 'Exit Condition'에 대한 언급이 없으며, 인터뷰 종료 조건(최대 라운드, 충분한 평가, 최대 질문 수)과 관련된 내용이 전혀 포함되어 있지 않습니다."
+    },
+    {
+      "id": "concepts:06:1",
+      "grounded": true,
+      "reason": "인용된 원문에서 구직자들이 면접 중 '강점 설명' 질문을 가장 어려워한다는 조사 결과(37.5%)를 명시하고 있으며, 이는 AI Interview Agent가 해당 문제를 해결하기 위해 설계되었다는 요약 내용과 직접적으로 일치합니다."
+    },
+    {
+      "id": "concepts:03:17",
+      "grounded": false,
+      "reason": "인용된 원문은 LLMOps 운영 개선 루프의 단계와 구성요소를 설명하고 있을 뿐, '모델 드리프트'라는 용어나 시간에 따른 통계적 특성 변화로 인한 성능 저하 현상에 대한 직접적인 언급이 없습니다."
+    },
+    {
+      "id": "concepts:05:2",
+      "grounded": true,
+      "reason": "인용된 원문에 AI 면접관 Agent의 워크플로우 단계가 순차적으로 명시되어 있음. resume upload(서류 제출/검토), analysis(기본 사항 파악/내용 요약/핵심 단어 도출), strategy planning(면접 전략 수립/핵심 부문별 전략 지침/질문 방향 설정), question generation(질문 준비/질문), answer evaluation(답변 기록/평가/추가 질문), report generation(평가 결과 취합/최종 결정)이 모두 포함됨."
+    },
+    {
+      "id": "concepts:06:2",
+      "grounded": true,
+      "reason": "인용 원문에 '서류 검토', '면접 전략 수립', '질문 및 답변', '면접 평가' 단계가 명시되어 있으며, 이는 요약의 'resume upload, analysis, strategy planning, question generation, answer evaluation, and report generation'에 각각 대응됨. 원문의 '서류 검토'는 'resume upload/analysis'에, '면접 전략 수립'은 'strategy planning'에, '질문 및 답변'은 'question generation/answer evaluation'에, '면접 평가'는 'report generation'에 해당함."
+    },
+    {
+      "id": "concepts:06:3",
+      "grounded": true,
+      "reason": "인용된 원문에 '사전준비Agent'가 등장하며, 이는 'Preparation Agent'에 해당하며, 이력서 분석과 질문 전략 수립을 수행하는 것으로 묘사된다."
+    },
+    {
+      "id": "concepts:06:4",
+      "grounded": true,
+      "reason": "인용된 원문의 다이어그램에서 '면접 Agent'가 '질문 생성', '답변 평가', '보고서 작성' 및 '추가질문' 분기를 포함하는 것으로 명시적으로 표현되어 있으므로, 제시된 개념이 원문에 근거합니다."
+    },
+    {
+      "id": "concepts:06:6",
+      "grounded": true,
+      "reason": "인용된 원문의 '상태 흐름 (State Flow)' 항목에서 '각 단계에서 생성된 데이터가 다음 단계로 어떻게 전달되는지 정의'라고 명시되어 있으며, 예시로 resume_summary, question_strategy, evaluation_result 등 구조화된 데이터의 전달을 설명하고 있음. 이는 제시된 개념 'State defines the structured data passed between agents, including resume text, summary, strengths, and message history'와 일치함."
+    },
+    {
+      "id": "concepts:06:7",
+      "grounded": false,
+      "reason": "인용된 원문은 상태(State) 정의서로, 데이터 구조와 사용 Agent를 나열하고 있을 뿐, Decision Logic나 워크플로우의 분기/반복에 대한 조건(라운드 수, 답변 품질, 최대 질문 수 등)을 언급하지 않음."
+    },
+    {
+      "id": "concepts:06:8",
+      "grounded": true,
+      "reason": "인용된 원문의 'Prompt Spec' 섹션에 '역할', '작업 지침', '출력 형식' 등이 명시되어 있으며, 이는 Prompt Specification의 정의(LLM의 페르소나, 작업 지침, 출력 형식, 제약 조건)와 정확히 일치한다."
+    },
+    {
+      "id": "concepts:06:10",
+      "grounded": false,
+      "reason": "인용된 원문에는 'Exit Condition'에 대한 언급이 없으며, 인터뷰 종료 조건(최대 라운드, 충분한 평가, 최대 질문 수)과 관련된 내용이 전혀 포함되어 있지 않습니다."
+    },
+    {
+      "id": "concepts:06:5",
+      "grounded": true,
+      "reason": "인용된 원문은 AI 면접관 Agent의 역할을 사전준비Agent와 면접Agent로 구분하고, 각 하위 역할(분석, 전략수립, 질문생성, 답변평가, 보고서생성 등)의 구체적인 책임과 기능을 명시함. 이는 '역할, 책임, 입력/출력, 모델, 제약조건'을 정의하는 Agent Role Definition 개념과 일치함."
+    },
+    {
+      "id": "concepts:05:7",
+      "grounded": false,
+      "reason": "인용된 원문은 상태(State) 정의서로, 데이터 구조와 사용 Agent를 설명하고 있지만, Decision Logic나 정책(policy)에 대한 언급이 없습니다. 요약된 개념은 워크플로우의 분기와 반복을 결정하는 정책에 관한 것이지만, 원문에는 조건(round count, answer quality, max questions)에 따른 분기나 루프를 결정하는 로직이 명시적으로 기술되어 있지 않습니다."
+    },
+    {
+      "id": "concepts:06:9",
+      "grounded": false,
+      "reason": "인용된 원문은 Agent 역할 정의서로, Workflow Loop Structure에 대한 언급이 없으며, 질문-답변-평가 루프 구조를 설명하지 않는다."
+    }
+  ],
+  "note": "tier1은 결정론 토큰매치(0콜), tier2는 mismatch만 다른 모델(judge)로 재판정. 검증기 자체의 신뢰도(사람 표본 대조)는 별도 사람 감사 필요 -- 미착수, 이 필드는 그 결과 없이 자동 판정만 반영"
+}
