@@ -1,0 +1,75 @@
+{
+  "questions": [
+    {
+      "unit": "Unit 01",
+      "question": "In a Supervisor-pattern agent system, why is it insufficient to rely solely on a Critic agent for decision-making and error correction, and how does integrating HITL improve control over cost and reliability? Cite specific design components and their source pages.",
+      "source_node_ids": [
+        "concepts:01:38",
+        "concepts:01:47",
+        "concepts:01:48",
+        "concepts:01:52",
+        "concepts:01:50"
+      ],
+      "source_pages": [
+        39,
+        41,
+        46,
+        48,
+        49,
+        43,
+        45
+      ],
+      "rationale": "This question tests understanding of the trade-off between automated and human-controlled systems. Learners must recognize that Critic agents alone cannot handle ambiguous or high-stakes failures, and that HITL provides a proactive, policy-driven intervention layer to prevent cost explosions and maintain reliability.",
+      "good_answer_signal": "Mentions Critic's limitation in handling subjective or high-risk failures (p.43,45), explains HITL as a proactive policy (p.46,48,51), and links HITL to cost control by blocking infinite retries (p.49). References Supervisor's centralized control (p.41,47) and role separation (p.45).",
+      "common_gap": "Learners often confuse HITL with reactive error correction, missing its proactive, policy-based nature (p.48), or fail to connect it to cost management (p.49) and the Critic's structural limitations (p.50)."
+    },
+    {
+      "unit": "Unit 01",
+      "question": "A team deploys an AI Interview Agent that uses LLM-as-Judge for evaluating answers. After deployment, they observe high variance in evaluation scores despite identical inputs. Explain why this occurs and propose two concrete design changes to improve evaluation consistency, citing relevant concepts and source pages.",
+      "source_node_ids": [
+        "concepts:01:60",
+        "concepts:01:83",
+        "concepts:01:94",
+        "concepts:01:95",
+        "concepts:01:96",
+        "concepts:01:97",
+        "concepts:01:98"
+      ],
+      "source_pages": [
+        61,
+        96,
+        111,
+        112,
+        114
+      ],
+      "rationale": "This question requires reasoning about non-determinism in LLMs and how evaluation design mitigates it. It forces learners to move beyond using LLM-as-Judge as a black box and apply rubric, instruction, and feedback configuration principles to stabilize outputs.",
+      "good_answer_signal": "Identifies non-deterministic LLM behavior (p.61) as root cause, proposes: (1) stricter rubric with penalization rules (p.112), (2) explicit instructions and reminders to reduce ambiguity (p.112), and (3) schema-enforced output format (p.114). References evaluation complexity (p.96) and LLM-as-Judge framework (p.111).",
+      "common_gap": "Learners often blame the LLM without addressing design flaws, omitting rubric specificity (p.112), instructions (p.112), or output schema enforcement (p.114), and fail to link variance to evaluation method design rather than model quality alone."
+    },
+    {
+      "unit": "Unit 01",
+      "question": "Compare the use of Snapshots versus Traces for debugging a failed multi-agent workflow. When would you prefer one over the other, and what specific information does each provide that the other lacks? Support your answer with source node references and page numbers.",
+      "source_node_ids": [
+        "concepts:01:61",
+        "concepts:01:62",
+        "concepts:01:63",
+        "concepts:01:64",
+        "concepts:01:65",
+        "concepts:01:78",
+        "concepts:01:79",
+        "concepts:01:80",
+        "concepts:01:81"
+      ],
+      "source_pages": [
+        62,
+        63,
+        69,
+        91,
+        93
+      ],
+      "rationale": "This question demands a nuanced trade-off analysis between two observability mechanisms. It tests whether learners understand that Snapshots capture state for reproducibility and accountability, while Traces capture execution flow for performance and cost analysis — and that they serve complementary, not interchangeable, purposes.",
+      "good_answer_signal": "Contrasts Snapshots (state capture: plan, critique, iteration, next_step; p.62,65) with Traces (execution tree: tool/LLM calls, latency, cost; p.91,93). States Snapshots enable reproducibility from exact state (p.69,79) and accountability (p.71), while Traces reveal which agent/tool failed (p.80) and performance bottlenecks (p.88). Recommends Snapshots for debugging state corruption, Traces for cost/latency tuning.",
+      "common_gap": "Learners conflate the two, claiming both can debug failures equally, or miss that Snapshots enable restart from state (p.69,79) while Traces cannot due to environmental dependencies. Often omit that Snapshots include metadata like parents and step (p.67)."
+    }
+  ]
+}

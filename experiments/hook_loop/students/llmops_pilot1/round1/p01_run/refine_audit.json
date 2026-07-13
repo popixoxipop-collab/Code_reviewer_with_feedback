@@ -1,0 +1,136 @@
+[
+  {
+    "iteration": 1,
+    "status": "needs_refine",
+    "coverage_summary": "Refine call failed but preserved as audit state: ValueError: JSON parse failed (Expecting ',' delimiter: line 53 column 6 (char 3849)); repair failed (Expecting ',' delimiter: line 184 column 6 (char 4897)); raw_head='{\\n  \"iteration\": 1,\\n  \"status\": \"needs_refine\",\\n  \"coverage_summary\": \"Unit map covers core LLMOps concepts but has severe page provenance issues, duplicate concepts, and missing concrete page mappings for key topics.\",\\n  \"issues\": [\\n    {\\n      \"severity\": \"high\",\\n      \"issue\": \"Unit \\'Overview\\' (unit_id: 01) claims coverage of 80+ pages but contains no concepts derived from most of them; pages are overbroad and not tied to specific concepts.\",\\n      \"source_pages\": [1, 2, 3, 4, 5, 6, 11, 12, 1'",
+    "issues": [
+      {
+        "severity": "medium",
+        "issue": "NVIDIA refine response was not parseable JSON; rerun this iteration for a stricter audit.",
+        "source_pages": [],
+        "suggested_fix": "Increase max_tokens_refine or reduce unit_map payload before the next refine pass."
+      }
+    ],
+    "checklist": {
+      "all_concepts_have_pages": false,
+      "unit_boundaries_clear": false,
+      "duplicates_detected": true,
+      "question_generation_ready": true
+    }
+  },
+  {
+    "iteration": 2,
+    "status": "needs_refine",
+    "coverage_summary": "Extensive concept coverage with strong page provenance, but severe duplication, inconsistent granularity, and missing page alignment for core unit concepts.",
+    "issues": [
+      {
+        "severity": "high",
+        "issue": "Duplicate concept 'Supervisor Pattern' with conflicting Korean/English definitions and disjointed source pages (e.g., [32,35] vs [41,42,43,45] vs [51,52,56]).",
+        "source_pages": [
+          32,
+          35,
+          41,
+          42,
+          43,
+          45,
+          51,
+          52,
+          56
+        ],
+        "suggested_fix": "Merge all Supervisor Pattern entries into one unified concept with consolidated evidence and source pages [32,35,41,42,43,45,51,52,56]."
+      },
+      {
+        "severity": "high",
+        "issue": "Duplicate concept 'Prompt Specification' with identical definitions and overlapping source pages [29,30] and [34,35].",
+        "source_pages": [
+          29,
+          30,
+          34,
+          35
+        ],
+        "suggested_fix": "Merge into single 'Prompt Specification' concept with source pages [29,30,34,35] and unified evidence."
+      },
+      {
+        "severity": "high",
+        "issue": "Duplicate concept 'State Definition' and 'State Flow' with overlapping content; 'State Definition' is redundant with 'State Management'.",
+        "source_pages": [
+          27,
+          34,
+          35,
+          11,
+          19,
+          20
+        ],
+        "suggested_fix": "Merge 'State Definition' and 'State Flow' into 'State Management' with source pages [11,19,20,27,34,35]."
+      },
+      {
+        "severity": "high",
+        "issue": "Duplicate concept 'Decision Policy' with identical definitions and overlapping source pages [11,20] and [34,35].",
+        "source_pages": [
+          11,
+          20,
+          34,
+          35
+        ],
+        "suggested_fix": "Merge into single 'Decision Policy' concept with source pages [11,20,34,35]."
+      },
+      {
+        "severity": "high",
+        "issue": "Concept 'LLMOps definition' and 'LLMOps focus areas' are semantically overlapping and lack clear distinction; both derive from page 10.",
+        "source_pages": [
+          9,
+          10
+        ],
+        "suggested_fix": "Merge into one concept: 'LLMOps Definition and Focus Areas' with evidence combining both and source pages [9,10]."
+      },
+      {
+        "severity": "medium",
+        "issue": "Concept 'course objective' references page 5, but unit 'Overview' (01) has source_pages [1-6,11-...], implying page 5 should be covered — yet no other concept references it.",
+        "source_pages": [
+          5
+        ],
+        "suggested_fix": "Either add more concepts derived from page 5 or remove 'course objective' if it's not a core concept; if retained, ensure it's not the only concept on page 5."
+      },
+      {
+        "severity": "medium",
+        "issue": "Concept 'DevOps analogy' cites page 8, but page 8 is not in unit 'Overview' source_pages list — inconsistency in unit boundary alignment.",
+        "source_pages": [
+          8
+        ],
+        "suggested_fix": "Add page 8 to unit '01' source_pages or move 'DevOps analogy' to a later unit where page 8 is included."
+      },
+      {
+        "severity": "medium",
+        "issue": "Concept 'AI Interview Agent Goal' cites page 21, but page 21 is not in unit '01' source_pages — unit boundaries are violated.",
+        "source_pages": [
+          21
+        ],
+        "suggested_fix": "Move 'AI Interview Agent Goal' to a new unit (e.g., 02) whose source_pages include 21–30, or add 21–30 to unit '01' if it's truly part of Overview."
+      },
+      {
+        "severity": "low",
+        "issue": "Concept 'Waterfall visualization' has incomplete evidence (truncated text: 'which st').",
+        "source_pages": [
+          85,
+          86,
+          87
+        ],
+        "suggested_fix": "Complete the evidence text: 'making it easy to see which steps consume the most time.'"
+      },
+      {
+        "severity": "low",
+        "issue": "Concept 'Agent system skills' has vague evidence: '[보조자료]Agent 시스템구축을위한 필요 기술들' — no concrete source text.",
+        "source_pages": [
+          10
+        ],
+        "suggested_fix": "Replace vague evidence with direct quote or paraphrase from page 10, or remove if unsupported."
+      }
+    ],
+    "checklist": {
+      "all_concepts_have_pages": false,
+      "unit_boundaries_clear": false,
+      "duplicates_detected": true,
+      "question_generation_ready": false
+    }
+  }
+]

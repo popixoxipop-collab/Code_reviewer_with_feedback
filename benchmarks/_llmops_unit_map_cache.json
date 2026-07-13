@@ -1,0 +1,3372 @@
+{
+  "01": {
+    "unit_id": "01",
+    "unit_title": "Overview",
+    "source_pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      11,
+      12,
+      13,
+      21,
+      22,
+      23,
+      31,
+      32,
+      33,
+      34,
+      35,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      48,
+      49,
+      50,
+      51,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72,
+      73,
+      74,
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87,
+      88,
+      89,
+      90,
+      91,
+      92,
+      93,
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107,
+      108,
+      109,
+      110,
+      111,
+      112,
+      113,
+      114,
+      115,
+      116,
+      117,
+      118,
+      120,
+      121,
+      122,
+      123,
+      124,
+      125,
+      126,
+      131,
+      132,
+      141,
+      142,
+      143,
+      144,
+      145,
+      146,
+      147,
+      148,
+      149,
+      150,
+      151,
+      152,
+      153,
+      154
+    ],
+    "concepts": [
+      {
+        "name": "LLMOps definition",
+        "summary": "LLMOps는 LLM 기반 시스템을 통제하는 것이며, 프롬프트 관리, 체인 흐름 제어, 비용 관리에 집중한다.",
+        "evidence": "LLMOps는 모델을 운영하는 것이 아니라 LLM 기반 시스템을 통제하는 것",
+        "source_pages": [
+          9
+        ],
+        "chunk_range": "1-10"
+      },
+      {
+        "name": "MLOps vs LLMOps",
+        "summary": "MLOps는 데이터와 모델 학습에 초점을 두고, LLMOps는 프롬프트, 체인, 토큰, 추적에 초점을 둔다.",
+        "evidence": "MLOps는 데이터·모델 학습에 집중했고, LLMOps는 프롬프트·체인·에이전트 흐름에 집중",
+        "source_pages": [
+          9
+        ],
+        "chunk_range": "1-10"
+      },
+      {
+        "name": "non-deterministic outputs",
+        "summary": "LLM은 동일한 입력에도 다른 결과를 생성하여 테스트와 품질 일관성이 어려워진다.",
+        "evidence": "같은 입력에도 다른 결과를 생성하는 LLM의 특성 비결정론적 출력",
+        "source_pages": [
+          10
+        ],
+        "chunk_range": "1-10"
+      },
+      {
+        "name": "cost management",
+        "summary": "LLM은 토큰 기반 과금 구조로 호출이 증가할수록 비용이 급증하며, 체인 구조에서 누적 비용이 통제하기 어렵다.",
+        "evidence": "토큰 기반 과금 구조: 호출이 늘어날수록 비용 급증, 체인/멀티 Agent 구조에서 호출이 누적되며 비용 통제 어려움",
+        "source_pages": [
+          10
+        ],
+        "chunk_range": "1-10"
+      },
+      {
+        "name": "latency and UX",
+        "summary": "LLM 시스템의 복잡한 구조는 응답 지연을 증가시켜 사용자 경험을 저하시킨다.",
+        "evidence": "응답 지연 증가 → 사용자 경험(UX) 저하, 구조가 복잡해질수록 비용과 속도가 동시에 악화",
+        "source_pages": [
+          10
+        ],
+        "chunk_range": "1-10"
+      },
+      {
+        "name": "hallucination risk",
+        "summary": "LLM 시스템에서 에이전트 간 잘못된 결과가 전파되면 오류가 증폭되어 시스템 신뢰성이 저하된다.",
+        "evidence": "예외 상황에서 오류 증폭 (Agent 간 잘못된 결과 전파)",
+        "source_pages": [
+          10
+        ],
+        "chunk_range": "1-10"
+      },
+      {
+        "name": "LLMOps focus areas",
+        "summary": "LLMOps는 통제, 비용, 안정성에 집중하여 LLM 애플리케이션의 운영 리스크를 관리한다.",
+        "evidence": "LLMOps는 통제·비용·안정성에 집중하는 이유: 비결정론적 출력, 테스트 어려움, 비용 급증, 지연, 오류 증폭",
+        "source_pages": [
+          10
+        ],
+        "chunk_range": "1-10"
+      },
+      {
+        "name": "course objective",
+        "summary": "이 과정은 LLM 시스템 설계, 운영, 평가를 위한 핵심 요소를 이해하고 규칙 기반 평가 및 시점 관리 역량을 기른다.",
+        "evidence": "LLMOps 전략 수립 및 완성, LLM 시스템 설계·운영·평가, 설계 중점 사항 이해, 시점 관리 및 추적",
+        "source_pages": [
+          5
+        ],
+        "chunk_range": "1-10"
+      },
+      {
+        "name": "DevOps analogy",
+        "summary": "LLMOps는 DevOps의 통합 협업 원리를 모델 생애주기 관리에 적용하여 빠른 배포와 지속적 개선을 추구한다.",
+        "evidence": "DevOps는 개발과 운영의 통합으로 빠른 배포를 이루고, MLOps는 데이터+모델 동시 관리와 자동화 중심",
+        "source_pages": [
+          8
+        ],
+        "chunk_range": "1-10"
+      },
+      {
+        "name": "agent system skills",
+        "summary": "Agent 시스템 구축을 위해 필요한 기술은 LLMOps의 모든 단계(설계, 실행, 관측, 평가, 개선)에 포함된다.",
+        "evidence": "[보조자료]Agent 시스템구축을위한 필요 기술들",
+        "source_pages": [
+          10
+        ],
+        "chunk_range": "1-10"
+      },
+      {
+        "name": "Controllable Agent",
+        "summary": "A system must be controllable, not just functioning, to ensure traceability, reproducibility, and intervention capability during long-term execution.",
+        "evidence": "Well-functioning agents may succeed in demos but fail under exceptions or long-term runs; controllable agents require transparency, reproducibility, and intervention ability.",
+        "source_pages": [
+          11
+        ],
+        "chunk_range": "11-20"
+      },
+      {
+        "name": "LLMOps Cycle",
+        "summary": "LLMOps is a continuous loop of Design, Run, Trace, Evaluate, and Improve to make LLM systems controllable and improvable.",
+        "evidence": "LLMOps involves designing, running, tracing, evaluating, and improving LLM systems to ensure they remain controllable over time.",
+        "source_pages": [
+          11,
+          12
+        ],
+        "chunk_range": "11-20"
+      },
+      {
+        "name": "Technical Debt",
+        "summary": "Technical debt in AI systems arises from skipping proper design, leading to increased rework costs and organizational paralysis.",
+        "evidence": "Like software debt, cutting corners in AI system design leads to accumulating costs; AI copilots increase copied and duplicated code, reducing refactoring.",
+        "source_pages": [
+          14,
+          16
+        ],
+        "chunk_range": "11-20"
+      },
+      {
+        "name": "Design Without AI Overreliance",
+        "summary": "The core problem is not AI dependence but lack of design—leading to chaotic states, unclear roles, and uncontrolled workflows.",
+        "evidence": "Issues like mixed states, unstructured prompts, ambiguous agent roles, and uncontrolled workflows stem from absence of design, not AI use.",
+        "source_pages": [
+          17
+        ],
+        "chunk_range": "11-20"
+      },
+      {
+        "name": "Agent Design Process",
+        "summary": "Designing an AI agent system requires defining the problem, goal, scenarios, architecture, and detailed components like state and prompts.",
+        "evidence": "The process includes problem definition, goal setting, scenario mapping, architecture design (agent roles), and detailed specs for state and prompts.",
+        "source_pages": [
+          18
+        ],
+        "chunk_range": "11-20"
+      },
+      {
+        "name": "Design Documentation",
+        "summary": "Essential design documents for AI agents include role definitions, workflow specs, state definitions, decision policies, and prompt specifications.",
+        "evidence": "Documents must define agent roles, workflow flows, shared state structure, decision rules, and structured prompt instructions for each agent.",
+        "source_pages": [
+          20
+        ],
+        "chunk_range": "11-20"
+      },
+      {
+        "name": "LLMOps Phases",
+        "summary": "The course structure follows a sequence from Design to Improve, with each chapter corresponding to a phase in the LLMOps lifecycle.",
+        "evidence": "Chapters 03–09 map directly to Design, Run, Trace, Evaluate, and Improve phases of LLMOps, as outlined in the course structure.",
+        "source_pages": [
+          13
+        ],
+        "chunk_range": "11-20"
+      },
+      {
+        "name": "HITL Design",
+        "summary": "Human-in-the-loop (HITL) design enables human intervention in agent workflows to correct errors and improve system reliability.",
+        "evidence": "HITL is listed as a key component in LLMOps design for enabling human intervention during agent execution.",
+        "source_pages": [
+          11
+        ],
+        "chunk_range": "11-20"
+      },
+      {
+        "name": "State Management",
+        "summary": "System state must be explicitly defined and tracked to ensure reproducibility and enable snapshot-based recovery and analysis.",
+        "evidence": "State definition is critical for shared data structure, and snapshot storage enables traceability and rollback in agent systems.",
+        "source_pages": [
+          11,
+          19,
+          20
+        ],
+        "chunk_range": "11-20"
+      },
+      {
+        "name": "Decision Policy",
+        "summary": "Decision policies define rules for routing, branching, and next actions in agent workflows to ensure logical and controllable execution.",
+        "evidence": "Decision Policy is a documented rule set that determines how agents route, branch, or choose next actions based on state and inputs.",
+        "source_pages": [
+          11,
+          20
+        ],
+        "chunk_range": "11-20"
+      },
+      {
+        "name": "Observability",
+        "summary": "Observability requires logging I/O, metadata, and token/latency metrics to enable tracing and evaluation of agent behavior.",
+        "evidence": "Run Tree tracing and I/O/metadata recording are essential for observing agent execution and diagnosing failures.",
+        "source_pages": [
+          11
+        ],
+        "chunk_range": "11-20"
+      },
+      {
+        "name": "AI Interview Agent Goal",
+        "summary": "The AI Interview Agent system is designed to provide personalized feedback on job interview responses, particularly for the challenging question of explaining one's strengths.",
+        "evidence": "면접 영역에서‘면접관에게 어떤 질문을 받았을 때 가장 대답하기 어려웠는가’조사에 우리 회사가 왜 지원자를 뽑아야 하는지, 즉 본인의 강점을 소개하는 것이 어려웠다는 의견이 응답률 37.5%로 가장 높게 나타났다.",
+        "source_pages": [
+          21
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "System Workflow Stages",
+        "summary": "The AI Interview Agent workflow consists of sequential stages: resume upload, analysis, strategy planning, question generation, answer evaluation, and report generation.",
+        "evidence": "Resume → 질문 전략 수립 → 질문 생성 → 답변 평가 → 보고서 생성",
+        "source_pages": [
+          23
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Preparation Agent",
+        "summary": "The Preparation Agent analyzes resumes and cover letters to extract key keywords and design interview strategies.",
+        "evidence": "사전준비Agent ▪ 분석 Agent : 이력서/자소서를 분석하여 핵심 내용을 요약하고, 질문을 위한 키워드5~10개 도출 ▪ 전략수립Agent : 면접 질문 영역과 질문 전략을 설계",
+        "source_pages": [
+          24
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Interview Agent Components",
+        "summary": "The Interview Agent comprises four sub-agents: question generation, answer evaluation, report generation, and branching logic for follow-up questions.",
+        "evidence": "면접 Agent ▪ 질문 생성 Agent : 질문 생성, 필요 시 꼬리 질문 생성 ▪ 답변 평가 Agent : 지원자의 답변 평가 ▪ 보고서생성 Agent : 최종적으로 종합 피드백 보고서 생성 ▪ 분기: 꼬리 질문 / 다음 질문 영역 이동 / 면접 종료",
+        "source_pages": [
+          24
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Agent Role Definition",
+        "summary": "Agent roles are clearly defined to ensure predictability and control, specifying responsibilities, inputs, outputs, models, and constraints.",
+        "evidence": "Agent 이름, 역할, 입력, 출력, 사용 모델/도구, 제약 조건, 실패 시 리스크 등으로 각 Agent의 책임과 역할을 명확히 분리",
+        "source_pages": [
+          25
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "State Flow",
+        "summary": "State defines the structured data passed between agents, including resume text, summary, strengths, and message history.",
+        "evidence": "resume_text, resume_summary, strengths, messages 등이 Agent 간 전달되는 데이터 구조로 정의됨",
+        "source_pages": [
+          27
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Decision Logic",
+        "summary": "Decision policies determine branching and looping in the workflow based on conditions like round count, answer quality, and max questions.",
+        "evidence": "round_count >= max_rounds → next_step = \"end\"; 답변 부족 → next_step = \"additional_question\"",
+        "source_pages": [
+          28
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Prompt Specification",
+        "summary": "Prompt specs define the LLM's persona, task instructions, output format, and constraints to ensure consistent and automatable responses.",
+        "evidence": "역할: \"당신은 면접관입니다\", 작업 지침, 평가 기준, 출력 형식: Dict, List, JSON 등으로 명확히 정의",
+        "source_pages": [
+          29,
+          30
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Workflow Loop Structure",
+        "summary": "The workflow includes a loop structure where question → answer → evaluation repeats until termination conditions are met.",
+        "evidence": "질문 → 답변 → 평가 → (반복) 종료 조건: 모든 질문 완료 / 충분한 평가 확보 / 최대 질문 수 도달",
+        "source_pages": [
+          26
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Exit Condition",
+        "summary": "The interview ends when maximum rounds are reached, sufficient evaluation is achieved, or the maximum number of questions is exhausted.",
+        "evidence": "종료 조건: 모든 질문 완료 / 충분한 평가 확보 / 최대 질문 수 도달",
+        "source_pages": [
+          26
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "AI Document Analysis Agent",
+        "summary": "An AI system that automates classification, extraction, and summarization of legal and business documents to reduce manual review burden.",
+        "evidence": "Law and procurement teams manually review dozens of contracts/reports daily; AI agent automates document type classification, key info extraction, and summarization.",
+        "source_pages": [
+          31,
+          32
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "Business Needs for AI Document Analysis",
+        "summary": "Business requires immediate document analysis, standardized extraction of parties/amounts/durations, quality verification, and flexible workflows.",
+        "evidence": "Needs include instant analysis upon upload, standardized extraction (e.g., parties, amounts, periods), quality assurance, and flexible review workflows.",
+        "source_pages": [
+          31
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "Supervisor Pattern",
+        "summary": "A role-based agent architecture where a supervisor coordinates specialized agents for planning, execution, and validation.",
+        "evidence": "POC uses Supervisor pattern with role-based agents to structure document analysis: classification, extraction, verification, and dynamic request handling.",
+        "source_pages": [
+          32,
+          35
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "Design Documentation for AI Agents",
+        "summary": "Reliable AI systems require formal documentation including Agent Role, Workflow, State, Decision Policy, and Prompt Specifications.",
+        "evidence": "AI quality issues stem from design absence, not models; five key documents are required: Agent Role, Workflow, State, Decision Policy, Prompt Spec.",
+        "source_pages": [
+          34,
+          35
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "Planner Agent",
+        "summary": "The Planner breaks down complex tasks into step-by-step plans, identifies tools, and triggers replanning upon failure.",
+        "evidence": "Planner does not execute tasks but decomposes goals into ordered steps, defines required tools/agents, and can trigger replanning based on outcomes.",
+        "source_pages": [
+          37
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "Executor Agent",
+        "summary": "The Executor carries out individual steps from the plan by invoking tools, models, or APIs and returns structured results.",
+        "evidence": "Executor performs actions like search, calculation, or API calls as directed by the plan, updates state, and passes results to next steps.",
+        "source_pages": [
+          38
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "Critic Agent",
+        "summary": "The Critic independently evaluates output for accuracy, consistency, and policy compliance, and triggers re-execution or replanning if needed.",
+        "evidence": "Critic assesses output for correctness, hallucinations, and policy violations, and can request Executor re-execution or Planner replanning.",
+        "source_pages": [
+          39
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "Role-Based Separation",
+        "summary": "Decomposing AI systems into Planner/Executor/Critic roles improves traceability, performance, and operational stability.",
+        "evidence": "Separating roles enables error tracing, role-specific optimization, and stable workflows by assigning distinct responsibilities to each agent.",
+        "source_pages": [
+          37,
+          38,
+          39
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "POC Scope: Contract Analysis",
+        "summary": "The POC focuses on automating analysis of contracts only, extracting parties, duration, and amount with structured output.",
+        "evidence": "POC targets contract documents only, extracting specified fields: parties, duration, amount, and generating summary as shown in sample_contract.pdf example.",
+        "source_pages": [
+          32,
+          33
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "Prompt Specification",
+        "summary": "Precise prompts are critical design artifacts that guide agent behavior and ensure consistent output across executions.",
+        "evidence": "Prompt Spec is one of five required design documents to standardize how agents interpret inputs and generate outputs reliably.",
+        "source_pages": [
+          34,
+          35
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "State Definition",
+        "summary": "State defines the current condition of the agent system, enabling tracking of progress and decision-making during workflows.",
+        "evidence": "State Definition is a required design document to track workflow progress and support decision policies for branching or looping.",
+        "source_pages": [
+          34,
+          35
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "Decision Policy",
+        "summary": "Decision Policy defines conditional logic and retry rules for agent workflows based on evaluation outcomes.",
+        "evidence": "Decision Policy specifies conditions for branching, looping, or triggering replanning based on Critic feedback or execution results.",
+        "source_pages": [
+          34,
+          35
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "Supervisor Pattern",
+        "summary": "Supervisor 패턴은 Planner, Executor, Critic과 같은 하위 에이전트를 중앙에서 조정하는 아키텍처로, 역할 분리와 운영 제어를 통합한다.",
+        "evidence": "Supervisor는 전체 흐름을 통제하고 하위 Agent를 호출하는 중앙 조정자이며, Planner는 계획 수립, Executor는 실행, Critic은 평가만 담당한다.",
+        "source_pages": [
+          41,
+          42,
+          43,
+          45
+        ],
+        "chunk_range": "41-50"
+      },
+      {
+        "name": "Role Separation",
+        "summary": "Planner, Executor, Critic의 역할을 분리하여 각 구성 요소가 특정 기능만 수행하도록 하여 시스템의 결합도를 낮춘다.",
+        "evidence": "Planner는 목표를 단계로 분해하고, Executor는 실행하고, Critic은 결과만 평가하며, 이들은 서로 직접 의존하지 않는다.",
+        "source_pages": [
+          41,
+          42,
+          45
+        ],
+        "chunk_range": "41-50"
+      },
+      {
+        "name": "Loose Coupling",
+        "summary": "Supervisor 구조는 역할 간 직접 의존을 없애고 느슨한 결합을 통해 시스템의 유연성과 유지보수성을 높인다.",
+        "evidence": "역할 간 직접 의존이 없고, Critic은 평가만 수행하여 제어 로직과 평가 로직이 분리된다.",
+        "source_pages": [
+          41,
+          43
+        ],
+        "chunk_range": "41-50"
+      },
+      {
+        "name": "Centralized Control",
+        "summary": "Supervisor가 반복 횟수, 타임아웃, HITL 전환 등 운영 정책을 중앙에서 일관되게 제어한다.",
+        "evidence": "max_iteration, HITL, 타임아웃과 같은 제어 정책은 Supervisor가 전담하여 중앙에서 관리된다.",
+        "source_pages": [
+          41,
+          43,
+          45,
+          46
+        ],
+        "chunk_range": "41-50"
+      },
+      {
+        "name": "HITL (Human In The Loop)",
+        "summary": "HITL은 LLM 시스템의 의사결정을 미리 정의된 지점에서 인간이 개입하여 통제하는 프로액티브한 제어 계층이다.",
+        "evidence": "HITL은 문제 발생 시 반응이 아니라 미리 정의된 트리거(예: 금지어 포함, 감정 분석 불만)에서 인간 개입을 유도한다.",
+        "source_pages": [
+          46,
+          48,
+          49,
+          50
+        ],
+        "chunk_range": "41-50"
+      },
+      {
+        "name": "HITL vs Reactive Intervention",
+        "summary": "HITL은 문제 발생 후 개입이 아니라 사전에 정의된 조건을 기반으로 인간 개입을 유도하는 프로액티브 접근이다.",
+        "evidence": "단순 수동 개입은 문제가 생기면 사람이 개입하지만, HITL은 사전에 조건을 정의하여 프로액티브하게 통제한다.",
+        "source_pages": [
+          48
+        ],
+        "chunk_range": "41-50"
+      },
+      {
+        "name": "Critic Limitation",
+        "summary": "기존 조건부 루프에서 Critic이 평가와 분기를 동시에 수행하면 제어 로직이 복잡해지지만, Supervisor 패턴은 이를 분리한다.",
+        "evidence": "기존 구조에서는 Critic이 평가자이자 분기 결정자였으나, Supervisor 패턴에서는 Critic은 평가만 하고 제어는 Supervisor가 담당한다.",
+        "source_pages": [
+          43,
+          45
+        ],
+        "chunk_range": "41-50"
+      },
+      {
+        "name": "Failure Traceability",
+        "summary": "Supervisor 패턴은 각 역할의 책임이 명확하므로 시스템 실패 시 원인을 쉽게 추적할 수 있다.",
+        "evidence": "Critic은 평가만 하므로 실패 원인이 명확하고, Supervisor가 제어를 담당해 실패 위치 추적이 용이하다.",
+        "source_pages": [
+          41,
+          43
+        ],
+        "chunk_range": "41-50"
+      },
+      {
+        "name": "Cost Control via HITL",
+        "summary": "HITL은 LLM 기반 시스템에서 무한 재시도로 인한 비용 증가를 방지하기 위해 API 호출이나 작업 실행을 인간이 차단할 수 있게 한다.",
+        "evidence": "Tool/API 호출 기반 Agent에서 비용 리스크가 크므로, HITL을 통해 무한 반복을 방지하고 비용을 통제할 수 있다.",
+        "source_pages": [
+          49
+        ],
+        "chunk_range": "41-50"
+      },
+      {
+        "name": "HITL as Policy",
+        "summary": "HITL is not a single step but a policy that permeates the entire LLMOps cycle.",
+        "evidence": "HITL은 특정 단계가 아니라 전체 운영 사이클을 관통하는 정책",
+        "source_pages": [
+          51
+        ],
+        "chunk_range": "51-60"
+      },
+      {
+        "name": "Supervisor Pattern",
+        "summary": "The Supervisor pattern centralizes control over both agent execution and HITL intervention.",
+        "evidence": "Supervisor는 Agent의 실행 흐름과 HITL 개입을 모두 통제하는 중앙 의사결정자",
+        "source_pages": [
+          51,
+          52,
+          56
+        ],
+        "chunk_range": "51-60"
+      },
+      {
+        "name": "Human as External Tool",
+        "summary": "The human is treated as a non-deterministic external tool with high latency, cost, and judgment quality.",
+        "evidence": "Human Node = deterministic하지 않은 External Tool • 특징 – latency 큼 – 비용 큼 – 판단 품질 높음",
+        "source_pages": [
+          52
+        ],
+        "chunk_range": "51-60"
+      },
+      {
+        "name": "HITL Design Checklist",
+        "summary": "HITL conditions must combine quantitative and policy-based criteria to balance safety and usability.",
+        "evidence": "개입 조건: 정량 기준 + 정책 기준으로 정의 • 예) REJECTED 2 회 이상, max_iteration 초과",
+        "source_pages": [
+          57
+        ],
+        "chunk_range": "51-60"
+      },
+      {
+        "name": "HITL Scalability Strategies",
+        "summary": "To avoid user overload, use push-based approval, batch workflow review, or scoped intervention levels.",
+        "evidence": "3가지 방안 • 푸시 기반 승인 • 워크플로일괄 처리 • 단계별범위 설계",
+        "source_pages": [
+          57
+        ],
+        "chunk_range": "51-60"
+      },
+      {
+        "name": "HITL Integration in Practice",
+        "summary": "HITL is added to existing agents by modifying state, workflow, and decision policy to replace REJECTED with human review.",
+        "evidence": "Critic결과 : REJECTED → HITL • 사람의 입력 : approve →종료 / replan → Planner 재진입",
+        "source_pages": [
+          58
+        ],
+        "chunk_range": "51-60"
+      },
+      {
+        "name": "HITL as Control Layer",
+        "summary": "HITL serves as a control layer to override LLM decisions with human judgment when needed.",
+        "evidence": "HITL 은 LLM 시스템의 의사결정을 통제하기 위한 Control Layer",
+        "source_pages": [
+          60
+        ],
+        "chunk_range": "51-60"
+      },
+      {
+        "name": "Non-deterministic LLM Systems",
+        "summary": "LLM systems are non-deterministic, meaning identical inputs can produce different outputs or execution paths over repeated runs.",
+        "evidence": "LLM 시스템은비결정적(Non-deterministic)이며, 같은 입력이라도 반복 실행 시 다른 경로/결과가 나올 수 있음.",
+        "source_pages": [
+          61
+        ],
+        "chunk_range": "61-70"
+      },
+      {
+        "name": "Snapshot Definition",
+        "summary": "A snapshot is a recorded capture of the entire system state at a specific point in time, not just messages.",
+        "evidence": "Snapshot은 특정 시점의 전체 상태(State)를 캡처한 기록이며, messages만이 아니라 State 전체를 저장한다.",
+        "source_pages": [
+          62
+        ],
+        "chunk_range": "61-70"
+      },
+      {
+        "name": "Snapshot Contents",
+        "summary": "Snapshots include plan, execution_result, critique, iteration details, and next_step to fully capture system state.",
+        "evidence": "Snapshot에 담기는 것에는 plan, execution_result, critique, iteration/max_iterations, next_step이 포함된다.",
+        "source_pages": [
+          62
+        ],
+        "chunk_range": "61-70"
+      },
+      {
+        "name": "Multi-Agent Debugging Challenge",
+        "summary": "Debugging multi-agent systems is hard because it's difficult to identify which agent caused a problem and when.",
+        "evidence": "멀티 에이전트는 누가(Who) 언제(When) 데이터에 문제를 일으켰는지 찾기 어려움.",
+        "source_pages": [
+          63
+        ],
+        "chunk_range": "61-70"
+      },
+      {
+        "name": "State as Evidence",
+        "summary": "The system state serves as evidence and communication history between agents in multi-agent workflows.",
+        "evidence": "State는 에이전트간의 대화 기록이자 증거 자료이며, 이를 스냅샷 형태로 확인한다.",
+        "source_pages": [
+          63
+        ],
+        "chunk_range": "61-70"
+      },
+      {
+        "name": "Snapshot History Flow",
+        "summary": "Snapshots are saved at each iteration of a supervisor loop to make operational flow clear and traceable.",
+        "evidence": "Supervisor 루프의 각 반복(iteration)을 단위로 상태 저장 → 운영 흐름이 명확해짐.",
+        "source_pages": [
+          63
+        ],
+        "chunk_range": "61-70"
+      },
+      {
+        "name": "MemorySaver",
+        "summary": "MemorySaver is a required component for storing state snapshots, typically backed by a database in production.",
+        "evidence": "Snapshot 관리를 위한 필수 준비물은 MemorySaver이며, 실제 운영에서는 DB/스토리지를 사용한다.",
+        "source_pages": [
+          64
+        ],
+        "chunk_range": "61-70"
+      },
+      {
+        "name": "Snapshot Metadata",
+        "summary": "Snapshot metadata includes source, step, and parents to track execution origin, iteration number, and lineage.",
+        "evidence": "metadata는 {'source': 'loop', 'step': 3, 'parents': {}} 형태로, 실행 출처, 단계, 상위 체크포인트 정보를 포함한다.",
+        "source_pages": [
+          66
+        ],
+        "chunk_range": "61-70"
+      },
+      {
+        "name": "Debugging with Snapshots",
+        "summary": "Snapshots enable debugging by allowing operators to trace the exact point where state transitioned from normal to faulty.",
+        "evidence": "history를 순회하면서 정상 → 이상 변화 시점 찾기를 통해 어떤 step에서 실패했는지 추적할 수 있다.",
+        "source_pages": [
+          69
+        ],
+        "chunk_range": "61-70"
+      },
+      {
+        "name": "Reproducibility via Snapshots",
+        "summary": "Reproducibility is achieved by restarting execution from a saved snapshot, not just the original input.",
+        "evidence": "snapshot 저장 → 특정 시점부터 다시 실행 가능하여 동일 입력이 아닌 동일 상태(State) 기준 재실행이 가능하다.",
+        "source_pages": [
+          69
+        ],
+        "chunk_range": "61-70"
+      },
+      {
+        "name": "Evaluation via Iteration Tracking",
+        "summary": "Snapshot history allows comparison of quality across iterations by tracking critic results like APPROVED/REJECTED.",
+        "evidence": "iteration 별 결과 품질 비교 및 critic 결과 변화 추적(APPROVED / REJECTED 흐름)이 가능하다.",
+        "source_pages": [
+          69
+        ],
+        "chunk_range": "61-70"
+      },
+      {
+        "name": "Agent Accountability in Multi-Agent Systems",
+        "summary": "Snapshots help identify which agent changed the state and when, enabling accountability in multi-agent workflows.",
+        "evidence": "어떤 Agent가 문제를 만들었는지 확인 분석, 누가(Agent) 언제(step) 상태를 바꿨는지 추적 가능하다.",
+        "source_pages": [
+          69,
+          70
+        ],
+        "chunk_range": "61-70"
+      },
+      {
+        "name": "Snapshot",
+        "summary": "Snapshot은 특정 시점의 전체 상태(State)를 캡처한 기록으로, 멀티 에이전트 시스템의 디버깅에 사용된다.",
+        "evidence": "특정 step의 상태를 df로 저장해 조회하며, 각 checkpoint는 상태를 저장하는 지점으로 정의됨.",
+        "source_pages": [
+          71,
+          74
+        ],
+        "chunk_range": "71-80"
+      },
+      {
+        "name": "Checkpoint ID",
+        "summary": "Checkpoint는 고유한 checkpoint_id를 가지며, 상태의 이력을 추적하는 데 사용된다.",
+        "evidence": "각 checkpoint는 고유 ID(checkpoint_id)를 가지며, parent_checkpoint_id로 이전 상태를 연결함.",
+        "source_pages": [
+          73
+        ],
+        "chunk_range": "71-80"
+      },
+      {
+        "name": "get_state_history",
+        "summary": "graph.get_state_history(config)는 노드 실행 직후의 상태를 snapshot으로 저장하고, 저장 순서의 역순으로 반환한다.",
+        "evidence": "각 노드 실행 직후의 상태를 snapshot으로 저장하며, 저장된 순서의 역순으로 조회 가능하다고 명시됨.",
+        "source_pages": [
+          74
+        ],
+        "chunk_range": "71-80"
+      },
+      {
+        "name": "LangSmith",
+        "summary": "LangSmith는 LLM 및 AI Agent 애플리케이션의 실행 흐름을 추적하고 정량 평가를 지원하는 Observability 플랫폼이다.",
+        "evidence": "LLM 및 AI Agent 애플리케이션의 실행 흐름을 추적(Trace), 분석하고, 정량 평가(Evaluation)와 비교 실험을 지원한다고 명시됨.",
+        "source_pages": [
+          75,
+          77
+        ],
+        "chunk_range": "71-80"
+      },
+      {
+        "name": "Supervisor pattern tracing",
+        "summary": "LangSmith traces multi-agent Supervisor patterns, showing execution trees, latency, tokens, and cost.",
+        "evidence": "Tracing the Supervisor pattern agent reveals execution trees, node snapshots, state keys, and performance metrics like latency and tokens.",
+        "source_pages": [
+          85,
+          86,
+          87
+        ],
+        "chunk_range": "81-90"
+      },
+      {
+        "name": "Waterfall visualization",
+        "summary": "LangSmith converts execution trees into waterfall charts to visually identify time-consuming agent steps.",
+        "evidence": "Waterfall view adds a time axis to each node and LLM step, making it easy to see which stage took the longest.",
+        "source_pages": [
+          88
+        ],
+        "chunk_range": "81-90"
+      },
+      {
+        "name": "Snapshot vs Trace",
+        "summary": "Snapshot focuses on state changes with single-state objects and iteration-based history, while Trace captures execution flow via run trees including LLM/tool calls.",
+        "evidence": "Snapshot is state-centered with single state objects and snapshot history; Trace is execution-centered with tree structure and call flow.",
+        "source_pages": [
+          91,
+          93
+        ],
+        "chunk_range": "91-100"
+      },
+      {
+        "name": "Reproducibility Difference",
+        "summary": "Snapshots allow reproducible execution from identical states, while traces are hard to reproduce due to environmental and call dependencies.",
+        "evidence": "Snapshots enable re-execution from same state; traces are hard to reproduce due to environment and call impacts.",
+        "source_pages": [
+          91,
+          93
+        ],
+        "chunk_range": "91-100"
+      },
+      {
+        "name": "Multi-Agent Analysis Focus",
+        "summary": "Snapshots help identify at which state a failure occurred, while traces reveal which agent or tool was executed.",
+        "evidence": "Snapshot shows where failure happened; Trace shows which agent or tool was called during execution.",
+        "source_pages": [
+          91,
+          93
+        ],
+        "chunk_range": "91-100"
+      },
+      {
+        "name": "Operational Use Cases",
+        "summary": "Snapshots are used for internal debugging and state validation; traces are used for monitoring, cost, and performance analysis.",
+        "evidence": "Snapshot: internal debugging/state validation; Trace: monitoring, cost, and performance analysis.",
+        "source_pages": [
+          91,
+          93
+        ],
+        "chunk_range": "91-100"
+      },
+      {
+        "name": "LangSmith Purpose",
+        "summary": "LangSmith is an observability and evaluation platform for LLM/Agent systems, enabling trace analysis and performance tracking.",
+        "evidence": "LangSmith is described as an Observability & Evaluation platform for LLM/Agent systems with trace confirmation steps.",
+        "source_pages": [
+          92,
+          93
+        ],
+        "chunk_range": "91-100"
+      },
+      {
+        "name": "Agent Evaluation Complexity",
+        "summary": "AI Agent evaluation is complex due to non-determinism, multi-step execution, external tool dependencies, and ambiguous ground truths.",
+        "evidence": "Agents are complex systems with non-determinism, multi-step processes (planning→tool→reasoning), external API impacts, and no single correct answer.",
+        "source_pages": [
+          96
+        ],
+        "chunk_range": "91-100"
+      },
+      {
+        "name": "Agent Evaluation Framework",
+        "summary": "AI Agent evaluation must consider Task Success, Output Quality, System Performance, and Cost across multiple metrics.",
+        "evidence": "Evaluation includes Task Success (success rate), Output Quality (correctness, relevance), System Performance (latency, steps), and Cost (tokens, calls).",
+        "source_pages": [
+          97
+        ],
+        "chunk_range": "91-100"
+      },
+      {
+        "name": "Rule-based Evaluation",
+        "summary": "Rule-based evaluation uses predefined criteria like accuracy or F1 scores to quantitatively assess agent outputs in a reproducible way.",
+        "evidence": "Rule-based evaluation uses answer data or rules to compute metrics like accuracy, precision, recall, F1, and is objective and reproducible.",
+        "source_pages": [
+          97
+        ],
+        "chunk_range": "91-100"
+      },
+      {
+        "name": "LLM-as-Judge",
+        "summary": "LLM-as-Judge uses another LLM to qualitatively assess output quality like relevance, logic, and naturalness where human judgment is impractical.",
+        "evidence": "LLM-as-Judge evaluates answer quality (accuracy, relevance, logic) in natural language, useful for hard-to-quantify natural language quality.",
+        "source_pages": [
+          98
+        ],
+        "chunk_range": "91-100"
+      },
+      {
+        "name": "Evaluation Method Mapping",
+        "summary": "Rule-based methods apply to Task Success and Cost; LLM-as-Judge applies to Output Quality; System Performance is measured directly.",
+        "evidence": "Rule-based: Task Success (answer comparison), Cost (token count); LLM Judge: Output Quality (relevance/naturalness); System Performance measured directly.",
+        "source_pages": [
+          99
+        ],
+        "chunk_range": "91-100"
+      },
+      {
+        "name": "test_dataset_construction",
+        "summary": "Test datasets are constructed by selecting tracked execution results and defining name and description before creation.",
+        "evidence": "테스트 데이터셋은 추적 결과 중 선택하여 이름과 설명을 입력하고 Create 버튼으로 생성함.",
+        "source_pages": [
+          101
+        ],
+        "chunk_range": "101-110"
+      },
+      {
+        "name": "evaluator_return_structure",
+        "summary": "Evaluation functions must return a dictionary with 'key', 'score', and 'comment' fields to be displayed in LangSmith dashboard.",
+        "evidence": "return 구조는 {'key': 'format', 'score': score, 'comment': reason}이며, key는 평가 항목 이름, score는 0~1의 수치, comment는 결과 설명임.",
+        "source_pages": [
+          103
+        ],
+        "chunk_range": "101-110"
+      },
+      {
+        "name": "dashboard_evaluation_display",
+        "summary": "Evaluation results from the 'key' field in the evaluator's return are displayed as named metrics in the LangSmith dashboard under Experiments.",
+        "evidence": "LangSmith 대시보드의 Experiments 섹션에서 perform_eval의 return key('format') 값이 평가 항목으로 표시됨.",
+        "source_pages": [
+          105
+        ],
+        "chunk_range": "101-110"
+      },
+      {
+        "name": "code_evaluator_registration",
+        "summary": "Code Evaluators are registered in LangSmith's Tracing > Evaluators tab by pasting code with correct function signature and return structure.",
+        "evidence": "Code Evaluator는 Tracing > Evaluators 탭에서 예제 코드를 복사해 붙여넣고, 함수 이름과 return 구조를 맞춰 등록함.",
+        "source_pages": [
+          106,
+          107
+        ],
+        "chunk_range": "101-110"
+      },
+      {
+        "name": "agent_workflow_with_evaluation",
+        "summary": "An agent workflow involves input, generation, evaluation, and iterative correction if evaluation fails.",
+        "evidence": "업무 처리 순서는 이메일 입력 → 지침에 맞는 답장 생성 → 검토(적합/부적합) → 부적합 시 재생성, 적합 시 종료로 구성됨.",
+        "source_pages": [
+          109
+        ],
+        "chunk_range": "101-110"
+      },
+      {
+        "name": "langgraph_agent_implementation",
+        "summary": "LangGraph is used to implement the agent, with execution, tracing, and evaluation all handled via LangSmith.",
+        "evidence": "간단한 AI Agent는 LangGraph로 생성하고, 실행, 추적, 평가는 모두 LangSmith를 통해 수행됨.",
+        "source_pages": [
+          109,
+          110
+        ],
+        "chunk_range": "101-110"
+      },
+      {
+        "name": "LLM-as-Judge Evaluator",
+        "summary": "LLM-as-Judge is a method for evaluating agent responses based on semantic quality using a configured rubric, instructions, and reminders.",
+        "evidence": "Users configure LLM-as-Judge via Evaluators tab, set name (e.g., LLM_평가), define system message rubrics, model (e.g., gpt-5.4), and require OpenAI API key for model access.",
+        "source_pages": [
+          111,
+          112,
+          113
+        ],
+        "chunk_range": "111-120"
+      },
+      {
+        "name": "Rubric Definition",
+        "summary": "A rubric defines evaluation criteria for LLM-as-Judge, specifying what constitutes a good response and what to penalize.",
+        "evidence": "Rubric includes criteria: recommendations must match user mood, connect naturally to reasons, be specific and persuasive, and show diversity; penalties apply for mismatched recommendations or vague reasons.",
+        "source_pages": [
+          112
+        ],
+        "chunk_range": "111-120"
+      },
+      {
+        "name": "Instructions for Evaluation",
+        "summary": "Instructions guide the LLM judge on how to assess responses by outlining specific evaluation steps and priorities.",
+        "evidence": "Instructions require judging relevance between user input and output, evaluating reasoning persuasiveness, and assessing balance and diversity of two recommendations.",
+        "source_pages": [
+          112
+        ],
+        "chunk_range": "111-120"
+      },
+      {
+        "name": "Reminder for Evaluation",
+        "summary": "Reminders ensure the LLM judge focuses on substance over form and maintains fair, strict evaluation standards.",
+        "evidence": "Reminder states that evaluation must prioritize appropriateness and persuasiveness of recommendations, not format, and must be fair but strict.",
+        "source_pages": [
+          112
+        ],
+        "chunk_range": "111-120"
+      },
+      {
+        "name": "Feedback Configuration",
+        "summary": "Feedback configuration defines what metric the LLM judge evaluates, the output format, and whether strict schema enforcement is applied.",
+        "evidence": "Users set Metric Name (e.g., quality), include reasoning, define description (e.g., relevance of output), choose Response Format (Boolean, Categorical, Score), and enable Strict mode.",
+        "source_pages": [
+          114
+        ],
+        "chunk_range": "111-120"
+      },
+      {
+        "name": "Agent Execution Tracing",
+        "summary": "Agent execution traces are used to monitor and evaluate agent behavior after deployment, enabling feedback loops for improvement.",
+        "evidence": "After agent execution, results are tracked via LangSmith and evaluated using LLM-as-Judge; tracing allows review of multi-step agent workflows.",
+        "source_pages": [
+          115,
+          116
+        ],
+        "chunk_range": "111-120"
+      },
+      {
+        "name": "Challenges in Agent Evaluation",
+        "summary": "Evaluating AI agents is difficult due to non-determinism, multi-step execution, and the absence of a single correct answer.",
+        "evidence": "Non-determinism causes varying outputs for same input; multi-step execution complicates tracking; no single correct answer exists due to model's probabilistic nature.",
+        "source_pages": [
+          117
+        ],
+        "chunk_range": "111-120"
+      },
+      {
+        "name": "Evaluation Methods",
+        "summary": "Two primary evaluation methods are rule-based (exact match) and LLM-as-Judge (semantic quality assessment).",
+        "evidence": "Rule-based evaluates against fixed rules; LLM-as-Judge assesses quality and meaning, suitable for open-ended agent outputs.",
+        "source_pages": [
+          117
+        ],
+        "chunk_range": "111-120"
+      },
+      {
+        "name": "Dataset Purpose",
+        "summary": "Datasets of [input + output] pairs are used to improve systems during development and establish baselines during deployment.",
+        "evidence": "Datasets help system improvement during development and serve as performance baselines during deployment.",
+        "source_pages": [
+          117
+        ],
+        "chunk_range": "111-120"
+      },
+      {
+        "name": "Operational Issues in Agent Systems",
+        "summary": "Common operational problems include quality issues (hallucinations), cost issues (token explosion), performance issues (latency), and workflow issues (loops).",
+        "evidence": "Operational problems include quality (accuracy, consistency, hallucination), cost (token usage), performance (latency), and flow (unnecessary loops).",
+        "source_pages": [
+          118
+        ],
+        "chunk_range": "111-120"
+      },
+      {
+        "name": "Problem Measurement Strategy",
+        "summary": "Quality and flow issues are measured using evaluators, while cost and performance issues are measured using traces.",
+        "evidence": "Evaluator tools measure quality and flow problems; trace tools measure cost (token usage) and performance (latency).",
+        "source_pages": [
+          118
+        ],
+        "chunk_range": "111-120"
+      },
+      {
+        "name": "Operational Dashboard",
+        "summary": "An operational dashboard provides visual monitoring of agent system performance and issues for ongoing improvement.",
+        "evidence": "The dashboard visualizes operational metrics to monitor and address quality, cost, performance, and flow problems in real time.",
+        "source_pages": [
+          120
+        ],
+        "chunk_range": "111-120"
+      },
+      {
+        "name": "LLMOps 운영 루프",
+        "summary": "LLM 시스템을 통제 가능하게 만들기 위한 설계-실행-관측-평가-개선의 반복 구조.",
+        "evidence": "운영 개선 루프는 설계(Design), 실행(Run), 관측(Trace), 평가(Evaluate), 개선(Improve)의 단계로 구성됨.",
+        "source_pages": [
+          121
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "Prompt 개선",
+        "summary": "답변 품질을 높이기 위해 지침 강화, 출력 포맷 고정, 실패 케이스 기반 수정을 통해 프롬프트를 반복 개선.",
+        "evidence": "Prompt 개선은 지침 강화, 출력 포맷 고정, 실패 케이스 기반 수정을 통해 이루어짐.",
+        "source_pages": [
+          121
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "멀티 Agent 패턴",
+        "summary": "답변 품질 개선을 위해 여러 에이전트가 협력하는 워크플로우 구조를 설계하는 방법.",
+        "evidence": "멀티 Agent 패턴은 워크플로우를 개선하여 답변 품질을 높이는 방식으로 제시됨.",
+        "source_pages": [
+          121
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "정책 개선 (Decision Policy)",
+        "summary": "LLM의 의사결정 기준을 측정과 A/B 테스트를 통해 개선하고, HITL 조건을 명시적으로 추가.",
+        "evidence": "정책 개선은 LLM-as-Judge로 측정하고, HITL 조건을 프롬프트에 명시(3문장 이내)하여 반영함.",
+        "source_pages": [
+          121
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "실패 케이스 데이터셋 축적",
+        "summary": "시스템 오류를 분석하고 재학습을 위해 실패 사례를 체계적으로 수집하는 데이터 기반 개선 전략.",
+        "evidence": "실패 케이스 데이터셋을 축적한 후 재검증을 통해 개선을 수행함.",
+        "source_pages": [
+          121
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "A/B 테스트",
+        "summary": "두 가지 버전의 시스템을 비교하여 품질, 비용, 시간 등의 성과를 측정하고 개선 방향을 결정.",
+        "evidence": "A/B 비교 및 반복 개선을 통해 비용 대비 품질을 최적화함.",
+        "source_pages": [
+          121
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "모델 드리프트",
+        "summary": "시간이 지남에 따라 데이터나 모델의 통계적 특성이 변화하여 성능이 저하되는 현상.",
+        "evidence": "드리프트는 시간이 지남에 따라 데이터, 모델, 환경이 변화해 모델 예측 성능이 점차 저하되는 현상.",
+        "source_pages": [
+          122
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "데이터 드리프트",
+        "summary": "입력 데이터의 분포가 학습 시와 달라져 모델 성능에 영향을 주는 드리프트 유형.",
+        "evidence": "사용자 연령대가 20대에서 40대로 이동하는 경우처럼 입력 데이터 분포가 변화하는 현상.",
+        "source_pages": [
+          124
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "개념 드리프트",
+        "summary": "입력과 출력 간의 관계가 변화하여 모델의 예측 정확도가 떨어지는 현상.",
+        "evidence": "사기 패턴이 새로운 방식으로 변하는 경우처럼 입력과 출력 간의 관계가 바뀌는 현상.",
+        "source_pages": [
+          124
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "모델 드리프트",
+        "summary": "모델의 예측 성능(AUC, 정확도 등)이 시간에 따라 감소하는 현상.",
+        "evidence": "입력/문제 변화로 인해 모델이 제대로 작동하지 않아 성능이 하락하는 현상.",
+        "source_pages": [
+          124
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "예측값 드리프트",
+        "summary": "모델의 예측값 분포가 학습 시와 달라져 이상 탐지에 활용되는 드리프트 유형.",
+        "evidence": "레이블이 없는 상황에서도 예측값 분포의 변화를 통해 이상을 탐지할 수 있음.",
+        "source_pages": [
+          124
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "JSON 형식",
+        "summary": "데이터 저장 및 교환을 위한 표준 문자열 형식으로, LLM의 구조화된 출력에 자주 사용됨.",
+        "evidence": "JSON은 API 응답, 설정 파일, LLM 구조화 출력, DB 저장 등에 자주 사용되는 표준 형식.",
+        "source_pages": [
+          127
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "JSON serialization",
+        "summary": "JSON is used to serialize Python data structures for external communication or storage.",
+        "evidence": "JSON은 파이썬 외부로 데이터를 주고 받을 때, 자주 사용되는 데이터 포맷",
+        "source_pages": [
+          131
+        ],
+        "chunk_range": "131-140"
+      },
+      {
+        "name": "JSON in Agent systems",
+        "summary": "Agent systems use JSON to store internal state as dictionaries and convert them to JSON strings for database insertion.",
+        "evidence": "Agent 에서 JSON 활용 예: 결과 State가 Dictionary 형태, DB저장 시 JSON 문자열로 변환하여 Insert",
+        "source_pages": [
+          131
+        ],
+        "chunk_range": "131-140"
+      },
+      {
+        "name": "SQLite overview",
+        "summary": "SQLite is a lightweight, file-based database that requires no separate server and stores data in a single .db file.",
+        "evidence": "SQLite : 가벼운 파일 기반 데이터베이스, 별도의 DB 서버가 필요 없고, DB가 하나의 파일(.db)로 저장",
+        "source_pages": [
+          132
+        ],
+        "chunk_range": "131-140"
+      },
+      {
+        "name": "Pandas DataFrame vs SQLite Table",
+        "summary": "While both Pandas DataFrames and SQLite tables use rows and columns, DataFrames are for analysis and temporary use, while SQLite tables ensure persistent, consistent storage.",
+        "evidence": "Pandas 데이터프레임: 프로그램종료 시 사라짐, DB 테이블: 영구 저장, 데이터일관성 중요",
+        "source_pages": [
+          135
+        ],
+        "chunk_range": "131-140"
+      },
+      {
+        "name": "Streamlit overview",
+        "summary": "Streamlit is a Python-based framework for building data apps and dashboards without needing HTML or JS.",
+        "evidence": "Streamlit is described as a Python-based data app/dashboard framework that generates UI with only Python code.",
+        "source_pages": [
+          141
+        ],
+        "chunk_range": "141-150"
+      },
+      {
+        "name": "Streamlit execution structure",
+        "summary": "Streamlit runs a Python web server that browsers access via localhost, enabling interactive data visualization.",
+        "evidence": "Streamlit executes a Python web server; browsers connect to localhost to access the app.",
+        "source_pages": [
+          141
+        ],
+        "chunk_range": "141-150"
+      },
+      {
+        "name": "Local vs server execution",
+        "summary": "Streamlit apps can be run locally on a PC or on a server, with browser access requiring network connectivity.",
+        "evidence": "Two methods are shown: running Streamlit on PC with local browser access, or on a server requiring PC to access the server's address.",
+        "source_pages": [
+          142
+        ],
+        "chunk_range": "141-150"
+      },
+      {
+        "name": "Cloudflare Tunnel",
+        "summary": "Cloudflare Tunnel creates temporary public URLs to expose locally running Streamlit servers to external access.",
+        "evidence": "Cloudflare Tunnel is used to generate a temporary public URL for a locally running Streamlit server on 127.0.0.1:8501.",
+        "source_pages": [
+          143,
+          144
+        ],
+        "chunk_range": "141-150"
+      },
+      {
+        "name": "Streamlit widget interaction",
+        "summary": "Streamlit re-runs the entire script from top to bottom whenever a widget is interacted with, updating the UI dynamically.",
+        "evidence": "Streamlit's core behavior is described as re-executing the .py file from start to end when users manipulate widgets.",
+        "source_pages": [
+          147
+        ],
+        "chunk_range": "141-150"
+      },
+      {
+        "name": "st.write() functionality",
+        "summary": "st.write() can render text, dataframes, and dictionaries directly to the UI without explicit type handling.",
+        "evidence": "st.write() is shown to display text, dataframes, and dictionaries like {'a':1, 'b':2} without additional formatting.",
+        "source_pages": [
+          147
+        ],
+        "chunk_range": "141-150"
+      },
+      {
+        "name": "st.container() for UI grouping",
+        "summary": "st.container() groups UI elements together, optionally with borders, to organize layout and improve structure.",
+        "evidence": "with st.container(border=True) is used to group multiselect and toggle widgets together visually.",
+        "source_pages": [
+          148
+        ],
+        "chunk_range": "141-150"
+      },
+      {
+        "name": "st.multiselect() and st.toggle()",
+        "summary": "st.multiselect() allows multiple user selections; st.toggle() returns a boolean for conditional logic in apps.",
+        "evidence": "Users are selected via st.multiselect() with default values; st.toggle() stores True/False in rolling_average variable.",
+        "source_pages": [
+          148
+        ],
+        "chunk_range": "141-150"
+      },
+      {
+        "name": "Data caching and filtering",
+        "summary": "Streamlit apps can use rolling averages and filtering to dynamically transform data based on user input.",
+        "evidence": "When rolling_average is True, data is transformed using data.rolling(7).mean().dropna() to compute a 7-day rolling average.",
+        "source_pages": [
+          148
+        ],
+        "chunk_range": "141-150"
+      },
+      {
+        "name": "Charting with matplotlib/seaborn",
+        "summary": "Streamlit supports advanced charting libraries like matplotlib and seaborn for custom visualizations.",
+        "evidence": "Page 149 mentions using matplotlib/seaborn charts with column layout, radio buttons, sliders, and filtering.",
+        "source_pages": [
+          149
+        ],
+        "chunk_range": "141-150"
+      },
+      {
+        "name": "UI layout with columns",
+        "summary": "Streamlit allows arranging widgets and charts in columns to improve dashboard organization and user experience.",
+        "evidence": "Page 149 references dividing UI into columns with radio buttons, sliders, and grouped charts for better layout.",
+        "source_pages": [
+          149
+        ],
+        "chunk_range": "141-150"
+      },
+      {
+        "name": "design_run_trace_improve_cycle",
+        "summary": "The ML workflow cycle includes Design, Run+HITL, and Trace→Evaluate→Improve phases for iterative development.",
+        "evidence": "Course summary lists: 1. Design, 2. Run + HITL, 3. Trace → Evaluate → Improve as key phases.",
+        "source_pages": [
+          154
+        ],
+        "chunk_range": "151-156"
+      }
+    ],
+    "code_examples": [
+      {
+        "name": "Prompt Specification",
+        "summary": "Prompts must be structured with clear instructions, output formats, and constraints to ensure consistent agent behavior.",
+        "evidence": "Prompt Spec defines guidelines, output formats, and constraints for each agent to standardize behavior and reduce ambiguity.",
+        "source_pages": [
+          20
+        ],
+        "chunk_range": "11-20"
+      },
+      {
+        "name": "Template-Driven Design",
+        "summary": "Design documents for AI agents follow standardized templates to ensure consistency and completeness across projects.",
+        "evidence": "Teams use provided Excel templates: Ch03_Agent 역할 정의서_양식.xlsx and Ch03_Workflow 명세서 외 기타 설계문서들_양식.xlsx for documentation.",
+        "source_pages": [
+          34
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "Example Code for Role-Based Design",
+        "summary": "A Jupyter notebook example demonstrates a simple role-based agent system with Planner, Executor, and Critic components.",
+        "evidence": "Example code is provided in 'Ch04. [Design] 역할 기반 설계.ipynb' under section '2. 간단한 역할 기반 설계'.",
+        "source_pages": [
+          40
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "HITL Use Cases",
+        "summary": "HITL은 마케팅 카피 생성, 코드 생성, 고객 응대 등 민감한 작업에서 금지어, 테스트 실패, 감정 분석을 트리거로 인간 개입을 유도한다.",
+        "evidence": "마케팅 카피 생성 시 금지어 포함, 코드 생성 시 테스트 실패, 고객 응대 시 불만 감정 분석이 HITL 개입 조건으로 명시된다.",
+        "source_pages": [
+          50
+        ],
+        "chunk_range": "41-50"
+      },
+      {
+        "name": "HITL Trigger Condition",
+        "summary": "HITL is triggered when risky keywords are detected or when rejection exceeds max iterations.",
+        "evidence": "risky_keywords 포함 시 또는 critique_decision == 'REJECTED' and iteration >= max_iterations",
+        "source_pages": [
+          54
+        ],
+        "chunk_range": "51-60"
+      },
+      {
+        "name": "human_review Node",
+        "summary": "The human_review node acts as an external tool that prompts user input and returns decision with reason.",
+        "evidence": "사용자에게 APPROVE/REVISE/ABORT 입력을 요구하고, human_decision과 human_reason을 반환",
+        "source_pages": [
+          55
+        ],
+        "chunk_range": "51-60"
+      },
+      {
+        "name": "AgentState for HITL",
+        "summary": "AgentState includes keys like human_decision, human_reason, and next_step to manage HITL flow.",
+        "evidence": "AgentState에 human_decision, human_reason, next_step 키를 포함하여 HITL 결과를 저장",
+        "source_pages": [
+          53
+        ],
+        "chunk_range": "51-60"
+      },
+      {
+        "name": "Supervisor Decision Logic",
+        "summary": "Supervisor routes flow based on human_decision, critique_decision, and state conditions.",
+        "evidence": "human_decision이 있으면 APPROVE/ABORT → end, REVISE → planner 재진입",
+        "source_pages": [
+          56
+        ],
+        "chunk_range": "51-60"
+      },
+      {
+        "name": "graph.get_state",
+        "summary": "graph.get_state(config) retrieves the most recent snapshot of the entire graph's state after execution.",
+        "evidence": "graph.get_state(config)는 마지막 노드 실행 후의 snapshot을 가져오며, .values, .next, .metadata를 통해 상태 정보를 확인할 수 있다.",
+        "source_pages": [
+          64,
+          65,
+          66
+        ],
+        "chunk_range": "61-70"
+      },
+      {
+        "name": "graph.get_state_history",
+        "summary": "graph.get_state_history(config) returns all snapshots in reverse chronological order, enabling full state traceability.",
+        "evidence": "graph.get_state_history(config)는 각 노드 실행 직후의 상태를 snapshot으로 저장하고, 역순으로 가져온다.",
+        "source_pages": [
+          64,
+          67,
+          68
+        ],
+        "chunk_range": "61-70"
+      },
+      {
+        "name": "Resume from checkpoint",
+        "summary": "이전 체크포인트 설정을 사용하여 실행을 재개할 수 있으며, None 입력은 저장된 상태에서 이어서 실행함을 의미한다.",
+        "evidence": "resume_config = target.config로 저장된 설정을 사용하고, graph.invoke(None, config=resume_config)로 재실행함.",
+        "source_pages": [
+          72
+        ],
+        "chunk_range": "71-80"
+      },
+      {
+        "name": "API Key Setup",
+        "summary": "LangSmith API 키는 Settings에서 생성한 후 api_key.txt 파일에 LANGSMITH_API_KEY 변수로 저장한다.",
+        "evidence": "api_key.txt 파일에 LANGSMITH_API_KEY = lsv2_pt_27286f43d… 형태로 키를 추가한다고 명시됨.",
+        "source_pages": [
+          79,
+          80
+        ],
+        "chunk_range": "71-80"
+      },
+      {
+        "name": "LangSmith tracing setup",
+        "summary": "Enable LangSmith tracing by setting environment variables for tracing, project name, and endpoint.",
+        "evidence": "Set os.environ[\"LANGSMITH_TRACING\"] = \"true\", os.environ[\"LANGSMITH_PROJECT\"] = \"test_proj1\", and os.environ[\"LANGSMITH_ENDPOINT\"] = \"https://api.smith.langchain.com\"",
+        "source_pages": [
+          82
+        ],
+        "chunk_range": "81-90"
+      },
+      {
+        "name": "Agent execution with LangSmith",
+        "summary": "Execute an LLM agent using ChatOpenAI and trigger tracing via environment configuration.",
+        "evidence": "llm = ChatOpenAI(model=\"gpt-4.1-mini\", temperature=0); result = llm.invoke([HumanMessage(content=\"LangSmith에 대해서 간결하게 알려줘\")])",
+        "source_pages": [
+          83
+        ],
+        "chunk_range": "81-90"
+      },
+      {
+        "name": "Tool call tracing",
+        "summary": "LangSmith traces tool calls and their results when used within agent workflows.",
+        "evidence": "Tool messages and their execution results are captured in traces when a tool-using agent is executed.",
+        "source_pages": [
+          89
+        ],
+        "chunk_range": "81-90"
+      },
+      {
+        "name": "Agent Evaluation Scenario",
+        "summary": "A movie recommendation agent takes user mood input and recommends two films, evaluated via test datasets and LangSmith trace-based evaluators.",
+        "evidence": "Scenario: Agent recommends movies based on user mood ('tired, stressed'); evaluated using test dataset and LangSmith evaluator registration.",
+        "source_pages": [
+          100
+        ],
+        "chunk_range": "91-100"
+      },
+      {
+        "name": "Network Pattern Lab",
+        "summary": "A multi-agent network pattern is built to handle customer requests (receipt, refund, tech support) and observed via LangSmith traces.",
+        "evidence": "Network pattern: handles customer requests (receipt, refund, tech support); refund/tech history summarized; execution observed in LangSmith.",
+        "source_pages": [
+          91,
+          92
+        ],
+        "chunk_range": "91-100"
+      },
+      {
+        "name": "rule_based_evaluator_function",
+        "summary": "A rule-based evaluation function checks if an agent's output strictly follows a prescribed JSON list format with two items, each having rank, title, and reason.",
+        "evidence": "평가 함수는 출력이 리스트이며, 2개 항목, 각 항목이 dict 형태로 rank(1,2), title, reason을 포함하고 비어 있지 않은지 검증함.",
+        "source_pages": [
+          102
+        ],
+        "chunk_range": "101-110"
+      },
+      {
+        "name": "target_fn_wrapper",
+        "summary": "The target_fn wraps the agent execution to connect dataset inputs to the agent for batch evaluation using LangSmith's evaluate function.",
+        "evidence": "target_fn은 Dataset의 input을 Agent 실행 함수에 연결하는 래퍼로, graph.invoke를 사용해 메시지를 전달하고 결과를 반환함.",
+        "source_pages": [
+          104
+        ],
+        "chunk_range": "101-110"
+      },
+      {
+        "name": "API Key Configuration",
+        "summary": "To use GPT models in LLM-as-Judge, an OpenAI API key must be added to provider secrets in the system settings.",
+        "evidence": "Users must go to Settings > Integrations > Provider secrets and add OPENAI_API_KEY with the assigned key to enable GPT model usage.",
+        "source_pages": [
+          113
+        ],
+        "chunk_range": "111-120"
+      },
+      {
+        "name": "Multi-Agent Report Generation",
+        "summary": "A multi-agent system can be built to generate reports by iterating between drafting and reviewing until approval is achieved.",
+        "evidence": "Agent workflow: receive request → generate draft → review (approve/reject) → if rejected, re-draft; implemented using LangGraph and evaluated via LangSmith.",
+        "source_pages": [
+          116
+        ],
+        "chunk_range": "111-120"
+      },
+      {
+        "name": "KS-Test",
+        "summary": "수치형 변수의 분포 변화를 검정하여 데이터 드리프트를 탐지하는 통계적 기법.",
+        "evidence": "KS-Test는 수치형 변수의 분포 변화를 검정하는 데 사용되는 기법으로 명시됨.",
+        "source_pages": [
+          126
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "Chi-square Test",
+        "summary": "범주형 변수의 분포 변화를 검정하여 데이터 드리프트를 탐지하는 통계적 기법.",
+        "evidence": "Chi-square Test는 범주형 변수의 분포 변화를 검정하는 데 사용되는 기법으로 명시됨.",
+        "source_pages": [
+          126
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "json.dumps and json.loads",
+        "summary": "json.dumps converts a Python object to a JSON string, and json.loads parses a JSON string back to a Python object.",
+        "evidence": ".dumps, .loads for JSON string conversion",
+        "source_pages": [
+          131
+        ],
+        "chunk_range": "131-140"
+      },
+      {
+        "name": "json.dump and json.load",
+        "summary": "json.dump writes a Python object directly to a JSON file, and json.load reads a JSON file into a Python object.",
+        "evidence": "파일을 파이썬 파일 객체로 만들고, json 파일로 저장, 읽기 : .dump, .load",
+        "source_pages": [
+          131
+        ],
+        "chunk_range": "131-140"
+      },
+      {
+        "name": "SQLite connection and cursor",
+        "summary": "To interact with SQLite in Python, connect using sqlite3.connect() and use a cursor object to execute SQL commands.",
+        "evidence": "conn = sqlite3.connect(\"testdb.db\"), cursor = conn.cursor(), cursor.execute(\"SQL\")",
+        "source_pages": [
+          134
+        ],
+        "chunk_range": "131-140"
+      },
+      {
+        "name": "SQLite table creation",
+        "summary": "A SQLite table is created using CREATE TABLE with column definitions and executed via cursor.execute(), followed by commit.",
+        "evidence": "cursor.execute(\"\"\"CREATE TABLE test_table (id INTEGER PRIMARY KEY, input_text TEXT, label INTEGER)\"\"\") and conn.commit()",
+        "source_pages": [
+          134
+        ],
+        "chunk_range": "131-140"
+      },
+      {
+        "name": "SQLite INSERT with placeholders",
+        "summary": "Use ? placeholders in SQL and pass values as a tuple to cursor.execute() for safe data insertion.",
+        "evidence": "cursor.execute(\"INSERT INTO movies (movie_name, genre, year) VALUES (?, ?, ?)\", (\"타이타닉\", \"드라마\", 1997))",
+        "source_pages": [
+          136
+        ],
+        "chunk_range": "131-140"
+      },
+      {
+        "name": "SQLite bulk INSERT",
+        "summary": "Use cursor.executemany() to insert multiple rows at once by passing a list of tuples.",
+        "evidence": "cursor.executemany(\"INSERT INTO movies (...) VALUES (?, ?, ?)\", movies_data)",
+        "source_pages": [
+          136
+        ],
+        "chunk_range": "131-140"
+      },
+      {
+        "name": "Pandas to_sql for SQLite",
+        "summary": "Use DataFrame.to_sql() to write a pandas DataFrame directly to a SQLite table with options for append or replace.",
+        "evidence": "df.to_sql(\"movies\", conn, if_exists=\"append\", index=False)",
+        "source_pages": [
+          137
+        ],
+        "chunk_range": "131-140"
+      },
+      {
+        "name": "SQLite SELECT with cursor",
+        "summary": "Use cursor.execute(\"SELECT * FROM table\") and fetchall() to retrieve all rows as a list of tuples.",
+        "evidence": "cursor.execute(\"SELECT * FROM movies\"), rows = cursor.fetchall()",
+        "source_pages": [
+          138
+        ],
+        "chunk_range": "131-140"
+      },
+      {
+        "name": "SQLite SELECT with pandas",
+        "summary": "Use pd.read_sql() to execute an SQL query and directly return a pandas DataFrame.",
+        "evidence": "df = pd.read_sql(\"SELECT * FROM movies\", conn)",
+        "source_pages": [
+          138
+        ],
+        "chunk_range": "131-140"
+      },
+      {
+        "name": "SQLite UPDATE and DELETE",
+        "summary": "Use UPDATE and DELETE SQL statements with WHERE clauses and commit to modify or remove data in SQLite.",
+        "evidence": "cursor.execute(\"UPDATE movies SET genre = ? WHERE movie_name = ?\", (\"애니메이션\", \"알라딘\"))",
+        "source_pages": [
+          139
+        ],
+        "chunk_range": "131-140"
+      },
+      {
+        "name": "Cloudflare Tunnel installation",
+        "summary": "Install Cloudflare Tunnel via wget and dpkg on Linux systems to enable public access to local Streamlit apps.",
+        "evidence": "Commands !wget and !dpkg are used to download and install cloudflared-linux-amd64.deb package.",
+        "source_pages": [
+          143
+        ],
+        "chunk_range": "141-150"
+      },
+      {
+        "name": "Streamlit server startup command",
+        "summary": "Start a Streamlit server with specific flags to run headless, disable CORS and XSRF protection, and log output.",
+        "evidence": "Command uses streamlit run app1.py with --server.port, --server.address, --server.headless, --server.enableCORS, and --server.enableXsrfProtection flags.",
+        "source_pages": [
+          144
+        ],
+        "chunk_range": "141-150"
+      },
+      {
+        "name": "Hello Streamlit example",
+        "summary": "A basic Streamlit app displays a title and markdown text, with a button that triggers animated balloons.",
+        "evidence": "app1.py uses st.title(), st.markdown(), and st.button() to display text and trigger st.balloons() on click.",
+        "source_pages": [
+          145
+        ],
+        "chunk_range": "141-150"
+      },
+      {
+        "name": "Tabbed interface with st.tabs()",
+        "summary": "st.tabs() creates multiple tabs to separate chart and data views within a single Streamlit app.",
+        "evidence": "tab1, tab2 = st.tabs(['Chart', 'Dataframe']) creates two tabs, with line_chart() and dataframe() assigned to each.",
+        "source_pages": [
+          146,
+          148
+        ],
+        "chunk_range": "141-150"
+      },
+      {
+        "name": "data_caching_with_st_cache_data",
+        "summary": "Use @st.cache_data to cache function results and avoid reloading data when filters change.",
+        "evidence": "@st.cache_data is applied to load_data() function to store its result, preventing re-loading from URL on subsequent calls.",
+        "source_pages": [
+          151
+        ],
+        "chunk_range": "151-156"
+      },
+      {
+        "name": "st_radio_for_single_selection",
+        "summary": "Use st.radio to create a single-select UI component that returns one selected value from a list.",
+        "evidence": "st.radio('성별', ['All', 'male', 'female']) creates a radio button group returning a single selected value.",
+        "source_pages": [
+          151
+        ],
+        "chunk_range": "151-156"
+      },
+      {
+        "name": "st_slider_for_range_selection",
+        "summary": "Use st.slider with a tuple default to create a range slider returning min and max selected values.",
+        "evidence": "st.slider('나이 범위', age_min, age_max, (age_min, age_max)) returns a tuple (min, max) for age range selection.",
+        "source_pages": [
+          151
+        ],
+        "chunk_range": "151-156"
+      },
+      {
+        "name": "st_columns_for_layout",
+        "summary": "Use st.columns() to divide the layout into horizontal sections for side-by-side UI components.",
+        "evidence": "col1, col2, col3 = st.columns(3) divides the UI into three columns for radio buttons and slider.",
+        "source_pages": [
+          151
+        ],
+        "chunk_range": "151-156"
+      },
+      {
+        "name": "sequential_filtering_with_ui_inputs",
+        "summary": "Apply sequential filters to a DataFrame based on UI selections for sex, embarkation, and age range.",
+        "evidence": "f = f.loc[f['Sex'] == sex], then f.loc[f['Embarked'] == embarked], then f.loc[f['Age'].between(age_range[0], age_range[1])].",
+        "source_pages": [
+          152
+        ],
+        "chunk_range": "151-156"
+      },
+      {
+        "name": "st_divider_for_visual_separation",
+        "summary": "Use st.divider() to insert a horizontal line separating UI sections for better visual structure.",
+        "evidence": "st.divider() is used after displaying filtered data count and again before the expander section.",
+        "source_pages": [
+          152,
+          153
+        ],
+        "chunk_range": "151-156"
+      },
+      {
+        "name": "st_pyplot_for_seaborn_charts",
+        "summary": "Render seaborn plots in Streamlit by saving them to a matplotlib figure and using st.pyplot().",
+        "evidence": "fig, ax = plt.subplots(); sns.kdeplot(..., ax=ax); st.pyplot(fig) displays the KDE plot of Fare by survival.",
+        "source_pages": [
+          153
+        ],
+        "chunk_range": "151-156"
+      },
+      {
+        "name": "st_bar_chart_for_categorical_counts",
+        "summary": "Use st.bar_chart to display counts of categorical values like survival status after mapping 0/1 to labels.",
+        "evidence": "surv = f['Survived'].replace({0: 'Died', 1: 'Survived'}); st.bar_chart(surv.value_counts()) shows survival counts.",
+        "source_pages": [
+          153
+        ],
+        "chunk_range": "151-156"
+      },
+      {
+        "name": "st_expander_for_collapsible_data_view",
+        "summary": "Use st.expander to create a collapsible section for revealing detailed data tables on demand.",
+        "evidence": "with st.expander('데이터 보기'): st.dataframe(f) allows users to toggle visibility of the filtered dataset.",
+        "source_pages": [
+          153
+        ],
+        "chunk_range": "151-156"
+      },
+      {
+        "name": "st_dataframe_for_interactive_data_display",
+        "summary": "Use st.dataframe to render an interactive table of the filtered DataFrame for user inspection.",
+        "evidence": "st.dataframe(f) inside the expander displays the filtered DataFrame with sorting and scrolling.",
+        "source_pages": [
+          153
+        ],
+        "chunk_range": "151-156"
+      }
+    ],
+    "cautions": [
+      {
+        "name": "Time Savings from Automation",
+        "summary": "Manual document review takes 20 minutes per document, causing delays in urgent cases and inconsistent outcomes.",
+        "evidence": "Each document takes 20 minutes on average to review manually, leading to delays in urgent cases and inconsistent extraction due to human variability.",
+        "source_pages": [
+          31
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "Inconsistent Document Formats",
+        "summary": "Variability in contract formats across vendors leads to unreliable manual extraction and requires AI to handle diverse structures.",
+        "evidence": "Different vendors use varying document formats, making manual extraction inconsistent; AI must adapt to diverse structures automatically.",
+        "source_pages": [
+          31
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "Worker Must Not Call HITL",
+        "summary": "Workers must never invoke HITL directly to avoid分散 the policy control.",
+        "evidence": "Worker가 HITL 호출하면: 흐름이 분산됨→ 정책 통제가 깨짐",
+        "source_pages": [
+          52
+        ],
+        "chunk_range": "51-60"
+      },
+      {
+        "name": "Branch Consideration",
+        "summary": "실전에서는 branch 개념을 고려해야 하지만, 이 예제에서는 특정 스텝 재실행만 다룬다.",
+        "evidence": "실전에서는 branch 개념까지 고려해야 하지만, 여기서는 특정 스텝을 재실행해보는 방법만 확인합니다라고 경고됨.",
+        "source_pages": [
+          72
+        ],
+        "chunk_range": "71-80"
+      },
+      {
+        "name": "Session persistence of environment variables",
+        "summary": "Environment variables for LangSmith tracing must remain unchanged for the duration of the session; changes require restarting the session.",
+        "evidence": "In Colab, once environment variables are set, they cannot be reliably changed without restarting the session.",
+        "source_pages": [
+          84
+        ],
+        "chunk_range": "81-90"
+      },
+      {
+        "name": "Project creation order",
+        "summary": "Create the LangSmith project in the UI first, then reference it in code to avoid logs being sent to unintended projects.",
+        "evidence": "Recommend creating the project in LangSmith UI first, then using the same name in code to prevent logs from being misrouted.",
+        "source_pages": [
+          84
+        ],
+        "chunk_range": "81-90"
+      },
+      {
+        "name": "async_evaluation_behavior",
+        "summary": "Evaluation runs asynchronously after agent execution, and evaluation failures do not interrupt agent execution.",
+        "evidence": "에이전트 실행 후 평가가 별도로 비동기적으로 진행되며, 평가 중 오류가 발생해도 에이전트 실행은 계속됨.",
+        "source_pages": [
+          107
+        ],
+        "chunk_range": "101-110"
+      },
+      {
+        "name": "evaluation_delay_and_drop",
+        "summary": "Evaluation results may take 2-5 minutes to appear, and occasionally evaluations are silently dropped despite tracing being recorded.",
+        "evidence": "평가 결과는 2~5분 소요되며, 추적은 되지만 평가가 누락되는 경우가 가끔 있음.",
+        "source_pages": [
+          108
+        ],
+        "chunk_range": "101-110"
+      },
+      {
+        "name": "Python dict vs JSON",
+        "summary": "Python dict는 따옴표 종류에 유연하지만, JSON은 큰 따옴표만 허용하는 문자열 기반 형식임.",
+        "evidence": "Python dict는 작은/큰 따옴표 모두 가능하지만, JSON은 큰 따옴표만 허용합니다.",
+        "source_pages": [
+          130
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "Single-element tuple in SQLite",
+        "summary": "When passing a single value as a parameter in SQLite, use a trailing comma to form a valid tuple.",
+        "evidence": "입력할값이 1개일 때 튜플 표현 : (값, )",
+        "source_pages": [
+          139
+        ],
+        "chunk_range": "131-140"
+      }
+    ]
+  },
+  "02": {
+    "unit_id": "02",
+    "unit_title": "LLMOps 개념 이해",
+    "source_pages": [
+      7,
+      8,
+      9,
+      10,
+      13,
+      14,
+      16,
+      17,
+      18,
+      19,
+      20,
+      25,
+      37,
+      38,
+      39,
+      40,
+      75,
+      77,
+      78,
+      79,
+      80,
+      95,
+      96,
+      97,
+      98,
+      99,
+      100,
+      122,
+      123,
+      124,
+      125,
+      126,
+      132,
+      134,
+      135,
+      136,
+      137,
+      138,
+      139,
+      140
+    ],
+    "concepts": [
+      {
+        "name": "LLMOps definition",
+        "summary": "LLMOps는 LLM 기반 시스템을 통제하는 것이며, 프롬프트 관리, 체인 흐름 제어, 비용 관리에 집중한다.",
+        "evidence": "LLMOps는 모델을 운영하는 것이 아니라 LLM 기반 시스템을 통제하는 것",
+        "source_pages": [
+          9
+        ],
+        "chunk_range": "1-10"
+      },
+      {
+        "name": "MLOps vs LLMOps",
+        "summary": "MLOps는 데이터와 모델 학습에 초점을 두고, LLMOps는 프롬프트, 체인, 토큰, 추적에 초점을 둔다.",
+        "evidence": "MLOps는 데이터·모델 학습에 집중했고, LLMOps는 프롬프트·체인·에이전트 흐름에 집중",
+        "source_pages": [
+          9
+        ],
+        "chunk_range": "1-10"
+      },
+      {
+        "name": "non-deterministic outputs",
+        "summary": "LLM은 동일한 입력에도 다른 결과를 생성하여 테스트와 품질 일관성이 어려워진다.",
+        "evidence": "같은 입력에도 다른 결과를 생성하는 LLM의 특성 비결정론적 출력",
+        "source_pages": [
+          10
+        ],
+        "chunk_range": "1-10"
+      },
+      {
+        "name": "cost management",
+        "summary": "LLM은 토큰 기반 과금 구조로 호출이 증가할수록 비용이 급증하며, 체인 구조에서 누적 비용이 통제하기 어렵다.",
+        "evidence": "토큰 기반 과금 구조: 호출이 늘어날수록 비용 급증, 체인/멀티 Agent 구조에서 호출이 누적되며 비용 통제 어려움",
+        "source_pages": [
+          10
+        ],
+        "chunk_range": "1-10"
+      },
+      {
+        "name": "latency and UX",
+        "summary": "LLM 시스템의 복잡한 구조는 응답 지연을 증가시켜 사용자 경험을 저하시킨다.",
+        "evidence": "응답 지연 증가 → 사용자 경험(UX) 저하, 구조가 복잡해질수록 비용과 속도가 동시에 악화",
+        "source_pages": [
+          10
+        ],
+        "chunk_range": "1-10"
+      },
+      {
+        "name": "hallucination risk",
+        "summary": "LLM 시스템에서 에이전트 간 잘못된 결과가 전파되면 오류가 증폭되어 시스템 신뢰성이 저하된다.",
+        "evidence": "예외 상황에서 오류 증폭 (Agent 간 잘못된 결과 전파)",
+        "source_pages": [
+          10
+        ],
+        "chunk_range": "1-10"
+      },
+      {
+        "name": "LLMOps focus areas",
+        "summary": "LLMOps는 통제, 비용, 안정성에 집중하여 LLM 애플리케이션의 운영 리스크를 관리한다.",
+        "evidence": "LLMOps는 통제·비용·안정성에 집중하는 이유: 비결정론적 출력, 테스트 어려움, 비용 급증, 지연, 오류 증폭",
+        "source_pages": [
+          10
+        ],
+        "chunk_range": "1-10"
+      },
+      {
+        "name": "course objective",
+        "summary": "이 과정은 LLM 시스템 설계, 운영, 평가를 위한 핵심 요소를 이해하고 규칙 기반 평가 및 시점 관리 역량을 기른다.",
+        "evidence": "LLMOps 전략 수립 및 완성, LLM 시스템 설계·운영·평가, 설계 중점 사항 이해, 시점 관리 및 추적",
+        "source_pages": [
+          5
+        ],
+        "chunk_range": "1-10"
+      },
+      {
+        "name": "DevOps analogy",
+        "summary": "LLMOps는 DevOps의 통합 협업 원리를 모델 생애주기 관리에 적용하여 빠른 배포와 지속적 개선을 추구한다.",
+        "evidence": "DevOps는 개발과 운영의 통합으로 빠른 배포를 이루고, MLOps는 데이터+모델 동시 관리와 자동화 중심",
+        "source_pages": [
+          8
+        ],
+        "chunk_range": "1-10"
+      },
+      {
+        "name": "agent system skills",
+        "summary": "Agent 시스템 구축을 위해 필요한 기술은 LLMOps의 모든 단계(설계, 실행, 관측, 평가, 개선)에 포함된다.",
+        "evidence": "[보조자료]Agent 시스템구축을위한 필요 기술들",
+        "source_pages": [
+          10
+        ],
+        "chunk_range": "1-10"
+      },
+      {
+        "name": "Controllable Agent",
+        "summary": "A system must be controllable, not just functioning, to ensure traceability, reproducibility, and intervention capability during long-term execution.",
+        "evidence": "Well-functioning agents may succeed in demos but fail under exceptions or long-term runs; controllable agents require transparency, reproducibility, and intervention ability.",
+        "source_pages": [
+          11
+        ],
+        "chunk_range": "11-20"
+      },
+      {
+        "name": "LLMOps Cycle",
+        "summary": "LLMOps is a continuous loop of Design, Run, Trace, Evaluate, and Improve to make LLM systems controllable and improvable.",
+        "evidence": "LLMOps involves designing, running, tracing, evaluating, and improving LLM systems to ensure they remain controllable over time.",
+        "source_pages": [
+          11,
+          12
+        ],
+        "chunk_range": "11-20"
+      },
+      {
+        "name": "Technical Debt",
+        "summary": "Technical debt in AI systems arises from skipping proper design, leading to increased rework costs and organizational paralysis.",
+        "evidence": "Like software debt, cutting corners in AI system design leads to accumulating costs; AI copilots increase copied and duplicated code, reducing refactoring.",
+        "source_pages": [
+          14,
+          16
+        ],
+        "chunk_range": "11-20"
+      },
+      {
+        "name": "Design Without AI Overreliance",
+        "summary": "The core problem is not AI dependence but lack of design—leading to chaotic states, unclear roles, and uncontrolled workflows.",
+        "evidence": "Issues like mixed states, unstructured prompts, ambiguous agent roles, and uncontrolled workflows stem from absence of design, not AI use.",
+        "source_pages": [
+          17
+        ],
+        "chunk_range": "11-20"
+      },
+      {
+        "name": "Agent Design Process",
+        "summary": "Designing an AI agent system requires defining the problem, goal, scenarios, architecture, and detailed components like state and prompts.",
+        "evidence": "The process includes problem definition, goal setting, scenario mapping, architecture design (agent roles), and detailed specs for state and prompts.",
+        "source_pages": [
+          18
+        ],
+        "chunk_range": "11-20"
+      },
+      {
+        "name": "Design Documentation",
+        "summary": "Essential design documents for AI agents include role definitions, workflow specs, state definitions, decision policies, and prompt specifications.",
+        "evidence": "Documents must define agent roles, workflow flows, shared state structure, decision rules, and structured prompt instructions for each agent.",
+        "source_pages": [
+          20
+        ],
+        "chunk_range": "11-20"
+      },
+      {
+        "name": "LLMOps Phases",
+        "summary": "The course structure follows a sequence from Design to Improve, with each chapter corresponding to a phase in the LLMOps lifecycle.",
+        "evidence": "Chapters 03–09 map directly to Design, Run, Trace, Evaluate, and Improve phases of LLMOps, as outlined in the course structure.",
+        "source_pages": [
+          13
+        ],
+        "chunk_range": "11-20"
+      },
+      {
+        "name": "HITL Design",
+        "summary": "Human-in-the-loop (HITL) design enables human intervention in agent workflows to correct errors and improve system reliability.",
+        "evidence": "HITL is listed as a key component in LLMOps design for enabling human intervention during agent execution.",
+        "source_pages": [
+          11
+        ],
+        "chunk_range": "11-20"
+      },
+      {
+        "name": "State Management",
+        "summary": "System state must be explicitly defined and tracked to ensure reproducibility and enable snapshot-based recovery and analysis.",
+        "evidence": "State definition is critical for shared data structure, and snapshot storage enables traceability and rollback in agent systems.",
+        "source_pages": [
+          11,
+          19,
+          20
+        ],
+        "chunk_range": "11-20"
+      },
+      {
+        "name": "Decision Policy",
+        "summary": "Decision policies define rules for routing, branching, and next actions in agent workflows to ensure logical and controllable execution.",
+        "evidence": "Decision Policy is a documented rule set that determines how agents route, branch, or choose next actions based on state and inputs.",
+        "source_pages": [
+          11,
+          20
+        ],
+        "chunk_range": "11-20"
+      },
+      {
+        "name": "Observability",
+        "summary": "Observability requires logging I/O, metadata, and token/latency metrics to enable tracing and evaluation of agent behavior.",
+        "evidence": "Run Tree tracing and I/O/metadata recording are essential for observing agent execution and diagnosing failures.",
+        "source_pages": [
+          11
+        ],
+        "chunk_range": "11-20"
+      },
+      {
+        "name": "AI Interview Agent Goal",
+        "summary": "The AI Interview Agent system is designed to provide personalized feedback on job interview responses, particularly for the challenging question of explaining one's strengths.",
+        "evidence": "면접 영역에서‘면접관에게 어떤 질문을 받았을 때 가장 대답하기 어려웠는가’조사에 우리 회사가 왜 지원자를 뽑아야 하는지, 즉 본인의 강점을 소개하는 것이 어려웠다는 의견이 응답률 37.5%로 가장 높게 나타났다.",
+        "source_pages": [
+          21
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "System Workflow Stages",
+        "summary": "The AI Interview Agent workflow consists of sequential stages: resume upload, analysis, strategy planning, question generation, answer evaluation, and report generation.",
+        "evidence": "Resume → 질문 전략 수립 → 질문 생성 → 답변 평가 → 보고서 생성",
+        "source_pages": [
+          23
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Preparation Agent",
+        "summary": "The Preparation Agent analyzes resumes and cover letters to extract key keywords and design interview strategies.",
+        "evidence": "사전준비Agent ▪ 분석 Agent : 이력서/자소서를 분석하여 핵심 내용을 요약하고, 질문을 위한 키워드5~10개 도출 ▪ 전략수립Agent : 면접 질문 영역과 질문 전략을 설계",
+        "source_pages": [
+          24
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Interview Agent Components",
+        "summary": "The Interview Agent comprises four sub-agents: question generation, answer evaluation, report generation, and branching logic for follow-up questions.",
+        "evidence": "면접 Agent ▪ 질문 생성 Agent : 질문 생성, 필요 시 꼬리 질문 생성 ▪ 답변 평가 Agent : 지원자의 답변 평가 ▪ 보고서생성 Agent : 최종적으로 종합 피드백 보고서 생성 ▪ 분기: 꼬리 질문 / 다음 질문 영역 이동 / 면접 종료",
+        "source_pages": [
+          24
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Agent Role Definition",
+        "summary": "Agent roles are clearly defined to ensure predictability and control, specifying responsibilities, inputs, outputs, models, and constraints.",
+        "evidence": "Agent 이름, 역할, 입력, 출력, 사용 모델/도구, 제약 조건, 실패 시 리스크 등으로 각 Agent의 책임과 역할을 명확히 분리",
+        "source_pages": [
+          25
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "State Flow",
+        "summary": "State defines the structured data passed between agents, including resume text, summary, strengths, and message history.",
+        "evidence": "resume_text, resume_summary, strengths, messages 등이 Agent 간 전달되는 데이터 구조로 정의됨",
+        "source_pages": [
+          27
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Decision Logic",
+        "summary": "Decision policies determine branching and looping in the workflow based on conditions like round count, answer quality, and max questions.",
+        "evidence": "round_count >= max_rounds → next_step = \"end\"; 답변 부족 → next_step = \"additional_question\"",
+        "source_pages": [
+          28
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Prompt Specification",
+        "summary": "Prompt specs define the LLM's persona, task instructions, output format, and constraints to ensure consistent and automatable responses.",
+        "evidence": "역할: \"당신은 면접관입니다\", 작업 지침, 평가 기준, 출력 형식: Dict, List, JSON 등으로 명확히 정의",
+        "source_pages": [
+          29,
+          30
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Workflow Loop Structure",
+        "summary": "The workflow includes a loop structure where question → answer → evaluation repeats until termination conditions are met.",
+        "evidence": "질문 → 답변 → 평가 → (반복) 종료 조건: 모든 질문 완료 / 충분한 평가 확보 / 최대 질문 수 도달",
+        "source_pages": [
+          26
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Exit Condition",
+        "summary": "The interview ends when maximum rounds are reached, sufficient evaluation is achieved, or the maximum number of questions is exhausted.",
+        "evidence": "종료 조건: 모든 질문 완료 / 충분한 평가 확보 / 최대 질문 수 도달",
+        "source_pages": [
+          26
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "AI Document Analysis Agent",
+        "summary": "An AI system that automates classification, extraction, and summarization of legal and business documents to reduce manual review burden.",
+        "evidence": "Law and procurement teams manually review dozens of contracts/reports daily; AI agent automates document type classification, key info extraction, and summarization.",
+        "source_pages": [
+          31,
+          32
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "Business Needs for AI Document Analysis",
+        "summary": "Business requires immediate document analysis, standardized extraction of parties/amounts/durations, quality verification, and flexible workflows.",
+        "evidence": "Needs include instant analysis upon upload, standardized extraction (e.g., parties, amounts, periods), quality assurance, and flexible review workflows.",
+        "source_pages": [
+          31
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "Supervisor Pattern",
+        "summary": "A role-based agent architecture where a supervisor coordinates specialized agents for planning, execution, and validation.",
+        "evidence": "POC uses Supervisor pattern with role-based agents to structure document analysis: classification, extraction, verification, and dynamic request handling.",
+        "source_pages": [
+          32,
+          35
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "Design Documentation for AI Agents",
+        "summary": "Reliable AI systems require formal documentation including Agent Role, Workflow, State, Decision Policy, and Prompt Specifications.",
+        "evidence": "AI quality issues stem from design absence, not models; five key documents are required: Agent Role, Workflow, State, Decision Policy, Prompt Spec.",
+        "source_pages": [
+          34,
+          35
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "Planner Agent",
+        "summary": "The Planner breaks down complex tasks into step-by-step plans, identifies tools, and triggers replanning upon failure.",
+        "evidence": "Planner does not execute tasks but decomposes goals into ordered steps, defines required tools/agents, and can trigger replanning based on outcomes.",
+        "source_pages": [
+          37
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "Executor Agent",
+        "summary": "The Executor carries out individual steps from the plan by invoking tools, models, or APIs and returns structured results.",
+        "evidence": "Executor performs actions like search, calculation, or API calls as directed by the plan, updates state, and passes results to next steps.",
+        "source_pages": [
+          38
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "Critic Agent",
+        "summary": "The Critic independently evaluates output for accuracy, consistency, and policy compliance, and triggers re-execution or replanning if needed.",
+        "evidence": "Critic assesses output for correctness, hallucinations, and policy violations, and can request Executor re-execution or Planner replanning.",
+        "source_pages": [
+          39
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "Role-Based Separation",
+        "summary": "Decomposing AI systems into Planner/Executor/Critic roles improves traceability, performance, and operational stability.",
+        "evidence": "Separating roles enables error tracing, role-specific optimization, and stable workflows by assigning distinct responsibilities to each agent.",
+        "source_pages": [
+          37,
+          38,
+          39
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "POC Scope: Contract Analysis",
+        "summary": "The POC focuses on automating analysis of contracts only, extracting parties, duration, and amount with structured output.",
+        "evidence": "POC targets contract documents only, extracting specified fields: parties, duration, amount, and generating summary as shown in sample_contract.pdf example.",
+        "source_pages": [
+          32,
+          33
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "Prompt Specification",
+        "summary": "Precise prompts are critical design artifacts that guide agent behavior and ensure consistent output across executions.",
+        "evidence": "Prompt Spec is one of five required design documents to standardize how agents interpret inputs and generate outputs reliably.",
+        "source_pages": [
+          34,
+          35
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "State Definition",
+        "summary": "State defines the current condition of the agent system, enabling tracking of progress and decision-making during workflows.",
+        "evidence": "State Definition is a required design document to track workflow progress and support decision policies for branching or looping.",
+        "source_pages": [
+          34,
+          35
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "Decision Policy",
+        "summary": "Decision Policy defines conditional logic and retry rules for agent workflows based on evaluation outcomes.",
+        "evidence": "Decision Policy specifies conditions for branching, looping, or triggering replanning based on Critic feedback or execution results.",
+        "source_pages": [
+          34,
+          35
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "Snapshot",
+        "summary": "Snapshot은 특정 시점의 전체 상태(State)를 캡처한 기록으로, 멀티 에이전트 시스템의 디버깅에 사용된다.",
+        "evidence": "특정 step의 상태를 df로 저장해 조회하며, 각 checkpoint는 상태를 저장하는 지점으로 정의됨.",
+        "source_pages": [
+          71,
+          74
+        ],
+        "chunk_range": "71-80"
+      },
+      {
+        "name": "Checkpoint ID",
+        "summary": "Checkpoint는 고유한 checkpoint_id를 가지며, 상태의 이력을 추적하는 데 사용된다.",
+        "evidence": "각 checkpoint는 고유 ID(checkpoint_id)를 가지며, parent_checkpoint_id로 이전 상태를 연결함.",
+        "source_pages": [
+          73
+        ],
+        "chunk_range": "71-80"
+      },
+      {
+        "name": "get_state_history",
+        "summary": "graph.get_state_history(config)는 노드 실행 직후의 상태를 snapshot으로 저장하고, 저장 순서의 역순으로 반환한다.",
+        "evidence": "각 노드 실행 직후의 상태를 snapshot으로 저장하며, 저장된 순서의 역순으로 조회 가능하다고 명시됨.",
+        "source_pages": [
+          74
+        ],
+        "chunk_range": "71-80"
+      },
+      {
+        "name": "LangSmith",
+        "summary": "LangSmith는 LLM 및 AI Agent 애플리케이션의 실행 흐름을 추적하고 정량 평가를 지원하는 Observability 플랫폼이다.",
+        "evidence": "LLM 및 AI Agent 애플리케이션의 실행 흐름을 추적(Trace), 분석하고, 정량 평가(Evaluation)와 비교 실험을 지원한다고 명시됨.",
+        "source_pages": [
+          75,
+          77
+        ],
+        "chunk_range": "71-80"
+      },
+      {
+        "name": "Snapshot vs Trace",
+        "summary": "Snapshot focuses on state changes with single-state objects and iteration-based history, while Trace captures execution flow via run trees including LLM/tool calls.",
+        "evidence": "Snapshot is state-centered with single state objects and snapshot history; Trace is execution-centered with tree structure and call flow.",
+        "source_pages": [
+          91,
+          93
+        ],
+        "chunk_range": "91-100"
+      },
+      {
+        "name": "Reproducibility Difference",
+        "summary": "Snapshots allow reproducible execution from identical states, while traces are hard to reproduce due to environmental and call dependencies.",
+        "evidence": "Snapshots enable re-execution from same state; traces are hard to reproduce due to environment and call impacts.",
+        "source_pages": [
+          91,
+          93
+        ],
+        "chunk_range": "91-100"
+      },
+      {
+        "name": "Multi-Agent Analysis Focus",
+        "summary": "Snapshots help identify at which state a failure occurred, while traces reveal which agent or tool was executed.",
+        "evidence": "Snapshot shows where failure happened; Trace shows which agent or tool was called during execution.",
+        "source_pages": [
+          91,
+          93
+        ],
+        "chunk_range": "91-100"
+      },
+      {
+        "name": "Operational Use Cases",
+        "summary": "Snapshots are used for internal debugging and state validation; traces are used for monitoring, cost, and performance analysis.",
+        "evidence": "Snapshot: internal debugging/state validation; Trace: monitoring, cost, and performance analysis.",
+        "source_pages": [
+          91,
+          93
+        ],
+        "chunk_range": "91-100"
+      },
+      {
+        "name": "LangSmith Purpose",
+        "summary": "LangSmith is an observability and evaluation platform for LLM/Agent systems, enabling trace analysis and performance tracking.",
+        "evidence": "LangSmith is described as an Observability & Evaluation platform for LLM/Agent systems with trace confirmation steps.",
+        "source_pages": [
+          92,
+          93
+        ],
+        "chunk_range": "91-100"
+      },
+      {
+        "name": "Agent Evaluation Complexity",
+        "summary": "AI Agent evaluation is complex due to non-determinism, multi-step execution, external tool dependencies, and ambiguous ground truths.",
+        "evidence": "Agents are complex systems with non-determinism, multi-step processes (planning→tool→reasoning), external API impacts, and no single correct answer.",
+        "source_pages": [
+          96
+        ],
+        "chunk_range": "91-100"
+      },
+      {
+        "name": "Agent Evaluation Framework",
+        "summary": "AI Agent evaluation must consider Task Success, Output Quality, System Performance, and Cost across multiple metrics.",
+        "evidence": "Evaluation includes Task Success (success rate), Output Quality (correctness, relevance), System Performance (latency, steps), and Cost (tokens, calls).",
+        "source_pages": [
+          97
+        ],
+        "chunk_range": "91-100"
+      },
+      {
+        "name": "Rule-based Evaluation",
+        "summary": "Rule-based evaluation uses predefined criteria like accuracy or F1 scores to quantitatively assess agent outputs in a reproducible way.",
+        "evidence": "Rule-based evaluation uses answer data or rules to compute metrics like accuracy, precision, recall, F1, and is objective and reproducible.",
+        "source_pages": [
+          97
+        ],
+        "chunk_range": "91-100"
+      },
+      {
+        "name": "LLM-as-Judge",
+        "summary": "LLM-as-Judge uses another LLM to qualitatively assess output quality like relevance, logic, and naturalness where human judgment is impractical.",
+        "evidence": "LLM-as-Judge evaluates answer quality (accuracy, relevance, logic) in natural language, useful for hard-to-quantify natural language quality.",
+        "source_pages": [
+          98
+        ],
+        "chunk_range": "91-100"
+      },
+      {
+        "name": "Evaluation Method Mapping",
+        "summary": "Rule-based methods apply to Task Success and Cost; LLM-as-Judge applies to Output Quality; System Performance is measured directly.",
+        "evidence": "Rule-based: Task Success (answer comparison), Cost (token count); LLM Judge: Output Quality (relevance/naturalness); System Performance measured directly.",
+        "source_pages": [
+          99
+        ],
+        "chunk_range": "91-100"
+      },
+      {
+        "name": "LLMOps 운영 루프",
+        "summary": "LLM 시스템을 통제 가능하게 만들기 위한 설계-실행-관측-평가-개선의 반복 구조.",
+        "evidence": "운영 개선 루프는 설계(Design), 실행(Run), 관측(Trace), 평가(Evaluate), 개선(Improve)의 단계로 구성됨.",
+        "source_pages": [
+          121
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "Prompt 개선",
+        "summary": "답변 품질을 높이기 위해 지침 강화, 출력 포맷 고정, 실패 케이스 기반 수정을 통해 프롬프트를 반복 개선.",
+        "evidence": "Prompt 개선은 지침 강화, 출력 포맷 고정, 실패 케이스 기반 수정을 통해 이루어짐.",
+        "source_pages": [
+          121
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "멀티 Agent 패턴",
+        "summary": "답변 품질 개선을 위해 여러 에이전트가 협력하는 워크플로우 구조를 설계하는 방법.",
+        "evidence": "멀티 Agent 패턴은 워크플로우를 개선하여 답변 품질을 높이는 방식으로 제시됨.",
+        "source_pages": [
+          121
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "정책 개선 (Decision Policy)",
+        "summary": "LLM의 의사결정 기준을 측정과 A/B 테스트를 통해 개선하고, HITL 조건을 명시적으로 추가.",
+        "evidence": "정책 개선은 LLM-as-Judge로 측정하고, HITL 조건을 프롬프트에 명시(3문장 이내)하여 반영함.",
+        "source_pages": [
+          121
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "실패 케이스 데이터셋 축적",
+        "summary": "시스템 오류를 분석하고 재학습을 위해 실패 사례를 체계적으로 수집하는 데이터 기반 개선 전략.",
+        "evidence": "실패 케이스 데이터셋을 축적한 후 재검증을 통해 개선을 수행함.",
+        "source_pages": [
+          121
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "A/B 테스트",
+        "summary": "두 가지 버전의 시스템을 비교하여 품질, 비용, 시간 등의 성과를 측정하고 개선 방향을 결정.",
+        "evidence": "A/B 비교 및 반복 개선을 통해 비용 대비 품질을 최적화함.",
+        "source_pages": [
+          121
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "모델 드리프트",
+        "summary": "시간이 지남에 따라 데이터나 모델의 통계적 특성이 변화하여 성능이 저하되는 현상.",
+        "evidence": "드리프트는 시간이 지남에 따라 데이터, 모델, 환경이 변화해 모델 예측 성능이 점차 저하되는 현상.",
+        "source_pages": [
+          122
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "데이터 드리프트",
+        "summary": "입력 데이터의 분포가 학습 시와 달라져 모델 성능에 영향을 주는 드리프트 유형.",
+        "evidence": "사용자 연령대가 20대에서 40대로 이동하는 경우처럼 입력 데이터 분포가 변화하는 현상.",
+        "source_pages": [
+          124
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "개념 드리프트",
+        "summary": "입력과 출력 간의 관계가 변화하여 모델의 예측 정확도가 떨어지는 현상.",
+        "evidence": "사기 패턴이 새로운 방식으로 변하는 경우처럼 입력과 출력 간의 관계가 바뀌는 현상.",
+        "source_pages": [
+          124
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "모델 드리프트",
+        "summary": "모델의 예측 성능(AUC, 정확도 등)이 시간에 따라 감소하는 현상.",
+        "evidence": "입력/문제 변화로 인해 모델이 제대로 작동하지 않아 성능이 하락하는 현상.",
+        "source_pages": [
+          124
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "예측값 드리프트",
+        "summary": "모델의 예측값 분포가 학습 시와 달라져 이상 탐지에 활용되는 드리프트 유형.",
+        "evidence": "레이블이 없는 상황에서도 예측값 분포의 변화를 통해 이상을 탐지할 수 있음.",
+        "source_pages": [
+          124
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "JSON 형식",
+        "summary": "데이터 저장 및 교환을 위한 표준 문자열 형식으로, LLM의 구조화된 출력에 자주 사용됨.",
+        "evidence": "JSON은 API 응답, 설정 파일, LLM 구조화 출력, DB 저장 등에 자주 사용되는 표준 형식.",
+        "source_pages": [
+          127
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "JSON serialization",
+        "summary": "JSON is used to serialize Python data structures for external communication or storage.",
+        "evidence": "JSON은 파이썬 외부로 데이터를 주고 받을 때, 자주 사용되는 데이터 포맷",
+        "source_pages": [
+          131
+        ],
+        "chunk_range": "131-140"
+      },
+      {
+        "name": "JSON in Agent systems",
+        "summary": "Agent systems use JSON to store internal state as dictionaries and convert them to JSON strings for database insertion.",
+        "evidence": "Agent 에서 JSON 활용 예: 결과 State가 Dictionary 형태, DB저장 시 JSON 문자열로 변환하여 Insert",
+        "source_pages": [
+          131
+        ],
+        "chunk_range": "131-140"
+      },
+      {
+        "name": "SQLite overview",
+        "summary": "SQLite is a lightweight, file-based database that requires no separate server and stores data in a single .db file.",
+        "evidence": "SQLite : 가벼운 파일 기반 데이터베이스, 별도의 DB 서버가 필요 없고, DB가 하나의 파일(.db)로 저장",
+        "source_pages": [
+          132
+        ],
+        "chunk_range": "131-140"
+      },
+      {
+        "name": "Pandas DataFrame vs SQLite Table",
+        "summary": "While both Pandas DataFrames and SQLite tables use rows and columns, DataFrames are for analysis and temporary use, while SQLite tables ensure persistent, consistent storage.",
+        "evidence": "Pandas 데이터프레임: 프로그램종료 시 사라짐, DB 테이블: 영구 저장, 데이터일관성 중요",
+        "source_pages": [
+          135
+        ],
+        "chunk_range": "131-140"
+      }
+    ],
+    "code_examples": [
+      {
+        "name": "Prompt Specification",
+        "summary": "Prompts must be structured with clear instructions, output formats, and constraints to ensure consistent agent behavior.",
+        "evidence": "Prompt Spec defines guidelines, output formats, and constraints for each agent to standardize behavior and reduce ambiguity.",
+        "source_pages": [
+          20
+        ],
+        "chunk_range": "11-20"
+      },
+      {
+        "name": "Template-Driven Design",
+        "summary": "Design documents for AI agents follow standardized templates to ensure consistency and completeness across projects.",
+        "evidence": "Teams use provided Excel templates: Ch03_Agent 역할 정의서_양식.xlsx and Ch03_Workflow 명세서 외 기타 설계문서들_양식.xlsx for documentation.",
+        "source_pages": [
+          34
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "Example Code for Role-Based Design",
+        "summary": "A Jupyter notebook example demonstrates a simple role-based agent system with Planner, Executor, and Critic components.",
+        "evidence": "Example code is provided in 'Ch04. [Design] 역할 기반 설계.ipynb' under section '2. 간단한 역할 기반 설계'.",
+        "source_pages": [
+          40
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "Resume from checkpoint",
+        "summary": "이전 체크포인트 설정을 사용하여 실행을 재개할 수 있으며, None 입력은 저장된 상태에서 이어서 실행함을 의미한다.",
+        "evidence": "resume_config = target.config로 저장된 설정을 사용하고, graph.invoke(None, config=resume_config)로 재실행함.",
+        "source_pages": [
+          72
+        ],
+        "chunk_range": "71-80"
+      },
+      {
+        "name": "API Key Setup",
+        "summary": "LangSmith API 키는 Settings에서 생성한 후 api_key.txt 파일에 LANGSMITH_API_KEY 변수로 저장한다.",
+        "evidence": "api_key.txt 파일에 LANGSMITH_API_KEY = lsv2_pt_27286f43d… 형태로 키를 추가한다고 명시됨.",
+        "source_pages": [
+          79,
+          80
+        ],
+        "chunk_range": "71-80"
+      },
+      {
+        "name": "Agent Evaluation Scenario",
+        "summary": "A movie recommendation agent takes user mood input and recommends two films, evaluated via test datasets and LangSmith trace-based evaluators.",
+        "evidence": "Scenario: Agent recommends movies based on user mood ('tired, stressed'); evaluated using test dataset and LangSmith evaluator registration.",
+        "source_pages": [
+          100
+        ],
+        "chunk_range": "91-100"
+      },
+      {
+        "name": "Network Pattern Lab",
+        "summary": "A multi-agent network pattern is built to handle customer requests (receipt, refund, tech support) and observed via LangSmith traces.",
+        "evidence": "Network pattern: handles customer requests (receipt, refund, tech support); refund/tech history summarized; execution observed in LangSmith.",
+        "source_pages": [
+          91,
+          92
+        ],
+        "chunk_range": "91-100"
+      },
+      {
+        "name": "KS-Test",
+        "summary": "수치형 변수의 분포 변화를 검정하여 데이터 드리프트를 탐지하는 통계적 기법.",
+        "evidence": "KS-Test는 수치형 변수의 분포 변화를 검정하는 데 사용되는 기법으로 명시됨.",
+        "source_pages": [
+          126
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "Chi-square Test",
+        "summary": "범주형 변수의 분포 변화를 검정하여 데이터 드리프트를 탐지하는 통계적 기법.",
+        "evidence": "Chi-square Test는 범주형 변수의 분포 변화를 검정하는 데 사용되는 기법으로 명시됨.",
+        "source_pages": [
+          126
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "json.dumps and json.loads",
+        "summary": "json.dumps converts a Python object to a JSON string, and json.loads parses a JSON string back to a Python object.",
+        "evidence": ".dumps, .loads for JSON string conversion",
+        "source_pages": [
+          131
+        ],
+        "chunk_range": "131-140"
+      },
+      {
+        "name": "json.dump and json.load",
+        "summary": "json.dump writes a Python object directly to a JSON file, and json.load reads a JSON file into a Python object.",
+        "evidence": "파일을 파이썬 파일 객체로 만들고, json 파일로 저장, 읽기 : .dump, .load",
+        "source_pages": [
+          131
+        ],
+        "chunk_range": "131-140"
+      },
+      {
+        "name": "SQLite connection and cursor",
+        "summary": "To interact with SQLite in Python, connect using sqlite3.connect() and use a cursor object to execute SQL commands.",
+        "evidence": "conn = sqlite3.connect(\"testdb.db\"), cursor = conn.cursor(), cursor.execute(\"SQL\")",
+        "source_pages": [
+          134
+        ],
+        "chunk_range": "131-140"
+      },
+      {
+        "name": "SQLite table creation",
+        "summary": "A SQLite table is created using CREATE TABLE with column definitions and executed via cursor.execute(), followed by commit.",
+        "evidence": "cursor.execute(\"\"\"CREATE TABLE test_table (id INTEGER PRIMARY KEY, input_text TEXT, label INTEGER)\"\"\") and conn.commit()",
+        "source_pages": [
+          134
+        ],
+        "chunk_range": "131-140"
+      },
+      {
+        "name": "SQLite INSERT with placeholders",
+        "summary": "Use ? placeholders in SQL and pass values as a tuple to cursor.execute() for safe data insertion.",
+        "evidence": "cursor.execute(\"INSERT INTO movies (movie_name, genre, year) VALUES (?, ?, ?)\", (\"타이타닉\", \"드라마\", 1997))",
+        "source_pages": [
+          136
+        ],
+        "chunk_range": "131-140"
+      },
+      {
+        "name": "SQLite bulk INSERT",
+        "summary": "Use cursor.executemany() to insert multiple rows at once by passing a list of tuples.",
+        "evidence": "cursor.executemany(\"INSERT INTO movies (...) VALUES (?, ?, ?)\", movies_data)",
+        "source_pages": [
+          136
+        ],
+        "chunk_range": "131-140"
+      },
+      {
+        "name": "Pandas to_sql for SQLite",
+        "summary": "Use DataFrame.to_sql() to write a pandas DataFrame directly to a SQLite table with options for append or replace.",
+        "evidence": "df.to_sql(\"movies\", conn, if_exists=\"append\", index=False)",
+        "source_pages": [
+          137
+        ],
+        "chunk_range": "131-140"
+      },
+      {
+        "name": "SQLite SELECT with cursor",
+        "summary": "Use cursor.execute(\"SELECT * FROM table\") and fetchall() to retrieve all rows as a list of tuples.",
+        "evidence": "cursor.execute(\"SELECT * FROM movies\"), rows = cursor.fetchall()",
+        "source_pages": [
+          138
+        ],
+        "chunk_range": "131-140"
+      },
+      {
+        "name": "SQLite SELECT with pandas",
+        "summary": "Use pd.read_sql() to execute an SQL query and directly return a pandas DataFrame.",
+        "evidence": "df = pd.read_sql(\"SELECT * FROM movies\", conn)",
+        "source_pages": [
+          138
+        ],
+        "chunk_range": "131-140"
+      },
+      {
+        "name": "SQLite UPDATE and DELETE",
+        "summary": "Use UPDATE and DELETE SQL statements with WHERE clauses and commit to modify or remove data in SQLite.",
+        "evidence": "cursor.execute(\"UPDATE movies SET genre = ? WHERE movie_name = ?\", (\"애니메이션\", \"알라딘\"))",
+        "source_pages": [
+          139
+        ],
+        "chunk_range": "131-140"
+      }
+    ],
+    "cautions": [
+      {
+        "name": "Time Savings from Automation",
+        "summary": "Manual document review takes 20 minutes per document, causing delays in urgent cases and inconsistent outcomes.",
+        "evidence": "Each document takes 20 minutes on average to review manually, leading to delays in urgent cases and inconsistent extraction due to human variability.",
+        "source_pages": [
+          31
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "Inconsistent Document Formats",
+        "summary": "Variability in contract formats across vendors leads to unreliable manual extraction and requires AI to handle diverse structures.",
+        "evidence": "Different vendors use varying document formats, making manual extraction inconsistent; AI must adapt to diverse structures automatically.",
+        "source_pages": [
+          31
+        ],
+        "chunk_range": "31-40"
+      },
+      {
+        "name": "Branch Consideration",
+        "summary": "실전에서는 branch 개념을 고려해야 하지만, 이 예제에서는 특정 스텝 재실행만 다룬다.",
+        "evidence": "실전에서는 branch 개념까지 고려해야 하지만, 여기서는 특정 스텝을 재실행해보는 방법만 확인합니다라고 경고됨.",
+        "source_pages": [
+          72
+        ],
+        "chunk_range": "71-80"
+      },
+      {
+        "name": "Python dict vs JSON",
+        "summary": "Python dict는 따옴표 종류에 유연하지만, JSON은 큰 따옴표만 허용하는 문자열 기반 형식임.",
+        "evidence": "Python dict는 작은/큰 따옴표 모두 가능하지만, JSON은 큰 따옴표만 허용합니다.",
+        "source_pages": [
+          130
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "Single-element tuple in SQLite",
+        "summary": "When passing a single value as a parameter in SQLite, use a trailing comma to form a valid tuple.",
+        "evidence": "입력할값이 1개일 때 튜플 표현 : (값, )",
+        "source_pages": [
+          139
+        ],
+        "chunk_range": "131-140"
+      }
+    ]
+  },
+  "03": {
+    "unit_id": "03",
+    "unit_title": "Workflow Specification",
+    "source_pages": [
+      26,
+      127,
+      130
+    ],
+    "concepts": [
+      {
+        "name": "AI Interview Agent Goal",
+        "summary": "The AI Interview Agent system is designed to provide personalized feedback on job interview responses, particularly for the challenging question of explaining one's strengths.",
+        "evidence": "면접 영역에서‘면접관에게 어떤 질문을 받았을 때 가장 대답하기 어려웠는가’조사에 우리 회사가 왜 지원자를 뽑아야 하는지, 즉 본인의 강점을 소개하는 것이 어려웠다는 의견이 응답률 37.5%로 가장 높게 나타났다.",
+        "source_pages": [
+          21
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "System Workflow Stages",
+        "summary": "The AI Interview Agent workflow consists of sequential stages: resume upload, analysis, strategy planning, question generation, answer evaluation, and report generation.",
+        "evidence": "Resume → 질문 전략 수립 → 질문 생성 → 답변 평가 → 보고서 생성",
+        "source_pages": [
+          23
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Preparation Agent",
+        "summary": "The Preparation Agent analyzes resumes and cover letters to extract key keywords and design interview strategies.",
+        "evidence": "사전준비Agent ▪ 분석 Agent : 이력서/자소서를 분석하여 핵심 내용을 요약하고, 질문을 위한 키워드5~10개 도출 ▪ 전략수립Agent : 면접 질문 영역과 질문 전략을 설계",
+        "source_pages": [
+          24
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Interview Agent Components",
+        "summary": "The Interview Agent comprises four sub-agents: question generation, answer evaluation, report generation, and branching logic for follow-up questions.",
+        "evidence": "면접 Agent ▪ 질문 생성 Agent : 질문 생성, 필요 시 꼬리 질문 생성 ▪ 답변 평가 Agent : 지원자의 답변 평가 ▪ 보고서생성 Agent : 최종적으로 종합 피드백 보고서 생성 ▪ 분기: 꼬리 질문 / 다음 질문 영역 이동 / 면접 종료",
+        "source_pages": [
+          24
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Agent Role Definition",
+        "summary": "Agent roles are clearly defined to ensure predictability and control, specifying responsibilities, inputs, outputs, models, and constraints.",
+        "evidence": "Agent 이름, 역할, 입력, 출력, 사용 모델/도구, 제약 조건, 실패 시 리스크 등으로 각 Agent의 책임과 역할을 명확히 분리",
+        "source_pages": [
+          25
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "State Flow",
+        "summary": "State defines the structured data passed between agents, including resume text, summary, strengths, and message history.",
+        "evidence": "resume_text, resume_summary, strengths, messages 등이 Agent 간 전달되는 데이터 구조로 정의됨",
+        "source_pages": [
+          27
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Decision Logic",
+        "summary": "Decision policies determine branching and looping in the workflow based on conditions like round count, answer quality, and max questions.",
+        "evidence": "round_count >= max_rounds → next_step = \"end\"; 답변 부족 → next_step = \"additional_question\"",
+        "source_pages": [
+          28
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Prompt Specification",
+        "summary": "Prompt specs define the LLM's persona, task instructions, output format, and constraints to ensure consistent and automatable responses.",
+        "evidence": "역할: \"당신은 면접관입니다\", 작업 지침, 평가 기준, 출력 형식: Dict, List, JSON 등으로 명확히 정의",
+        "source_pages": [
+          29,
+          30
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Workflow Loop Structure",
+        "summary": "The workflow includes a loop structure where question → answer → evaluation repeats until termination conditions are met.",
+        "evidence": "질문 → 답변 → 평가 → (반복) 종료 조건: 모든 질문 완료 / 충분한 평가 확보 / 최대 질문 수 도달",
+        "source_pages": [
+          26
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Exit Condition",
+        "summary": "The interview ends when maximum rounds are reached, sufficient evaluation is achieved, or the maximum number of questions is exhausted.",
+        "evidence": "종료 조건: 모든 질문 완료 / 충분한 평가 확보 / 최대 질문 수 도달",
+        "source_pages": [
+          26
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "LLMOps 운영 루프",
+        "summary": "LLM 시스템을 통제 가능하게 만들기 위한 설계-실행-관측-평가-개선의 반복 구조.",
+        "evidence": "운영 개선 루프는 설계(Design), 실행(Run), 관측(Trace), 평가(Evaluate), 개선(Improve)의 단계로 구성됨.",
+        "source_pages": [
+          121
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "Prompt 개선",
+        "summary": "답변 품질을 높이기 위해 지침 강화, 출력 포맷 고정, 실패 케이스 기반 수정을 통해 프롬프트를 반복 개선.",
+        "evidence": "Prompt 개선은 지침 강화, 출력 포맷 고정, 실패 케이스 기반 수정을 통해 이루어짐.",
+        "source_pages": [
+          121
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "멀티 Agent 패턴",
+        "summary": "답변 품질 개선을 위해 여러 에이전트가 협력하는 워크플로우 구조를 설계하는 방법.",
+        "evidence": "멀티 Agent 패턴은 워크플로우를 개선하여 답변 품질을 높이는 방식으로 제시됨.",
+        "source_pages": [
+          121
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "정책 개선 (Decision Policy)",
+        "summary": "LLM의 의사결정 기준을 측정과 A/B 테스트를 통해 개선하고, HITL 조건을 명시적으로 추가.",
+        "evidence": "정책 개선은 LLM-as-Judge로 측정하고, HITL 조건을 프롬프트에 명시(3문장 이내)하여 반영함.",
+        "source_pages": [
+          121
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "실패 케이스 데이터셋 축적",
+        "summary": "시스템 오류를 분석하고 재학습을 위해 실패 사례를 체계적으로 수집하는 데이터 기반 개선 전략.",
+        "evidence": "실패 케이스 데이터셋을 축적한 후 재검증을 통해 개선을 수행함.",
+        "source_pages": [
+          121
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "A/B 테스트",
+        "summary": "두 가지 버전의 시스템을 비교하여 품질, 비용, 시간 등의 성과를 측정하고 개선 방향을 결정.",
+        "evidence": "A/B 비교 및 반복 개선을 통해 비용 대비 품질을 최적화함.",
+        "source_pages": [
+          121
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "모델 드리프트",
+        "summary": "시간이 지남에 따라 데이터나 모델의 통계적 특성이 변화하여 성능이 저하되는 현상.",
+        "evidence": "드리프트는 시간이 지남에 따라 데이터, 모델, 환경이 변화해 모델 예측 성능이 점차 저하되는 현상.",
+        "source_pages": [
+          122
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "데이터 드리프트",
+        "summary": "입력 데이터의 분포가 학습 시와 달라져 모델 성능에 영향을 주는 드리프트 유형.",
+        "evidence": "사용자 연령대가 20대에서 40대로 이동하는 경우처럼 입력 데이터 분포가 변화하는 현상.",
+        "source_pages": [
+          124
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "개념 드리프트",
+        "summary": "입력과 출력 간의 관계가 변화하여 모델의 예측 정확도가 떨어지는 현상.",
+        "evidence": "사기 패턴이 새로운 방식으로 변하는 경우처럼 입력과 출력 간의 관계가 바뀌는 현상.",
+        "source_pages": [
+          124
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "모델 드리프트",
+        "summary": "모델의 예측 성능(AUC, 정확도 등)이 시간에 따라 감소하는 현상.",
+        "evidence": "입력/문제 변화로 인해 모델이 제대로 작동하지 않아 성능이 하락하는 현상.",
+        "source_pages": [
+          124
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "예측값 드리프트",
+        "summary": "모델의 예측값 분포가 학습 시와 달라져 이상 탐지에 활용되는 드리프트 유형.",
+        "evidence": "레이블이 없는 상황에서도 예측값 분포의 변화를 통해 이상을 탐지할 수 있음.",
+        "source_pages": [
+          124
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "JSON 형식",
+        "summary": "데이터 저장 및 교환을 위한 표준 문자열 형식으로, LLM의 구조화된 출력에 자주 사용됨.",
+        "evidence": "JSON은 API 응답, 설정 파일, LLM 구조화 출력, DB 저장 등에 자주 사용되는 표준 형식.",
+        "source_pages": [
+          127
+        ],
+        "chunk_range": "121-130"
+      }
+    ],
+    "code_examples": [
+      {
+        "name": "KS-Test",
+        "summary": "수치형 변수의 분포 변화를 검정하여 데이터 드리프트를 탐지하는 통계적 기법.",
+        "evidence": "KS-Test는 수치형 변수의 분포 변화를 검정하는 데 사용되는 기법으로 명시됨.",
+        "source_pages": [
+          126
+        ],
+        "chunk_range": "121-130"
+      },
+      {
+        "name": "Chi-square Test",
+        "summary": "범주형 변수의 분포 변화를 검정하여 데이터 드리프트를 탐지하는 통계적 기법.",
+        "evidence": "Chi-square Test는 범주형 변수의 분포 변화를 검정하는 데 사용되는 기법으로 명시됨.",
+        "source_pages": [
+          126
+        ],
+        "chunk_range": "121-130"
+      }
+    ],
+    "cautions": [
+      {
+        "name": "Python dict vs JSON",
+        "summary": "Python dict는 따옴표 종류에 유연하지만, JSON은 큰 따옴표만 허용하는 문자열 기반 형식임.",
+        "evidence": "Python dict는 작은/큰 따옴표 모두 가능하지만, JSON은 큰 따옴표만 허용합니다.",
+        "source_pages": [
+          130
+        ],
+        "chunk_range": "121-130"
+      }
+    ]
+  },
+  "04": {
+    "unit_id": "04",
+    "unit_title": "State Definition",
+    "source_pages": [
+      27
+    ],
+    "concepts": [
+      {
+        "name": "AI Interview Agent Goal",
+        "summary": "The AI Interview Agent system is designed to provide personalized feedback on job interview responses, particularly for the challenging question of explaining one's strengths.",
+        "evidence": "면접 영역에서‘면접관에게 어떤 질문을 받았을 때 가장 대답하기 어려웠는가’조사에 우리 회사가 왜 지원자를 뽑아야 하는지, 즉 본인의 강점을 소개하는 것이 어려웠다는 의견이 응답률 37.5%로 가장 높게 나타났다.",
+        "source_pages": [
+          21
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "System Workflow Stages",
+        "summary": "The AI Interview Agent workflow consists of sequential stages: resume upload, analysis, strategy planning, question generation, answer evaluation, and report generation.",
+        "evidence": "Resume → 질문 전략 수립 → 질문 생성 → 답변 평가 → 보고서 생성",
+        "source_pages": [
+          23
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Preparation Agent",
+        "summary": "The Preparation Agent analyzes resumes and cover letters to extract key keywords and design interview strategies.",
+        "evidence": "사전준비Agent ▪ 분석 Agent : 이력서/자소서를 분석하여 핵심 내용을 요약하고, 질문을 위한 키워드5~10개 도출 ▪ 전략수립Agent : 면접 질문 영역과 질문 전략을 설계",
+        "source_pages": [
+          24
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Interview Agent Components",
+        "summary": "The Interview Agent comprises four sub-agents: question generation, answer evaluation, report generation, and branching logic for follow-up questions.",
+        "evidence": "면접 Agent ▪ 질문 생성 Agent : 질문 생성, 필요 시 꼬리 질문 생성 ▪ 답변 평가 Agent : 지원자의 답변 평가 ▪ 보고서생성 Agent : 최종적으로 종합 피드백 보고서 생성 ▪ 분기: 꼬리 질문 / 다음 질문 영역 이동 / 면접 종료",
+        "source_pages": [
+          24
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Agent Role Definition",
+        "summary": "Agent roles are clearly defined to ensure predictability and control, specifying responsibilities, inputs, outputs, models, and constraints.",
+        "evidence": "Agent 이름, 역할, 입력, 출력, 사용 모델/도구, 제약 조건, 실패 시 리스크 등으로 각 Agent의 책임과 역할을 명확히 분리",
+        "source_pages": [
+          25
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "State Flow",
+        "summary": "State defines the structured data passed between agents, including resume text, summary, strengths, and message history.",
+        "evidence": "resume_text, resume_summary, strengths, messages 등이 Agent 간 전달되는 데이터 구조로 정의됨",
+        "source_pages": [
+          27
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Decision Logic",
+        "summary": "Decision policies determine branching and looping in the workflow based on conditions like round count, answer quality, and max questions.",
+        "evidence": "round_count >= max_rounds → next_step = \"end\"; 답변 부족 → next_step = \"additional_question\"",
+        "source_pages": [
+          28
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Prompt Specification",
+        "summary": "Prompt specs define the LLM's persona, task instructions, output format, and constraints to ensure consistent and automatable responses.",
+        "evidence": "역할: \"당신은 면접관입니다\", 작업 지침, 평가 기준, 출력 형식: Dict, List, JSON 등으로 명확히 정의",
+        "source_pages": [
+          29,
+          30
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Workflow Loop Structure",
+        "summary": "The workflow includes a loop structure where question → answer → evaluation repeats until termination conditions are met.",
+        "evidence": "질문 → 답변 → 평가 → (반복) 종료 조건: 모든 질문 완료 / 충분한 평가 확보 / 최대 질문 수 도달",
+        "source_pages": [
+          26
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Exit Condition",
+        "summary": "The interview ends when maximum rounds are reached, sufficient evaluation is achieved, or the maximum number of questions is exhausted.",
+        "evidence": "종료 조건: 모든 질문 완료 / 충분한 평가 확보 / 최대 질문 수 도달",
+        "source_pages": [
+          26
+        ],
+        "chunk_range": "21-30"
+      }
+    ],
+    "code_examples": [],
+    "cautions": []
+  },
+  "05": {
+    "unit_id": "05",
+    "unit_title": "Decision Policy",
+    "source_pages": [
+      28
+    ],
+    "concepts": [
+      {
+        "name": "AI Interview Agent Goal",
+        "summary": "The AI Interview Agent system is designed to provide personalized feedback on job interview responses, particularly for the challenging question of explaining one's strengths.",
+        "evidence": "면접 영역에서‘면접관에게 어떤 질문을 받았을 때 가장 대답하기 어려웠는가’조사에 우리 회사가 왜 지원자를 뽑아야 하는지, 즉 본인의 강점을 소개하는 것이 어려웠다는 의견이 응답률 37.5%로 가장 높게 나타났다.",
+        "source_pages": [
+          21
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "System Workflow Stages",
+        "summary": "The AI Interview Agent workflow consists of sequential stages: resume upload, analysis, strategy planning, question generation, answer evaluation, and report generation.",
+        "evidence": "Resume → 질문 전략 수립 → 질문 생성 → 답변 평가 → 보고서 생성",
+        "source_pages": [
+          23
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Preparation Agent",
+        "summary": "The Preparation Agent analyzes resumes and cover letters to extract key keywords and design interview strategies.",
+        "evidence": "사전준비Agent ▪ 분석 Agent : 이력서/자소서를 분석하여 핵심 내용을 요약하고, 질문을 위한 키워드5~10개 도출 ▪ 전략수립Agent : 면접 질문 영역과 질문 전략을 설계",
+        "source_pages": [
+          24
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Interview Agent Components",
+        "summary": "The Interview Agent comprises four sub-agents: question generation, answer evaluation, report generation, and branching logic for follow-up questions.",
+        "evidence": "면접 Agent ▪ 질문 생성 Agent : 질문 생성, 필요 시 꼬리 질문 생성 ▪ 답변 평가 Agent : 지원자의 답변 평가 ▪ 보고서생성 Agent : 최종적으로 종합 피드백 보고서 생성 ▪ 분기: 꼬리 질문 / 다음 질문 영역 이동 / 면접 종료",
+        "source_pages": [
+          24
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Agent Role Definition",
+        "summary": "Agent roles are clearly defined to ensure predictability and control, specifying responsibilities, inputs, outputs, models, and constraints.",
+        "evidence": "Agent 이름, 역할, 입력, 출력, 사용 모델/도구, 제약 조건, 실패 시 리스크 등으로 각 Agent의 책임과 역할을 명확히 분리",
+        "source_pages": [
+          25
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "State Flow",
+        "summary": "State defines the structured data passed between agents, including resume text, summary, strengths, and message history.",
+        "evidence": "resume_text, resume_summary, strengths, messages 등이 Agent 간 전달되는 데이터 구조로 정의됨",
+        "source_pages": [
+          27
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Decision Logic",
+        "summary": "Decision policies determine branching and looping in the workflow based on conditions like round count, answer quality, and max questions.",
+        "evidence": "round_count >= max_rounds → next_step = \"end\"; 답변 부족 → next_step = \"additional_question\"",
+        "source_pages": [
+          28
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Prompt Specification",
+        "summary": "Prompt specs define the LLM's persona, task instructions, output format, and constraints to ensure consistent and automatable responses.",
+        "evidence": "역할: \"당신은 면접관입니다\", 작업 지침, 평가 기준, 출력 형식: Dict, List, JSON 등으로 명확히 정의",
+        "source_pages": [
+          29,
+          30
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Workflow Loop Structure",
+        "summary": "The workflow includes a loop structure where question → answer → evaluation repeats until termination conditions are met.",
+        "evidence": "질문 → 답변 → 평가 → (반복) 종료 조건: 모든 질문 완료 / 충분한 평가 확보 / 최대 질문 수 도달",
+        "source_pages": [
+          26
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Exit Condition",
+        "summary": "The interview ends when maximum rounds are reached, sufficient evaluation is achieved, or the maximum number of questions is exhausted.",
+        "evidence": "종료 조건: 모든 질문 완료 / 충분한 평가 확보 / 최대 질문 수 도달",
+        "source_pages": [
+          26
+        ],
+        "chunk_range": "21-30"
+      }
+    ],
+    "code_examples": [],
+    "cautions": []
+  },
+  "06": {
+    "unit_id": "06",
+    "unit_title": "Prompt Specification",
+    "source_pages": [
+      29,
+      30
+    ],
+    "concepts": [
+      {
+        "name": "AI Interview Agent Goal",
+        "summary": "The AI Interview Agent system is designed to provide personalized feedback on job interview responses, particularly for the challenging question of explaining one's strengths.",
+        "evidence": "면접 영역에서‘면접관에게 어떤 질문을 받았을 때 가장 대답하기 어려웠는가’조사에 우리 회사가 왜 지원자를 뽑아야 하는지, 즉 본인의 강점을 소개하는 것이 어려웠다는 의견이 응답률 37.5%로 가장 높게 나타났다.",
+        "source_pages": [
+          21
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "System Workflow Stages",
+        "summary": "The AI Interview Agent workflow consists of sequential stages: resume upload, analysis, strategy planning, question generation, answer evaluation, and report generation.",
+        "evidence": "Resume → 질문 전략 수립 → 질문 생성 → 답변 평가 → 보고서 생성",
+        "source_pages": [
+          23
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Preparation Agent",
+        "summary": "The Preparation Agent analyzes resumes and cover letters to extract key keywords and design interview strategies.",
+        "evidence": "사전준비Agent ▪ 분석 Agent : 이력서/자소서를 분석하여 핵심 내용을 요약하고, 질문을 위한 키워드5~10개 도출 ▪ 전략수립Agent : 면접 질문 영역과 질문 전략을 설계",
+        "source_pages": [
+          24
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Interview Agent Components",
+        "summary": "The Interview Agent comprises four sub-agents: question generation, answer evaluation, report generation, and branching logic for follow-up questions.",
+        "evidence": "면접 Agent ▪ 질문 생성 Agent : 질문 생성, 필요 시 꼬리 질문 생성 ▪ 답변 평가 Agent : 지원자의 답변 평가 ▪ 보고서생성 Agent : 최종적으로 종합 피드백 보고서 생성 ▪ 분기: 꼬리 질문 / 다음 질문 영역 이동 / 면접 종료",
+        "source_pages": [
+          24
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Agent Role Definition",
+        "summary": "Agent roles are clearly defined to ensure predictability and control, specifying responsibilities, inputs, outputs, models, and constraints.",
+        "evidence": "Agent 이름, 역할, 입력, 출력, 사용 모델/도구, 제약 조건, 실패 시 리스크 등으로 각 Agent의 책임과 역할을 명확히 분리",
+        "source_pages": [
+          25
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "State Flow",
+        "summary": "State defines the structured data passed between agents, including resume text, summary, strengths, and message history.",
+        "evidence": "resume_text, resume_summary, strengths, messages 등이 Agent 간 전달되는 데이터 구조로 정의됨",
+        "source_pages": [
+          27
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Decision Logic",
+        "summary": "Decision policies determine branching and looping in the workflow based on conditions like round count, answer quality, and max questions.",
+        "evidence": "round_count >= max_rounds → next_step = \"end\"; 답변 부족 → next_step = \"additional_question\"",
+        "source_pages": [
+          28
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Prompt Specification",
+        "summary": "Prompt specs define the LLM's persona, task instructions, output format, and constraints to ensure consistent and automatable responses.",
+        "evidence": "역할: \"당신은 면접관입니다\", 작업 지침, 평가 기준, 출력 형식: Dict, List, JSON 등으로 명확히 정의",
+        "source_pages": [
+          29,
+          30
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Workflow Loop Structure",
+        "summary": "The workflow includes a loop structure where question → answer → evaluation repeats until termination conditions are met.",
+        "evidence": "질문 → 답변 → 평가 → (반복) 종료 조건: 모든 질문 완료 / 충분한 평가 확보 / 최대 질문 수 도달",
+        "source_pages": [
+          26
+        ],
+        "chunk_range": "21-30"
+      },
+      {
+        "name": "Exit Condition",
+        "summary": "The interview ends when maximum rounds are reached, sufficient evaluation is achieved, or the maximum number of questions is exhausted.",
+        "evidence": "종료 조건: 모든 질문 완료 / 충분한 평가 확보 / 최대 질문 수 도달",
+        "source_pages": [
+          26
+        ],
+        "chunk_range": "21-30"
+      }
+    ],
+    "code_examples": [],
+    "cautions": []
+  }
+}
