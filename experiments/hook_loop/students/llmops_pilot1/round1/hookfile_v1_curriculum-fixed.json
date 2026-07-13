@@ -1,0 +1,367 @@
+{
+  "student_id": "llmops_pilot1",
+  "version": 1,
+  "generated_at": "2026-07-13T04:32:54.117542+00:00",
+  "source_round": 1,
+  "canary_uuid": "HOOKFILE-CANARY-0e846777-eec6-4468-9641-400774fb1f75",
+  "coverage": 1.0,
+  "provenance_commit": "188bc91d3525a05a1e8482f336d09370b0a2ef61",
+  "curriculum_mode": "curriculum-fixed",
+  "deferred_rules": [
+    {
+      "rule_id": "반례_대응-03",
+      "channel": "interview",
+      "취약축": "반례_대응",
+      "tech_area": null,
+      "finding_refs": [],
+      "transcript_refs": [
+        {
+          "round": 1,
+          "turn_index": 11,
+          "level": "reflection",
+          "fr_axis": "반례_대응",
+          "score": 5
+        }
+      ],
+      "curriculum_refs": {
+        "unit": "01",
+        "unit_title": "Overview",
+        "concept_name": "Role-Based Separation",
+        "source_pages": [
+          37,
+          38,
+          39
+        ],
+        "match_basis": "keyword-overlap(n=3: critic, executor, planner)"
+      },
+      "trigger": "이 회차 인터뷰에서 '반례_대응' 관련 질문이 나올 때",
+      "checkable_condition": "다음 회차 인터뷰의 '반례_대응' 점수가 이번 회차(5점)보다 낮아지지 않아야 함",
+      "provenance_hash": "09830c3ea16bf52d"
+    },
+    {
+      "rule_id": "반례_대응-04",
+      "channel": "interview",
+      "취약축": "반례_대응",
+      "tech_area": null,
+      "finding_refs": [],
+      "transcript_refs": [
+        {
+          "round": 1,
+          "turn_index": 16,
+          "level": "reflection",
+          "fr_axis": "반례_대응",
+          "score": 5
+        }
+      ],
+      "curriculum_refs": {
+        "unit": "01",
+        "unit_title": "Overview",
+        "concept_name": "System Workflow Stages",
+        "source_pages": [
+          23
+        ],
+        "match_basis": "keyword-overlap(n=2: 답변, 질문)"
+      },
+      "trigger": "이 회차 인터뷰에서 '반례_대응' 관련 질문이 나올 때",
+      "checkable_condition": "다음 회차 인터뷰의 '반례_대응' 점수가 이번 회차(5점)보다 낮아지지 않아야 함",
+      "provenance_hash": "09830c3ea16bf52d"
+    }
+  ],
+  "rules": [
+    {
+      "rule_id": "설계_논리-01",
+      "channel": "interview",
+      "취약축": "설계_논리",
+      "tech_area": null,
+      "finding_refs": [],
+      "transcript_refs": [
+        {
+          "round": 1,
+          "turn_index": 8,
+          "level": "reflection",
+          "fr_axis": "설계_논리",
+          "score": 4
+        }
+      ],
+      "curriculum_refs": {
+        "unit": "01",
+        "unit_title": "Overview",
+        "concept_name": "System Workflow Stages",
+        "source_pages": [
+          23
+        ],
+        "match_basis": "keyword-overlap(n=2: 답변, 질문)"
+      },
+      "trigger": "이 회차 인터뷰에서 '설계_논리' 관련 질문이 나올 때",
+      "checkable_condition": "다음 회차 인터뷰의 '설계_논리' 점수가 이번 회차(4점)보다 낮아지지 않아야 함",
+      "provenance_hash": "09830c3ea16bf52d",
+      "지침_본문": "복사된 코드가 존재할 경우, import 대신 복사한 이유를 제약조건(예: 시간 부족, 독립 실행 필요성)과 명확히 연결해 설명하라."
+    },
+    {
+      "rule_id": "설계_논리-02",
+      "channel": "interview",
+      "취약축": "설계_논리",
+      "tech_area": null,
+      "finding_refs": [],
+      "transcript_refs": [
+        {
+          "round": 1,
+          "turn_index": 13,
+          "level": "reflection",
+          "fr_axis": "설계_논리",
+          "score": 4
+        }
+      ],
+      "curriculum_refs": {
+        "unit": "01",
+        "unit_title": "Overview",
+        "concept_name": "Role-Based Separation",
+        "source_pages": [
+          37,
+          38,
+          39
+        ],
+        "match_basis": "keyword-overlap(n=3: critic, executor, planner)"
+      },
+      "trigger": "이 회차 인터뷰에서 '설계_논리' 관련 질문이 나올 때",
+      "checkable_condition": "다음 회차 인터뷰의 '설계_논리' 점수가 이번 회차(4점)보다 낮아지지 않아야 함",
+      "provenance_hash": "09830c3ea16bf52d",
+      "지침_본문": "복사된 supervisor 정의가 각 파일에서 수행하는 역할을 구체적으로 설명하고, import 대신 복사한 결정을 제약조건(예: 실행 독립성, 시간 제한)과 연결해 명시하라."
+    },
+    {
+      "rule_id": "설계_논리-03",
+      "channel": "interview",
+      "취약축": "설계_논리",
+      "tech_area": null,
+      "finding_refs": [],
+      "transcript_refs": [
+        {
+          "round": 1,
+          "turn_index": 23,
+          "level": "reflection",
+          "fr_axis": "설계_논리",
+          "score": 4
+        }
+      ],
+      "curriculum_refs": {
+        "unit": "01",
+        "unit_title": "Overview",
+        "concept_name": "non-deterministic outputs",
+        "source_pages": [
+          10
+        ],
+        "match_basis": "keyword-overlap(n=2: 다른, 동일한)"
+      },
+      "trigger": "이 회차 인터뷰에서 '설계_논리' 관련 질문이 나올 때",
+      "checkable_condition": "다음 회차 인터뷰의 '설계_논리' 점수가 이번 회차(4점)보다 낮아지지 않아야 함",
+      "provenance_hash": "09830c3ea16bf52d",
+      "지침_본문": "동일한 State 정의가 여러 파일에 존재할 경우, import를 사용하지 않은 구체적인 설계 고려사항(예: 프로젝트 구조, 시간 제약)을 명확히 설명하라."
+    },
+    {
+      "rule_id": "설계_논리-04",
+      "channel": "interview",
+      "취약축": "설계_논리",
+      "tech_area": null,
+      "finding_refs": [],
+      "transcript_refs": [
+        {
+          "round": 1,
+          "turn_index": 3,
+          "level": "reflection",
+          "fr_axis": "설계_논리",
+          "score": 5
+        }
+      ],
+      "curriculum_refs": {
+        "unit": "01",
+        "unit_title": "Overview",
+        "concept_name": "System Workflow Stages",
+        "source_pages": [
+          23
+        ],
+        "match_basis": "keyword-overlap(n=2: 답변, 질문)"
+      },
+      "trigger": "이 회차 인터뷰에서 '설계_논리' 관련 질문이 나올 때",
+      "checkable_condition": "다음 회차 인터뷰의 '설계_논리' 점수가 이번 회차(5점)보다 낮아지지 않아야 함",
+      "provenance_hash": "09830c3ea16bf52d",
+      "지침_본문": "동일한 함수가 여러 파일에 복사된 경우, import 대신 복사한 결정을 독립 실행 가능성과 시간/자원 제약과 직접 연결해 명확히 설명하라."
+    },
+    {
+      "rule_id": "코드_이해-01",
+      "channel": "interview",
+      "취약축": "코드_이해",
+      "tech_area": null,
+      "finding_refs": [],
+      "transcript_refs": [
+        {
+          "round": 1,
+          "turn_index": 5,
+          "level": "reflection",
+          "fr_axis": "코드_이해",
+          "score": 4
+        }
+      ],
+      "curriculum_refs": {
+        "unit": "01",
+        "unit_title": "Overview",
+        "concept_name": "System Workflow Stages",
+        "source_pages": [
+          23
+        ],
+        "match_basis": "keyword-overlap(n=2: 답변, 질문)"
+      },
+      "trigger": "이 회차 인터뷰에서 '코드_이해' 관련 질문이 나올 때",
+      "checkable_condition": "다음 회차 인터뷰의 '코드_이해' 점수가 이번 회차(4점)보다 낮아지지 않아야 함",
+      "provenance_hash": "09830c3ea16bf52d",
+      "지침_본문": "복사된 State 정의에 대해, 각 파일에서의 역할과 import를 사용하지 않은 이유를 제약조건(예: 시간 부족, 개별 실행 우선)과 함께 설명하라."
+    },
+    {
+      "rule_id": "코드_이해-02",
+      "channel": "interview",
+      "취약축": "코드_이해",
+      "tech_area": null,
+      "finding_refs": [],
+      "transcript_refs": [
+        {
+          "round": 1,
+          "turn_index": 20,
+          "level": "reflection",
+          "fr_axis": "코드_이해",
+          "score": 4
+        }
+      ],
+      "curriculum_refs": {
+        "unit": "01",
+        "unit_title": "Overview",
+        "concept_name": "non-deterministic outputs",
+        "source_pages": [
+          10
+        ],
+        "match_basis": "keyword-overlap(n=2: 다른, 동일한)"
+      },
+      "trigger": "이 회차 인터뷰에서 '코드_이해' 관련 질문이 나올 때",
+      "checkable_condition": "다음 회차 인터뷰의 '코드_이해' 점수가 이번 회차(4점)보다 낮아지지 않아야 함",
+      "provenance_hash": "09830c3ea16bf52d",
+      "지침_본문": "동일한 ReviewState 정의가 여러 파일에 존재할 경우, import를 사용하지 않은 구체적인 이유를 프로젝트 구조나 시간 제약과 연결해 설명하라."
+    },
+    {
+      "rule_id": "코드_이해-03",
+      "channel": "interview",
+      "취약축": "코드_이해",
+      "tech_area": null,
+      "finding_refs": [],
+      "transcript_refs": [
+        {
+          "round": 1,
+          "turn_index": 0,
+          "level": "reflection",
+          "fr_axis": "코드_이해",
+          "score": 5
+        }
+      ],
+      "curriculum_refs": {
+        "unit": "01",
+        "unit_title": "Overview",
+        "concept_name": "System Workflow Stages",
+        "source_pages": [
+          23
+        ],
+        "match_basis": "keyword-overlap(n=2: 답변, 질문)"
+      },
+      "trigger": "이 회차 인터뷰에서 '코드_이해' 관련 질문이 나올 때",
+      "checkable_condition": "다음 회차 인터뷰의 '코드_이해' 점수가 이번 회차(5점)보다 낮아지지 않아야 함",
+      "provenance_hash": "09830c3ea16bf52d",
+      "지침_본문": "load_api_keys 함수가 여러 파일에 복사된 이유를 각 파일의 독립 실행 필요성과 시간 부족이라는 제약조건과 명확히 연결해 설명하라."
+    },
+    {
+      "rule_id": "코드_이해-04",
+      "channel": "interview",
+      "취약축": "코드_이해",
+      "tech_area": null,
+      "finding_refs": [],
+      "transcript_refs": [
+        {
+          "round": 1,
+          "turn_index": 10,
+          "level": "reflection",
+          "fr_axis": "코드_이해",
+          "score": 5
+        }
+      ],
+      "curriculum_refs": {
+        "unit": "01",
+        "unit_title": "Overview",
+        "concept_name": "Supervisor Pattern",
+        "source_pages": [
+          41,
+          42,
+          43,
+          45
+        ],
+        "match_basis": "keyword-overlap(n=4: executor, planner, supervisor, 흐름을)"
+      },
+      "trigger": "이 회차 인터뷰에서 '코드_이해' 관련 질문이 나올 때",
+      "checkable_condition": "다음 회차 인터뷰의 '코드_이해' 점수가 이번 회차(5점)보다 낮아지지 않아야 함",
+      "provenance_hash": "09830c3ea16bf52d",
+      "지침_본문": "복사된 supervisor 정의가 각 파일에서 수행하는 로직적 역할을 구체적으로 설명하고, import 대신 복사한 결정을 실행 독립성 또는 시간 제약과 연결하라."
+    },
+    {
+      "rule_id": "반례_대응-01",
+      "channel": "interview",
+      "취약축": "반례_대응",
+      "tech_area": null,
+      "finding_refs": [],
+      "transcript_refs": [
+        {
+          "round": 1,
+          "turn_index": 1,
+          "level": "reflection",
+          "fr_axis": "반례_대응",
+          "score": 5
+        }
+      ],
+      "curriculum_refs": {
+        "unit": "01",
+        "unit_title": "Overview",
+        "concept_name": "System Workflow Stages",
+        "source_pages": [
+          23
+        ],
+        "match_basis": "keyword-overlap(n=2: 답변, 질문)"
+      },
+      "trigger": "이 회차 인터뷰에서 '반례_대응' 관련 질문이 나올 때",
+      "checkable_condition": "다음 회차 인터뷰의 '반례_대응' 점수가 이번 회차(5점)보다 낮아지지 않아야 함",
+      "provenance_hash": "09830c3ea16bf52d",
+      "지침_본문": "코드 복사에 대한 설계 결정을 설명할 때, import 사용의 장점(예: 유지보수성)을 스스로 언급하고, 그 대신 복사를 선택한 제약조건(예: 시간 부족)과 비교하라."
+    },
+    {
+      "rule_id": "반례_대응-02",
+      "channel": "interview",
+      "취약축": "반례_대응",
+      "tech_area": null,
+      "finding_refs": [],
+      "transcript_refs": [
+        {
+          "round": 1,
+          "turn_index": 6,
+          "level": "reflection",
+          "fr_axis": "반례_대응",
+          "score": 5
+        }
+      ],
+      "curriculum_refs": {
+        "unit": "01",
+        "unit_title": "Overview",
+        "concept_name": "System Workflow Stages",
+        "source_pages": [
+          23
+        ],
+        "match_basis": "keyword-overlap(n=2: 답변, 질문)"
+      },
+      "trigger": "이 회차 인터뷰에서 '반례_대응' 관련 질문이 나올 때",
+      "checkable_condition": "다음 회차 인터뷰의 '반례_대응' 점수가 이번 회차(5점)보다 낮아지지 않아야 함",
+      "provenance_hash": "09830c3ea16bf52d",
+      "지침_본문": "State 정의 복사에 대한 설명 시, import를 사용했을 경우의 문제점(예: 의존성 증가)을 스스로 언급하고, 복사 선택의 제약조건(예: 실습 시간 부족)과 연결하라."
+    }
+  ]
+}

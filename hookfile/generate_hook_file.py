@@ -282,7 +282,8 @@ def merge_with_previous(new_rules, prev_version_path):
 
 
 def generate_hook_file(student_id, round_num, findings_path, transcript_path, unit_map_path,
-                        out_path, prev_version_path=None, skip_firewall=False, curriculum_mode="baseline"):
+                        out_path, prev_version_path=None, skip_firewall=False, curriculum_mode="baseline",
+                        audit_path=None):
     if not skip_firewall:
         temporal_firewall_check(findings_path, transcript_path, unit_map_path)
     else:
@@ -305,9 +306,15 @@ def generate_hook_file(student_id, round_num, findings_path, transcript_path, un
 
     concept_index, common_tokens = (None, None)
     if curriculum_mode == "fixed" and unit_map:
-        concept_index, common_tokens = curriculum_match.build_concept_index(unit_map)
+        # D131(LLMOps pilot 실측): audit_path 미노출이면 curriculum_match.py의 기본값
+        # (Java 전용 curriculum_provenance_audit.json)을 그대로 쓴다 -- 다른 커리큘럼의
+        # unit_map을 fixed 모드로 돌리면 concept_id가 전혀 안 맞아 grounded concept이
+        # 0개로 조용히 무너진다(D129의 "매칭 없음=None"과는 다른 종류의 실패 -- 이건
+        # 잘못된 게이트를 쓴 것). --audit-path로 명시적으로 넘기게 함.
+        kwargs = {"audit_path": Path(audit_path)} if audit_path else {}
+        concept_index, common_tokens = curriculum_match.build_concept_index(unit_map, **kwargs)
         log(f"curriculum_mode=fixed: {len(concept_index)} grounded concepts indexed, "
-            f"{len(common_tokens)} common tokens filtered")
+            f"{len(common_tokens)} common tokens filtered (audit_path={audit_path or curriculum_match.AUDIT_PATH})")
 
     candidates, weak_axes = build_candidate_rules(
         findings, transcript_scores, unit_map, round_num, seq_by_axis=starting_seq_by_axis,
@@ -381,11 +388,14 @@ def main():
     ap.add_argument("--curriculum-mode", choices=["baseline", "fixed"], default="baseline",
                      help="D129: baseline(default, control) = placeholder _find_curriculum_ref(); "
                           "fixed = real curriculum_match.py matcher")
+    ap.add_argument("--audit-path", default=None,
+                     help="D131: curriculum_provenance_audit.json override for curriculum-mode=fixed "
+                          "against a non-Java unit_map (default: curriculum_match.py's Java audit)")
     args = ap.parse_args()
     generate_hook_file(
         args.student_id, args.round, args.findings, args.transcript, args.unit_map,
         args.out, prev_version_path=args.prev_version, skip_firewall=args.skip_firewall,
-        curriculum_mode=args.curriculum_mode,
+        curriculum_mode=args.curriculum_mode, audit_path=args.audit_path,
     )
 
 
