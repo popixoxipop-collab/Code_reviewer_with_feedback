@@ -877,6 +877,17 @@ python3 pipeline/compare_methodologies.py
   - COST: 새 CSS 없이 기존 클래스만 재사용(`attrition`/`axis-table`/`tier-list`) — 클래스명 전부 스타일시트와 교차검증(오탈자 0건), HTML 태그 균형 검사(`html.parser`, 오류 0건), 로컬 서버로 실제 서빙 후 `curl`+`grep`으로 신규 앵커/링크 노출 확인(정적 코드 읽기가 아니라 실제 서빙 결과 관찰).
   - EXIT: β 또는 β 없이 M5만으로 발행 마감할지는 여전히 사용자 결정 — 이 커밋은 "지금까지 나온 결과의 정직한 스냅샷"이지 최종 발행 승인이 아님.
 
+- **D129** ([`hookfile/curriculum_match.py`](./hookfile/curriculum_match.py), [`hookfile/generate_hook_file.py`](./hookfile/generate_hook_file.py)) — "3파이프라인 hook 통합 상태" 설명 도중 사용자가 발견한 갭(P01은 근거만 공급하는데 그 매핑이 placeholder)을 실제로 고치되, 대조군(baseline)과 나란히 상시 병행 관리하기로 확정(사용자 지시: "모두 붙인버전과 그렇지 않은 대조 버전으로 세트 단위로 관리").
+  - 사전 확인: `curriculum_refs`는 지침_본문 생성 evidence에 안 들어간다(`_evidence_text`가 finding/interview 텍스트만 씀) — 즉 baseline/curriculum-fixed 두 트랙은 인용 문구만 다르고 규칙 개수·지침·checkable_condition은 완전히 동일. 이 사실을 먼저 사용자에게 보고 후 AskUserQuestion으로 "세트"의 정확한 의미 확인 → **"앞으로 매 회차마다 둘 다 상시 병행 생성"** 확정.
+  - `hookfile/curriculum_match.py` 신규: `curriculum_provenance_audit.json`의 tier1_pass/tier2 grounded 결과와 교차해 검증된 concept(155개 중 110개, audit 236개와의 불일치는 3번째 알려진 데이터 결함으로 별도 기록)만 후보로 삼고, document-frequency로 흔한 토큰("java"/"코드" 등, 1차 실측에서 임계=1이 스퓨리어스 매칭을 만드는 걸 직접 확인 후 추가)을 걸러낸 뒤 최소 2개 변별 토큰이 겹쳐야 매칭 인정 — 안 넘으면 억지로 아무 유닛이나 붙이지 않고 `None`. LLM 콜 없음(P02와 동일 원칙).
+  - `generate_hook_file.py`: `--curriculum-mode {baseline,fixed}` 추가(기본 baseline, 하위호환), 출력 JSON에 `curriculum_mode` 필드 신설, `hookfile_v{N}_baseline.json`/`hookfile_v{N}_curriculum-fixed.json` 파일명 관례로 전환(기존 `hookfile_v{N}.json` 폐기). 인터뷰 채널도 이번에 처음 매칭 대상에 포함(기존엔 하드코딩 None).
+  - `hookfile/db/schema_personal.sql`: `hook_file_versions`에 `variant` 컬럼+`UNIQUE(student_id,version,variant)` 추가(D126 확장). `store.py`/`sync_to_db.py`/`export_student.py`도 콘텐츠 기반(`curriculum_mode` 필드)으로 variant 인식하도록 갱신.
+  - **정직한 실측 결과(4라운드 소급 생성)**: 코드채널 **0/15(0%)** 매칭, 인터뷰채널 **15/18(83%)** 매칭 — 코드채널이 전멸한 건 매칭기 결함이 아니라 **커리큘럼(자바 문법 입문 6유닛)에 P02가 잡는 아키텍처/fan-in 개념이 사실상 없다는 실측 확인**(가장 가까운 게 "객체지향 프로그래밍" 1개 개념뿐). 인터뷰채널은 타입캐스팅 논의 등에서 진짜 의미 있는 매칭(예: "Automatic type casting", p.[55] 단일 페이지 — baseline의 74페이지 뭉텅이 인용과 대조적) 확인.
+  - 추가 발견(3번째 데이터 결함, 원인 수정은 스코프 밖): `_curriculum_fixed_unit_map_cache.json`의 Unit05("조건문")·Unit06("반복문") concepts가 완전히 동일(M2 청킹 버그 추정) — matcher는 이 결함을 알고 있다는 걸 주석에 남기고 은폐하지 않음. 별개로 unit_map(155개 concept) vs audit(236개 참조)도 서로 다른 M2 스냅샷이라 20개 grounded concept이 매칭 후보에서 자연 누락.
+  - WHY: 커리큘럼 근거 인용이 학생/채용 제출용 산출물의 신뢰도에 직결 — placeholder 상태를 대조군 없이 그냥 고치면 "고쳤다"는 주장 자체를 검증할 방법이 사라짐.
+  - COST: 코드채널 매칭률 0%는 매칭기를 더 정교하게 만든다고 해결되는 문제가 아님(커리큘럼 콘텐츠 자체의 한계) — 개선하려면 커리큘럼에 설계원칙 유닛을 추가하거나 매칭 대상 자체를 재정의해야 함.
+  - EXIT: 회귀검증 완료(baseline 재생성이 curriculum_refs/checkable_condition/rule_id 100% 동일, 지침_본문 워딩만 LLM 비결정성으로 미세 차이 — 이 프로젝트가 이미 측정한 qwen 재현성 0.273과 정합). DB 8행(4라운드×2variant) 확인, `render_targets.py` 양쪽 variant 정상 렌더링+인용 문구 실제 차이 확인.
+
 
 ## 다음 단계 (미해결)
 
