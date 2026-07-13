@@ -393,7 +393,7 @@
   </p>
   <div class="meta-row">
     <span>repo: <a href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback" target="_blank" rel="noopener">popixoxipop-collab/Code_reviewer_with_feedback</a></span>
-    <span>스냅샷: 2026-07-13 (D127 기준)</span>
+    <span>스냅샷: 2026-07-13 (D132 기준)</span>
     <span>폴더: ~/Desktop/Code_reviewer_파이프라인/</span>
   </div>
 
@@ -632,7 +632,7 @@
   </section>
 
   <section class="attrition" id="hookfile">
-    <h2>Hook File 재귀 루프 — 개인화 처방이 실제로 도움이 되는가 (γ, 잠정보고, D121~D127)</h2>
+    <h2>Hook File 재귀 루프 — 개인화 처방이 실제로 도움이 되는가 (γ, 잠정보고, D121~D129)</h2>
     <p class="intro">
       세 파이프라인이 만든 진단(취약축)을 학생 개인의 "다음 과제 체크리스트"(Hook File)로 압축해 회차마다
       갱신하는 루프. 실학생을 모집하기 전, 이 장치 자체가 오염 없이 k=4회차를 끝까지 도는지부터
@@ -662,9 +662,9 @@
         <span class="tier-name">미해결 · 인터뷰 방어율 0%</span>
         <span class="tier-body">4회차 6건의 finding 인터뷰 전부 <code>verdict=exhausted_at_cap</code>(4턴 소진) — 단 한 번도 <code>defended</code>에 도달하지 못함. FR-04-01 점수(사후 LLM 채점)는 대부분 5점인데, 턴별 실시간 판정기(<code>classify_answer()</code>)는 한 번도 만족 못 시킨 것 — 두 계측기의 불일치. 원인 미확정.</span>
       </li>
-      <li style="--tier-color: var(--status-blocked);">
-        <span class="tier-name">미해결 · 교안 출처 매핑 무차별화</span>
-        <span class="tier-body">코드채널 규칙 9/9건(전 회차 누적)이 finding 내용과 무관하게 전부 동일한 Unit을 인용, 인터뷰채널 규칙 13/13건은 매핑 자체가 없음(NULL) — <code>_find_curriculum_ref()</code>가 "unit_map의 첫 항목"만 반환하는 1차 placeholder(D121)였다는 게 실측으로 확인됨. 실제 P01 정밀도 축의 출처 정합 검증기 재사용이 필요.</span>
+      <li style="--tier-color: var(--status-ok);">
+        <span class="tier-name">정정됨 · 교안 출처 매핑 (D129)</span>
+        <span class="tier-body"><code>_find_curriculum_ref()</code>가 "unit_map의 첫 항목"만 반환하는 1차 placeholder(D121)였다는 게 실측으로 확인됨 → grounded concept 기반 실제 매칭기(<code>curriculum_match.py</code>)로 교체, 이후 매 회차 <b>baseline</b>(구 방식)·<b>curriculum-fixed</b>(신 매칭기) 두 버전을 상시 병행 생성해 대조 가능하게 함. 4회차 소급 재측정: 코드채널 <b>0/15(0%)</b> 매칭 — 매칭기 결함이 아니라 자바 문법 중심 6유닛 커리큘럼에 애초에 아키텍처 개념이 없다는 걸 실측으로 확인한 것. 인터뷰채널은 <b>15/18(83%)</b> 매칭(타입캐스팅 등 실제로 의미 있는 근거).</span>
       </li>
     </ul>
     <p class="lesson">
@@ -679,7 +679,52 @@
     </p>
   </section>
 
-  <p class="snapshot-note">이 구조도는 2026-07-13 D127 기준 스냅샷 — 최신 수치는 각 폴더의 README_전체이력.md 참고</p>
+  <section class="attrition" id="llmops">
+    <h2>도메인 일반화 — LLMOps 부트캠프로 전체 루프 재현 (D130~D132)</h2>
+    <p class="intro">
+      지금까지의 모든 실측(P01/P02/P03/Hook File)은 자바 부트캠프 커리큘럼 한 도메인에서만 나온 결과였다.
+      같은 팀이 운영하는 다른 과정(AI LLMOps &middot; LangGraph 기반 멀티에이전트 미니프로젝트) 자료로
+      파이프라인 전체를 다시 돌려, 자바 전용으로 암묵 가정됐던 부분이 실제로 깨지는지 실측했다 — 새 학생
+      네임스페이스(<code>llmops_pilot1</code>)로 <code>gamma_s1</code>과 완전히 분리해 2회차까지 진행.
+    </p>
+    <div class="axis-table-wrap">
+      <table class="axis-table">
+        <thead>
+          <tr><th>회차</th><th>P02 findings</th><th>hook 상태</th><th>Hook File coverage</th><th>커리큘럼-fixed 매칭</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>R1</td><td>8건 (중복정의)</td><td class="note">없음(baseline)</td><td>1.0</td><td class="composite">12/12 (100%)</td></tr>
+          <tr><td>R2</td><td>3건 (허브 미연결)</td><td class="note">v1 적용</td><td>0.667</td><td class="note">10/10 유지(R1 계보), 2건 R2 근거 누적</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <ul class="tier-list">
+      <li style="--tier-color: var(--status-ok);">
+        <span class="tier-name">P02 실측 버그 2건 발견·수정</span>
+        <span class="tier-body">① 학생 코드 파일명 <code>graph.py</code>가 <code>langgraph.graph</code> import의 마지막 세그먼트와 충돌해 가짜 fan-in 엣지 생성 — 탐지 로직 자체를 고치려던 시도는 기존 자바/파이썬 5개 저장소 회귀 재검증에서 심각한 부작용(실 프로젝트의 다세그먼트 로컬 import 다수 손실)이 나와 즉시 되돌리고, 파일명을 바꾸는 쪽으로 해결(공유 로직 무변경). ② <code>repeated-pattern</code> 탐지기가 Firebase <code>onSnapshot</code> 문자열 하나만 하드코딩돼 있어 파이썬엔 원천적으로 작동 안 함을 발견 → 언어 무관 <code>find_duplicate_definitions()</code>로 일반화(dunder&middot;짧은이름&middot;pytest 미러 테스트스위트 오탐 전부 필터링, 기존 5개 저장소 재검증으로 무회귀 확인).</span>
+      </li>
+      <li style="--tier-color: var(--status-active);">
+        <span class="tier-name">R2 — 처방이 실제로 반영된 사례</span>
+        <span class="tier-body">R1 Hook File이 지적한 "State/공용함수 복붙 대신 import로 공유"를 코딩 에이전트가 R2에서 실제로 반영 — 신규 <code>config.py</code>로 중앙화. 그 결과 R1의 중복정의 finding 8건은 전부 사라지고, 그래프 위상이 바뀌며 새 finding 3건(<code>config.py</code>가 새 허브가 되며 <code>nodes.py</code>/<code>state.py</code>가 미연결로 잡힘)이 등장 — 회귀가 아니라 근본 수정이 만든 정직한 후속 동역학. 감사 결과 <b>pass_rate 1.0(10/10)</b>, 5/10 개선(4&rarr;5)&middot;5/10 유지(5&rarr;5)&middot;회귀 0건 — γ&middot;LLMOps 통틀어 지금까지 나온 감사 결과 중 가장 깨끗함(v1이 전량 인터뷰채널 규칙이라 코드채널 공허함 caveat조차 없음).</span>
+      </li>
+      <li style="--tier-color: var(--status-legacy);">
+        <span class="tier-name">관측 · coverage 하락 메커니즘</span>
+        <span class="tier-body">R2에서 RULE_BUDGET 병합 트림 중 <b>대안_비교</b> 축의 규칙 전체(기존+신규)가 병합 순서상 우연히 꼬리에 몰려 통째로 잘려나감(coverage 1.0&rarr;0.667) — 축 하나가 온전히 커버리지에서 빠질 수 있다는 걸 처음 실측. 수정하지 않고 관찰만 기록.</span>
+      </li>
+    </ul>
+    <p class="lesson">
+      <b>도메인 겹침이 매칭률을 좌우한다</b>: curriculum-fixed 매칭률이 자바(코드채널 0%&middot;인터뷰채널 83%)보다
+      LLMOps(R1 인터뷰채널 12/12&middot;100%, 코드채널 규칙은 이번 트랙엔 아직 없었음)에서 뚜렷하게 높게
+      나왔다 — LLM/Agent 커리큘럼과 LLM/Agent 코드가 실제로 같은 어휘를 쓰기 때문으로 보인다. 매칭기 자체의
+      보편적 성능이 아니라 "커리큘럼 콘텐츠와 코드 도메인이 얼마나 겹치는가"가 매칭률을 좌우한다는 뜻이며,
+      도메인 2개뿐이라 아직 확정적 인과는 아니다. 이 트랙도 아직 2회차뿐이라 γ(D121~D127)와 같은 급의
+      잠정보고이며, 실학생 대조군(β)이 아니다.
+      전체 근거는
+      <a href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback/blob/main/README.md" style="color:var(--accent);">README D129~D132</a> 참고.
+    </p>
+  </section>
+
+  <p class="snapshot-note">이 구조도는 2026-07-13 D132 기준 스냅샷 — 최신 수치는 각 폴더의 README_전체이력.md 참고</p>
 </main>
 </body>
 </html>
