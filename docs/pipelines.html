@@ -393,7 +393,7 @@
   </p>
   <div class="meta-row">
     <span>repo: <a href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback" target="_blank" rel="noopener">popixoxipop-collab/Code_reviewer_with_feedback</a></span>
-    <span>스냅샷: 2026-07-10 (D100 기준)</span>
+    <span>스냅샷: 2026-07-13 (D127 기준)</span>
     <span>폴더: ~/Desktop/Code_reviewer_파이프라인/</span>
   </div>
 
@@ -522,6 +522,47 @@
   </div>
 
   <section class="attrition">
+    <h2>M1/M2 — 파이프라인 02/01에 같은 4축 방법론 적용 (D119, D120)</h2>
+    <p class="intro">
+      위 세 카드가 설명하는 원본 파이프라인 스크립트와는 별도로, 파이프라인 03(아래)에서 쓴 4축(안정성·정밀도·
+      재현성·속도) 방법론을 <code>benchmarks/</code>의 새 하니스로 파이프라인 02·01에도 그대로 적용했다 —
+      "파이프라인마다 벤치마크를 따로 해야 한다"는 이 실험 전체의 전제를 실측으로 검증하기 위해서다.
+    </p>
+    <div class="axis-table-wrap">
+      <table class="axis-table">
+        <thead>
+          <tr><th>파이프라인</th><th>안정성</th><th>정밀도</th><th>재현성</th><th>속도</th><th>비고</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>02 코드분석 (D119)</td>
+            <td>1.0 (39/39)</td>
+            <td class="note">미착수 — 사람 라벨러 대기 (표본 50건 준비 완료)</td>
+            <td>1.0 고정상태(800/800) · delta=0 상태민감도</td>
+            <td>0.192s/repo</td>
+            <td class="note">LLM 콜 0건(결정론 스캔). cost_saved_ratio 0.998</td>
+          </tr>
+          <tr>
+            <td>01 교안분석 (D120)</td>
+            <td>1.0 (3/3)</td>
+            <td>0.551 (130/236 근거 확인)</td>
+            <td>0.182 청크층 · 0.067 질문생성층</td>
+            <td>306s/풀런</td>
+            <td class="note">P01-T1: step-3.5-flash 완전실패(0/50, P03 1위 모델) · qwen3-next-80b 96%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="lesson">
+      02(코드분석)는 사람 개입 없이 측정 가능한 축을 전부 확보(정밀도만 라벨러 병목으로 대기), 01(교안분석)은
+      실행 중 실제 버그 4건(질문생성 max_tokens 트렁케이션·미보호 예외로 파일럿 크래시·HTTP 400 폭풍·모델ID
+      bare-name)을 root-cause해 고치며 완주했다. <b>P01-T1이 이 실험 전체의 핵심 가설을 실증</b>했다 —
+      파이프라인 03에서 1위였던 step-3.5-flash가 파이프라인 01에서는 완전히 실패했다(같은 모델, 다른 과업
+      형태 = 다른 결과). 상세: <a href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback/blob/main/README.md" style="color:var(--accent);">README D119, D120</a>.
+    </p>
+  </section>
+
+  <section class="attrition">
     <h2>왜 16개 후보 모델 중 일부만 동작했나 — 감쇠 분석 (16 &rarr; 신뢰 가능 5)</h2>
     <p class="intro">
       파이프라인 03의 벤치마크는 16개 모델 전부를 <b>동일한 하니스 · 동일한 7키 풀 · 동일한 중앙 설정</b>(timeout 600s,
@@ -590,7 +631,55 @@
     </p>
   </section>
 
-  <p class="snapshot-note">이 구조도는 2026-07-12 D116 기준 스냅샷 — 최신 수치는 각 폴더의 README_전체이력.md 참고</p>
+  <section class="attrition" id="hookfile">
+    <h2>Hook File 재귀 루프 — 개인화 처방이 실제로 도움이 되는가 (γ, 잠정보고, D121~D127)</h2>
+    <p class="intro">
+      세 파이프라인이 만든 진단(취약축)을 학생 개인의 "다음 과제 체크리스트"(Hook File)로 압축해 회차마다
+      갱신하는 루프. 실학생을 모집하기 전, 이 장치 자체가 오염 없이 k=4회차를 끝까지 도는지부터
+      에이전트 시뮬레이션(γ, 페르소나 1명 자기대조)으로 먼저 확인했다 — <b>증거력은 잠정보고 수준</b>이다.
+      n=1 자기대조라 인과를 확정할 수 없고, 병행 대조군(β)이 있어야 "hook 때문"과 "그냥 익숙해짐"을 분리할
+      수 있다.
+    </p>
+    <div class="axis-table-wrap">
+      <table class="axis-table">
+        <thead>
+          <tr><th>회차</th><th>코드_이해</th><th>설계_논리</th><th>대안_비교</th><th>반례_대응</th><th>자기_수정</th><th>5축 평균</th><th>hook 상태</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>R1</td><td>4.0</td><td>4.0</td><td>4.0</td><td>5.0</td><td>5.0</td><td class="composite">4.4</td><td class="note">없음(baseline)</td></tr>
+          <tr><td>R2</td><td>5.0</td><td>5.0</td><td>5.0</td><td>5.0</td><td>5.0</td><td class="composite">5.0</td><td class="note">v1 적용</td></tr>
+          <tr><td>R3</td><td>5.0</td><td>5.0</td><td>4.5</td><td>5.0</td><td>5.0</td><td class="composite">4.9</td><td class="note">v2 적용</td></tr>
+          <tr><td>R4</td><td>5.0</td><td>5.0</td><td>4.0</td><td>5.0</td><td>5.0</td><td class="composite">4.8</td><td class="note">v3 적용</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <ul class="tier-list">
+      <li style="--tier-color: var(--status-ok);">
+        <span class="tier-name">방향성 신호 · 2건</span>
+        <span class="tier-body">인터뷰채널 정착률 <b>12/13(92%)</b> 회차간 유지·개선(v1&rarr;R2 3/3, v2&rarr;R3 5/5, v3&rarr;R4 4/5) — R4에서 첫 하락(대안_비교, 5&rarr;4) 발생 전까지는 전부 유지. 규칙 축적은 <b>근거 누적형</b>(예: 코드_이해-01의 근거 수가 1&rarr;3&rarr;5&rarr;6으로 성장)이지 규칙 증식형이 아님 — 예산(&le;10)이 4회차 동안 폭주하지 않은 실제 메커니즘.</span>
+      </li>
+      <li style="--tier-color: var(--status-blocked);">
+        <span class="tier-name">미해결 · 인터뷰 방어율 0%</span>
+        <span class="tier-body">4회차 6건의 finding 인터뷰 전부 <code>verdict=exhausted_at_cap</code>(4턴 소진) — 단 한 번도 <code>defended</code>에 도달하지 못함. FR-04-01 점수(사후 LLM 채점)는 대부분 5점인데, 턴별 실시간 판정기(<code>classify_answer()</code>)는 한 번도 만족 못 시킨 것 — 두 계측기의 불일치. 원인 미확정.</span>
+      </li>
+      <li style="--tier-color: var(--status-blocked);">
+        <span class="tier-name">미해결 · 교안 출처 매핑 무차별화</span>
+        <span class="tier-body">코드채널 규칙 9/9건(전 회차 누적)이 finding 내용과 무관하게 전부 동일한 Unit을 인용, 인터뷰채널 규칙 13/13건은 매핑 자체가 없음(NULL) — <code>_find_curriculum_ref()</code>가 "unit_map의 첫 항목"만 반환하는 1차 placeholder(D121)였다는 게 실측으로 확인됨. 실제 P01 정밀도 축의 출처 정합 검증기 재사용이 필요.</span>
+      </li>
+    </ul>
+    <p class="lesson">
+      γ의 원래 목적(실학생 모집 전 장치 검증)은 달성했다 — k=4 전체가 오염 없이 완주했고, 그 과정에서
+      실측으로만 나올 수 있었던 버그 4건(Java same-package 엣지 누락 · entry-point 대소문자 매치 ·
+      rule_id 버전간 충돌 · RULE_BUDGET 병합후 미적용)을 잡아 고쳤다. 위 두 미해결 항목은 병행 대조군(β)
+      착수 전 반드시 고치거나 최소한 명시해야 할 한계로 남겨뒀다 — "검증 완료"로 성급히 포장하지 않는다.
+      전체 근거·재현 쿼리는
+      <a href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback/blob/main/experiments/hook_loop/students/gamma_s1/AGGREGATE_REPORT.md" style="color:var(--accent);">AGGREGATE_REPORT.md</a>,
+      개인/회사자산 저장소 분리는
+      <a href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback/blob/main/README.md" style="color:var(--accent);">README D126</a> 참고.
+    </p>
+  </section>
+
+  <p class="snapshot-note">이 구조도는 2026-07-13 D127 기준 스냅샷 — 최신 수치는 각 폴더의 README_전체이력.md 참고</p>
 </main>
 </body>
 </html>
