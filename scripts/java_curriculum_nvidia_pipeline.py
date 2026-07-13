@@ -277,20 +277,27 @@ def chat_json(
             ) from repair_error
 
 
+# D131(LLMOps pilot): course_label 파라미터화 -- "Java"가 프롬프트 3곳(이 함수/refine_once/
+#   generate_questions)에 하드코딩돼 있어 다른 과정(LLMOps 등) PDF를 넣으면 LLM에게 잘못된
+#   프레이밍("이건 Java 커리큘럼이다")을 준다. 실제 콘텐츠는 chunk.text가 프롬프트 뒤에
+#   그대로 붙어 주 근거가 되므로(WHY) 문구 하나로 결과가 뒤집히진 않지만, 프레이밍 자체는
+#   정확해야 한다. 기본값 "Java"로 기존 호출부(curriculum_4axis_benchmark.py의 import)
+#   100% 하위호환 -- 이 함수들을 직접 import해서 쓰므로 여기 하나만 고치면 양쪽 다 반영됨.
 def analyse_chunk(
     client: NvidiaRotatingClient,
     model: str,
     chunk: Chunk,
     max_tokens: int,
     json_mode: bool = True,
+    course_label: str = "Java",
 ) -> dict[str, Any]:
     prompt = f"""
-KT AIVLE School Java curriculum PDF page range: {chunk.range}.
+KT AIVLE School {course_label} curriculum PDF page range: {chunk.range}.
 
 Return ONLY valid JSON with this exact shape:
 {{
   "chunk_range": "{chunk.range}",
-  "units": [{{"unit_id": "01", "unit_title": "Java 시작하기", "source_pages": [1, 2]}}],
+  "units": [{{"unit_id": "01", "unit_title": "Overview", "source_pages": [1, 2]}}],
   "concepts": [
     {{
       "name": "short concept name",
@@ -398,10 +405,11 @@ def refine_once(
     iteration: int,
     max_tokens: int,
     json_mode: bool = True,
+    course_label: str = "Java",
 ) -> dict[str, Any]:
     compact = json.dumps(unit_map, ensure_ascii=False)[:24000]
     prompt = f"""
-Audit this page-grounded Java curriculum unit_map for refinement iteration {iteration}.
+Audit this page-grounded {course_label} curriculum unit_map for refinement iteration {iteration}.
 
 Return ONLY valid JSON:
 {{
@@ -505,6 +513,7 @@ def generate_questions(
     graph: dict[str, Any],
     max_tokens: int,
     json_mode: bool = True,
+    course_label: str = "Java",
 ) -> dict[str, Any]:
     compact_nodes = [
         {
@@ -518,7 +527,7 @@ def generate_questions(
         if n["type"] in {"unit", "concept", "code_example", "caution"}
     ]
     prompt = f"""
-Use this page-grounded Java curriculum graph to generate diagnostic interview questions.
+Use this page-grounded {course_label} curriculum graph to generate diagnostic interview questions.
 
 Return ONLY valid JSON:
 {{
