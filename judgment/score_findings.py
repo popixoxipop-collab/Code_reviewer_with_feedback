@@ -60,6 +60,67 @@ def _matches_entry_hint(filename):
 REPEATED_PATTERN_MIN_FILES = 2
 REPEATED_PATTERN_MIN_HITS = 2
 
+# D130(LLMOps pilot 실측 발견): repeated-pattern이 "onSnapshot"(Firebase 전용 API명) 하나만
+#   하드코딩돼 있어 그 문자열이 없는 언어/코드베이스(Python 등)에서는 절대 안 걸린다 -- 실측:
+#   LangGraph Python 과제에서 app.py가 nodes.py/state.py의 analyzer_node/critic_node/
+#   supervisor_node/ReviewState를 import 대신 거의 그대로 복붙했는데(진짜 유지보수성 이슈)
+#   기존 탐지기로는 findings 0건이었음. "알려진 문자열 하나"가 아니라 "같은 이름의 함수/클래스
+#   정의가 2개 이상 파일에 등장" 여부를 보는 일반 로직을 별도로 추가한다(onSnapshot 체크는
+#   그대로 유지 -- 이미 검증된 Firebase 코퍼스 신호를 지우지 않음).
+#   WHY: 언어별 "정의문" 자체는 단순 정규식으로 안정적으로 잡을 수 있다(Java 관례상 클래스명
+#        추출과 동일한 종류의 패턴) -- 값비싼 AST/의미분석 없이도 강한 신호.
+#   COST: 이름만 보고 본문(바디) 유사도는 안 본다 -- 우연히 같은 이름을 쓴 서로 무관한 함수도
+#        걸릴 수 있음(1차 구현, 실측 오탐 나오면 본문 diff까지 확장 검토). dunder(__init__ 등)는
+#        모든 클래스가 정의상 반복하므로 제외, 그 외 일반적인 이름(main/run/setup 등)은 최소
+#        길이(5자)로만 대충 거름 -- 정교한 stopword 사전은 아직 없음(2026-07 시점, Python/
+#        Java/JS만 정의문 패턴 보유, C/C++/Swift는 이 프로젝트에서 여전히 패턴 시드가 얕아
+#        제외 -- cognition/two_tier_scan.py의 같은 한계와 동일선상).
+#   EXIT: 오탐이 실측되면 (a) 본문 유사도(예: 정규화 후 difflib) 요구 추가, (b) 이름 stopword
+#        사전 확장 중 택1. 새 언어 정의문 패턴은 DEFINITION_RE_BY_EXT에 확장자만 추가하면 됨.
+DEFINITION_RE_BY_EXT = {
+    ".py": re.compile(r"^\s*(?:def|class)\s+(\w+)", re.MULTILINE),
+    ".java": re.compile(r"\bclass\s+(\w+)"),
+    ".js": re.compile(r"^\s*(?:export\s+)?(?:function|class)\s+(\w+)", re.MULTILINE),
+    ".jsx": re.compile(r"^\s*(?:export\s+)?(?:function|class)\s+(\w+)", re.MULTILINE),
+    ".ts": re.compile(r"^\s*(?:export\s+)?(?:function|class)\s+(\w+)", re.MULTILINE),
+    ".tsx": re.compile(r"^\s*(?:export\s+)?(?:function|class)\s+(\w+)", re.MULTILINE),
+}
+_DUNDER_RE = re.compile(r"^__\w+__$")
+_TEST_NAME_RE = re.compile(r"^(?:test_|Test)\w+", re.IGNORECASE)
+DUPLICATE_DEFINITION_MIN_NAME_LEN = 5
+
+# D130 회귀 실측(renamarr, M1 코퍼스): 위 필터만으로 돌리면 test_radarr_*.py/test_sonarr_*.py
+#   같은 "같은 기능을 다른 백엔드용으로 미러링한 테스트 스위트"에서 test_no_series_returned,
+#   TestAnalyzeFiles류 이름이 파일마다 반복 등장 -- 이건 나쁜 복붙이 아니라 대칭 구조를 의도적으로
+#   맞춘 좋은 테스트 관례다(같은 코드가 아니라 "다른 대상을 같은 방식으로 검증"하는 것).
+#   WHY: pytest/unittest 컨벤션상 test_ / Test 접두 이름은 이 검사의 "코드 복붙 의심" 취지와
+#        다른 클래스의 반복이라 아예 후보에서 제외.
+#   COST: 정말로 테스트 코드 자체가 복붙된 경우(진짜 헬퍼 함수 중복 등)는 test_ 접두여도 이제
+#        놓친다 -- 이 검사의 책임 범위를 "실행 코드"로 좁힌 것으로 간주.
+#   EXIT: 테스트 코드 복붙도 잡고 싶어지면 "이름"이 아니라 "본문 유사도"로 판정을 바꿔야 함.
+
+
+def find_duplicate_definitions(repo_root, min_files=REPEATED_PATTERN_MIN_FILES):
+    """같은 이름의 함수/클래스 정의가 min_files개 이상 파일에 등장하면 후보로 반환.
+    {name: [file1, file2, ...]} 형태, dunder/짧은 이름/테스트 이름은 제외."""
+    name_to_files = {}
+    for root, dirs, fnames in os.walk(repo_root):
+        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
+        for fn in fnames:
+            ext = os.path.splitext(fn)[1]
+            pattern = DEFINITION_RE_BY_EXT.get(ext)
+            if pattern is None:
+                continue
+            text = open(os.path.join(root, fn), encoding="utf-8", errors="ignore").read()
+            for m in pattern.finditer(text):
+                name = m.group(1)
+                if _DUNDER_RE.match(name) or len(name) < DUPLICATE_DEFINITION_MIN_NAME_LEN:
+                    continue
+                if _TEST_NAME_RE.match(name):
+                    continue
+                name_to_files.setdefault(name, set()).add(fn)
+    return {name: sorted(files) for name, files in name_to_files.items() if len(files) >= min_files}
+
 # D29의 파일명 힌트 기반 location_signal은 D35로 대체됨 — 문헌 근거(SATD 탐지 방법론)가
 #   있는 subrubric.rationale_signal()(코멘트 스캔)로 교체. LOCATION_INTENT_HINTS 상수는
 #   더 이상 쓰이지 않아 삭제(원안은 git history D29 커밋 참고)
@@ -387,6 +448,36 @@ def score(scan_result, repo_root):
                 ),
             )
             findings.append(finding)
+
+    for name, files in find_duplicate_definitions(repo_root).items():
+        finding = {
+            "id": f"repeated-pattern:duplicate-definition:{name}",
+            "file": None,
+            "finding": f"'{name}' 정의가 {len(files)}개 파일에 거의 그대로 재등장: {files} (import 대신 복붙 의심)",
+            "priority": "질문 대상",
+        }
+        apply_subrubric(
+            finding,
+            design_intent_evidence=dict(
+                repetition=len(files),
+                idiom_status="none",
+                rationale=rationale_signal(None, repo_root),
+                mitigation_present=None,
+            ),
+            question_value_evidence=dict(
+                tradeoff_signal=True,  # 공용 모듈로 추출한다는 대안이 항상 존재
+                repo_specificity=True,
+                idiom_downgrade_votes=0,
+                ladder_richness=len(files),
+            ),
+            risk_evidence=dict(
+                trigger_confirmed=None,
+                exposure_client=None,
+                scenario_specific=False,
+                spread_count=0,  # 유지보수성 이슈이지 보안/신뢰성 위험의 확산이 아님
+            ),
+        )
+        findings.append(finding)
 
     findings = apply_idiom_filter(findings, repo_root=repo_root)
     _tag_lang(findings, repo_root)
