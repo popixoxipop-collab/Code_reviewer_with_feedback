@@ -609,7 +609,7 @@ def write_report(
     elapsed = time.time() - started
     total_concepts = sum(len(u.get("concepts", [])) + len(u.get("code_examples", [])) + len(u.get("cautions", [])) for u in unit_map.values())
     lines = [
-        "# Java Curriculum NVIDIA Parallel Pipeline Run",
+        f"# {args.course_label} Curriculum NVIDIA Parallel Pipeline Run",
         "",
         f"- PDF: `{args.pdf}`",
         f"- Model: `{args.model}`",
@@ -690,12 +690,12 @@ def write_report(
     (out_dir / "graphify-out" / "GRAPH_REPORT.md").write_text("\n".join(report) + "\n", encoding="utf-8")
 
 
-def run_graphify_query(graph_path: Path) -> str | None:
+def run_graphify_query(graph_path: Path, course_label: str = "Java") -> str | None:
     graphify = "/Users/xox/.local/bin/graphify"
     if not Path(graphify).exists():
         return None
     result = subprocess.run(
-        [graphify, "query", "Which diagnostic questions cite concrete Java curriculum pages?", "--graph", str(graph_path), "--budget", "800"],
+        [graphify, "query", f"Which diagnostic questions cite concrete {course_label} curriculum pages?", "--graph", str(graph_path), "--budget", "800"],
         text=True,
         capture_output=True,
     )
@@ -719,6 +719,7 @@ def main() -> int:
     parser.add_argument("--max-tokens-questions", type=int, default=1800)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--no-json-mode", action="store_true")
+    parser.add_argument("--course-label", default="Java", help="D131: prompt framing label, e.g. 'LLMOps'")
     args = parser.parse_args()
 
     started = time.time()
@@ -751,6 +752,7 @@ def main() -> int:
                     chunk,
                     args.max_tokens_chunk,
                     not args.no_json_mode,
+                    args.course_label,
                 ): chunk
                 for chunk in chunks
             }
@@ -797,7 +799,7 @@ def main() -> int:
         assert client is not None
         for i in range(1, args.refine_iters + 1):
             try:
-                audit = refine_once(client, args.model, unit_map, i, args.max_tokens_refine, not args.no_json_mode)
+                audit = refine_once(client, args.model, unit_map, i, args.max_tokens_refine, not args.no_json_mode, args.course_label)
                 print(f"[refine-ok] iteration {i}: {audit.get('status')}", flush=True)
             except Exception as exc:
                 audit = {
@@ -849,7 +851,7 @@ def main() -> int:
             print("[questions-skip] no page-grounded unit nodes", flush=True)
         else:
             try:
-                questions = generate_questions(client, args.model, graph, args.max_tokens_questions, not args.no_json_mode)
+                questions = generate_questions(client, args.model, graph, args.max_tokens_questions, not args.no_json_mode, args.course_label)
                 print(f"[questions-ok] {len(questions.get('questions', []) or [])} questions", flush=True)
             except Exception as exc:
                 questions = {
@@ -877,7 +879,7 @@ def main() -> int:
     (out_dir / "rate_audit.json").write_text(json.dumps(rate_audit, ensure_ascii=False, indent=2), encoding="utf-8")
     graph_path = out_dir / "graphify-out" / "graph.json"
     graph_path.write_text(json.dumps(graph, ensure_ascii=False, indent=2), encoding="utf-8")
-    graphify_query = run_graphify_query(graph_path)
+    graphify_query = run_graphify_query(graph_path, args.course_label)
     write_report(out_dir, args, started, chunk_results, unit_map, audits, graph, questions, key_usage, rate_audit, graphify_query)
     print(f"[done] outputs: {out_dir}", flush=True)
     return 0
