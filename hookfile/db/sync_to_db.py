@@ -39,10 +39,13 @@ def sync_round(student_dir, conn):
         store.upsert_interview_scores(conn, student_id, round_num, scores)
         n_synced.append(f"interview_scores={len(scores)}")
 
+    # D129: glob은 hookfile_v*.json 전체를 잡는다 -- baseline/curriculum-fixed 두 변형
+    # 다 이 패턴에 맞고, variant는 파일명이 아니라 콘텐츠의 curriculum_mode로 구분된다
+    # (store.upsert_hook_file_version 참고) -- 파일명 규칙이 또 바뀌어도 안전.
     for hf_path in sorted(student_dir.glob("hookfile_v*.json")):
         hookfile_json = json.loads(hf_path.read_text(encoding="utf-8"))
         store.upsert_hook_file_version(conn, hookfile_json)
-        n_synced.append(f"hookfile_v{hookfile_json['version']}"
+        n_synced.append(f"hookfile_v{hookfile_json['version']}_{hookfile_json.get('curriculum_mode', 'baseline')}"
                          f"({len(hookfile_json.get('rules', []))} rules)")
 
     for audit_path in sorted(student_dir.glob("audit_v*_vs_r*.json")):

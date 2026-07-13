@@ -48,11 +48,14 @@ def export_student(student_id, out_dir, conn):
             "generated_at": hfv["generated_at"], "source_round": hfv["source_round"],
             "canary_uuid": hfv["canary_uuid"], "coverage": hfv["coverage"],
             "provenance_commit": hfv["provenance_commit"],
+            "curriculum_mode": hfv["variant"],
             "deferred_rules": deferred, "rules": kept,
         }
         round_dir = out_dir / f"round{hfv['source_round']}"
         round_dir.mkdir(parents=True, exist_ok=True)
-        path = round_dir / f"hookfile_v{hfv['version']}.json"
+        # D129: variant 접미사 필수 -- 안 붙이면 같은 round의 baseline/curriculum-fixed
+        # 두 export가 같은 경로에 덮어써진다(hfv['variant']는 항상 존재, 스키마 기본값 있음)
+        path = round_dir / f"hookfile_v{hfv['version']}_{hfv['variant']}.json"
         path.write_text(json.dumps(hookfile_json, ensure_ascii=False, indent=2), encoding="utf-8")
         written.append(str(path))
 

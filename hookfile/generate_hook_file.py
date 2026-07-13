@@ -35,6 +35,7 @@ from nvidia_client import NvidiaRotatingClient  # noqa: E402
 from nvidia_key_pool import NvidiaKeyPool  # noqa: E402
 from timeout_config import DEFAULT_TIMEOUT_S, DEFAULT_MAX_TOKENS  # noqa: E402
 import canary  # noqa: E402
+import curriculum_match  # noqa: E402
 
 MODEL = "qwen/qwen3-next-80b-a3b-instruct"  # 팀 Locked -- 이 계획 전체가 상속하는 원칙
 RULE_BUDGET = 10  # D125 확정: P02+P03 두 채널 합산 상한
@@ -115,7 +116,8 @@ def _weakest_fr_axes(transcript_scores, n=TOP_AXES):
     return [axis for axis, _ in ranked[:n]]
 
 
-def build_candidate_rules(findings, transcript_scores, unit_map, round_num, seq_by_axis=None):
+def build_candidate_rules(findings, transcript_scores, unit_map, round_num, seq_by_axis=None,
+                           curriculum_mode="baseline", concept_index=None, common_tokens=None):
     """증거 필드를 결정론적으로 조립 -- LLM 관여 없음.
 
     D122(gamma R2 실측 발견): seq_by_axis를 매번 0부터 새로 세면, R2에서 새로 만드는
@@ -124,6 +126,11 @@ def build_candidate_rules(findings, transcript_scores, unit_map, round_num, seq_
     키로만 중복 판정해서 이 경우 진짜 다른 두 규칙이 같은 rule_id로 공존하게 됨.
     caller(generate_hook_file)가 prev_version의 기존 rule_id에서 축별 최대 seq를
     미리 계산해 넘겨주면 이어서 번호를 매긴다.
+
+    D129: curriculum_mode="baseline"(기본)은 기존 _find_curriculum_ref() placeholder
+    그대로(대조군, 하위호환). "fixed"는 hookfile/curriculum_match.py의 실제 매칭기를
+    코드/인터뷰 두 채널 모두에 적용 -- 두 트랙은 rule_id/지침_본문/checkable_condition이
+    전부 동일하고 curriculum_refs만 다르다(_evidence_text가 curriculum_refs를 안 쓰므로).
     """
     weak_axes = _weakest_fr_axes(transcript_scores) if transcript_scores else list(FR_AXES[:TOP_AXES])
     log(f"weakest FR axes this round: {weak_axes}")
@@ -141,7 +148,11 @@ def build_candidate_rules(findings, transcript_scores, unit_map, round_num, seq_
             continue
         seq = seq_by_axis.get(axis, 0) + 1
         seq_by_axis[axis] = seq
-        curriculum_ref = _find_curriculum_ref(f, unit_map)
+        if curriculum_mode == "fixed":
+            curriculum_ref = curriculum_match.find_curriculum_ref_fixed(
+                f.get("finding", ""), unit_map, concept_index=concept_index, common_tokens=common_tokens)
+        else:
+            curriculum_ref = _find_curriculum_ref(f, unit_map)
         candidates.append({
             "rule_id": f"{axis}-{seq:02d}", "channel": "code", "취약축": axis,
             "tech_area": f.get("lang") or "unknown",
@@ -169,6 +180,12 @@ def build_candidate_rules(findings, transcript_scores, unit_map, round_num, seq_
         for turn_index, sc in entries:
             seq = seq_by_axis.get(axis, 0) + 1
             seq_by_axis[axis] = seq
+            if curriculum_mode == "fixed":
+                intv_text = f"{sc.get('criterion', '')} {sc.get('evidence', '')}"
+                intv_curriculum_ref = curriculum_match.find_curriculum_ref_fixed(
+                    intv_text, unit_map, concept_index=concept_index, common_tokens=common_tokens)
+            else:
+                intv_curriculum_ref = None  # baseline: 인터뷰 채널은 원래도 매핑 시도 안 함
             candidates.append({
                 "rule_id": f"{axis}-{seq:02d}", "channel": "interview", "취약축": axis,
                 "tech_area": None,
@@ -177,7 +194,7 @@ def build_candidate_rules(findings, transcript_scores, unit_map, round_num, seq_
                     "round": round_num, "turn_index": turn_index, "level": sc.get("level"),
                     "fr_axis": axis, "score": sc["score"],
                 }],
-                "curriculum_refs": None,
+                "curriculum_refs": intv_curriculum_ref,
                 "trigger": f"이 회차 인터뷰에서 '{axis}' 관련 질문이 나올 때",
                 "checkable_condition": f"다음 회차 인터뷰의 '{axis}' 점수가 이번 회차({sc['score']}점)보다 낮아지지 않아야 함",
                 "provenance_hash": None,
@@ -195,10 +212,12 @@ def _dominant_subrubric_axis(finding):
 
 
 def _find_curriculum_ref(finding, unit_map):
-    """finding의 언어/맥락과 대략 맞는 unit을 찾아 CUR-02 매핑 근거로 사용.
-    P01 provenance-precision 검증을 통과한 concept만 인용해야 한다는 §4.1 선행 게이트를
-    실제로 강제하려면 curriculum_provenance_audit.json의 tier1_pass/tier2 grounded 결과와
-    교차해야 한다 -- 이 1차 구현은 unit_map 유무만 확인하고, 정합성 교차검증은 EXIT로 남김."""
+    """D129: baseline 트랙 전용(대조군) -- unit_map의 "첫 항목"만 무조건 반환하는
+    1차 placeholder. D127 종합 리포트에서 이 때문에 4라운드 22개 규칙 전부 동일
+    인용이 나온다는 게 실측 확인됨. 실제 매칭은 curriculum_mode="fixed"일 때
+    hookfile/curriculum_match.py가 대신한다(§4.1 선행 게이트를 실제로 구현:
+    curriculum_provenance_audit.json의 tier1_pass/tier2 grounded 결과와 교차).
+    이 함수 자체는 대조군 동작을 보존하기 위해 의도적으로 그대로 둔다."""
     if not unit_map:
         return None
     first_unit = next(iter(unit_map.values()), None)
@@ -263,7 +282,7 @@ def merge_with_previous(new_rules, prev_version_path):
 
 
 def generate_hook_file(student_id, round_num, findings_path, transcript_path, unit_map_path,
-                        out_path, prev_version_path=None, skip_firewall=False):
+                        out_path, prev_version_path=None, skip_firewall=False, curriculum_mode="baseline"):
     if not skip_firewall:
         temporal_firewall_check(findings_path, transcript_path, unit_map_path)
     else:
@@ -284,7 +303,15 @@ def generate_hook_file(student_id, round_num, findings_path, transcript_path, un
                 continue
             starting_seq_by_axis[axis] = max(starting_seq_by_axis.get(axis, 0), seq)
 
-    candidates, weak_axes = build_candidate_rules(findings, transcript_scores, unit_map, round_num, seq_by_axis=starting_seq_by_axis)
+    concept_index, common_tokens = (None, None)
+    if curriculum_mode == "fixed" and unit_map:
+        concept_index, common_tokens = curriculum_match.build_concept_index(unit_map)
+        log(f"curriculum_mode=fixed: {len(concept_index)} grounded concepts indexed, "
+            f"{len(common_tokens)} common tokens filtered")
+
+    candidates, weak_axes = build_candidate_rules(
+        findings, transcript_scores, unit_map, round_num, seq_by_axis=starting_seq_by_axis,
+        curriculum_mode=curriculum_mode, concept_index=concept_index, common_tokens=common_tokens)
     for c in candidates:
         src_path = findings_path if c["channel"] == "code" else transcript_path
         c["provenance_hash"] = _file_hash(src_path) if src_path else None
@@ -331,6 +358,9 @@ def generate_hook_file(student_id, round_num, findings_path, transcript_path, un
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "source_round": round_num, "canary_uuid": token, "coverage": round(coverage, 3),
         "provenance_commit": _git_commit_contains(findings_path)[1] if findings_path and not skip_firewall else None,
+        # D129: 저장 값은 "curriculum-fixed"(파일명/DB CHECK 제약/스키마 문서와 통일) --
+        # 함수 인자·CLI 플래그 값 "fixed"는 내부적으로만 씀(간결한 짧은 값).
+        "curriculum_mode": "curriculum-fixed" if curriculum_mode == "fixed" else "baseline",
         "deferred_rules": deferred, "rules": merged_rules,
     }
     Path(out_path).write_text(json.dumps(hook_file, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -348,10 +378,14 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--prev-version", default=None)
     ap.add_argument("--skip-firewall", action="store_true", help="dev/demo only -- bypasses D123 layer 3")
+    ap.add_argument("--curriculum-mode", choices=["baseline", "fixed"], default="baseline",
+                     help="D129: baseline(default, control) = placeholder _find_curriculum_ref(); "
+                          "fixed = real curriculum_match.py matcher")
     args = ap.parse_args()
     generate_hook_file(
         args.student_id, args.round, args.findings, args.transcript, args.unit_map,
         args.out, prev_version_path=args.prev_version, skip_firewall=args.skip_firewall,
+        curriculum_mode=args.curriculum_mode,
     )
 
 

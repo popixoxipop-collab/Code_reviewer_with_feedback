@@ -23,6 +23,7 @@
   "canary_uuid": "string -- 파일마다 고유. 5.4 오염 감시용, 절대 재사용 금지",
   "coverage": "float 0~1 -- 진단된 취약축(ENG-01) 중 처방(rule)이 존재하는 비율",
   "provenance_commit": "string -- 이 버전의 근거가 된 측정 raw 커밋 해시(temporal firewall이 검사)",
+  "curriculum_mode": "\"baseline\" | \"curriculum-fixed\" -- D129. baseline=_find_curriculum_ref() placeholder(대조군), curriculum-fixed=hookfile/curriculum_match.py 실제 매칭. 두 트랙은 curriculum_refs만 다르고 나머지 필드는 동일(지침_본문 생성 evidence가 curriculum_refs를 안 씀) -- 매 회차 두 파일(hookfile_v{N}_baseline.json / hookfile_v{N}_curriculum-fixed.json)을 한 쌍으로 상시 병행 생성하는 게 표준 관행",
   "deferred_rules": "array -- 규칙 예산(<=10) 초과로 이번 버전엔 안 들어간 후보(우선순위 순 보존)",
   "rules": "array of Rule -- 아래 규칙 레벨 스키마"
 }
@@ -57,7 +58,9 @@
   "curriculum_refs": {
     "unit": "P01 unit_map의 unit_id (예: \"01\")",
     "unit_title": "P01 unit_map의 unit_title",
-    "source_pages": "P01 unit_map concept의 source_pages 배열 그대로 -- CUR-02 매핑, curriculum_4axis_benchmark.py의 provenance-precision 검증을 통과한 concept만 인용 가능(§4.1 선행 게이트)"
+    "source_pages": "P01 unit_map concept의 source_pages 배열 그대로 -- CUR-02 매핑, curriculum_4axis_benchmark.py의 provenance-precision 검증을 통과한 concept만 인용 가능(§4.1 선행 게이트)",
+    "concept_name": "curriculum-fixed 트랙만 -- 매칭된 구체 concept 이름(D129, curriculum_match.py)",
+    "match_basis": "curriculum-fixed 트랙만 -- 어떤 키워드가 겹쳐서 이 concept이 뽑혔는지(감사 가능성)"
   },
 
   "trigger": "string -- 이 규칙이 적용되는 조건(작업 설명 유사도 또는 파일 패턴). Hooks matcher 대응",

@@ -69,4 +69,12 @@ WHY: D96 계보(가드 없던 경로로 오염 전파)의 재발 — 이번엔 H
 
 - WHY: 실제 학생 모집(β) 전에 4중 오염방지 장치·temporal firewall·규칙 예산·병합 로직이 실제 다회차 데이터에서 깨지지 않는지 싸게 먼저 검증한다. 코드 작성은 Claude 구독 비용(NVIDIA 콜 아님)이라 M1/M2보다 오히려 NVIDIA 예산 부담이 적다.
 - COST: 과제 형태 등가성은 β 수준(실측 finding 밀도 대조)에 못 미침. FR-04-01은 1회 채점(β의 3회 중앙값 원칙 미적용) — 회차 간 차이가 노이즈인지 진짜 추세인지 γ 결과만으로는 약하게만 말할 수 있음. student-agent는 실제 3주차 학생의 심리/시간압박을 진짜로 재현하지 못함(에이전트 시뮬레이션의 근본적 외적 타당도 한계, plan 7.4에 이미 명시).
-- EXIT: β 설계 시 (1) 실제 과제 4개를 P02로 사전 스캔해 finding 밀도 정합 확인, (2) FR-04-01을 3회 중앙값으로 승격, (3) `_find_curriculum_ref`를 curriculum_provenance_audit.json과 교차하는 정밀 매칭으로 교체.
+- EXIT: β 설계 시 (1) 실제 과제 4개를 P02로 사전 스캔해 finding 밀도 정합 확인, (2) FR-04-01을 3회 중앙값으로 승격, (3) ~~`_find_curriculum_ref`를 curriculum_provenance_audit.json과 교차하는 정밀 매칭으로 교체~~ — **D129로 완료**(아래).
+
+## D129 — 커리큘럼 매핑: baseline/curriculum-fixed 상시 병행 세트 (표준 관행)
+
+`_find_curriculum_ref()`가 unit_map의 첫 항목만 무조건 반환하는 placeholder였다는 게 D127에서 실측 확인된 뒤(4라운드 22개 규칙 전부 동일 인용), 사용자 지시로 이를 해결하되 **기존 placeholder 동작은 대조군("baseline")으로 남기고, 실제 매칭("curriculum-fixed")과 매 회차 한 쌍으로 상시 병행 생성**하기로 확정.
+
+**표준 관행(5회차 이후에도 적용)**: 매 회차 Hook File 생성 시 `generate_hook_file.py`를 **두 번** 호출 — `--curriculum-mode baseline`과 `--curriculum-mode fixed`, 각각 자기 트랙의 이전 버전만 `--prev-version`으로 참조(두 트랙의 병합 이력은 절대 안 섞음). 출력 파일명 관례: `hookfile_v{N}_baseline.json` / `hookfile_v{N}_curriculum-fixed.json`. `hookfile/db/personal.db`에도 `variant` 컬럼으로 두 트랙이 나란히 적재된다(D126 스키마 확장).
+
+**실측 결과(4라운드 소급 생성 기준)**: 코드채널 0/15(0%) 매칭, 인터뷰채널 15/18(83%, 실질 5개 고유 규칙 기준) 매칭. 코드채널이 전부 매칭 실패인 건 매칭기 결함이 아니라 **커리큘럼 자체의 커버리지 한계**(자바 문법 입문 6개 유닛에 아키텍처/fan-in 개념이 사실상 없음, `hookfile/curriculum_match.py` 상단 주석에 근거 기록) — 억지로 아무 유닛이나 붙이지 않고 정직하게 매칭 없음(None)을 반환한 결과다. 추가 발견: unit_map의 Unit05/06 concepts가 완전히 동일(M2 청킹 버그 추정, 이번 스코프에서 원인 수정 안 함).

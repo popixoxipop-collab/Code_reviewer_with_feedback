@@ -50,16 +50,22 @@ def _ensure_student(conn, student_id):
 
 
 def upsert_hook_file_version(conn, hookfile_json):
-    """hookfile_v{N}.json 딕셔너리를 통째로 받아 hook_file_versions + rules(kept+deferred) 적재.
-    재실행해도 안전(같은 버전이면 UPDATE+rules 전량 재삽입) -- 이번 세션의 RULE_BUDGET
-    버그처럼 같은 버전을 재생성해 덮어써야 하는 경우를 그대로 지원한다."""
+    """hookfile_v{N}_{variant}.json 딕셔너리를 통째로 받아 hook_file_versions +
+    rules(kept+deferred) 적재. 재실행해도 안전(같은 (버전,variant)면 UPDATE+rules
+    전량 재삽입) -- RULE_BUDGET 버그처럼 같은 버전을 재생성해 덮어써야 하는 경우나
+    D129의 baseline/curriculum-fixed 재실행을 그대로 지원한다.
+
+    D129: variant는 JSON의 curriculum_mode 필드에서 가져온다(파일명 파싱 대신
+    콘텐츠 기반 -- 더 견고). 필드가 없는 구버전 파일(D129 이전 생성분)은
+    schema_personal.sql의 컬럼 기본값과 동일하게 "baseline"으로 취급."""
     student_id = hookfile_json["student_id"]
     version = hookfile_json["version"]
+    variant = hookfile_json.get("curriculum_mode", "baseline")
     _ensure_student(conn, student_id)
 
     row = conn.execute(
-        "SELECT id FROM hook_file_versions WHERE student_id=? AND version=?",
-        (student_id, version),
+        "SELECT id FROM hook_file_versions WHERE student_id=? AND version=? AND variant=?",
+        (student_id, version, variant),
     ).fetchone()
     if row:
         hfv_id = row[0]
@@ -72,9 +78,9 @@ def upsert_hook_file_version(conn, hookfile_json):
         )
     else:
         cur = conn.execute(
-            "INSERT INTO hook_file_versions (student_id, version, generated_at, source_round, "
-            "canary_uuid, coverage, provenance_commit) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            (student_id, version, hookfile_json["generated_at"], hookfile_json["source_round"],
+            "INSERT INTO hook_file_versions (student_id, version, variant, generated_at, source_round, "
+            "canary_uuid, coverage, provenance_commit) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            (student_id, version, variant, hookfile_json["generated_at"], hookfile_json["source_round"],
              hookfile_json["canary_uuid"], hookfile_json.get("coverage"),
              hookfile_json.get("provenance_commit")),
         )

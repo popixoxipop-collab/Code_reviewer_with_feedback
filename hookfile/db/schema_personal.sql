@@ -11,16 +11,24 @@ CREATE TABLE IF NOT EXISTS students (
     created_at   TEXT NOT NULL
 );
 
+-- D129: variant -- baseline(대조군, _find_curriculum_ref placeholder)과 curriculum-fixed
+-- (실제 매칭, hookfile/curriculum_match.py)를 매 회차 한 쌍으로 상시 병행 생성한다.
+-- 두 트랙은 curriculum_refs 필드만 다르고 나머지는 동일(rules.instruction 등) -- 그래도
+-- 완전히 분리된 hook_file_versions 행으로 관리한다: render_targets.py/audit_checklist.py/
+-- export_student.py가 "하나의 Hook File 경로"를 받는 기존 인터페이스를 그대로 재사용할
+-- 수 있고(변형 인지 로직 추가 불필요), 두 트랙의 merge_with_previous() 이력도 서로
+-- 완전히 독립적으로 유지돼야 하기 때문(baseline이 fixed 위에 잘못 병합되면 안 됨).
 CREATE TABLE IF NOT EXISTS hook_file_versions (
     id                  INTEGER PRIMARY KEY AUTOINCREMENT,
     student_id          TEXT NOT NULL REFERENCES students(student_id),
     version             INTEGER NOT NULL,
+    variant             TEXT NOT NULL DEFAULT 'baseline' CHECK(variant IN ('baseline','curriculum-fixed')),
     generated_at        TEXT NOT NULL,
     source_round        INTEGER NOT NULL,
     canary_uuid         TEXT NOT NULL UNIQUE,
     coverage            REAL,
     provenance_commit   TEXT,
-    UNIQUE(student_id, version)
+    UNIQUE(student_id, version, variant)
 );
 CREATE INDEX IF NOT EXISTS idx_hfv_student ON hook_file_versions(student_id);
 
