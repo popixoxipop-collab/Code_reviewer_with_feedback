@@ -104,6 +104,17 @@ h2 { font-family: var(--mono); font-weight: 600; font-size: 1.02rem; margin: 0 0
   border: 1px solid var(--line-strong); background: var(--bg-panel); color: var(--ink-dim); cursor: pointer;
 }
 .method-btn.active { border-color: var(--accent); color: var(--accent); }
+.model-toggle-group { display: flex; gap: 8px; flex-wrap: wrap; }
+.model-chip {
+  font-family: var(--mono); font-size: 0.72rem; padding: 6px 12px; border-radius: 999px;
+  border: 1px solid var(--line-strong); background: var(--bg-panel); color: var(--ink-dim); cursor: pointer;
+}
+.model-chip:hover { color: var(--ink); }
+.model-chip.active { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); font-weight: 600; }
+.model-chip.warn { border-color: var(--status-blocked); color: var(--status-blocked); }
+.model-chip.warn.active { background: color-mix(in srgb, var(--status-blocked) 14%, transparent); }
+.model-note { font-size: 0.74rem; color: var(--ink-faint); margin: 8px 0 0; }
+.model-note.warn { color: var(--status-blocked); }
 .dropzone {
   border: 2px dashed var(--line-strong); border-radius: 6px; padding: 26px; text-align: center;
   color: var(--ink-faint); font-size: 0.82rem; transition: border-color 0.15s, color 0.15s;

@@ -283,7 +283,7 @@ _result = webtool_driver.run_scan("/target", overrides_json)
   }
 
   async function maybeSaveRun(result, files) {
-    if (!window.LabDB || !LabDB.isConfigured()) {
+    if (!LabDB.isConfigured()) {
       LabApp.log("p02", "Supabase 미설정 — 결과는 화면에만 표시됨(DB 저장 안 됨)");
       return;
     }
@@ -302,10 +302,6 @@ _result = webtool_driver.run_scan("/target", overrides_json)
     }
   }
 
-  LabApp.registerRunner ? LabApp.registerRunner("p02", { renderInput, run }) : null;
+  LabApp.registerRunner("p02", { renderInput, run });
   return { renderInput, run };
 })();
-
-document.addEventListener("DOMContentLoaded", () => {
-  if (window.LabApp) LabApp.registerRunner("p02", P02Runner);
-});

@@ -6,8 +6,41 @@
 const P01Runner = (() => {
   let pdfBytes = null;
   let pdfPassword = "";
+  let selectedModel = null; // initialized from manifest.shared.default_model on first render, then sticky across tab switches
+
+  // Ranking + notes sourced from docs/pipelines.html's 11-model 4-axis table (D116). That
+  // benchmark measures a DIFFERENT task (P03 question-gen x grading) -- P01-T1 (D119/D120)
+  // separately found step-3.5-flash (rank #1 there) fails completely on P01's chunk-analysis
+  // task (0/50) while qwen3-next-80b succeeds 96%. So "tier" below is P01-specific evidence
+  // (good/bad), not a re-skin of the P03 rank -- the other 9 are honestly labeled unverified
+  // for P01 rather than implying the P03 ranking transfers.
+  const MODEL_CHOICES = [
+    { id: "stepfun-ai/step-3.5-flash", label: "step-3.5-flash", tier: "bad",
+      note: "P01-T1 실측: 0/50 완전실패(D120). P03 종합 1위 모델이지만 이 파이프라인엔 부적합." },
+    { id: "mistralai/mistral-medium-3.5-128b", label: "mistral-medium-3.5", tier: "unverified",
+      note: "P01 기준 미검증 · P03 종합 2위(0.749)." },
+    { id: "qwen/qwen3-next-80b-a3b-instruct", label: "qwen3-next-80b", tier: "good",
+      note: "팀 Locked 모델 · P01-T1 실측 96% 성공(D120) · 기본값." },
+    { id: "nvidia/nemotron-3-super-120b-a12b", label: "nemotron-3-super-120b", tier: "unverified",
+      note: "P01 기준 미검증 · P03에서 범위 밖 점수 출력 결함 이력." },
+    { id: "qwen/qwen3.5-122b-a10b", label: "qwen3.5-122b", tier: "unverified",
+      note: "P01 기준 미검증 · P03 종합 5위(0.589)." },
+    { id: "nvidia/llama-3.3-nemotron-super-49b-v1.5", label: "nemotron-super-49b", tier: "unverified",
+      note: "P01 기준 미검증 · P03 종합 6위(0.531)." },
+    { id: "deepseek-ai/deepseek-v4-pro", label: "deepseek-v4-pro", tier: "unverified",
+      note: "P01 기준 미검증 · P03에서 쿼타 소진 이력(측정 당시 몇 시간 전엔 100%)." },
+    { id: "meta/llama-4-maverick-17b-128e-instruct", label: "llama-4-maverick", tier: "unverified",
+      note: "P01 기준 미검증 · P03에서 NVIDIA 서빙 장애로 측정 불가 이력." },
+    { id: "mistralai/mistral-large-3-675b-instruct-2512", label: "mistral-large-3", tier: "unverified",
+      note: "P01 기준 미검증 · P03 채점기 역할에서 퇴행 생성 루프 결함 이력(질문생성 역할만 정상)." },
+    { id: "z-ai/glm-5.2", label: "glm-5.2", tier: "unverified",
+      note: "P01 기준 미검증 · P03에서 쿼타 소진 이력." },
+    { id: "minimaxai/minimax-m3", label: "minimax-m3", tier: "unverified",
+      note: "P01 기준 미검증 · P03에서 100회 반복 중 DEGRADED 재발 이력." },
+  ];
 
   function renderInput(container) {
+    if (!selectedModel) selectedModel = (LabApp.getManifest().shared || {}).default_model;
     container.innerHTML = `
       <div class="input-panel">
         <h3>교안 PDF 입력</h3>
@@ -21,6 +54,9 @@ const P01Runner = (() => {
           텍스트 추출은 pdf.js를 쓴다 — 원본 파이프라인의 pdftotext -layout과 완전히 동일한 결과는 아니다
           (모든 실행 기록에 extractor: "pdfjs"로 표시됨).
         </p>
+        <div class="field-label" style="margin-top:14px;">모델 선택 (11종 — 3개 프롬프트 단계+JSON 복구 전부에 적용)</div>
+        <div class="model-toggle-group" id="p01-model-group"></div>
+        <p class="model-note" id="p01-model-note"></p>
       </div>`;
 
     const dropzone = container.querySelector("#p01-dropzone");
@@ -38,6 +74,31 @@ const P01Runner = (() => {
       if (fileInput.files[0]) handlePdfFile(fileInput.files[0], container);
     });
     passwordInput.addEventListener("input", () => { pdfPassword = passwordInput.value; });
+    renderModelToggle(container);
+  }
+
+  function renderModelToggle(container) {
+    const group = container.querySelector("#p01-model-group");
+    const note = container.querySelector("#p01-model-note");
+    group.innerHTML = MODEL_CHOICES.map((m) => {
+      const cls = ["model-chip"];
+      if (m.id === selectedModel) cls.push("active");
+      if (m.tier === "bad") cls.push("warn");
+      return `<button type="button" class="${cls.join(" ")}" data-model="${LabApp.escapeHtml(m.id)}">${LabApp.escapeHtml(m.label)}</button>`;
+    }).join("");
+    const updateNote = () => {
+      const m = MODEL_CHOICES.find((x) => x.id === selectedModel);
+      note.textContent = m ? m.note : "";
+      note.className = "model-note" + (m && m.tier === "bad" ? " warn" : "");
+    };
+    group.querySelectorAll(".model-chip").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        selectedModel = btn.dataset.model;
+        group.querySelectorAll(".model-chip").forEach((b) => b.classList.toggle("active", b === btn));
+        updateNote();
+      });
+    });
+    updateNote();
   }
 
   async function handlePdfFile(file, container) {
@@ -120,7 +181,7 @@ const P01Runner = (() => {
     const template = LabApp.resolveTemplate("p01", stageId, "user_template");
     const userMsg = LabApp.fillTemplate(template, values);
     const maxTokens = LabApp.resolveParam("p01", stageId, "max_tokens") || 1800;
-    const model = LabApp.resolveParam("p01", stageId, "model") || (LabApp.getManifest().shared || {}).default_model;
+    const model = LabApp.resolveParam("p01", stageId, "model") || selectedModel;
     const choice = await LabLLM.chatJSON({ model, messages: [{ role: "system", content: system }, { role: "user", content: userMsg }], maxTokens });
     try {
       return LabLLM.extractJsonObject(choice.content);
@@ -145,6 +206,7 @@ const P01Runner = (() => {
       const chunkSize = LabApp.resolveParam("p01", "p01-1", "chunk_size") || 10;
       const maxChunks = LabApp.resolveParam("p01", "p01-1", "max_chunks");
 
+      LabApp.log(pipelineId, `모델: ${selectedModel}`);
       LabApp.log(pipelineId, "PDF 텍스트 추출 중 (pdf.js)...");
       const pages = await extractPages((msg) => LabApp.log(pipelineId, msg));
       const chunks = buildChunks(pages, chunkSize, maxChunks);
@@ -217,14 +279,14 @@ const P01Runner = (() => {
   }
 
   async function maybeSaveRun(result) {
-    if (!window.LabDB || !LabDB.isConfigured()) {
+    if (!LabDB.isConfigured()) {
       LabApp.log("p01", "Supabase 미설정 — 결과는 화면에만 표시됨");
       return;
     }
     try {
       await LabDB.saveRun({
         pipeline: "p01",
-        model: (LabApp.getManifest().shared || {}).default_model,
+        model: selectedModel,
         input_meta: { extractor: "pdfjs", chunk_count: result.chunk_count },
         overrides: {},
         rubric_overridden: false,
@@ -236,9 +298,6 @@ const P01Runner = (() => {
     }
   }
 
+  LabApp.registerRunner("p01", { renderInput, run });
   return { renderInput, run };
 })();
-
-document.addEventListener("DOMContentLoaded", () => {
-  if (window.LabApp) LabApp.registerRunner("p01", P01Runner);
-});

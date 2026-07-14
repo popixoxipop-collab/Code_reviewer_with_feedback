@@ -250,7 +250,7 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
   }
 
   async function maybeSaveRun(result) {
-    if (!window.LabDB || !LabDB.isConfigured()) {
+    if (!LabDB.isConfigured()) {
       LabApp.log("p03", "Supabase 미설정 — 결과는 화면에만 표시됨");
       return;
     }
@@ -269,9 +269,6 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     }
   }
 
+  LabApp.registerRunner("p03", { renderInput, run });
   return { renderInput, run };
 })();
-
-document.addEventListener("DOMContentLoaded", () => {
-  if (window.LabApp) LabApp.registerRunner("p03", P03Runner);
-});

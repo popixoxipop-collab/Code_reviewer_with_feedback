@@ -68,7 +68,7 @@ const LabConfig = (() => {
     const statusEl = document.getElementById("login-status");
     if (!btn) return;
     btn.addEventListener("click", async () => {
-      if (!window.LabDB || !LabDB.isConfigured()) {
+      if (!LabDB.isConfigured()) {
         statusEl.textContent = "먼저 Supabase URL/anon key를 입력하세요";
         return;
       }
