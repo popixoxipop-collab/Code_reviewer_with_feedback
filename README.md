@@ -973,6 +973,15 @@ python3 pipeline/compare_methodologies.py
   - COST: 이 계정의 `ALLOWED_ORIGIN`은 여전히 `"*"`(모든 오리진 허용) — GitHub Pages 주소로 좁히는 방어층 추가는 스코프 밖으로 명시, 안 함.
   - EXIT: 프록시를 재배포하거나 다른 계정으로 옮길 때는 `docs/lab/config.js`의 `DEFAULT_PROXY_URL` 한 곳만 바꾸면 됨(팀원 각자는 필드를 직접 덮어써서 독립적으로 우회 가능).
 
+- **D139** ([`lab/index.html`](./lab/index.html), [`experiments/web_lab/SETUP.md`](./experiments/web_lab/SETUP.md)) — 사용자 질문 "그럼 어떤 url로 접속해야 보여?"에 답하려고 실제 공개 URL을 처음으로 curl 검증 → `.../lab/`(docs/ 없이)가 **404**임을 발견. D135부터 SETUP.md·README·Supabase site_url 전부에 걸쳐 반복해온 "Pages가 `docs/`를 서빙한다"는 가정이 한 번도 검증 안 된 채(PLAN.md에서 계승) 틀렸던 것 — `gh api repos/.../pages`로 실제 설정이 `"source":{"branch":"main","path":"/"}`(저장소 루트)임을 확인. **D101이 이미 이 정확한 사실을 확인하고 루트 리다이렉트 스텁으로 우회해뒀었다**(`pipelines.html`/`index.html`)는 걸 이번엔 재확인 없이 지나쳐서 같은 실수를 반복함 — 이 세션이 스스로 쓴 README를 스스로 안 읽고 지나간 사례.
+  - **실제 영향받은 부분**: D137에서 설정한 Supabase 매직링크 `site_url`이 죽은 경로(`.../lab/`)를 가리키고 있었음 — 이게 만약 그대로 있었다면 팀원이 로그인 시도 시 아무 데도 안 뜨는 리다이렉트를 만났을 것(실사용 전에 잡음).
+  - 수정: 기존 패턴 그대로 루트에 `lab/index.html` 리다이렉트 스텁 신설(`./docs/lab/`로 이동) → 짧은 URL도 복구. Supabase `site_url`/`uri_allow_list`는 스텁이 아니라 **실제 경로**(`docs/lab/`)로 재설정 — 리다이렉트 스텁을 auth 콜백 대상으로 쓰면 안 되는 이유를 짚음: `window.location.replace()`가 URL을 통째로 새 문자열로 교체해서 매직 링크가 담아오는 인증 토큰(URL 해시 프래그먼트)이 리다이렉트 과정에서 유실됨.
+  - **실측 검증**: `curl`은 JS를 실행 못 해서 스텁 페이지 자체(200, 제목 "Redirecting to Pipeline Lab")만 확인 가능 — 실제 리다이렉트 완주는 헤드리스 Chrome으로 짧은 URL을 열어 최종적으로 진짜 Pipeline Lab 페이지가 렌더링되는 것까지 스크린샷으로 확인.
+  - WHY: 세션 내내 반복해서 알려준 URL이 실제로는 죽어있었다는 게, "로컬에서 테스트했으니 됐다"는 안일한 검증의 정확한 실패 사례 — 로컬 서버는 항상 리포 루트를 서빙 기준으로 잡았기 때문에 이 불일치 자체가 로컬 테스트로는 재현이 안 됐음.
+  - COST: 없음 — 순수 정정, 기존 문서 3곳(SETUP.md 2군데, README 대화 중 안내)의 잘못된 URL을 실제로 동작하는 값으로 교체.
+  - EXIT: Pages source를 나중에 실제로 `docs/`로 바꾸면(GitHub 저장소 설정에서) 이 리다이렉트 스텁들과 `docs/` 접두사 안내가 전부 불필요해짐 — 그 경우 루트 스텁 3개(`index.html`/`pipelines.html`/`lab/index.html`) 삭제하고 문서에서 `docs/` 접두사만 제거하면 됨.
+  - 커밋: `4173122`, push 완료.
+
 
 ## 다음 단계 (미해결)
 
