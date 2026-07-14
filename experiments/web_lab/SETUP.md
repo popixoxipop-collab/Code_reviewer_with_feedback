@@ -10,28 +10,36 @@ Cloudflare 계정을 만들거나 배포할 수 없다. 코드는 전부 repo에
 필요 없다(LLM을 아예 안 부르는 파이프라인이라서). GitHub PAT도 공개 repo면 선택사항.
 나머지 단계는 P01/P03(LLM 호출)과 결과 DB 저장을 켜고 싶을 때만 필요하다.
 
-## 1. NVIDIA 프록시 배포 (P01·P03에 필요)
+## 1. NVIDIA 프록시 배포 (P01·P03에 필요) — ✅ 완료 (2026-07-14)
 
 `integrate.api.nvidia.com`은 브라우저 직접 호출을 막는다(CORS 헤더 없음, 2026-07-14 실측
-확인) — `worker/nvidia-proxy.js`가 그 우회로다. 코드를 그대로 공개해뒀으니 배포 전에 읽어보고
-뭘 하는지(키를 한 헤더에서 다음 요청으로 넘기기만 함, 로깅/저장 없음) 확인해도 된다.
+확인) — `worker/nvidia-proxy.js`가 그 우회로다.
 
-```bash
-npm install -g wrangler   # 최초 1회
-wrangler login            # Cloudflare 무료 계정으로 로그인 (없으면 가입)
-cd worker
-wrangler deploy nvidia-proxy.js
-```
+사용자가 제공한 Cloudflare API 토큰(Edit Cloudflare Workers 템플릿)으로 `wrangler login`
+없이 `CLOUDFLARE_API_TOKEN` 환경변수로 비대화형 배포 완료.
 
-배포가 끝나면 `https://nvidia-proxy.<your-subdomain>.workers.dev` 같은 URL이 나온다 — 이걸
-Pipeline Lab 상단 "연결 설정"의 **LLM 프록시 URL**에 넣는다.
+- **배포된 URL**: `https://nvidia-proxy.popixoxipop.workers.dev` — `docs/lab/config.js`의
+  `DEFAULT_PROXY_URL`에 기본값으로 미리 채워둠(Supabase와 달리 이 필드는 그대로 편집 가능하게
+  남겨둠 — URL이지 자격증명이 아니고, 팀원이 자기 프록시로 바꿔 쓸 수 있어야 하므로).
+- 계정에 workers.dev 서브도메인이 아예 없어서(신규 Cloudflare 계정) `popixoxipop`으로 먼저
+  등록해야 배포가 됨(Management API `PUT /accounts/{id}/workers/subdomain`).
+- 신규 서브도메인이라 TLS 인증서 전파에 몇 분 걸림(첫 요청들은 SSL handshake failure) —
+  실제 코드가 문서화한 동작(헤더 없는 POST→401 `"missing x-nvidia-api-key header"`,
+  OPTIONS→204+CORS 헤더)까지 맞는지 확인하고서야 완료로 표시.
 
 **팀원 각자 자기 프록시를 쓰고 싶으면**: 같은 `worker/nvidia-proxy.js`를 각자 배포하고 자기
-URL을 넣으면 된다 — owner의 프록시를 거치지 않아도 되도록 설계돼 있다.
+URL로 필드를 덮어쓰면 된다 — owner의 프록시를 거치지 않아도 되도록 설계돼 있다.
+
+```bash
+npm install -g wrangler
+wrangler login            # Cloudflare 무료 계정으로 로그인 (없으면 가입)
+cd worker
+wrangler deploy nvidia-proxy.js --compatibility-date <오늘날짜>
+```
 
 선택: `worker/nvidia-proxy.js`의 `ALLOWED_ORIGIN`을 `"*"`에서 실제 GitHub Pages 주소
 (예: `https://popixoxipop-collab.github.io`)로 좁히면 다른 사이트가 이 프록시를 얹어 쓰는 걸
-막을 수 있다(키 자체 유출과는 별개 — 방어층 하나 더).
+막을 수 있다(키 자체 유출과는 별개 — 방어층 하나 더). 아직 안 함(스코프 밖).
 
 ## 2. Supabase 프로젝트 생성 (DB 저장에 필요) — ✅ 완료 (2026-07-14)
 
@@ -67,18 +75,22 @@ URL을 넣으면 된다 — owner의 프록시를 거치지 않아도 되도록 
 
 ## 5. 팀원에게 공유할 때
 
-각 팀원에게 알려줄 것:
+각 팀원에게 알려줄 것(2026-07-14부터 실제로 이게 전부임 — 프록시 URL도 이미 기본값으로 채워져 있음):
 - Pipeline Lab URL
 - 자기 NVIDIA API 키(각자 https://build.nvidia.com 에서 발급, 무료)를 상단 "연결 설정"에
   직접 입력할 것 — 이 키는 서버로 전송되지 않고 DB에도 저장되지 않는다(P01/P03 실행에만 씀)
-- 프록시 URL(owner가 배포한 것을 쓰거나, 원하면 자기 것 배포)
 - 로그인용 이메일(매직 링크로 로그인, 비밀번호 없음) — DB는 팀 공용으로 이미 연결돼 있어
   Supabase URL/키는 입력받지 않음, 로그인만 하면 됨
+- (선택) 프록시 URL은 owner가 배포한 게 기본값으로 이미 채워져 있음 — 자기 프록시를 쓰고
+  싶으면 그 필드를 자기 URL로 덮어쓰면 됨
 
 ## 확인 체크리스트
 
 - [ ] P02: repo 하나(owner/repo 형식)로 스캔 → finding이 화면에 나오는지
-- [ ] 프록시: NVIDIA 키 + 프록시 URL 입력 후 P01 청크 1개짜리 PDF로 실제 응답이 오는지
+- [x] 프록시 배포: 실측 완료(2026-07-14) — 헤더 없는 POST가 401 `missing x-nvidia-api-key
+      header`, OPTIONS가 204+CORS 헤더 반환 확인
+- [ ] 프록시 end-to-end: 실제 NVIDIA 키 입력 후 P01 청크 1개짜리 PDF로 실제 응답이 오는지
+      (테스트용 NVIDIA 키가 아직 없어서 이 마지막 연결까지는 미확인)
 - [ ] DB: 로그인 후(URL/키 입력 불필요, 이미 하드코딩됨) P02 실행 → Supabase 대시보드
       Table Editor에서 `runs` 테이블에 행이 생겼는지 확인
 - [ ] RLS: 다른 계정으로 로그인해서 `runs`가 보이되(읽기 전체 허용), 로그인 안 한 상태에서
