@@ -1,0 +1,122 @@
+[
+  {
+    "finding_id": "cognition-isolation:ReadingInputHandler.java",
+    "ok": true,
+    "axis": "구조_인지도",
+    "fr_axis": "코드_이해",
+    "score": 4,
+    "criterion": "흐름은 맞지만 일부 연결 관계 불명확",
+    "evidence": "[L1] 질문: ReadingInputHandler.java의 collectReadings() 메서드에서 ArrayList를 선택한 이유를 코드 주석에 명시했지만, 실제로 LinkedList를 사용하지 않은 결정을 뒷받침하는 근거로 제시된 '중간 삽입/삭제 연산이 프로그램 어디에도 없다'는 진술을 어떻게 검증했나요? 프로젝트 내 다른 파일(예: ReadingLog.java 또는 AnomalyReport.java)의 메서드 호출 패턴을 확인했는지, 아니면 이 판단을 코드 리뷰만으로 내렸는지 구체적으로 설명해 주세요.\n[L1] 학생 답",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "cognition-isolation:ReadingInputHandler.java",
+    "ok": true,
+    "axis": "트레이드오프_인지도",
+    "fr_axis": "반례_대응",
+    "score": 5,
+    "criterion": "반례를 스스로 먼저 언급하거나, 던졌을 때 즉각 인지",
+    "evidence": "[L1] 질문: ReadingInputHandler.java의 collectReadings() 메서드에서 ArrayList를 선택한 이유를 코드 주석에 명시했지만, 실제로 LinkedList를 사용하지 않은 결정을 뒷받침하는 근거로 제시된 '중간 삽입/삭제 연산이 프로그램 어디에도 없다'는 진술을 어떻게 검증했나요? 프로젝트 내 다른 파일(예: ReadingLog.java 또는 AnomalyReport.java)의 메서드 호출 패턴을 확인했는지, 아니면 이 판단을 코드 리뷰만으로 내렸는지 구체적으로 설명해 주세요.\n[L1] 학생 답",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "cognition-isolation:ReadingInputHandler.java",
+    "ok": true,
+    "axis": "대안_탐색_능력",
+    "fr_axis": "대안_비교",
+    "score": 5,
+    "criterion": "구체적인 기술적 대안을 즉시 제시",
+    "evidence": "[L1] 질문: ReadingInputHandler.java의 collectReadings() 메서드에서 ArrayList를 선택한 이유를 코드 주석에 명시했지만, 실제로 LinkedList를 사용하지 않은 결정을 뒷받침하는 근거로 제시된 '중간 삽입/삭제 연산이 프로그램 어디에도 없다'는 진술을 어떻게 검증했나요? 프로젝트 내 다른 파일(예: ReadingLog.java 또는 AnomalyReport.java)의 메서드 호출 패턴을 확인했는지, 아니면 이 판단을 코드 리뷰만으로 내렸는지 구체적으로 설명해 주세요.\n[L1] 학생 답",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "cognition-isolation:ReadingInputHandler.java",
+    "ok": true,
+    "axis": "설계_논리",
+    "fr_axis": "설계_논리",
+    "score": 5,
+    "criterion": "설계 의도와 제약조건(성능/시간/팀 상황 등)을 연결해 명확히 설명",
+    "evidence": "[L1] 질문: ReadingInputHandler.java의 collectReadings() 메서드에서 ArrayList를 선택한 이유를 코드 주석에 명시했지만, 실제로 LinkedList를 사용하지 않은 결정을 뒷받침하는 근거로 제시된 '중간 삽입/삭제 연산이 프로그램 어디에도 없다'는 진술을 어떻게 검증했나요? 프로젝트 내 다른 파일(예: ReadingLog.java 또는 AnomalyReport.java)의 메서드 호출 패턴을 확인했는지, 아니면 이 판단을 코드 리뷰만으로 내렸는지 구체적으로 설명해 주세요.\n[L1] 학생 답",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "cognition-isolation:ReadingInputHandler.java",
+    "ok": true,
+    "axis": "자기_수정",
+    "fr_axis": "자기_수정",
+    "score": 5,
+    "criterion": "자기오류인식+이유설명+새판단+구체적개선안 4개 신호 전부 스스로 제시",
+    "evidence": "[L1] 질문: ReadingInputHandler.java의 collectReadings() 메서드에서 ArrayList를 선택한 이유를 코드 주석에 명시했지만, 실제로 LinkedList를 사용하지 않은 결정을 뒷받침하는 근거로 제시된 '중간 삽입/삭제 연산이 프로그램 어디에도 없다'는 진술을 어떻게 검증했나요? 프로젝트 내 다른 파일(예: ReadingLog.java 또는 AnomalyReport.java)의 메서드 호출 패턴을 확인했는지, 아니면 이 판단을 코드 리뷰만으로 내렸는지 구체적으로 설명해 주세요.\n[L1] 학생 답",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "architecture-diffusion:SensorReading.java",
+    "ok": true,
+    "axis": "구조_인지도",
+    "fr_axis": "코드_이해",
+    "score": 5,
+    "criterion": "구성 요소 간 관계와 데이터 흐름을 정확히 설명",
+    "evidence": "[L1] 질문: SensorReading.java에서 습도(humidity)를 int 타입으로 저장한 이유를 설명해 주세요. 특히, double 대신 int를 선택한 기술적 트레이드오프와, ReadingValidator에서 언급된 '문자열 -> int 형변환' 시점의 위험성과 어떻게 연결되는지 구체적으로 설명해 주세요.\n[L1] 학생 답변: 저가형 센서가 정수 %만 출력해서 double의 정확도 이득이 없고, int가 메모리/연산에 더 효율적이라고 생각했습니다. 오버플로우는 0~100 범위가 int 표현 범위(약 ±21억)에 비해 ",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "architecture-diffusion:SensorReading.java",
+    "ok": true,
+    "axis": "트레이드오프_인지도",
+    "fr_axis": "반례_대응",
+    "score": 5,
+    "criterion": "반례를 스스로 먼저 언급하거나, 던졌을 때 즉각 인지",
+    "evidence": "[L1] 질문: SensorReading.java에서 습도(humidity)를 int 타입으로 저장한 이유를 설명해 주세요. 특히, double 대신 int를 선택한 기술적 트레이드오프와, ReadingValidator에서 언급된 '문자열 -> int 형변환' 시점의 위험성과 어떻게 연결되는지 구체적으로 설명해 주세요.\n[L1] 학생 답변: 저가형 센서가 정수 %만 출력해서 double의 정확도 이득이 없고, int가 메모리/연산에 더 효율적이라고 생각했습니다. 오버플로우는 0~100 범위가 int 표현 범위(약 ±21억)에 비해 ",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "architecture-diffusion:SensorReading.java",
+    "ok": true,
+    "axis": "대안_탐색_능력",
+    "fr_axis": "대안_비교",
+    "score": 4,
+    "criterion": "대안 방향은 명확하나 구현 방법 일부 불명확",
+    "evidence": "[L1] 질문: SensorReading.java에서 습도(humidity)를 int 타입으로 저장한 이유를 설명해 주세요. 특히, double 대신 int를 선택한 기술적 트레이드오프와, ReadingValidator에서 언급된 '문자열 -> int 형변환' 시점의 위험성과 어떻게 연결되는지 구체적으로 설명해 주세요.\n[L1] 학생 답변: 저가형 센서가 정수 %만 출력해서 double의 정확도 이득이 없고, int가 메모리/연산에 더 효율적이라고 생각했습니다. 오버플로우는 0~100 범위가 int 표현 범위(약 ±21억)에 비해 ",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "architecture-diffusion:SensorReading.java",
+    "ok": true,
+    "axis": "설계_논리",
+    "fr_axis": "설계_논리",
+    "score": 5,
+    "criterion": "설계 의도와 제약조건(성능/시간/팀 상황 등)을 연결해 명확히 설명",
+    "evidence": "[L1] 질문: SensorReading.java에서 습도(humidity)를 int 타입으로 저장한 이유를 설명해 주세요. 특히, double 대신 int를 선택한 기술적 트레이드오프와, ReadingValidator에서 언급된 '문자열 -> int 형변환' 시점의 위험성과 어떻게 연결되는지 구체적으로 설명해 주세요.\n[L1] 학생 답변: 저가형 센서가 정수 %만 출력해서 double의 정확도 이득이 없고, int가 메모리/연산에 더 효율적이라고 생각했습니다. 오버플로우는 0~100 범위가 int 표현 범위(약 ±21억)에 비해 ",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "architecture-diffusion:SensorReading.java",
+    "ok": true,
+    "axis": "자기_수정",
+    "fr_axis": "자기_수정",
+    "score": 5,
+    "criterion": "자기오류인식+이유설명+새판단+구체적개선안 4개 신호 전부 스스로 제시",
+    "evidence": "[L1] 질문: SensorReading.java에서 습도(humidity)를 int 타입으로 저장한 이유를 설명해 주세요. 특히, double 대신 int를 선택한 기술적 트레이드오프와, ReadingValidator에서 언급된 '문자열 -> int 형변환' 시점의 위험성과 어떻게 연결되는지 구체적으로 설명해 주세요.\n[L1] 학생 답변: 저가형 센서가 정수 %만 출력해서 double의 정확도 이득이 없고, int가 메모리/연산에 더 효율적이라고 생각했습니다. 오버플로우는 0~100 범위가 int 표현 범위(약 ±21억)에 비해 ",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  }
+]
