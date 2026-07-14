@@ -1,0 +1,76 @@
+{
+  "hook_file_version": 8,
+  "student_id": "gamma_s1",
+  "n_rules": 10,
+  "n_judged": 10,
+  "n_passed": 10,
+  "pass_rate": 1.0,
+  "per_rule": [
+    {
+      "rule_id": "대안_비교-01",
+      "channel": "code",
+      "passed": true,
+      "recurred": []
+    },
+    {
+      "rule_id": "코드_이해-01",
+      "channel": "interview",
+      "passed": true,
+      "baseline_score": 5,
+      "next_score": 5
+    },
+    {
+      "rule_id": "대안_비교-02",
+      "channel": "interview",
+      "passed": true,
+      "baseline_score": 5,
+      "next_score": 5
+    },
+    {
+      "rule_id": "설계_논리-01",
+      "channel": "interview",
+      "passed": true,
+      "baseline_score": 4,
+      "next_score": 5
+    },
+    {
+      "rule_id": "코드_이해-02",
+      "channel": "code",
+      "passed": true,
+      "recurred": []
+    },
+    {
+      "rule_id": "대안_비교-03",
+      "channel": "code",
+      "passed": true,
+      "recurred": []
+    },
+    {
+      "rule_id": "반례_대응-01",
+      "channel": "interview",
+      "passed": true,
+      "baseline_score": 5,
+      "next_score": 5
+    },
+    {
+      "rule_id": "반례_대응-02",
+      "channel": "interview",
+      "passed": true,
+      "baseline_score": 5,
+      "next_score": 5
+    },
+    {
+      "rule_id": "코드_이해-03",
+      "channel": "code",
+      "passed": true,
+      "recurred": []
+    },
+    {
+      "rule_id": "대안_비교-04",
+      "channel": "code",
+      "passed": true,
+      "recurred": []
+    }
+  ],
+  "note": "diagnostic separation (plan 5.3 metric 3): 준수율 상승+품질 상승=hook 유효 / 준수율 상승+품질 정체=처방 내용 문제(맞는 걸 처방했지만 효과 없음) / 준수율 하락=전달 그릇 문제(내용이 이전 단계에서부터 실패) -- 이 함수는 준수율만 계산한다. 품질(FR-04-01 점수 자체의 추세)은 5.3 지표 2와 별도로 대조해야 함."
+}
