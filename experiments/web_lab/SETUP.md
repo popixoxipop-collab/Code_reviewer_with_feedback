@@ -40,10 +40,10 @@ URL을 넣으면 된다 — owner의 프록시를 거치지 않아도 되도록 
 
 - 프로젝트: `code-reviewer-pipeline-lab` (org `popixoxipop`, region `ap-northeast-2` Seoul, plan free)
 - **Project URL**: `https://oziaeqcvrkrqkhwrybfj.supabase.co`
-- **anon key**: Supabase 대시보드 → Settings → API Keys에서 확인(이 문서에는 secret-scanner
-  정책상 JWT를 직접 적지 않음 — 세션 채팅 로그에도 한 번 남아있음). Pipeline Lab 상단
-  "연결 설정"의 Supabase URL / anon key에 그대로 입력하면 됨(RLS로 보호되므로 클라이언트에
-  공개돼도 되는 키).
+- **anon key**: 팀 공용 DB라 `docs/lab/config.js`의 `TEAM_SUPABASE_ANON_KEY`에 하드코딩돼
+  있음(사용자 지시: "공용으로 사용하는 거라 하드코딩 해놓고 안보이게 가려놔") — 연결 설정
+  패널에서 입력받지 않음. Supabase 대시보드 → Settings → API Keys에서도 확인 가능(RLS로
+  보호되므로 클라이언트 코드에 박혀 있어도 되는 키, NVIDIA 키/PAT과는 다른 취급).
 - `supabase_schema.sql` 실행 완료 — `members`/`runs`/`stage_events`/`artifacts`/`presets` 5개
   테이블 전부 생성 확인, RLS 5개 테이블 전부 활성화 확인(SQL로 직접 조회해 검증, 추측 아님).
 - DB 비밀번호는 무작위 생성해 세션 채팅에서 1회 표시함 — 웹 도구 자체는 이 비밀번호를 쓰지
@@ -72,13 +72,14 @@ URL을 넣으면 된다 — owner의 프록시를 거치지 않아도 되도록 
 - 자기 NVIDIA API 키(각자 https://build.nvidia.com 에서 발급, 무료)를 상단 "연결 설정"에
   직접 입력할 것 — 이 키는 서버로 전송되지 않고 DB에도 저장되지 않는다(P01/P03 실행에만 씀)
 - 프록시 URL(owner가 배포한 것을 쓰거나, 원하면 자기 것 배포)
-- 로그인용 이메일(매직 링크로 로그인, 비밀번호 없음)
+- 로그인용 이메일(매직 링크로 로그인, 비밀번호 없음) — DB는 팀 공용으로 이미 연결돼 있어
+  Supabase URL/키는 입력받지 않음, 로그인만 하면 됨
 
 ## 확인 체크리스트
 
 - [ ] P02: repo 하나(owner/repo 형식)로 스캔 → finding이 화면에 나오는지
 - [ ] 프록시: NVIDIA 키 + 프록시 URL 입력 후 P01 청크 1개짜리 PDF로 실제 응답이 오는지
-- [ ] DB: Supabase URL/키 입력 + 로그인 후 P02 실행 → Supabase 대시보드 Table Editor에서
-      `runs` 테이블에 행이 생겼는지 확인
+- [ ] DB: 로그인 후(URL/키 입력 불필요, 이미 하드코딩됨) P02 실행 → Supabase 대시보드
+      Table Editor에서 `runs` 테이블에 행이 생겼는지 확인
 - [ ] RLS: 다른 계정으로 로그인해서 `runs`가 보이되(읽기 전체 허용), 로그인 안 한 상태에서
       쓰기(insert)가 막히는지 확인
