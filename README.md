@@ -964,6 +964,15 @@ python3 pipeline/compare_methodologies.py
   - COST: 이 anon key를 로테이션하려면 이제 `config.js`를 다시 편집(+같은 훅을 다시 통과)해야 함 — 팀원이 매번 새로 입력하던 방식보다 로테이션 절차가 무거워짐(반대급부).
   - EXIT: 다른 Supabase 프로젝트로 옮기거나 anon key를 로테이션할 때는 `docs/lab/config.js`의 `TEAM_SUPABASE_URL`/`TEAM_SUPABASE_ANON_KEY` 두 상수만 고치면 됨.
 
+- **D138** ([`worker/nvidia-proxy.js`](./worker/nvidia-proxy.js), [`docs/lab/config.js`](./docs/lab/config.js), [`experiments/web_lab/SETUP.md`](./experiments/web_lab/SETUP.md)) — 사용자가 Cloudflare API 토큰 발급 방법을 물어봄(정확한 템플릿·권한 범위로 안내) → 토큰을 채팅에 직접 제공, D137과 같은 패턴으로 에이전트가 대신 배포. `wrangler login`(대화형 브라우저 인증) 대신 `CLOUDFLARE_API_TOKEN` 환경변수로 완전 비대화형 배포.
+  - **실제로 부딪힌 장애물 2건**: (1) `compatibility_date` 미지정 시 배포 자체가 거부됨 — 에러 메시지가 제안한 값(오늘 날짜)을 그대로 사용해 해결. (2) 이 Cloudflare 계정이 오늘 막 만들어진 신규 계정이라 workers.dev 서브도메인이 아예 없어서 배포가 또 거부됨 — Management API로 `popixoxipop` 서브도메인을 먼저 등록(`PUT /accounts/{id}/workers/subdomain`)한 뒤에야 배포 성공.
+  - **TLS 전파 지연 실측**: 배포 직후 `curl`이 SSL handshake failure(에러 35)로 계속 실패 — DNS는 정상 resolve되고 다른 workers.dev 사이트는 문제없이 연결되는 걸 먼저 확인해 로컬 네트워크 문제가 아님을 배제, 신규 서브도메인의 인증서 전파 지연으로 특정. 15초 간격 폴링으로 재시도해 완료까지의 실제 소요시간을 관찰(추측 없이 재현 가능한 루프로 확인).
+  - **최종 검증**: 코드가 문서화한 정확한 동작까지 확인 — `x-nvidia-api-key` 헤더 없는 POST가 401 + `{"error":"missing x-nvidia-api-key header"}`, OPTIONS 프리플라이트가 204 + 올바른 CORS 헤더(`access-control-allow-origin: *` 등) 반환. 단순 "200 나옴" 확인이 아니라 소스 코드가 약속한 에러 메시지·상태코드까지 일치하는지 대조.
+  - **Supabase와 다르게 처리한 부분**: anon key는 하드코딩+필드 제거였지만, 프록시 URL은 `DEFAULT_PROXY_URL`로 **기본값만 채우고 입력 필드는 그대로 편집 가능하게 유지** — URL 자체는 비밀이 아니고, SETUP.md가 애초에 "팀원 각자 자기 프록시로 교체 가능"을 설계 의도로 명시해뒀기 때문에 여기서 필드를 없애면 그 유연성을 깨게 됨. `config.js`에 `applyDefaults()` 신설(FIELDS 순회하며 `state`의 기본값을 DOM에 반영, `loadFromSession()`보다 먼저 실행되어 세션 저장값이 있으면 그게 우선).
+  - WHY: 프록시가 없으면 P01/P03이 아예 실행 자체가 안 되는 마지막 블로커였음 — Supabase처럼 인증서 전파 같은 실제 외부 지연 요인까지 실측으로 짚어야 "배포 완료"를 정직하게 주장할 수 있음.
+  - COST: 이 계정의 `ALLOWED_ORIGIN`은 여전히 `"*"`(모든 오리진 허용) — GitHub Pages 주소로 좁히는 방어층 추가는 스코프 밖으로 명시, 안 함.
+  - EXIT: 프록시를 재배포하거나 다른 계정으로 옮길 때는 `docs/lab/config.js`의 `DEFAULT_PROXY_URL` 한 곳만 바꾸면 됨(팀원 각자는 필드를 직접 덮어써서 독립적으로 우회 가능).
+
 
 ## 다음 단계 (미해결)
 
