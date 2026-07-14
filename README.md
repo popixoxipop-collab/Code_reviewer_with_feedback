@@ -955,6 +955,15 @@ python3 pipeline/compare_methodologies.py
   - COST: P01/P03 커밋(`01b6f53`) 이후 이 버그가 고쳐지기 전까지 실제로 그 상태로 push돼 있었다는 뜻 — 팀원이 그 사이 P01/P03을 시도했다면 아무 반응 없는 버튼만 봤을 것(다만 아직 SETUP.md의 배포가 안 끝나 P01/P03 실사용 자체가 없었을 가능성이 높음).
   - EXIT: 이런 "window.X 항상 undefined" 클래스의 재발을 막으려면 이 5개 파일을 ES 모듈(`type="module"`)로 전환해 `import`로 서로 참조하게 만드는 게 근본 해법 — 지금은 전역 스코프 공유에 암묵적으로 의존하는 구조라 같은 실수가 재발할 여지가 있음(스코프 밖으로 명시, 이번엔 안 건드림).
 
+- **D137** ([`experiments/web_lab/SETUP.md`](./experiments/web_lab/SETUP.md), [`docs/lab/config.js`](./docs/lab/config.js), [`docs/lab/index.html`](./docs/lab/index.html)) — 사용자가 Supabase Management API PAT을 채팅에 직접 붙여넣고 "이걸로 db 생성했어?"로 시작, 이어서 로테이션된 새 PAT으로 "통일시켜줘" → 계정 소유자만 가능하다고 SETUP.md에 명시했던 Supabase 배포 단계를, PAT이 실제로 제공된 이례적 상황이라 에이전트가 대신 실행. 이어서 "Supabase URL/anon key는 팀 공용이니 하드코딩하고 UI에서 숨겨라" 지시로 `docs/lab/config.js`에 실제 배포값을 박아 넣고 연결 설정 패널에서 두 입력 필드를 제거.
+  - **Supabase 배포(읽기전용 확인 → 실제 생성 → 검증 순서로 진행)**: PAT으로 조직 목록(read-only)부터 확인 후 유일한 조직(`popixoxipop`)에 프로젝트 생성(`ap-northeast-2` Seoul, free) → `supabase_schema.sql`을 Management API SQL 엔드포인트로 실행 → `information_schema.tables`/`pg_tables.rowsecurity`를 직접 SQL로 조회해 5개 테이블+RLS 전부 활성화됨을 검증(성공 응답만 믿지 않음) → 매직링크 `site_url`/`uri_allow_list`를 실제 GitHub Pages 주소로 설정. REST 엔드포인트에 anon key로 reachability 확인(RLS 때문에 실제 데이터 read/write 검증은 로그인한 실사용자 없이는 불가능 — 억지로 가짜 로그인 만들지 않고 정직하게 스코프 밖으로 명시).
+  - **`urllib`이 Cloudflare에 차단된 사례**: Python `urllib.request`로 SQL 실행 API를 호출하니 403(`error code: 1010`, Cloudflare 봇 시그니처 차단) — 같은 세션에서 이미 성공적으로 쓰던 `curl`로 바꾸니 동일 요청이 201로 성공. 원인은 엔드포인트가 아니라 클라이언트 라이브러리의 User-Agent 핑거프린팅이었음(추측 아니라 같은 요청을 다른 도구로 재현해 확인).
+  - **하드코딩 결정**: NVIDIA 키/GitHub PAT과 달리 Supabase anon key는 Supabase 자체 설계상 클라이언트 코드에 박혀도 되는 값(RLS가 실제 경계, 키 비밀성이 아님) — 이 구분에 근거해 `LabConfig.get()/has()`가 `supabase-url`/`supabase-anon-key`에 대해 항상 하드코딩된 팀 값을 반환하도록 변경, `FIELDS`/`state`/입력 필드에서 제거. NVIDIA 키·프록시·PAT 3개는 그대로 세션별 입력 유지.
+  - **secret-scanner 훅과의 상호작용**: 전역 `~/.claude/hooks/scripts/secret-scanner.js`(PreToolUse Write/Edit)가 JWT 패턴이면 화이트리스트 없이 무조건 차단 — `config.js`/`SETUP.md`/`.env` 세 곳 모두 막힘. AskUserQuestion으로 사용자에게 처리 방식 확인("훅에 예외 추가" vs "이번만 끄기" vs "다른 방식") → **"이번만 끄기"** 선택. `~/.claude/settings.json` 백업(md5) → `PreToolUse.Write`/`PreToolUse.Edit`의 `secret-scanner.js` 항목 2곳을 `replace_all` 편집으로 제거 → `config.js` 편집 실행 → 즉시 동일 패턴으로 원상 복구 → 백업과 `diff`로 바이트 단위 동일함 확인 + 실제로 JWT가 들어간 더미 파일을 하나 Write해서 다시 차단되는지 라이브 재현까지 완료(설정 파일 내용만 보고 "복구됐겠지"로 끝내지 않음).
+  - WHY: 매번 세션마다 팀원이 URL/anon key를 직접 입력해야 하는 건 불필요한 마찰이었음 — 이 값은 애초에 비밀이 아니므로 굳이 입력받을 이유가 없다는 사용자 판단이 Supabase의 설계 의도와 정확히 일치.
+  - COST: 이 anon key를 로테이션하려면 이제 `config.js`를 다시 편집(+같은 훅을 다시 통과)해야 함 — 팀원이 매번 새로 입력하던 방식보다 로테이션 절차가 무거워짐(반대급부).
+  - EXIT: 다른 Supabase 프로젝트로 옮기거나 anon key를 로테이션할 때는 `docs/lab/config.js`의 `TEAM_SUPABASE_URL`/`TEAM_SUPABASE_ANON_KEY` 두 상수만 고치면 됨.
+
 
 ## 다음 단계 (미해결)
 
