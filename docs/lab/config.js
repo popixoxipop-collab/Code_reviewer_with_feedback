@@ -12,9 +12,16 @@ const LabConfig = (() => {
   const TEAM_SUPABASE_URL = "https://oziaeqcvrkrqkhwrybfj.supabase.co";
   const TEAM_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96aWFlcWN2cmtycWtod3J5YmZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwMDA4MTksImV4cCI6MjA5OTU3NjgxOX0.hBgzs0V7Nw3WLB8_zNuPDfluYrqOH2_Dto1weQF5iKo";
 
+  // Owner-deployed proxy (worker/nvidia-proxy.js), pre-filled as a default -- unlike the
+  // Supabase values above this is NOT force-hardcoded: it's just a starting value in an
+  // editable field, since SETUP.md's team-sharing note explicitly means for teammates to
+  // be able to deploy and swap in their own proxy instead (a URL, not a credential, so
+  // there's no reason to also lock this one down).
+  const DEFAULT_PROXY_URL = "https://nvidia-proxy.popixoxipop.workers.dev";
+
   const FIELDS = ["nvidia-key", "proxy-url", "github-pat"];
   const SESSION_PREFIX = "lab_cfg_";
-  let state = { "nvidia-key": "", "proxy-url": "", "github-pat": "" };
+  let state = { "nvidia-key": "", "proxy-url": DEFAULT_PROXY_URL, "github-pat": "" };
 
   function loadFromSession() {
     if (!sessionStorage.getItem(SESSION_PREFIX + "remember")) return;
@@ -97,8 +104,16 @@ const LabConfig = (() => {
     });
   }
 
+  function applyDefaults() {
+    for (const f of FIELDS) {
+      const el = document.getElementById(f);
+      if (el && state[f]) el.value = state[f];
+    }
+  }
+
   function init() {
     wireInputs();
+    applyDefaults();
     loadFromSession();
     renderStatus();
     wireLogin();
