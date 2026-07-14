@@ -27,7 +27,8 @@
 
   <section class="config-panel">
     <h2>연결 설정</h2>
-    <p class="intro">이 탭 안에서만 유지된다(선택 시 sessionStorage) — 서버로 전송되지 않고, DB에도 저장되지 않는다.</p>
+    <p class="intro">이 탭 안에서만 유지된다(선택 시 sessionStorage) — 서버로 전송되지 않고, DB에도 저장되지 않는다.
+    결과 DB는 팀 공용으로 이미 연결돼 있음 — 아래 이메일로 로그인만 하면 본인 실행이 저장된다.</p>
     <div class="config-grid">
       <label class="config-field">
         <span>NVIDIA API 키 <span class="req">(P01·P03 실행에 필요)</span></span>
@@ -40,14 +41,6 @@
       <label class="config-field">
         <span>GitHub PAT <span class="opt">(선택 — 비공개 repo 스캔 시 P02에 필요)</span></span>
         <input type="password" id="github-pat" placeholder="github_pat_..." autocomplete="off">
-      </label>
-      <label class="config-field">
-        <span>Supabase URL <span class="opt">(선택 — 없으면 결과가 DB에 저장되지 않고 화면에만 표시)</span></span>
-        <input type="text" id="supabase-url" placeholder="https://xxxx.supabase.co">
-      </label>
-      <label class="config-field">
-        <span>Supabase anon key <span class="opt">(선택)</span></span>
-        <input type="password" id="supabase-anon-key" placeholder="eyJ..." autocomplete="off">
       </label>
       <label class="config-field checkbox-field">
         <input type="checkbox" id="remember-session">
