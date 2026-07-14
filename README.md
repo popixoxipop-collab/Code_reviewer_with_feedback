@@ -982,6 +982,23 @@ python3 pipeline/compare_methodologies.py
   - EXIT: Pages source를 나중에 실제로 `docs/`로 바꾸면(GitHub 저장소 설정에서) 이 리다이렉트 스텁들과 `docs/` 접두사 안내가 전부 불필요해짐 — 그 경우 루트 스텁 3개(`index.html`/`pipelines.html`/`lab/index.html`) 삭제하고 문서에서 `docs/` 접두사만 제거하면 됨.
   - 커밋: `4173122`, push 완료.
 
+- **D140** ([`docs/lab/app.js`](./docs/lab/app.js), [`docs/lab/db.js`](./docs/lab/db.js), [`docs/lab/p01-runner.js`](./docs/lab/p01-runner.js), [`docs/lab/p02-runner.js`](./docs/lab/p02-runner.js), [`docs/lab/p03-runner.js`](./docs/lab/p03-runner.js)) — 사용자 지시: "실행을 눌렀을 때부터 종료까지의 시간 보여주는 스톱워치도 DB에 어떤 모델로 얼마나 걸렸는 지 기록할 수 있어야할 거 같고 사용자가 실행 중일때는 스톱워치로 시간을 보여줘야할 거 같아". `runs` 테이블에 `started_at`/`finished_at` 컬럼이 D-B 설계 때부터 이미 있었는데 `saveRun()`이 저장 시점에 둘 다 `new Date()`로 찍어 사실상 소요시간이 항상 0으로 기록되고 있었던 걸 이번에 발견.
+  - **UI**: `LabApp.startTimer`/`stopTimer`(run-bar 공통이라 P01/P02/P03 전부 자동으로 받음) — 실행 버튼 클릭 즉시가 아니라 각 파이프라인의 입력 검증(파일 있는지, 키 있는지 등)을 통과한 시점에 시작해서, 검증 실패로 조기 return하는 경로가 타이머를 영원히 돌게 남겨두지 않도록 함. 성공/실패 양쪽 경로 모두에서 정지 — 실패한 실행도 얼마나 걸리고서 실패했는지 보임.
+  - **DB**: `saveRun()`이 이제 `started_at`/`finished_at`을 매개변수로 받아 실제 타임스탬프를 저장(안 넘기면 기존처럼 `now()` 폴백, 하위호환). "결과가 팀 DB에 저장됨" 로그에도 소요시간을 같이 적어서 DB 접근 없이 로그 스크롤백만으로도 과거 실행 시간이 보이게 함.
+  - **검증**: 헤드리스 Chrome으로 실제 GitHub 레이트리밋 에러/ZIP 미첨부 에러 두 경로에서 타이머가 정확히 00:00으로 멈추고 인터벌이 안 새는 것 확인, 합성 ZIP으로 P02 전체 실행을 완료("완료" 상태까지)까지 새 코드 경로를 통과시켜 확인. **DB 실제 기록까지는 자동화 검증 못 함** — 중첩 iframe 테스트 환경에서 Supabase의 지연로딩 CDN 스크립트가 안 걸려서(기존 코드, 이번에 건드린 부분 아님) — 대신 사용자의 실제 브라우저 탭에서 나온 실제 로그(다음 D141 참고)가 "DB 저장 실패... 로그인이 필요합니다"를 정확히 보여줘서 코드 경로 자체는 실사용에서 도달·정상동작함을 간접 확인.
+  - WHY: 팀원들이 실제로 파이프라인을 테스트해보면서 "지금 뭐가 얼마나 걸리고 있는지" 아는 게 없으면 멈춘 건지 도는 건지 구분이 안 됨 — 그리고 이번 발견(D141)의 단서 자체가 정확히 이 소요시간 정보였음.
+  - COST: 없음 — 기존 `saveRun()` 호출부(있다면)는 파라미터 생략 시 이전과 동일하게 동작.
+  - EXIT: 특별히 없음, 5개 파일에 흩어진 `startTimer`/`stopTimer` 페어링은 각 러너의 `run()` try/catch 양쪽에 정확히 하나씩만 있으면 됨.
+
+- **D141** ([`worker/nvidia-proxy.js`](./worker/nvidia-proxy.js), [`docs/lab/llm.js`](./docs/lab/llm.js)) — D140 스톱워치를 넣자마자 사용자가 실제 P01을 테스트하다 보낸 실제 로그에서 발견: 청크 분석·refine·질문생성 **전부**(6건) `프록시/NVIDIA 호출 실패 (HTTP 524)`로 실패, 매 건이 시작부터 실패까지 거의 정확히 125초로 일치했다. 6개의 서로 다른 호출이 우연히 매번 비슷한 시간에 실패할 리는 없다는 게 실제 로그 타임스탬프로 바로 드러난 단서 — 콘텐츠 복잡도에 따른 변동이 아니라 고정된 상한에 부딪히고 있다는 뜻이었다.
+  - **원인 확인(추측 아니라 웹서치로 근거 확보)**: Cloudflare 비-Enterprise 플랜은 클라이언트에게 ~100초간 아무 바이트도 안 보내면 524로 연결을 끊는다(developers.cloudflare.com 공식 문서). `worker/nvidia-proxy.js`가 `await upstream.text()`로 NVIDIA 응답 전체를 다 받을 때까지 버퍼링한 뒤에야 응답했으므로, NVIDIA가 응답하는 동안 클라이언트는 계속 무(無)바이트 상태였다 — 그리고 P01 유일하게 실제로 동작하는 모델인 qwen3-next-80b(D119/D120)는 P01 길이 프롬프트에서 평범하게 2분+ 걸린다. 이 524는 원래 CLI 기반 파이프라인엔 없던 문제다 — Python 클라이언트는 직접 연결이라 이런 엣지 타임아웃이 없고, 이 repo 자체 벤치마크 코드(`timeout_config.py`)도 원래 450초+ 같은 훨씬 관대한 클라이언트 타임아웃을 씀 — Cloudflare 프록시(이번 세션 신규 인프라)가 처음으로 훨씬 짧은 상한을 도입한 것.
+  - **수정**: Cloudflare 무료 티어는 이 타임아웃을 늘리는 설정을 노출하지 않음(Enterprise만 가능) — 그래서 설정으로 우회 불가, 스트리밍으로 우회. Worker가 `upstream.body`를 그대로 스트림 패스스루(버퍼링 없이) 하도록 변경, `llm.js`가 요청에 `stream: true`를 추가하고 SSE 델타(`data: {...}` 줄들, `delta.content` 또는 `delta.tool_calls[].function.arguments` 조각들)를 직접 파싱·재조립. 바이트가 NVIDIA가 생성하는 대로 클라이언트에 도착하니 Cloudflare 입장에서 연결이 "idle"로 안 보임. `callPromptStage`/`generateQuestion`/`gradeAnswer` 등 호출부는 무변경 — `llm.js`가 여전히 완성된 문자열/객체를 돌려주므로 전송 방식이 바뀐 걸 아는 곳은 이 파일 하나뿐.
+  - **실측 검증**: 실제 NVIDIA 키가 없어 진짜 생성 응답까지는 못 봄. 대신 (1) 재배포한 Worker에 잘못된 키로 실제 NVIDIA 인프라를 때려 인증실패 JSON이 새 스트림 패스스루 코드로도 정상 왕복하는 것 확인, 401/204 등 기존 에러 경로 무변경 확인. (2) NVIDIA의 OpenAI-호환 스트리밍 형식을 흉내낸 로컬 목(mock) SSE 서버를 만들어(줄 중간에서 쪼개진 델타, 여러 조각으로 나뉘어 오는 tool_calls arguments 포함) `LabLLM.chatJSON()`/`chatTool()`을 직접 호출 → 조각들이 정확히 원래 문자열/JSON으로 재조립되는 것 확인.
+  - WHY: 이 524는 우연이 아니라 **웹 프록시 아키텍처 자체가 만들어낸 새로운 상한**이었다 — 근본 원인(고정 타임아웃)을 고치지 않고 재시도나 청크 크기 축소 같은 임시방편으로 덮었다면 다른 느린 모델/긴 프롬프트에서 계속 재발했을 것.
+  - COST: SSE 파싱 로직이 `llm.js`에 새로 생겨 유지보수 표면이 늘어남. `chatJSON`이 reasoning 모델(예: step-3.5-flash)의 `reasoning_content` 폴백은 아직 스트리밍 경로에 안 옮겨졌음(D131에서 실측된 실제 파이썬 파이프라인의 폴백 체인과 다름) — 다만 P01에선 step-3.5-flash 자체가 D136에서 이미 경고 표시된 모델이라 실질적 영향은 제한적.
+  - EXIT: reasoning_content 폴백이 필요해지면 `streamChatCompletion()`의 delta 파싱 부분에 `delta.reasoning_content` 누적을 추가하면 됨(같은 함수, 같은 위치).
+  - 커밋: `60ec848`(D140 스톱워치)+`63e01e8`(D141 스트리밍), 전부 push 완료.
+
 
 ## 다음 단계 (미해결)
 
