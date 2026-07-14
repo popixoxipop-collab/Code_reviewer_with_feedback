@@ -946,6 +946,15 @@ python3 pipeline/compare_methodologies.py
   - COST: Supabase 프로젝트 생성·Cloudflare Worker 배포·인증 설정은 계정 소유자만 할 수 있는 작업이라 에이전트가 대신 못 함(`SETUP.md`로 위임). P01/P03은 프록시+키가 있어야 실행되므로 P02만큼 "설치 즉시 동작"은 아님. `docs/lab/prompt_manifest.json`이 실제 프롬프트 함수와 어긋나지 않는지 검사하는 CI 골든테스트는 설계만 하고 아직 안 만듦.
   - EXIT: 팀원 실사용 피드백 확보 후 CI 드리프트 테스트 추가, Supabase 배포 완료 시 실제 DB 적재 확인.
 
+- **D136** ([`docs/lab/p01-runner.js`](./docs/lab/p01-runner.js), [`docs/lab/p02-runner.js`](./docs/lab/p02-runner.js), [`docs/lab/p03-runner.js`](./docs/lab/p03-runner.js), [`docs/lab/config.js`](./docs/lab/config.js), [`docs/lab/lab.css`](./docs/lab/lab.css)) — 사용자 지시: "P01에서 모델은 11종 중에 선택 가능한 토글로 고를 수 있게 해야해 지금은 80B 모델이 들어가 있네". `docs/pipelines.html`의 11모델 4축 벤치마크(D116)와 같은 모델 세트로 토글 그룹 구현, P01의 3개 프롬프트 단계+JSON 복구 전부에 적용되고 DB 저장 기록에도 실제 선택값이 남게 배선.
+  - **그 표를 그대로 재사용하지 않은 이유**: 그 벤치마크는 P03(질문생성×채점) 과업 기준 순위인데, D119/D120의 P01-T1이 정확히 반대 사례를 실측으로 남겨뒀음 — P03 1위 step-3.5-flash가 P01 과업에서는 0/50 완전실패, qwen3-next-80b는 96% 성공. 그래서 토글의 "비고"는 P03 순위를 그대로 복붙하지 않고 qwen(good)·step-3.5-flash(bad, 경고 스타일)만 P01 실측 근거로 라벨링하고 나머지 9개는 "P01 기준 미검증"으로 정직하게 표시(P03에서의 결함 이력만 참고로 병기).
+  - **구현 중 실제로 발견한 버그(요청 범위 밖이었지만 같은 코드경로라 즉시 수정)**: 토글이 렌더링되는지 헤드리스 Chrome으로 직접 확인하던 중 P01 탭의 input-panel 자체가 완전히 비어있는 걸 발견 — 원인 추적 결과 `p01-runner.js`/`p03-runner.js`가 `document.addEventListener("DOMContentLoaded", () => { if (window.LabApp) LabApp.registerRunner(...) })` 패턴으로 자신을 등록하는데, **클래식 `<script>`의 top-level `const`는 `window`의 프로퍼티가 되지 않아**(스펙상 정상 동작, `LabApp`이라는 bare identifier는 스크립트 간 공유되는 전역 렉시컬 스코프로 접근 가능하지만 `window.LabApp`은 항상 `undefined`) 이 조건이 한 번도 참이 된 적이 없었음 — **P01·P03의 "실행" 버튼은 docs/lab/ 최초 배포 이후 클릭해도 아무 반응이 없는 상태**였고(에러도 없이 조용히 무반응), P02만 우연히 같은 파일에 남아있던 별도의 직접 호출 한 줄(`LabApp.registerRunner("p02", {...})`, IIFE 평가 시점에 실행돼 정상 동작) 덕에 실제로 작동했던 것. 동일 패턴이 `config.js`의 매직링크 로그인 버튼과 3개 파이프라인 전부의 DB 저장 게이팅(`!window.LabDB || !LabDB.isConfigured()`)에도 있어 — Supabase를 제대로 입력해도 "미설정"으로 조용히 오판정하는 상태였음.
+  - **실측 검증**: 로컬 `python3 -m http.server`(docs/ 루트)로 실제 서빙 후 헤드리스 Chrome에 iframe 클릭 시퀀스를 주입해 수정 전/후 상태를 직접 스크린샷 대조 — 수정 전엔 P01 탭에 input-panel이 통째로 비어 렌더링(추측이 아니라 실제 관찰), 수정 후엔 토글 11개+기본값(qwen, 활성 표시)+경고칩(step-3.5-flash 클릭 시 실측 caveat 문구로 교체) 전부 정상. 다크/라이트 테마 둘 다 확인.
+  - 수정: `window.LabApp`/`window.LabDB` 조건부 DOMContentLoaded 등록을 전부 제거하고 P02가 이미 증명한 패턴(IIFE 평가 시점 직접 `LabApp.registerRunner(...)` 호출)으로 3개 파일 통일, `window.LabDB` 가드 4곳을 bare `LabDB` 참조로 교체.
+  - WHY: 요청받은 기능(모델 토글)이 렌더링만 되고 실제로 클릭해도 파이프라인이 안 도는 상태로 나갔다면 사용자가 또 한 번 "안 되는데?"로 되돌아왔을 것 — 실제 브라우저로 직접 확인하지 않았다면 못 잡았을 결함(정적 코드 리뷰만으로는 `window.X`가 항상 undefined라는 사실이 코드만 봐서는 "그럴듯하게 맞아 보임").
+  - COST: P01/P03 커밋(`01b6f53`) 이후 이 버그가 고쳐지기 전까지 실제로 그 상태로 push돼 있었다는 뜻 — 팀원이 그 사이 P01/P03을 시도했다면 아무 반응 없는 버튼만 봤을 것(다만 아직 SETUP.md의 배포가 안 끝나 P01/P03 실사용 자체가 없었을 가능성이 높음).
+  - EXIT: 이런 "window.X 항상 undefined" 클래스의 재발을 막으려면 이 5개 파일을 ES 모듈(`type="module"`)로 전환해 `import`로 서로 참조하게 만드는 게 근본 해법 — 지금은 전역 스코프 공유에 암묵적으로 의존하는 구조라 같은 실수가 재발할 여지가 있음(스코프 밖으로 명시, 이번엔 안 건드림).
+
 
 ## 다음 단계 (미해결)
 
