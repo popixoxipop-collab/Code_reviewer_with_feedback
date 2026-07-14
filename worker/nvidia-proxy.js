@@ -15,6 +15,17 @@
  * outgoing request, and that's the only thing this code does with it. It is never
  * written to KV/D1/any storage, never included in a response, never logged (no
  * console.log of headers/body anywhere in this file -- keep it that way if you edit it).
+ *
+ * D-E (2026-07-14, real P01 test): Cloudflare's free-tier edge gives up and returns
+ * 524 if nothing is sent back to the client for ~100s -- and slow models (qwen3-next-80b
+ * on P01-length prompts routinely takes 2+ minutes) blew straight through that, because
+ * this worker used to buffer the whole upstream response with `await upstream.text()`
+ * before replying, so the client saw zero bytes the entire time regardless of what NVIDIA
+ * was doing. Passing `upstream.body` straight through as a stream means bytes start
+ * reaching the client as soon as NVIDIA starts sending them (docs/lab/llm.js now requests
+ * `stream: true` and reassembles the SSE chunks), which keeps the edge connection "alive"
+ * from Cloudflare's point of view and sidesteps the timeout entirely -- this can't be
+ * fixed by a config flag, Cloudflare doesn't expose one on the free tier.
  */
 
 const NVIDIA_URL = "https://integrate.api.nvidia.com/v1/chat/completions";
@@ -83,10 +94,12 @@ export default {
       });
     }
 
-    const responseBody = await upstream.text();
-    return new Response(responseBody, {
+    return new Response(upstream.body, {
       status: upstream.status,
-      headers: { "content-type": "application/json", ...corsHeaders(origin) },
+      headers: {
+        "content-type": upstream.headers.get("content-type") || "application/json",
+        ...corsHeaders(origin),
+      },
     });
   },
 };
