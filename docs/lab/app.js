@@ -8,6 +8,7 @@ const LabApp = (() => {
   let activePipeline = "p02";
   const runners = {}; // pipeline -> { renderInput(container), run() }
   const timers = {}; // pipeline -> { startMs, intervalId }
+  const renderedPipelines = new Set(); // D-K: which pipelines' DOM has already been built once
 
   function formatElapsed(ms) {
     const totalSec = Math.max(0, Math.floor(ms / 1000));
@@ -22,6 +23,13 @@ const LabApp = (() => {
   function startTimer(pipelineId) {
     stopTimer(pipelineId); // clear any stale interval from a previous run
     const el = document.getElementById(`run-timer-${pipelineId}`);
+    // D-K: disabling the run button here (not a separate isRunning flag) piggybacks on
+    // the same start/stop pairing every runner already calls exactly once per run on
+    // every exit path (see README D146) -- one less piece of state that could drift out
+    // of sync with what's actually on screen. Blocks the double-click/re-click-after-
+    // switching-tabs-back case that could otherwise start a second concurrent run.
+    const btn = document.getElementById(`run-btn-${pipelineId}`);
+    if (btn) { btn.disabled = true; btn.textContent = "실행 중..."; }
     const startMs = Date.now();
     if (el) el.textContent = "00:00";
     const intervalId = setInterval(() => {
@@ -32,6 +40,8 @@ const LabApp = (() => {
   }
 
   function stopTimer(pipelineId) {
+    const btn = document.getElementById(`run-btn-${pipelineId}`);
+    if (btn) { btn.disabled = false; btn.textContent = "실행"; }
     const t = timers[pipelineId];
     if (!t) return 0;
     clearInterval(t.intervalId);
@@ -268,10 +278,32 @@ const LabApp = (() => {
       .replace(/'/g, "&#39;");
   }
 
+  // D-K (2026-07-15, README D146): each pipeline now gets ONE persistent container,
+  // built once and then only shown/hidden on tab switches -- never rebuilt. This used to
+  // replace #pipeline-view's entire innerHTML on every tab click, which destroyed the
+  // OTHER pipeline's in-progress run state (progress log, run status, timer, stage-card
+  // open/closed state) the instant you switched away, with no way to get it back even by
+  // switching back. Confirmed live (headless-browser repro) that the run() call itself
+  // kept executing in the background regardless and still reached showResults() correctly
+  // (that panel lives outside #pipeline-view) -- only the VISIBILITY was ever broken, but
+  // that alone made an already-finished/still-running job look identical to "never
+  // started" once you returned, with the run button re-enabled and no indicator either
+  // way (see D-K's startTimer/stopTimer change for the other half of that fix).
   function renderPipeline(pipelineId) {
     activePipeline = pipelineId;
     document.querySelectorAll(".tab-btn").forEach((b) => b.classList.toggle("active", b.dataset.pipeline === pipelineId));
     const view = document.getElementById("pipeline-view");
+
+    view.querySelectorAll(".pipeline-container").forEach((el) => {
+      el.classList.toggle("hidden", el.dataset.pipeline !== pipelineId);
+    });
+    if (renderedPipelines.has(pipelineId)) return; // already built above -- just shown, not rebuilt
+    renderedPipelines.add(pipelineId);
+
+    const container = document.createElement("div");
+    container.className = "pipeline-container";
+    container.dataset.pipeline = pipelineId;
+
     const p = manifest.pipelines[pipelineId];
     let html = "";
     if (!p.has_llm_calls) {
@@ -287,9 +319,10 @@ const LabApp = (() => {
         <span class="run-status" id="run-status-${pipelineId}"></span>
       </div>
       <div class="progress-log hidden" id="progress-log-${pipelineId}"></div>`;
-    view.innerHTML = html;
+    container.innerHTML = html;
+    view.appendChild(container);
 
-    view.querySelectorAll("[data-toggle]").forEach((head) => {
+    container.querySelectorAll("[data-toggle]").forEach((head) => {
       head.addEventListener("click", () => {
         const card = head.closest(".stage-card");
         const stageId = head.dataset.toggle;
