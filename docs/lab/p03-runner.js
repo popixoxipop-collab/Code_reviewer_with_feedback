@@ -201,6 +201,8 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     document.getElementById("p03-transcript").innerHTML = "";
     wireAnswerSubmit();
     LabApp.setStatus(pipelineId, "진행 중...", "running");
+    const startedAt = new Date();
+    LabApp.startTimer(pipelineId);
     try {
       await ensureClassifiers((msg) => LabApp.log(pipelineId, msg));
       const category = findingCategory(selectedFinding.id);
@@ -227,11 +229,14 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
       const last = transcript[transcript.length - 1];
       const { grades, rubric_overridden } = await gradeAnswer(selectedFinding, last.question, last.answer);
 
+      const finishedAt = new Date();
+      LabApp.stopTimer(pipelineId);
       LabApp.setStatus(pipelineId, "완료", "done");
       const result = { finding: selectedFinding, verdict, turns: transcript.length, transcript, grades, rubric_overridden };
       renderResults(result);
-      await maybeSaveRun(result);
+      await maybeSaveRun(result, startedAt, finishedAt);
     } catch (err) {
+      LabApp.stopTimer(pipelineId);
       console.error(err);
       LabApp.setStatus(pipelineId, `오류: ${err.message}`, "error");
       LabApp.log(pipelineId, `오류: ${err.message}`);
@@ -249,7 +254,7 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     LabApp.showResults(html);
   }
 
-  async function maybeSaveRun(result) {
+  async function maybeSaveRun(result, startedAt, finishedAt) {
     if (!LabDB.isConfigured()) {
       LabApp.log("p03", "Supabase 미설정 — 결과는 화면에만 표시됨");
       return;
@@ -262,8 +267,9 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
         overrides: {},
         rubric_overridden: result.rubric_overridden,
         artifacts: [{ kind: "transcript", content: result.transcript }, { kind: "grades", content: result.grades }],
+        started_at: startedAt.toISOString(), finished_at: finishedAt.toISOString(),
       });
-      LabApp.log("p03", "결과가 팀 DB에 저장됨");
+      LabApp.log("p03", `결과가 팀 DB에 저장됨 (소요시간 ${LabApp.formatElapsed(finishedAt - startedAt)})`);
     } catch (err) {
       LabApp.log("p03", `DB 저장 실패(결과는 화면에 남아있음): ${err.message}`);
     }

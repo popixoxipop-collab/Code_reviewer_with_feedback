@@ -49,14 +49,15 @@ const LabDB = (() => {
     return data.user;
   }
 
-  async function saveRun({ pipeline, model, input_meta, overrides, rubric_overridden, artifacts }) {
+  async function saveRun({ pipeline, model, input_meta, overrides, rubric_overridden, artifacts, started_at, finished_at }) {
     const c = await ensureClient();
     const user = await currentMember();
     const { data: run, error: runErr } = await c
       .from("runs")
       .insert({
         member_id: user.id, pipeline, model, status: "done",
-        started_at: new Date().toISOString(), finished_at: new Date().toISOString(),
+        started_at: started_at || new Date().toISOString(),
+        finished_at: finished_at || new Date().toISOString(),
         input_meta: input_meta || {}, overrides: overrides || {}, rubric_overridden: Boolean(rubric_overridden),
         manifest_version: (LabApp.getManifest() || {}).manifest_version || null,
       })

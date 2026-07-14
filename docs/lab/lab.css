@@ -189,6 +189,8 @@ button.secondary:hover { color: var(--ink); border-color: var(--ink-dim); }
 .rubric-level textarea { flex: 1; min-height: 32px; font-size: 0.74rem; padding: 4px 8px; }
 
 .run-bar { display: flex; align-items: center; gap: 12px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); flex-wrap: wrap; }
+.run-timer { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 0.82rem; font-weight: 600; color: var(--ink-dim); min-width: 3.6em; }
+.run-timer:not(:empty) { color: var(--accent); }
 .run-status { font-family: var(--mono); font-size: 0.76rem; color: var(--ink-faint); }
 .run-status.running { color: var(--accent); }
 .run-status.error { color: var(--status-blocked); }

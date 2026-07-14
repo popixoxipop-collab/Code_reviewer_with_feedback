@@ -7,6 +7,40 @@ const LabApp = (() => {
   const overrides = { p01: {}, p02: {}, p03: {} };
   let activePipeline = "p02";
   const runners = {}; // pipeline -> { renderInput(container), run() }
+  const timers = {}; // pipeline -> { startMs, intervalId }
+
+  function formatElapsed(ms) {
+    const totalSec = Math.max(0, Math.floor(ms / 1000));
+    const m = Math.floor(totalSec / 60);
+    const s = totalSec % 60;
+    return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  }
+
+  // Live stopwatch next to the Run button -- started right before the actual work begins
+  // (not on the click itself, so an early-return validation error doesn't leave it running)
+  // and always stopped exactly once, on whichever path the run() ends on.
+  function startTimer(pipelineId) {
+    stopTimer(pipelineId); // clear any stale interval from a previous run
+    const el = document.getElementById(`run-timer-${pipelineId}`);
+    const startMs = Date.now();
+    if (el) el.textContent = "00:00";
+    const intervalId = setInterval(() => {
+      if (el) el.textContent = formatElapsed(Date.now() - startMs);
+    }, 1000);
+    timers[pipelineId] = { startMs, intervalId };
+    return startMs;
+  }
+
+  function stopTimer(pipelineId) {
+    const t = timers[pipelineId];
+    if (!t) return 0;
+    clearInterval(t.intervalId);
+    delete timers[pipelineId];
+    const elapsedMs = Date.now() - t.startMs;
+    const el = document.getElementById(`run-timer-${pipelineId}`);
+    if (el) el.textContent = formatElapsed(elapsedMs);
+    return elapsedMs;
+  }
 
   async function loadManifest() {
     const res = await fetch("prompt_manifest.json");
@@ -249,6 +283,7 @@ const LabApp = (() => {
     html += `</div>`;
     html += `<div class="run-bar">
         <button class="primary" id="run-btn-${pipelineId}">실행</button>
+        <span class="run-timer" id="run-timer-${pipelineId}"></span>
         <span class="run-status" id="run-status-${pipelineId}"></span>
       </div>
       <div class="progress-log hidden" id="progress-log-${pipelineId}"></div>`;
@@ -313,6 +348,7 @@ const LabApp = (() => {
   return {
     init, getManifest, getStage, getOverride, setOverride, resolveTemplate, resolveParam,
     registerRunner, fillTemplate, log, setStatus, showResults, escapeHtml,
+    startTimer, stopTimer, formatElapsed,
   };
 })();
 

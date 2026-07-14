@@ -218,6 +218,8 @@ shutil.rmtree("/target", ignore_errors=True)
   async function run() {
     const pipelineId = "p02";
     LabApp.setStatus(pipelineId, "실행 중...", "running");
+    const startedAt = new Date();
+    LabApp.startTimer(pipelineId);
     try {
       let files;
       if (currentMethod === "pat") {
@@ -250,11 +252,14 @@ _result = webtool_driver.run_scan("/target", overrides_json)
       const resultJson = py.globals.get("_result");
       const result = JSON.parse(resultJson);
 
+      const finishedAt = new Date();
+      LabApp.stopTimer(pipelineId);
       LabApp.setStatus(pipelineId, "완료", "done");
       LabApp.log(pipelineId, `finding ${result.judgment.findings.length}건 산출됨`);
       renderResults(result, files);
-      await maybeSaveRun(result, files);
+      await maybeSaveRun(result, files, startedAt, finishedAt);
     } catch (err) {
+      LabApp.stopTimer(pipelineId);
       console.error(err);
       LabApp.setStatus(pipelineId, `오류: ${err.message}`, "error");
       LabApp.log(pipelineId, `오류: ${err.message}`);
@@ -282,7 +287,7 @@ _result = webtool_driver.run_scan("/target", overrides_json)
     LabApp.showResults(html);
   }
 
-  async function maybeSaveRun(result, files) {
+  async function maybeSaveRun(result, files, startedAt, finishedAt) {
     if (!LabDB.isConfigured()) {
       LabApp.log("p02", "Supabase 미설정 — 결과는 화면에만 표시됨(DB 저장 안 됨)");
       return;
@@ -295,8 +300,9 @@ _result = webtool_driver.run_scan("/target", overrides_json)
         overrides: result.overrides_applied || [],
         rubric_overridden: false,
         artifacts: [{ kind: "findings", content: result.judgment }],
+        started_at: startedAt.toISOString(), finished_at: finishedAt.toISOString(),
       });
-      LabApp.log("p02", "결과가 팀 DB에 저장됨");
+      LabApp.log("p02", `결과가 팀 DB에 저장됨 (소요시간 ${LabApp.formatElapsed(finishedAt - startedAt)})`);
     } catch (err) {
       LabApp.log("p02", `DB 저장 실패(결과는 화면에 남아있음): ${err.message}`);
     }

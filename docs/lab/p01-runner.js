@@ -197,6 +197,8 @@ const P01Runner = (() => {
   async function run() {
     const pipelineId = "p01";
     LabApp.setStatus(pipelineId, "실행 중...", "running");
+    const startedAt = new Date();
+    LabApp.startTimer(pipelineId);
     try {
       if (!pdfBytes) throw new Error("PDF를 먼저 업로드하세요");
       if (!LabConfig.get("nvidia-key") || !LabConfig.get("proxy-url")) {
@@ -254,11 +256,14 @@ const P01Runner = (() => {
         LabApp.log(pipelineId, `질문 생성 실패: ${err.message}`);
       }
 
+      const finishedAt = new Date();
+      LabApp.stopTimer(pipelineId);
       LabApp.setStatus(pipelineId, "완료", "done");
       const result = { unit_map: unitMap, refine_audits: audits, questions, chunk_count: chunks.length, extractor: "pdfjs" };
       renderResults(result);
-      await maybeSaveRun(result);
+      await maybeSaveRun(result, startedAt, finishedAt);
     } catch (err) {
+      LabApp.stopTimer(pipelineId);
       console.error(err);
       LabApp.setStatus(pipelineId, `오류: ${err.message}`, "error");
       LabApp.log(pipelineId, `오류: ${err.message}`);
@@ -278,7 +283,7 @@ const P01Runner = (() => {
     LabApp.showResults(html);
   }
 
-  async function maybeSaveRun(result) {
+  async function maybeSaveRun(result, startedAt, finishedAt) {
     if (!LabDB.isConfigured()) {
       LabApp.log("p01", "Supabase 미설정 — 결과는 화면에만 표시됨");
       return;
@@ -291,8 +296,9 @@ const P01Runner = (() => {
         overrides: {},
         rubric_overridden: false,
         artifacts: [{ kind: "unit_map", content: result.unit_map }, { kind: "questions", content: result.questions }],
+        started_at: startedAt.toISOString(), finished_at: finishedAt.toISOString(),
       });
-      LabApp.log("p01", "결과가 팀 DB에 저장됨");
+      LabApp.log("p01", `결과가 팀 DB에 저장됨 (소요시간 ${LabApp.formatElapsed(finishedAt - startedAt)})`);
     } catch (err) {
       LabApp.log("p01", `DB 저장 실패(결과는 화면에 남아있음): ${err.message}`);
     }
