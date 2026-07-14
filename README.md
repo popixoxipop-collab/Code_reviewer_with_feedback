@@ -999,6 +999,15 @@ python3 pipeline/compare_methodologies.py
   - EXIT: reasoning_content 폴백이 필요해지면 `streamChatCompletion()`의 delta 파싱 부분에 `delta.reasoning_content` 누적을 추가하면 됨(같은 함수, 같은 위치).
   - 커밋: `60ec848`(D140 스톱워치)+`63e01e8`(D141 스트리밍), 전부 push 완료.
 
+- **D142** ([`docs/lab/llm.js`](./docs/lab/llm.js), [`docs/lab/p01-runner.js`](./docs/lab/p01-runner.js)) — D141 직후 사용자의 실제 P01 재시도 로그에서 발견: refine/질문생성이 1~2초 만에 "빈 응답(content 없음)"으로 실패, 524와는 다른 종류의 실패. `/fablize/packs/investigation-protocol.txt` 절차(재현→가설 3개+→가설별 근거→인과사슬→전후검증→기각한 가설도 보고)를 명시 적용해 진행.
+  - **1차 수정(빈 응답)**: D131이 이미 실제 파이썬 파이프라인의 다른 호출부(`cmd_precision` 판정용)에서 발견했던 걸 재확인 — step-3.5-flash는 JSON 모드에서도 실제 답을 `content`가 아니라 `reasoning_content`에 스트리밍하는데, D141의 스트리밍 재작성 때 이 폴백을 안 옮겼었음. `chatJSON`에 `content || reasoningContent` 폴백 추가, 로컬 목(mock) SSE 서버로 `reasoning_content`만 오는 경우를 재현해 정확히 복구됨을 확인. 동시에 에러 메시지에 이벤트 개수·바이트 수·delta 키 목록·원본 샘플을 진단정보로 추가(다음 실패 때 추측 안 하고 바로 근거를 보기 위함).
+  - **2차: 524 진짜 원인 규명**: chunk_size를 10→5로 반으로 줄이고 모델도 qwen3-next-80b→step-3.5-flash(P03 벤치마크 최속)로 바꿔도 세 번의 재시도 전부 ~125초에 524 — "프롬프트 크기/모델 속도가 원인"이라는 기존 가설을 실측으로 기각. 이 repo에 이미 있는 `NVIDIA_API_KEY_1`로 Cloudflare·Worker·브라우저 전부 안 거치고 순수 `curl`로 NVIDIA를 직접 호출해 최종 확정: **`qwen/qwen3-next-80b-a3b-instruct`의 채팅완성 엔드포인트가 150초 동안 응답을 전혀 안 함**(HTTP_STATUS:000) — 반면 같은 순간 `stepfun-ai/step-3.5-flash`는 0.3초, `/v1/models` 조회도 0.2초로 정상. 프록시·스트리밍·chunk_size·파싱 로직 등 이 프로젝트가 만진 어떤 코드와도 무관한, **NVIDIA 인프라 자체의 이 모델 한정 장애**로 결론.
+  - **부수 발견(D120 검증 자체의 오염 가능성)**: 이 curl 테스트에서 step-3.5-flash 응답이 정확히 `"content":null` + `"reasoning_content":"Okay, the user asked..."` 형태로 나옴 — 실제로 확인. 그런데 `scripts/java_curriculum_nvidia_pipeline.py`의 `chat_json()`을 읽어보니 **`choice.get("content")`만 확인하고 비어있으면 바로 `ValueError`를 던짐 — `reasoning_content` 폴백이 원본 파이프라인에도 없음**. 즉 D120의 "P01-T1: step-3.5-flash 0/50 완전실패"가 이 모델의 진짜 과업 무능력이 아니라 **이 도구가 이번에 처음 발견한 것과 같은 버그로 인해 실제 출력을 한 번도 못 본 채 난 결과였을 가능성이 큼** — `docs/lab/config.js`의 model 토글 note를 "부적합(bad, 경고 스타일)"에서 "미검증(unverified) + 오염 가능성 설명"으로 하향 정정. 실제 무능력인지 버그였는지는 **아직도 확정 안 됨** — 웹 도구(폴백 있음)로 재검증해야 알 수 있음, 그래서 "good"으로 올리지도 않음.
+  - WHY: NVIDIA가 정말 죽어있는지, 아니면 여전히 우리 코드 문제인지 애매한 상태로 사용자에게 "다시 해보세요"만 반복했다면 시간 낭비였을 것 — repo에 이미 있는 키로 직접 격리 테스트하는 게 훨씬 빠르고 확실했음.
+  - COST: 없음(순수 진단+정정). D120이라는 기존 실측 결과 하나가 재검증 필요 상태로 격하됨 — 이 프로젝트의 "실측 결과도 틀릴 수 있다"는 원칙이 이번에도 그대로 적용된 사례.
+  - EXIT: qwen3-next-80b가 복구되면 원래 기본값으로 계속 쓰면 됨. step-3.5-flash를 P01에서 실제로 재검증(성공/실패 무관)하면 그 결과로 note와 tier를 다시 업데이트.
+  - 커밋: `aaf934d`(reasoning_content 폴백+진단)+`432421c`(step-3.5-flash note 하향), 전부 push 완료.
+
 
 ## 다음 단계 (미해결)
 
