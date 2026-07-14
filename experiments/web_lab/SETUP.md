@@ -60,18 +60,29 @@ wrangler deploy nvidia-proxy.js --compatibility-date <오늘날짜>
 ## 3. 인증(매직 링크) 켜기 — ✅ 완료 (2026-07-14)
 
 - `external_email_enabled: true` 확인(기본값, 별도 조치 불필요)
-- **Site URL**을 `https://popixoxipop-collab.github.io/Code_reviewer_with_feedback/lab/`로 설정
-  완료(Management API로), `uri_allow_list`에 로컬 개발용(`http://localhost:8712/lab/**`)도
-  같이 추가
+- **Site URL**을 `https://popixoxipop-collab.github.io/Code_reviewer_with_feedback/docs/lab/`로
+  설정 완료(Management API로), `uri_allow_list`에 로컬 개발용(`http://localhost:8712/lab/**`)도
+  같이 추가. **`docs/` 없는 짧은 `/lab/` 쪽이 아니라 반드시 이 실제 경로** — 짧은 쪽은 클라이언트
+  JS 리다이렉트(아래 §4)라서 매직 링크의 인증 토큰(URL 해시 프래그먼트)이 리다이렉트 도중
+  유실됨(`window.location.replace()`가 해시를 안 옮김). §4에서 이 실수를 실측으로 발견.
 - 팀원 허용 범위(PLAN.md 열린 질문 1)는 **아직 미결정** — 기본값은 "아무나 가입 가능". 특정
   이메일만 받고 싶으면 `handle_new_member()` 함수에 도메인 체크를 추가하는 식으로 SQL 수정
   필요(사용자 결정 필요, 아직 안 함)
 
-## 4. GitHub Pages에 배포
+## 4. GitHub Pages에 배포 — ✅ 확인됨 (2026-07-14)
 
 `docs/lab/`은 이미 repo 안에 있다 — `main` 브랜치에 push되면 GitHub Pages가 자동으로 갱신한다
-(이 repo가 이미 GitHub Pages를 쓰고 있으므로 추가 설정 불필요). 확인:
-`https://popixoxipop-collab.github.io/Code_reviewer_with_feedback/lab/`
+(이 repo가 이미 GitHub Pages를 쓰고 있으므로 추가 설정 불필요).
+
+**주의(실측으로 발견)**: 이 repo의 Pages source는 `docs/`가 아니라 **저장소 루트**로 설정돼 있다
+(`gh api repos/.../pages`로 확인: `"source":{"branch":"main","path":"/"}`). 그래서 실제로
+동작하는 진짜 경로는 `docs/`가 붙는다:
+`https://popixoxipop-collab.github.io/Code_reviewer_with_feedback/docs/lab/`
+
+짧은 `https://popixoxipop-collab.github.io/Code_reviewer_with_feedback/lab/`도 쓸 수 있는데,
+루트의 `pipelines.html`/`index.html`과 같은 패턴으로 신설한 `/lab/index.html` 리다이렉트
+스텁(`window.location.replace("../docs/lab/")`) 덕분이다 — 사람이 직접 클릭/타이핑할 땐
+문제없지만, 매직 링크처럼 URL에 인증 토큰이 붙어오는 리다이렉트 대상으로는 쓰면 안 됨(§3 참고).
 
 ## 5. 팀원에게 공유할 때
 
