@@ -15,26 +15,45 @@ Cloudflare 계정을 만들거나 배포할 수 없다. 코드는 전부 repo에
 `integrate.api.nvidia.com`은 브라우저 직접 호출을 막는다(CORS 헤더 없음, 2026-07-14 실측
 확인) — `worker/nvidia-proxy.js`가 그 우회로다.
 
-사용자가 제공한 Cloudflare API 토큰(Edit Cloudflare Workers 템플릿)으로 `wrangler login`
-없이 `CLOUDFLARE_API_TOKEN` 환경변수로 비대화형 배포 완료.
+최초 배포는 사용자가 제공한 Cloudflare API 토큰으로 완료(D138). **D143(2026-07-14)에서
+아키텍처가 바뀌었다** — 동기식 요청-응답 프록시에서 job 제출+폴링 방식으로 재설계되면서
+KV 네임스페이스 + Cloudflare Queue 바인딩이 새로 필요해졌고, `worker/wrangler.toml`이
+그 설정을 갖는다. **아래 예전 명령(`wrangler deploy nvidia-proxy.js --compatibility-date
+...`)은 더 이상 안 통한다** — `wrangler.toml`을 쓰는 `cd worker && wrangler deploy` 형태로
+바뀌었다.
 
-- **배포된 URL**: `https://nvidia-proxy.popixoxipop.workers.dev` — `docs/lab/config.js`의
-  `DEFAULT_PROXY_URL`에 기본값으로 미리 채워둠(Supabase와 달리 이 필드는 그대로 편집 가능하게
-  남겨둠 — URL이지 자격증명이 아니고, 팀원이 자기 프록시로 바꿔 쓸 수 있어야 하므로).
+- **배포된 URL**: `https://nvidia-proxy.popixoxipop.workers.dev` (D138부터 동일, D143 재배포
+  후에도 안 바뀜) — `docs/lab/config.js`의 `DEFAULT_PROXY_URL`에 기본값으로 미리 채워둠
+  (Supabase와 달리 이 필드는 그대로 편집 가능하게 남겨둠 — URL이지 자격증명이 아니고, 팀원이
+  자기 프록시로 바꿔 쓸 수 있어야 하므로).
 - 계정에 workers.dev 서브도메인이 아예 없어서(신규 Cloudflare 계정) `popixoxipop`으로 먼저
   등록해야 배포가 됨(Management API `PUT /accounts/{id}/workers/subdomain`).
 - 신규 서브도메인이라 TLS 인증서 전파에 몇 분 걸림(첫 요청들은 SSL handshake failure) —
   실제 코드가 문서화한 동작(헤더 없는 POST→401 `"missing x-nvidia-api-key header"`,
   OPTIONS→204+CORS 헤더)까지 맞는지 확인하고서야 완료로 표시.
+- **D144(2026-07-14) 인증 방식 변경**: `CLOUDFLARE_API_TOKEN`을 채팅에 붙여넣는 방식이 두 번
+  연속 Cloudflare 공식 `/user/tokens/verify`에서 "Invalid API Token"(코드 1000)으로 거부됨 —
+  원인 불명(폐기됐거나 다른 종류의 키와 혼동됐을 가능성). `wrangler login`(사용자가 직접
+  실행하는 인터랙티브 브라우저 OAuth, `! wrangler login`으로 이 세션 안에서 실행 가능)으로
+  전환해 해결. 로그인 결과는 `~/.wrangler/config/`에 저장되고 이 Mac의 모든 셸이 공유하므로
+  토큰을 채팅에 붙여넣을 필요가 다시는 없음 — 세션 재개 시 `wrangler whoami`로 로그인 상태
+  먼저 확인할 것.
 
 **팀원 각자 자기 프록시를 쓰고 싶으면**: 같은 `worker/nvidia-proxy.js`를 각자 배포하고 자기
-URL로 필드를 덮어쓰면 된다 — owner의 프록시를 거치지 않아도 되도록 설계돼 있다.
+URL로 필드를 덮어쓰면 된다 — owner의 프록시를 거치지 않아도 되도록 설계돼 있다. D143 이후엔
+KV 네임스페이스 + Queue도 각자 계정에 한 번 만들어야 한다(아래 순서 참고).
 
 ```bash
 npm install -g wrangler
 wrangler login            # Cloudflare 무료 계정으로 로그인 (없으면 가입)
 cd worker
-wrangler deploy nvidia-proxy.js --compatibility-date <오늘날짜>
+
+# KV 네임스페이스 + Queue를 계정당 한 번만 생성 (이미 있으면 생략)
+wrangler kv namespace create NVIDIA_JOBS
+# 위 명령이 출력하는 id를 wrangler.toml의 kv_namespaces[0].id에 넣을 것
+wrangler queues create nvidia-jobs-queue
+
+wrangler deploy            # wrangler.toml을 읽어 배포 (nvidia-proxy.js를 직접 지정하지 않음)
 ```
 
 선택: `worker/nvidia-proxy.js`의 `ALLOWED_ORIGIN`을 `"*"`에서 실제 GitHub Pages 주소

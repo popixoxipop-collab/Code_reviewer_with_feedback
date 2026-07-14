@@ -100,6 +100,43 @@ function jsonResponse(obj, status, origin) {
   });
 }
 
+// D-J (2026-07-15, README D145): Cloudflare Queues is at-least-once delivery -- the same
+// message can reach queue() more than once (observed live: a job's KV record flapped
+// error -> pending -> error several times a few seconds apart after the job had already
+// reached attempt 3/3 and failed terminally, before settling). A stale/duplicate delivery
+// that's still mid-retry can land its "pending, retrying" write AFTER a different
+// delivery already wrote the real terminal done/error record, un-terminating a job the
+// client may already be about to see resolved -- or worse, a stale delivery's terminal
+// write could clobber a genuine "done" with a stale "error" (or vice versa) if timing
+// goes the other way. Every write in queue() now goes through this: once a job is
+// done/error, nothing else is allowed to overwrite it.
+//   WHY: at-least-once delivery is Cloudflare's documented guarantee, not a bug on their
+//     end -- consumers are expected to be idempotent against duplicate/stale deliveries.
+//   COST: one extra KV read before every write in queue() (KV reads are cheap/fast
+//     compared to the NVIDIA call this whole function exists to make).
+//   EXIT: doesn't fully close the race (get-then-put isn't atomic -- KV has no
+//     conditional/compare-and-swap put) -- a true fix would need a Durable Object per
+//     job instead of KV. Not worth it for a status-polling endpoint; revisit only if a
+//     "done" is ever observed to get clobbered by a stale "error" (the costlier
+//     direction of this race) in practice.
+async function isAlreadyTerminal(env, jobId) {
+  const existingRaw = await env.NVIDIA_JOBS.get(jobId);
+  if (!existingRaw) return false;
+  try {
+    const existing = JSON.parse(existingRaw);
+    return existing.status === "done" || existing.status === "error";
+  } catch (e) {
+    return false; // malformed existing record -- treat as not-terminal, let it get overwritten
+  }
+}
+
+// Returns true if it actually wrote (false = skipped, another delivery already finished this job).
+async function putIfNotTerminal(env, jobId, record) {
+  if (await isAlreadyTerminal(env, jobId)) return false;
+  await env.NVIDIA_JOBS.put(jobId, JSON.stringify(record), { expirationTtl: JOB_TTL_SECONDS });
+  return true;
+}
+
 export default {
   async fetch(request, env) {
     const origin = request.headers.get("origin") || "";
@@ -159,6 +196,15 @@ export default {
   async queue(batch, env) {
     for (const message of batch.messages) {
       const { jobId, apiKey, body } = message.body;
+
+      // D-J: cheap upfront exit for the common case -- a duplicate/stale delivery of a
+      // job some other delivery already finished. Skips the NVIDIA call entirely instead
+      // of just discarding the result at write-time.
+      if (await isAlreadyTerminal(env, jobId)) {
+        message.ack();
+        continue;
+      }
+
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), PER_ATTEMPT_TIMEOUT_MS);
       try {
@@ -172,26 +218,27 @@ export default {
         const text = await upstream.text();
 
         if (upstream.ok) {
-          await env.NVIDIA_JOBS.put(jobId, JSON.stringify({ status: "done", result: text }), { expirationTtl: JOB_TTL_SECONDS });
+          await putIfNotTerminal(env, jobId, { status: "done", result: text });
           message.ack();
           continue;
         }
 
         if (RETRYABLE_STATUSES.has(upstream.status) && message.attempts < MAX_ATTEMPTS) {
-          await env.NVIDIA_JOBS.put(
-            jobId,
-            JSON.stringify({ status: "pending", note: `attempt ${message.attempts}/${MAX_ATTEMPTS} got HTTP ${upstream.status}, retrying` }),
-            { expirationTtl: JOB_TTL_SECONDS }
-          );
-          message.retry({ delaySeconds: RETRY_DELAY_SECONDS });
+          const wrote = await putIfNotTerminal(env, jobId, {
+            status: "pending",
+            note: `attempt ${message.attempts}/${MAX_ATTEMPTS} got HTTP ${upstream.status}, retrying`,
+          });
+          // If another delivery already reached done/error, this job's fate is already
+          // sealed -- don't retry a job nobody's waiting on anymore, just ack it away.
+          if (wrote) message.retry({ delaySeconds: RETRY_DELAY_SECONDS });
+          else message.ack();
           continue;
         }
 
-        await env.NVIDIA_JOBS.put(
-          jobId,
-          JSON.stringify({ status: "error", error: `NVIDIA HTTP ${upstream.status} (attempt ${message.attempts}/${MAX_ATTEMPTS}): ${text.slice(0, 500)}` }),
-          { expirationTtl: JOB_TTL_SECONDS }
-        );
+        await putIfNotTerminal(env, jobId, {
+          status: "error",
+          error: `NVIDIA HTTP ${upstream.status} (attempt ${message.attempts}/${MAX_ATTEMPTS}): ${text.slice(0, 500)}`,
+        });
         message.ack();
       } catch (e) {
         clearTimeout(timeoutId);
@@ -199,20 +246,19 @@ export default {
         const reason = isTimeout ? `no response within ${PER_ATTEMPT_TIMEOUT_MS / 1000}s` : `upstream fetch failed: ${e.message}`;
 
         if (message.attempts < MAX_ATTEMPTS) {
-          await env.NVIDIA_JOBS.put(
-            jobId,
-            JSON.stringify({ status: "pending", note: `attempt ${message.attempts}/${MAX_ATTEMPTS} ${reason}, retrying` }),
-            { expirationTtl: JOB_TTL_SECONDS }
-          );
-          message.retry({ delaySeconds: RETRY_DELAY_SECONDS });
+          const wrote = await putIfNotTerminal(env, jobId, {
+            status: "pending",
+            note: `attempt ${message.attempts}/${MAX_ATTEMPTS} ${reason}, retrying`,
+          });
+          if (wrote) message.retry({ delaySeconds: RETRY_DELAY_SECONDS });
+          else message.ack();
           continue;
         }
 
-        await env.NVIDIA_JOBS.put(
-          jobId,
-          JSON.stringify({ status: "error", error: `${reason} (attempt ${message.attempts}/${MAX_ATTEMPTS}, giving up)` }),
-          { expirationTtl: JOB_TTL_SECONDS }
-        );
+        await putIfNotTerminal(env, jobId, {
+          status: "error",
+          error: `${reason} (attempt ${message.attempts}/${MAX_ATTEMPTS}, giving up)`,
+        });
         message.ack();
       }
     }
