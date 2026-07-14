@@ -1,0 +1,62 @@
+[
+  {
+    "finding_id": "architecture-diffusion:PriceCalculator.java",
+    "ok": true,
+    "axis": "구조_인지도",
+    "fr_axis": "코드_이해",
+    "score": 4,
+    "criterion": "흐름은 맞지만 일부 연결 관계 불명확",
+    "evidence": "[L1] 질문: PriceCalculator.java의 calculateVat 메서드에서 Math.round()를 사용해 부가세를 반올림하는 대신, 절사(내림)나 절상(올림)을 선택하지 않은 구체적인 이유는 무엇이며, 이 결정이 실제 영수증 출력 결과에 어떤 영향을 미치는가? (코드 라인: 45-50)\n[L1] 학생 답변: 음, 부가세가 double에서 long으로 변환될 때 오차가 생기는데, 절사하면 계속 손실이 누적돼서 결제 금액이 실제 세액보다 체계적으로 낮아질 것 같아서 반올림을 선택했던 것 같습니다. 그래서 영수증에 출력되",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "architecture-diffusion:PriceCalculator.java",
+    "ok": true,
+    "axis": "트레이드오프_인지도",
+    "fr_axis": "반례_대응",
+    "score": 4,
+    "criterion": "반례를 이해하고 부분적 대응 가능",
+    "evidence": "[L1] 질문: PriceCalculator.java의 calculateVat 메서드에서 Math.round()를 사용해 부가세를 반올림하는 대신, 절사(내림)나 절상(올림)을 선택하지 않은 구체적인 이유는 무엇이며, 이 결정이 실제 영수증 출력 결과에 어떤 영향을 미치는가? (코드 라인: 45-50)\n[L1] 학생 답변: 음, 부가세가 double에서 long으로 변환될 때 오차가 생기는데, 절사하면 계속 손실이 누적돼서 결제 금액이 실제 세액보다 체계적으로 낮아질 것 같아서 반올림을 선택했던 것 같습니다. 그래서 영수증에 출력되",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "architecture-diffusion:PriceCalculator.java",
+    "ok": true,
+    "axis": "대안_탐색_능력",
+    "fr_axis": "대안_비교",
+    "score": 3,
+    "criterion": "대안이 존재한다는 것은 알지만 구체화하지 못함",
+    "evidence": "[L1] 질문: PriceCalculator.java의 calculateVat 메서드에서 Math.round()를 사용해 부가세를 반올림하는 대신, 절사(내림)나 절상(올림)을 선택하지 않은 구체적인 이유는 무엇이며, 이 결정이 실제 영수증 출력 결과에 어떤 영향을 미치는가? (코드 라인: 45-50)\n[L1] 학생 답변: 음, 부가세가 double에서 long으로 변환될 때 오차가 생기는데, 절사하면 계속 손실이 누적돼서 결제 금액이 실제 세액보다 체계적으로 낮아질 것 같아서 반올림을 선택했던 것 같습니다. 그래서 영수증에 출력되",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "architecture-diffusion:PriceCalculator.java",
+    "ok": true,
+    "axis": "설계_논리",
+    "fr_axis": "설계_논리",
+    "score": 4,
+    "criterion": "설계 의도는 설명하나 제약조건과의 연결은 부분적",
+    "evidence": "[L1] 질문: PriceCalculator.java의 calculateVat 메서드에서 Math.round()를 사용해 부가세를 반올림하는 대신, 절사(내림)나 절상(올림)을 선택하지 않은 구체적인 이유는 무엇이며, 이 결정이 실제 영수증 출력 결과에 어떤 영향을 미치는가? (코드 라인: 45-50)\n[L1] 학생 답변: 음, 부가세가 double에서 long으로 변환될 때 오차가 생기는데, 절사하면 계속 손실이 누적돼서 결제 금액이 실제 세액보다 체계적으로 낮아질 것 같아서 반올림을 선택했던 것 같습니다. 그래서 영수증에 출력되",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  },
+  {
+    "finding_id": "architecture-diffusion:PriceCalculator.java",
+    "ok": true,
+    "axis": "자기_수정",
+    "fr_axis": "자기_수정",
+    "score": 4,
+    "criterion": "자기오류인식을 포함해 3개 이상 신호 확인(reflection_signal.py 현재 True 판정 기준)",
+    "evidence": "[L1] 질문: PriceCalculator.java의 calculateVat 메서드에서 Math.round()를 사용해 부가세를 반올림하는 대신, 절사(내림)나 절상(올림)을 선택하지 않은 구체적인 이유는 무엇이며, 이 결정이 실제 영수증 출력 결과에 어떤 영향을 미치는가? (코드 라인: 45-50)\n[L1] 학생 답변: 음, 부가세가 double에서 long으로 변환될 때 오차가 생기는데, 절사하면 계속 손실이 누적돼서 결제 금액이 실제 세액보다 체계적으로 낮아질 것 같아서 반올림을 선택했던 것 같습니다. 그래서 영수증에 출력되",
+    "level": "reflection",
+    "verdict": "exhausted_at_cap",
+    "turns": 4
+  }
+]
