@@ -1008,6 +1008,23 @@ python3 pipeline/compare_methodologies.py
   - EXIT: qwen3-next-80b가 복구되면 원래 기본값으로 계속 쓰면 됨. step-3.5-flash를 P01에서 실제로 재검증(성공/실패 무관)하면 그 결과로 note와 tier를 다시 업데이트.
   - 커밋: `aaf934d`(reasoning_content 폴백+진단)+`432421c`(step-3.5-flash note 하향), 전부 push 완료.
 
+- **D143** ([`worker/nvidia-proxy.js`](./worker/nvidia-proxy.js), [`docs/lab/llm.js`](./docs/lab/llm.js), [`worker/wrangler.toml`](./worker/wrangler.toml)) — D142까지도 524가 완전히 안 없어진 이유: NVIDIA qwen3-next-80b는 정상 상황에서도 종종 2분+ 걸리고, 그 시간 동안 첫 바이트조차 안 보낼 수 있다 — 스트리밍(D141)은 "바이트가 오기 시작한 뒤"만 도와주지 "첫 바이트가 안 옴" 자체는 못 고친다. 어떤 동기식 클라이언트 요청도 이 대기를 버틸 수 없다는 결론 → POST가 `job_id`만 즉시 반환하고, 실제 NVIDIA 호출은 Cloudflare Queue consumer(`queue()`)로 넘겨 클라이언트 연결과 완전히 분리. GET이 `?job=<id>`로 상태를 폴링.
+  - **검증**: `wrangler.toml`에 KV 네임스페이스(`NVIDIA_JOBS`)+Queue(`nvidia-jobs-queue`, producer/consumer) 바인딩 신설. `wrangler dev` 로컬 KV/Queue 에뮬레이션으로 실제 `NVIDIA_API_KEY_1`을 써서 submit→queue→consumer→NVIDIA 실호출→KV 기록→poll 전체 경로를 end-to-end 실행 확인(가벼운 프롬프트, 약 33초 만에 `status:"done"` 도달).
+  - WHY: D141(스트리밍)은 틀린 게 아니라 불충분했다 — "바이트가 안 옴"의 원인이 "첫 바이트조차 안 옴"일 때는 스트리밍이 손댈 지점 자체가 없다.
+  - COST: 요청-응답 1개가 제출+폴링 2개 요청으로 바뀜(`docs/lab/llm.js`의 인터페이스는 그대로 — `chatJSON`은 여전히 문자열/객체만 반환). API 키가 이제 Queue 메시지 안에 최대 24시간 머무름(기존엔 요청-응답 동안만) — D-D 원칙에 대한 실질적 변경이라 코드 주석에 명시.
+  - EXIT: NVIDIA가 즉시 응답하는 쪽으로 안정화돼도, "가끔 몇 분 걸림" 자체는 정상 범위(D98/`DEFAULT_TIMEOUT_S=600`)라 되돌릴 이유는 없음 — 클라이언트 단순성보다 견고성 우선.
+  - 커밋: `65d364d`(async job-queue+재시도 코드), push 대기 중.
+
+- **D144** ([`worker/nvidia-proxy.js`](./worker/nvidia-proxy.js), [`docs/lab/llm.js`](./docs/lab/llm.js)) — D143 배포 직후 실제 재현(Queue consumer 안에서 NVIDIA 호출)이 다시 `NVIDIA HTTP 524`로 실패 → "Cloudflare Worker의 fetch 자체가 어떤 컨텍스트에서든 ~90-125초에 강제로 끊긴다"는 가설이 제기됨. `/fablize/packs/investigation-protocol.txt` 절차로 검증.
+  - **가설 기각**: 순수 `curl`로(Cloudflare·Worker·Queue 전부 미경유) 같은 엔드포인트에 무거운 프롬프트(2000단어 요청, `max_tokens:4000`)를 보내 **236.7초 만에 정상 200**을 받음 — 진짜 하드 상한이 있었다면 불가능. 같은 세션에서 가벼운 프롬프트는 27초, D142의 예전 테스트는 150초간 완전 무응답(000), 방금 전 Queue consumer 테스트는 524 — 넷 다 다른 결과라는 것 자체가 "고정 상한"이 아니라 **NVIDIA 쪽의 간헐적 불안정성**(D142 결론과 일치, 데이터로 보강)임을 가리킴.
+  - **수정**: `queue()`의 각 시도에 `AbortController` 기반 타임아웃(600초 = `feedback/nvidia_client.py`의 `DEFAULT_TIMEOUT_S`와 동일 — 새로 지어낸 숫자 아님) 추가. 재시도 가능한 실패(타임아웃/네트워크 에러/429·500·502·503·524)는 `message.ack()` 대신 `message.retry({delaySeconds:5})` 호출 — Cloudflare 공식 문서(`developers.cloudflare.com/queues/configuration/javascript-apis/`)로 확인한 결과 `retry()`는 같은 invocation 안에서 도는 게 아니라 **새 invocation으로 재전달**되어 매 시도가 독립된 15분 wall-clock 예산을 받음. `message.attempts`(1부터 시작, 같은 문서로 확인)로 `MAX_ATTEMPTS=3`까지만 재시도하고 그 이상은 종료 상태(`status:"error"`)로 기록. 4xx(429 제외)는 재시도 안 함 — 잘못된 요청/키는 다시 시도해도 안 고쳐짐.
+  - **검증**: 로컬 mock NVIDIA 서버(`http.server`)로 두 경로 모두 재현 — (1) 524를 2번 낸 뒤 3번째에 성공 → 정확히 3번 호출되고 최종 `status:"done"` 확인. (2) 항상 524 → 정확히 `MAX_ATTEMPTS`(3)번만 호출되고 `status:"error"`로 정상 종료(무한 재시도/행 없음) 확인. `wrangler dev` 로컬 Queue 에뮬레이션에서 `message.attempts`/`message.retry()` 동작이 두 시나리오 모두 문서와 일치.
+  - **부수 수정**: `docs/lab/llm.js`의 `MAX_POLL_MS`가 "Queue consumer 1회 호출의 15분 wall-clock"에 맞춰져 있었는데, 재시도가 여러 invocation에 걸치면서 서버 쪽 최악 소요시간(약 30분)이 이를 넘어서게 됨 — 클라이언트가 서버보다 먼저 포기하고 에러를 보여주는 재발 버그였음(D141/D142와 같은 종류의 "두 타임아웃이 안 맞음" 문제). 35분으로 상향.
+  - WHY: 관측된 실패가 결정적 상한이 아니라 간헐적이라는 걸 실측으로 확인했으므로, 두 번째 시도가 성공할 실질적 가능성이 있음.
+  - COST: 재시도가 계속 실패하는 job은 클라이언트가 최종 에러를 보기까지 최대 약 30분 걸릴 수 있음(기존엔 524 한 번에 수 초 만에 실패). `JOB_TTL_SECONDS`(1시간)는 이미 이 여유를 커버함.
+  - EXIT: NVIDIA 불안정성이 특정 패턴(시간대, 특정 `NVIDIA_API_KEY_N`, 요청 크기 등)과 상관관계가 있는 것으로 확인되면, 맹목적 재시도 대신 그 패턴을 겨냥한 수정으로 교체할 것 — 패턴을 못 찾았다고 `MAX_ATTEMPTS`만 계속 올리지 말 것.
+  - 커밋: `65d364d`(async job-queue+재시도 코드), push 대기 중.
+
 
 ## 다음 단계 (미해결)
 
