@@ -14,9 +14,19 @@ const P01Runner = (() => {
   // task (0/50) while qwen3-next-80b succeeds 96%. So "tier" below is P01-specific evidence
   // (good/bad), not a re-skin of the P03 rank -- the other 9 are honestly labeled unverified
   // for P01 rather than implying the P03 ranking transfers.
+  //
+  // D-G (2026-07-14): that "0/50" verdict is now suspect. scripts/java_curriculum_nvidia_
+  // pipeline.py's chat_json() only ever reads choice["content"] and raises if it's empty --
+  // it has no reasoning_content fallback. A live curl to NVIDIA confirmed step-3.5-flash puts
+  // its actual answer in reasoning_content with content:null, exactly like D131 found for a
+  // different call site. D120's P01-T1 test almost certainly hit this same bug, not a real
+  // capability limit -- it may never have seen this model's real output at all. This web tool's
+  // llm.js already carries the reasoning_content fallback (D-F), so a run here is actually a
+  // cleaner test than D120's ever was -- downgraded from "bad" to "unverified" pending a real
+  // retest, rather than continuing to assert a verdict that might just be measuring the bug.
   const MODEL_CHOICES = [
-    { id: "stepfun-ai/step-3.5-flash", label: "step-3.5-flash", tier: "bad",
-      note: "P01-T1 실측: 0/50 완전실패(D120). P03 종합 1위 모델이지만 이 파이프라인엔 부적합." },
+    { id: "stepfun-ai/step-3.5-flash", label: "step-3.5-flash", tier: "unverified",
+      note: "P01-T1(D120)의 '0/50 완전실패'는 reasoning_content 버그로 오염됐을 가능성이 큼(D-G) -- 이 도구는 그 폴백이 있어 재검증 가치 있음." },
     { id: "mistralai/mistral-medium-3.5-128b", label: "mistral-medium-3.5", tier: "unverified",
       note: "P01 기준 미검증 · P03 종합 2위(0.749)." },
     { id: "qwen/qwen3-next-80b-a3b-instruct", label: "qwen3-next-80b", tier: "good",
