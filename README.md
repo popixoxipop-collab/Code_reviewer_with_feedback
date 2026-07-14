@@ -1023,7 +1023,18 @@ python3 pipeline/compare_methodologies.py
   - WHY: 관측된 실패가 결정적 상한이 아니라 간헐적이라는 걸 실측으로 확인했으므로, 두 번째 시도가 성공할 실질적 가능성이 있음.
   - COST: 재시도가 계속 실패하는 job은 클라이언트가 최종 에러를 보기까지 최대 약 30분 걸릴 수 있음(기존엔 524 한 번에 수 초 만에 실패). `JOB_TTL_SECONDS`(1시간)는 이미 이 여유를 커버함.
   - EXIT: NVIDIA 불안정성이 특정 패턴(시간대, 특정 `NVIDIA_API_KEY_N`, 요청 크기 등)과 상관관계가 있는 것으로 확인되면, 맹목적 재시도 대신 그 패턴을 겨냥한 수정으로 교체할 것 — 패턴을 못 찾았다고 `MAX_ATTEMPTS`만 계속 올리지 말 것.
-  - 커밋: `65d364d`(async job-queue+재시도 코드), push 대기 중.
+  - 커밋: `65d364d`(async job-queue+재시도 코드), push 완료. 이후 `wrangler login`(D144 참고)으로
+    실제 배포까지 완료 — `https://nvidia-proxy.popixoxipop.workers.dev`, KV(`fee16da9fc2e428aa7b55ace0baf58d5`)/
+    Queue(`nvidia-jobs-queue`)는 이미 계정에 생성돼 있었음(다른 세션이 만들어둔 것으로 보임).
+
+- **D145** ([`worker/nvidia-proxy.js`](./worker/nvidia-proxy.js)) — D143/D144 배포 직후 실제 프로덕션에서 job 1개를 실행해 검증하던 중 발견: KV 기록이 `status:"error"`(attempt 3/3, 종료 상태)로 찍힌 지 6초 뒤 다시 `status:"pending"`(attempt 2/3, retrying)로 되돌아갔다가, 몇 차례 더 error↔pending을 오간 뒤에야 안정화됨(실측 로그: 00:07:36 error → 00:07:42 pending → ... → 00:08:15부터 error로 고정).
+  - **원인**: Cloudflare Queues는 최소 1회(at-least-once) 전달을 보장한다 — 같은 메시지가 겹쳐서 두 번 이상 컨슈머에 전달될 수 있다는 뜻. 코드가 이걸 전혀 방어하지 않아서, 뒤늦게 도착한(stale) 이전 시도(낮은 attempts)의 컨슈머 인스턴스가 이미 끝난 job의 KV 기록을 "pending"으로 덮어씀. 이번엔 결국 `error`에서 멈췄지만, 타이밍이 달랐다면 이미 끝난 job이 영원히 "pending"으로 남아 클라이언트가 35분(D144의 `MAX_POLL_MS`) 내내 기다리다 타임아웃될 수 있었음 — 더 나쁜 방향(진짜 성공한 `done`이 뒤늦은 실패로 가려지는 경우)도 이론상 가능.
+  - **수정**: `isAlreadyTerminal`/`putIfNotTerminal` 헬퍼 추가 — job이 이미 `done`/`error`면 그 이후 어떤 쓰기도 덮어쓰지 않음. `queue()` 진입 시 우선 이 체크로 조기 종료(이미 끝난 job이면 NVIDIA 재호출도 안 함), 재시도 가능 실패 분기에서도 실제로 KV에 쓰였을 때만 `message.retry()`를 호출하고 아니면(이미 끝난 job이면) `message.ack()`로 흘려보냄.
+  - **검증**: Node에서 `worker/nvidia-proxy.js`를 직접 import해 두 "배달"(같은 jobId, 다른 attempts, 페이크 `fetch`/KV/message)을 `Promise.all`로 동시 실행하는 유닛테스트 2건 작성 — (1) 늦게 시작한 attempts=3 배달이 먼저 끝나 종료 상태를 쓴 뒤, 더 일찍 시작한 attempts=2 스트래글러가 나중에 "pending" 쓰기를 시도하는 시나리오 → 최종 KV가 `error`로 유지되고 스트래글러는 retry 대신 ack됨을 어설션으로 확인. (2) 성공(`done`)이 먼저 쓰인 뒤 스트래글러의 실패가 나중에 도착하는 시나리오 → 진짜 성공 결과가 안 가려짐을 확인. 기존 3개 시나리오(해피패스/재시도-성공/재시도-포기)도 로컬 mock으로 재검증, 전부 그대로 통과. 수정 후 실제 프로덕션에 재배포하고 OPTIONS 204 라이브 확인.
+  - WHY: at-least-once는 Cloudflare의 공식 보장 사양이지 버그가 아님 — 컨슈머가 중복/지연 배달에 대해 스스로 멱등이어야 함.
+  - COST: `queue()`의 모든 쓰기 전에 KV 읽기 1회씩 추가(NVIDIA 호출 자체에 비하면 무시 가능한 비용).
+  - EXIT: `get`→`put` 사이의 원자성은 여전히 없음(KV엔 조건부 put이 없음) — job당 Durable Object를 쓰면 완전히 닫히지만, 상태 폴링용 엔드포인트에 그 정도 투자는 아직 과함. `done`이 실제로 stale `error`에 덮어써지는 사례가 실측으로 나오면 그때 재고할 것.
+  - 커밋: `ebc380f`, push 완료. 프로덕션 재배포 완료(OPTIONS 204 라이브 확인).
 
 
 ## 다음 단계 (미해결)
