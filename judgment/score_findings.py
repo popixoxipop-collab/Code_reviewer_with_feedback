@@ -89,6 +89,16 @@ _DUNDER_RE = re.compile(r"^__\w+__$")
 _TEST_NAME_RE = re.compile(r"^(?:test_|Test)\w+", re.IGNORECASE)
 DUPLICATE_DEFINITION_MIN_NAME_LEN = 5
 
+# D-web-lab: find_architecture_diffusion_point()의 fan_in>=2 임계값이 이름 없는 리터럴로
+#   박혀 있어서 파이프라인 테스트 랩(docs/lab/)의 파라미터 편집기가 setattr(module, key, value)로
+#   덮어쓸 대상을 못 찾는다 -- 이 파일의 다른 임계값(REPEATED_PATTERN_MIN_FILES 등)은 전부
+#   이미 이름 붙은 모듈 상수라 똑같이 맞춘 것뿐, 동작은 완전히 동일(2 그대로).
+#   WHY: 코드 자체를 편집 UI가 다루는 파라미터의 단일 진실 공급원으로 유지하려면(그래야 웹 랩이
+#        런타임에 실제 값을 읽고 덮어쓸 수 있음), 상수는 전부 이름이 있어야 한다.
+#   COST: 없음 -- 리터럴을 상수로 승격한 것뿐, 판정 로직/기본값 불변.
+#   EXIT: 이 임계값이 더는 필요 없어지면 상수와 참조를 함께 제거.
+DIFFUSION_FAN_IN_THRESHOLD = 2
+
 # D130 회귀 실측(renamarr, M1 코퍼스): 위 필터만으로 돌리면 test_radarr_*.py/test_sonarr_*.py
 #   같은 "같은 기능을 다른 백엔드용으로 미러링한 테스트 스위트"에서 test_no_series_returned,
 #   TestAnalyzeFiles류 이름이 파일마다 반복 등장 -- 이건 나쁜 복붙이 아니라 대칭 구조를 의도적으로
@@ -188,7 +198,7 @@ def find_architecture_diffusion_point(fan_in, hub, repo_root):
     이 자체는 관용 패턴(React Context 등)일 수도, 진짜 설계 판단일 수도 있다 —
     여기서는 후보만 뽑고, "관용 패턴인지"는 pattern_key를 붙여 idiom_filter가 판정하게 넘긴다.
     """
-    candidates = {k: v for k, v in fan_in.items() if k != hub and v >= 2}
+    candidates = {k: v for k, v in fan_in.items() if k != hub and v >= DIFFUSION_FAN_IN_THRESHOLD}
     if not candidates:
         return None
     top_file = max(candidates, key=candidates.get)

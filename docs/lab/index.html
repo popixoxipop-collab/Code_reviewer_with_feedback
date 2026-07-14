@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pipeline Lab — Code_reviewer_with_feedback</title>
+<link rel="stylesheet" href="lab.css">
+</head>
+<body>
+<main class="frame">
+  <div class="nav-links">
+    <a href="../pipelines.html">&larr; 파이프라인 구조도</a>
+    <a href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback" target="_blank" rel="noopener">GitHub Repo</a>
+  </div>
+
+  <p class="eyebrow">Code_reviewer_with_feedback &middot; Pipeline Lab</p>
+  <h1>파이프라인 테스트 랩</h1>
+  <p class="lede">
+    P01(교안 분석) · P02(코드 분석) · P03(인터뷰) — 각 파이프라인의 실제 코드가 매 단계 어떤 프롬프트(또는
+    파라미터)를 쓰는지 그대로 보고, 편집해서 다시 돌려볼 수 있다. 결과는 팀 DB에 실행자 계정으로 기록된다.
+  </p>
+
+  <div id="setup-banner" class="setup-banner hidden">
+    <b>설정 필요</b> — <span id="setup-banner-text"></span>
+    자세한 절차는 <a href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback/blob/main/experiments/web_lab/SETUP.md" target="_blank" rel="noopener">SETUP.md</a> 참고.
+  </div>
+
+  <section class="config-panel">
+    <h2>연결 설정</h2>
+    <p class="intro">이 탭 안에서만 유지된다(선택 시 sessionStorage) — 서버로 전송되지 않고, DB에도 저장되지 않는다.</p>
+    <div class="config-grid">
+      <label class="config-field">
+        <span>NVIDIA API 키 <span class="req">(P01·P03 실행에 필요)</span></span>
+        <input type="password" id="nvidia-key" placeholder="nvapi-..." autocomplete="off">
+      </label>
+      <label class="config-field">
+        <span>LLM 프록시 URL <span class="req">(P01·P03 실행에 필요)</span></span>
+        <input type="text" id="proxy-url" placeholder="https://your-worker.workers.dev">
+      </label>
+      <label class="config-field">
+        <span>GitHub PAT <span class="opt">(선택 — 비공개 repo 스캔 시 P02에 필요)</span></span>
+        <input type="password" id="github-pat" placeholder="github_pat_..." autocomplete="off">
+      </label>
+      <label class="config-field">
+        <span>Supabase URL <span class="opt">(선택 — 없으면 결과가 DB에 저장되지 않고 화면에만 표시)</span></span>
+        <input type="text" id="supabase-url" placeholder="https://xxxx.supabase.co">
+      </label>
+      <label class="config-field">
+        <span>Supabase anon key <span class="opt">(선택)</span></span>
+        <input type="password" id="supabase-anon-key" placeholder="eyJ..." autocomplete="off">
+      </label>
+      <label class="config-field checkbox-field">
+        <input type="checkbox" id="remember-session">
+        <span>이 탭에서 유지 (sessionStorage — 탭을 닫으면 사라짐)</span>
+      </label>
+    </div>
+    <div id="auth-status" class="auth-status"></div>
+    <div class="input-row" style="margin-top:10px;">
+      <input type="text" id="login-email" placeholder="team@example.com (DB 저장하려면 로그인)">
+      <button class="secondary" id="login-btn">매직 링크 보내기</button>
+      <span id="login-status" style="font-family:var(--mono); font-size:0.72rem; color:var(--ink-faint);"></span>
+    </div>
+  </section>
+
+  <nav class="pipeline-tabs" id="pipeline-tabs">
+    <button class="tab-btn active" data-pipeline="p02">P02 · 코드 분석</button>
+    <button class="tab-btn" data-pipeline="p01">P01 · 교안 분석</button>
+    <button class="tab-btn" data-pipeline="p03">P03 · 인터뷰</button>
+  </nav>
+
+  <section id="pipeline-view" class="pipeline-view">
+    <p class="loading-note">불러오는 중...</p>
+  </section>
+
+  <section id="results-view" class="results-view hidden">
+    <h2>실행 결과</h2>
+    <div id="results-content"></div>
+  </section>
+
+  <footer>
+    <p><b>API 키·PAT 처리</b>: 메모리/sessionStorage에만 보관되고 DB에는 절대 저장되지 않는다. NVIDIA
+    호출은 프록시를 거치고(프록시 코드는 <a href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback/blob/main/worker/nvidia-proxy.js" target="_blank" rel="noopener">worker/nvidia-proxy.js</a>에 공개돼 있어 검증 가능), GitHub PAT은 api.github.com에 직접
+    전달된다(프록시 안 거침). 자세한 아키텍처/보안 모델은 <a href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback/blob/main/experiments/web_lab/PLAN.md" target="_blank" rel="noopener">PLAN.md</a> 참고.</p>
+  </footer>
+</main>
+
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"
+  integrity="sha384-tVslJOEkg7nVRW3Y3/ReGX0NnonNrbcmt1R5qFbQXQdGa2chRkoJYHAjAsv3zoTq"
+  crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"
+  integrity="sha384-+mbV2IY1Zk/X1p/nWllGySJSUN8uMs+gUAN10Or95UBH0fpj6GfKgPmgC5EXieXG"
+  crossorigin="anonymous"></script>
+<script type="module" src="pdfjs-loader.js"></script>
+<script src="config.js"></script>
+<script src="llm.js"></script>
+<script src="db.js"></script>
+<script src="app.js"></script>
+<script src="pyodide-shared.js"></script>
+<script src="p02-runner.js"></script>
+<script src="p01-runner.js"></script>
+<script src="p03-runner.js"></script>
+</body>
+</html>

@@ -1,0 +1,319 @@
+// Loads prompt_manifest.json once, renders the generic stage-card UI (shared across
+// P01/P02/P03), and tracks per-stage overrides in memory. Pipeline-specific execution
+// logic lives in p01-runner.js / p02-runner.js / p03-runner.js, which read the current
+// (possibly-edited) stage state via LabApp.getOverride()/getStageDefault().
+const LabApp = (() => {
+  let manifest = null;
+  const overrides = { p01: {}, p02: {}, p03: {} };
+  let activePipeline = "p02";
+  const runners = {}; // pipeline -> { renderInput(container), run() }
+
+  async function loadManifest() {
+    const res = await fetch("prompt_manifest.json");
+    manifest = await res.json();
+    return manifest;
+  }
+
+  function getManifest() { return manifest; }
+
+  function getStage(pipelineId, stageId) {
+    return manifest.pipelines[pipelineId].stages.find((s) => s.id === stageId);
+  }
+
+  function getOverride(pipelineId, stageId) {
+    return overrides[pipelineId][stageId] || null;
+  }
+
+  function setOverride(pipelineId, stageId, patch) {
+    overrides[pipelineId][stageId] = { ...(overrides[pipelineId][stageId] || {}), ...patch };
+  }
+
+  function clearOverride(pipelineId, stageId) {
+    delete overrides[pipelineId][stageId];
+  }
+
+  // Resolve the actual value a runner should use for a stage's system/user template,
+  // applying any edit the user made; falls back to the manifest default.
+  function resolveTemplate(pipelineId, stageId, key) {
+    const ov = getOverride(pipelineId, stageId);
+    if (ov && ov[key] !== undefined) return ov[key];
+    const stage = getStage(pipelineId, stageId);
+    return stage ? stage[key] : undefined;
+  }
+
+  function resolveParam(pipelineId, stageId, key) {
+    const ov = getOverride(pipelineId, stageId);
+    if (ov && ov.params && ov.params[key] !== undefined) return ov.params[key];
+    const stage = getStage(pipelineId, stageId);
+    const p = stage && stage.params && stage.params.find((x) => x.key === key);
+    return p ? p.default : undefined;
+  }
+
+  function registerRunner(pipelineId, runner) { runners[pipelineId] = runner; }
+
+  function renderPlaceholderChips(list, optional) {
+    return (list || [])
+      .map((p) => `<span class="placeholder-chip${optional ? " optional" : ""}">{${escapeHtml(p)}}</span>`)
+      .join("");
+  }
+
+  function fillTemplate(template, values) {
+    return template.replace(/\{(\w+)\}/g, (m, key) => (key in values ? String(values[key]) : m));
+  }
+
+  function stageCardHtml(pipelineId, stage) {
+    const isPrompt = stage.kind === "prompt";
+    const kindLabel = isPrompt ? "PROMPT" : "PARAMS";
+    const safeId = escapeHtml(stage.id);
+    const lastSegment = stage.id.split("-").pop();
+    const badgeText = /^\d+$/.test(lastSegment) ? lastSegment : "+";
+    return `
+      <div class="stage-card" data-stage-id="${safeId}">
+        <div class="stage-head" data-toggle="${safeId}">
+          <div class="stage-head-left">
+            <span class="stage-num">${escapeHtml(badgeText)}</span>
+            <span class="stage-title">${escapeHtml(stage.title)}</span>
+            <span class="stage-fn">${escapeHtml(stage.function || "")}</span>
+          </div>
+          <span class="stage-kind-badge ${isPrompt ? "prompt" : ""}">${kindLabel}</span>
+        </div>
+        <div class="stage-body" id="body-${pipelineId}-${safeId}"></div>
+      </div>`;
+  }
+
+  function renderPromptStageBody(pipelineId, stage, container) {
+    const hasSystem = "system" in stage;
+    const hasUser = "user_template" in stage;
+    const hasLevel = "level_template" in stage;
+    let html = "";
+    if (stage.note) html += `<p class="param-field" style="color:var(--ink-faint); margin-bottom:8px;">${escapeHtml(stage.note)}</p>`;
+    if (hasSystem) {
+      html += `<div class="field-label">system prompt</div>
+        <textarea data-field="system" data-pipeline="${pipelineId}" data-stage="${stage.id}">${escapeHtml(resolveTemplate(pipelineId, stage.id, "system"))}</textarea>`;
+    }
+    if (hasSystem === false && hasLevel) {
+      html += `<div class="field-label">공유 헤더 (모든 레벨 공통)</div>
+        <textarea data-field="shared_header" data-pipeline="${pipelineId}" data-stage="${stage.id}" readonly style="opacity:0.75;">${escapeHtml(stage.shared_header || "(이전 단계 참고)")}</textarea>`;
+    }
+    const templateKey = hasUser ? "user_template" : hasLevel ? "level_template" : null;
+    if (templateKey) {
+      html += `<div class="field-label">${hasUser ? "user template" : "level template"}</div>
+        <textarea data-field="${templateKey}" data-pipeline="${pipelineId}" data-stage="${stage.id}">${escapeHtml(resolveTemplate(pipelineId, stage.id, templateKey))}</textarea>`;
+    }
+    if (stage.required_placeholders || stage.optional_placeholders) {
+      html += `<div class="field-label">placeholder</div><div>`;
+      html += renderPlaceholderChips(stage.required_placeholders, false);
+      html += renderPlaceholderChips(stage.optional_placeholders, true);
+      html += `</div>`;
+    }
+    if (stage.rubric) {
+      html += `<div class="field-label">rubric (편집 시 이 실행 기록에 rubric_overridden=true로 표시됨)</div>`;
+      for (const [axis, levels] of Object.entries(stage.rubric)) {
+        const safeAxis = escapeHtml(axis);
+        html += `<div class="rubric-axis"><h4>${safeAxis}</h4>`;
+        for (const score of ["5", "4", "3", "2", "1"]) {
+          html += `<div class="rubric-level"><span class="score">${score}점</span>
+            <textarea data-field="rubric" data-axis="${safeAxis}" data-score="${score}" data-pipeline="${pipelineId}" data-stage="${escapeHtml(stage.id)}">${escapeHtml(levels[score])}</textarea></div>`;
+        }
+        html += `</div>`;
+      }
+    }
+    if (stage.params && stage.params.length) {
+      html += renderParamGrid(pipelineId, stage);
+    }
+    html += `<div class="stage-actions">
+        <button class="secondary" data-action="reset" data-pipeline="${pipelineId}" data-stage="${stage.id}">기본값으로 초기화</button>
+        <button class="secondary" data-action="preview" data-pipeline="${pipelineId}" data-stage="${stage.id}">해석된 프롬프트 미리보기</button>
+      </div>
+      <pre class="preview-pane hidden" id="preview-${pipelineId}-${stage.id}"></pre>`;
+    if (stage.advanced) html = `<p style="color:var(--ink-faint); font-size:0.74rem; margin-bottom:10px;">고급 — 3단계 전부가 공유하는 JSON 복구용 프롬프트, 셋 중 하나가 유효한 JSON을 못 돌려줄 때만 자동 호출됨.</p>` + html;
+    container.innerHTML = html;
+    wireStageInputs(pipelineId, stage, container);
+  }
+
+  function renderParamGrid(pipelineId, stage) {
+    let html = `<div class="field-label">파라미터</div><div class="param-grid">`;
+    const safeStageId = escapeHtml(stage.id);
+    for (const p of stage.params) {
+      const val = resolveParam(pipelineId, stage.id, p.key);
+      const safeKey = escapeHtml(p.key);
+      const locked = p.locked ? ` <span class="locked-tag">고정</span>` : "";
+      if (p.type === "string_list") {
+        html += `<label class="param-field"><span>${safeKey}${locked}</span>
+          <input type="text" data-field="param" data-key="${safeKey}" data-pipeline="${pipelineId}" data-stage="${safeStageId}" value="${escapeHtml((val || []).join(", "))}" ${p.locked ? "disabled" : ""}></label>`;
+      } else if (p.type === "regex_readonly") {
+        html += `<label class="param-field"><span>${safeKey} <span class="locked-tag">읽기전용(v1)</span></span>
+          <input type="text" value="${escapeHtml(val)}" disabled></label>`;
+      } else if (p.type === "string_secret") {
+        html += `<label class="param-field"><span>${safeKey}</span>
+          <input type="password" data-field="param" data-key="${safeKey}" data-pipeline="${pipelineId}" data-stage="${safeStageId}" value=""></label>`;
+      } else {
+        html += `<label class="param-field${p.locked ? " locked" : ""}"><span>${safeKey}${locked}</span>
+          <input type="text" data-field="param" data-key="${safeKey}" data-pipeline="${pipelineId}" data-stage="${safeStageId}" value="${escapeHtml(val === null || val === undefined ? "" : String(val))}" ${p.locked ? "disabled" : ""}></label>`;
+      }
+    }
+    html += `</div>`;
+    return html;
+  }
+
+  function renderParamsStageBody(pipelineId, stage, container) {
+    let html = "";
+    if (stage.note) html += `<p style="color:var(--ink-faint); font-size:0.78rem; margin-bottom:10px;">${escapeHtml(stage.note)}</p>`;
+    html += renderParamGrid(pipelineId, stage);
+    html += `<div class="stage-actions"><button class="secondary" data-action="reset" data-pipeline="${pipelineId}" data-stage="${stage.id}">기본값으로 초기화</button></div>`;
+    container.innerHTML = html;
+    wireStageInputs(pipelineId, stage, container);
+  }
+
+  function wireStageInputs(pipelineId, stage, container) {
+    container.querySelectorAll("textarea[data-field]").forEach((el) => {
+      if (el.readOnly) return;
+      el.addEventListener("input", () => {
+        el.classList.add("dirty");
+        const field = el.dataset.field;
+        if (field === "rubric") {
+          const axis = el.dataset.axis, score = el.dataset.score;
+          const currentRubric = getOverride(pipelineId, stage.id)?.rubric || JSON.parse(JSON.stringify(stage.rubric));
+          currentRubric[axis][score] = el.value;
+          setOverride(pipelineId, stage.id, { rubric: currentRubric, rubric_overridden: true });
+        } else {
+          setOverride(pipelineId, stage.id, { [field]: el.value });
+        }
+      });
+    });
+    container.querySelectorAll("input[data-field='param']").forEach((el) => {
+      el.addEventListener("input", () => {
+        const ov = getOverride(pipelineId, stage.id) || {};
+        const params = { ...(ov.params || {}) };
+        const paramDef = stage.params.find((p) => p.key === el.dataset.key);
+        let v = el.value;
+        if (paramDef && paramDef.type === "int") v = parseInt(v, 10);
+        if (paramDef && paramDef.type === "float") v = parseFloat(v);
+        if (paramDef && paramDef.type === "string_list") v = v.split(",").map((s) => s.trim()).filter(Boolean);
+        params[el.dataset.key] = v;
+        setOverride(pipelineId, stage.id, { params });
+      });
+    });
+    container.querySelectorAll("button[data-action='reset']").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        clearOverride(pipelineId, stage.id);
+        renderStageBody(pipelineId, stage, container);
+      });
+    });
+    container.querySelectorAll("button[data-action='preview']").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const pre = document.getElementById(`preview-${pipelineId}-${stage.id}`);
+        const tmpl = resolveTemplate(pipelineId, stage.id, stage.user_template ? "user_template" : "level_template") || "";
+        const sample = {};
+        (stage.required_placeholders || []).forEach((p) => { sample[p] = `<${p} 실제값>`; });
+        (stage.optional_placeholders || []).forEach((p) => { sample[p] = `<${p}>`; });
+        pre.textContent = fillTemplate(tmpl, sample);
+        pre.classList.remove("hidden");
+      });
+    });
+  }
+
+  function renderStageBody(pipelineId, stage, container) {
+    if (stage.kind === "prompt") renderPromptStageBody(pipelineId, stage, container);
+    else renderParamsStageBody(pipelineId, stage, container);
+  }
+
+  // Escapes for BOTH text-node and attribute-value contexts -- every innerHTML
+  // interpolation site in this file (including manifest-derived strings, not just
+  // user-typed ones) routes through this, on the assumption that the manifest itself
+  // may become teammate-editable/shared later (Supabase `presets`, PLAN.md section 4).
+  // Un-escaped quotes previously let a value break out of value="..." and inject a new
+  // attribute (e.g. onmouseover=...) -- fixed by also escaping " and '.
+  function escapeHtml(v) {
+    if (v === undefined || v === null) return "";
+    return String(v)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function renderPipeline(pipelineId) {
+    activePipeline = pipelineId;
+    document.querySelectorAll(".tab-btn").forEach((b) => b.classList.toggle("active", b.dataset.pipeline === pipelineId));
+    const view = document.getElementById("pipeline-view");
+    const p = manifest.pipelines[pipelineId];
+    let html = "";
+    if (!p.has_llm_calls) {
+      html += `<div class="pipeline-banner"><b>LLM 미호출</b> — ${escapeHtml(p.banner || "이 파이프라인은 프롬프트가 아니라 파라미터를 편집합니다.")}</div>`;
+    }
+    html += `<div id="input-panel-${pipelineId}"></div>`;
+    html += `<div class="stage-list">`;
+    for (const stage of p.stages) html += stageCardHtml(pipelineId, stage);
+    html += `</div>`;
+    html += `<div class="run-bar">
+        <button class="primary" id="run-btn-${pipelineId}">실행</button>
+        <span class="run-status" id="run-status-${pipelineId}"></span>
+      </div>
+      <div class="progress-log hidden" id="progress-log-${pipelineId}"></div>`;
+    view.innerHTML = html;
+
+    view.querySelectorAll("[data-toggle]").forEach((head) => {
+      head.addEventListener("click", () => {
+        const card = head.closest(".stage-card");
+        const stageId = head.dataset.toggle;
+        const wasOpen = card.classList.contains("open");
+        card.classList.toggle("open", !wasOpen);
+        if (!wasOpen) {
+          const body = document.getElementById(`body-${pipelineId}-${stageId}`);
+          if (!body.dataset.rendered) {
+            const stage = getStage(pipelineId, stageId);
+            renderStageBody(pipelineId, stage, body);
+            body.dataset.rendered = "1";
+          }
+        }
+      });
+    });
+
+    const runner = runners[pipelineId];
+    if (runner) {
+      runner.renderInput(document.getElementById(`input-panel-${pipelineId}`));
+      document.getElementById(`run-btn-${pipelineId}`).addEventListener("click", () => runner.run());
+    }
+  }
+
+  function log(pipelineId, msg) {
+    const el = document.getElementById(`progress-log-${pipelineId}`);
+    if (!el) return;
+    el.classList.remove("hidden");
+    const line = document.createElement("div");
+    line.textContent = `[${new Date().toISOString().slice(11, 19)}] ${msg}`;
+    el.appendChild(line);
+    el.scrollTop = el.scrollHeight;
+  }
+
+  function setStatus(pipelineId, text, kind) {
+    const el = document.getElementById(`run-status-${pipelineId}`);
+    if (!el) return;
+    el.textContent = text;
+    el.className = "run-status" + (kind ? ` ${kind}` : "");
+  }
+
+  function showResults(html) {
+    const view = document.getElementById("results-view");
+    document.getElementById("results-content").innerHTML = html;
+    view.classList.remove("hidden");
+    view.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  async function init() {
+    await loadManifest();
+    document.querySelectorAll(".tab-btn").forEach((btn) => {
+      btn.addEventListener("click", () => renderPipeline(btn.dataset.pipeline));
+    });
+    renderPipeline(activePipeline);
+  }
+
+  return {
+    init, getManifest, getStage, getOverride, setOverride, resolveTemplate, resolveParam,
+    registerRunner, fillTemplate, log, setStatus, showResults, escapeHtml,
+  };
+})();
+
+document.addEventListener("DOMContentLoaded", LabApp.init);
