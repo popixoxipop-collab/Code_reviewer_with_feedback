@@ -33,24 +33,31 @@ URL을 넣으면 된다 — owner의 프록시를 거치지 않아도 되도록 
 (예: `https://popixoxipop-collab.github.io`)로 좁히면 다른 사이트가 이 프록시를 얹어 쓰는 걸
 막을 수 있다(키 자체 유출과는 별개 — 방어층 하나 더).
 
-## 2. Supabase 프로젝트 생성 (DB 저장에 필요)
+## 2. Supabase 프로젝트 생성 (DB 저장에 필요) — ✅ 완료 (2026-07-14)
 
-1. https://supabase.com → 무료 프로젝트 생성 (region: Seoul 권장, 팀이 한국이면)
-2. 프로젝트 대시보드 → SQL Editor → `experiments/web_lab/supabase_schema.sql` 전체 내용 붙여넣고 Run
-3. 프로젝트 Settings → API → **Project URL**과 **anon public key** 복사
-   → Pipeline Lab 상단 "연결 설정"의 Supabase URL / anon key에 입력
+사용자가 제공한 Management API PAT으로 에이전트가 대신 실행 완료(이례적 — 보통은 계정 소유자만
+가능한 단계인데, 이번엔 PAT이 직접 제공돼서 진행함).
 
-## 3. 인증(매직 링크) 켜기
+- 프로젝트: `code-reviewer-pipeline-lab` (org `popixoxipop`, region `ap-northeast-2` Seoul, plan free)
+- **Project URL**: `https://oziaeqcvrkrqkhwrybfj.supabase.co`
+- **anon key**: Supabase 대시보드 → Settings → API Keys에서 확인(이 문서에는 secret-scanner
+  정책상 JWT를 직접 적지 않음 — 세션 채팅 로그에도 한 번 남아있음). Pipeline Lab 상단
+  "연결 설정"의 Supabase URL / anon key에 그대로 입력하면 됨(RLS로 보호되므로 클라이언트에
+  공개돼도 되는 키).
+- `supabase_schema.sql` 실행 완료 — `members`/`runs`/`stage_events`/`artifacts`/`presets` 5개
+  테이블 전부 생성 확인, RLS 5개 테이블 전부 활성화 확인(SQL로 직접 조회해 검증, 추측 아님).
+- DB 비밀번호는 무작위 생성해 세션 채팅에서 1회 표시함 — 웹 도구 자체는 이 비밀번호를 쓰지
+  않음(anon key만 씀), 잃어버리면 대시보드 Settings → Database에서 재설정 가능.
 
-1. Supabase 대시보드 → Authentication → Providers → Email이 기본으로 켜져 있는지 확인
-2. Authentication → URL Configuration → **Site URL**을 GitHub Pages 주소로 설정
-   (예: `https://popixoxipop-collab.github.io/Code_reviewer_with_feedback/lab/`)
-   — 매직 링크 이메일의 리디렉션이 이 주소로 온다.
-3. 팀원 허용 범위를 정한다(PLAN.md 열린 질문 1):
-   - 아무나 가입 가능하게 둘 거면 이 단계는 생략
-   - 특정 이메일만 받고 싶으면 Authentication → Auth Hooks 또는 Authentication → Policies에서
-     이메일 도메인/allowlist 체크를 추가(Supabase 대시보드에서 UI로 가능한 범위 밖이면
-     `handle_new_member()` 함수에 도메인 체크를 추가하는 식으로 SQL을 수정)
+## 3. 인증(매직 링크) 켜기 — ✅ 완료 (2026-07-14)
+
+- `external_email_enabled: true` 확인(기본값, 별도 조치 불필요)
+- **Site URL**을 `https://popixoxipop-collab.github.io/Code_reviewer_with_feedback/lab/`로 설정
+  완료(Management API로), `uri_allow_list`에 로컬 개발용(`http://localhost:8712/lab/**`)도
+  같이 추가
+- 팀원 허용 범위(PLAN.md 열린 질문 1)는 **아직 미결정** — 기본값은 "아무나 가입 가능". 특정
+  이메일만 받고 싶으면 `handle_new_member()` 함수에 도메인 체크를 추가하는 식으로 SQL 수정
+  필요(사용자 결정 필요, 아직 안 함)
 
 ## 4. GitHub Pages에 배포
 
