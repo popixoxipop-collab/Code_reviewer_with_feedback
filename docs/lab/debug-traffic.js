@@ -20,11 +20,34 @@ const DebugTraffic = (() => {
   const RATE_LIMIT_THRESHOLD = 40; // requests/60s -- nvidia-keypool-guard.py's documented free-tier figure
   const WINDOW_MS = 60 * 1000;
   const HISTORY_MS = 5 * 60 * 1000; // how far back the chart looks
-  const SAMPLE_INTERVAL_MS = 2000; // how often the rolling count re-samples
+  const SAMPLE_INTERVAL_MS = 2000; // how often the rolling count re-samples (local re-render only, no network)
   const REFRESH_MS = 2000;
+  // D167 (2026-07-15): the ORIGINAL bug. tick() called fetchServerTimestamps() -- which
+  // hits worker/nvidia-proxy.js's `?traffic=1`, i.e. a Workers KV .list() call -- on every
+  // REFRESH_MS (2s) tick, unthrottled. Workers KV's free-tier list() quota is 1000/day
+  // (get/put are 100,000/day -- a completely different, much higher ceiling), so a single
+  // open tab exhausts the ENTIRE ACCOUNT's daily list() budget in about 1000*2s ≈ 33
+  // minutes, after which every list() call anywhere on the account 429s until the daily
+  // UTC reset. This is exactly what happened (Cloudflare's "Daily Workers KV list limit
+  // exceeded" email). The job-submit/poll path (KV get/put + Queues) is on the completely
+  // separate, unaffected 100k/day quota -- confirmed live during the incident (POST still
+  // returned a normal 202, GET ?job= still returned a normal 404 for an unknown id) -- so
+  // this bug only ever degraded the debug graph's server-aggregated mode (which already
+  // falls back to tab-only data by design), never the actual pipelines.
+  // SERVER_FETCH_INTERVAL_MS throttles actual network/KV calls to once per this many ms,
+  // independent of the local render cadence above. Sized from the constraint itself, not
+  // guessed: even a tab left open UNATTENDED for a full 24h at this interval makes
+  // 86400/60 = 1440 calls -- above 1000 in that specific edge case, but the realistic use
+  // of this debug aid is a single active debugging session (minutes, not all day), where
+  // this is a wide margin (a 1-hour session makes 60 calls). Attempts are throttled
+  // whether they succeed OR fail, so a persistent quota-exceeded state (like today's)
+  // can't itself cause a hammering retry loop.
+  const SERVER_FETCH_INTERVAL_MS = 60_000;
 
   let svgEl, statEl, sourceEl, tooltipEl, containerEl;
   let usingServerData = false;
+  let lastServerAttemptAt = 0;
+  let lastServerTimestamps = null;
 
   async function fetchServerTimestamps() {
     const proxyUrl = LabConfig.get("proxy-url");
@@ -38,6 +61,16 @@ const DebugTraffic = (() => {
     } catch (e) {
       return null; // proxy unreachable/misconfigured -- caller falls back to tab-only data
     }
+  }
+
+  // D167: the actual network/KV call, throttled to SERVER_FETCH_INTERVAL_MS regardless of
+  // outcome -- reuses the last result (good or bad) in between instead of calling again.
+  async function maybeFetchServerTimestamps() {
+    const now = Date.now();
+    if (now - lastServerAttemptAt < SERVER_FETCH_INTERVAL_MS) return lastServerTimestamps;
+    lastServerAttemptAt = now;
+    lastServerTimestamps = await fetchServerTimestamps();
+    return lastServerTimestamps;
   }
 
   function rollingCountsOverTime(log) {
@@ -61,8 +94,9 @@ const DebugTraffic = (() => {
       statEl.classList.toggle("over", current >= RATE_LIMIT_THRESHOLD);
     }
     if (sourceEl) {
+      const lastCheck = lastServerAttemptAt ? new Date(lastServerAttemptAt).toLocaleTimeString() : "-";
       sourceEl.textContent = usingServerData
-        ? "서버 기준(이 프록시를 거친 모든 요청 + 재시도 포함)"
+        ? `서버 기준(이 프록시를 거친 모든 요청 + 재시도 포함, 최근 확인 ${lastCheck}, ${SERVER_FETCH_INTERVAL_MS / 1000}초마다 갱신)`
         : "이 탭 기준만(서버 응답 없음 — 재시도·다른 팀원 트래픽 안 잡힘)";
     }
     if (!svgEl) return;
@@ -95,7 +129,7 @@ const DebugTraffic = (() => {
   }
 
   async function tick() {
-    const serverTimestamps = await fetchServerTimestamps();
+    const serverTimestamps = await maybeFetchServerTimestamps();
     usingServerData = serverTimestamps !== null;
     render(usingServerData ? serverTimestamps : LabLLM.getRequestLog());
   }
