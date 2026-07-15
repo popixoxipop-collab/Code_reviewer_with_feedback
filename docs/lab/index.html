@@ -28,7 +28,7 @@
   <section class="config-panel">
     <h2>연결 설정</h2>
     <p class="intro">이 탭 안에서만 유지된다(선택 시 sessionStorage) — 서버로 전송되지 않고, DB에도 저장되지 않는다.
-    결과 DB는 팀 공용으로 이미 연결돼 있음 — 아래 이메일로 로그인만 하면 본인 실행이 저장된다.</p>
+    결과 DB는 팀 공용으로 이미 연결돼 있음 — 아래 Google 로그인만 하면 본인 실행이 저장된다.</p>
     <div class="config-grid">
       <label class="config-field">
         <span>NVIDIA API 키 <span class="req">(P01·P03 실행에 필요)</span></span>
@@ -49,8 +49,6 @@
     </div>
     <div id="auth-status" class="auth-status"></div>
     <div class="input-row" style="margin-top:10px;">
-      <input type="text" id="login-email" placeholder="team@example.com (DB 저장하려면 로그인)">
-      <button class="secondary" id="login-btn">매직 링크 보내기</button>
       <button class="secondary" id="google-login-btn">Google로 로그인</button>
       <span id="login-status" style="font-family:var(--mono); font-size:0.72rem; color:var(--ink-faint);"></span>
     </div>

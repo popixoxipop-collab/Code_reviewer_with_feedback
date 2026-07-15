@@ -91,23 +91,15 @@ const LabDB = (() => {
     return run;
   }
 
-  async function signInWithEmail(email) {
-    const c = await ensureClient();
-    const { error } = await c.auth.signInWithOtp({ email });
-    if (error) throw error;
-  }
-
-  // D147 addition: Google OAuth as an alternative to the magic-link email flow (D-B/D147
-  // above) -- kept alongside it, not replacing it, so a Google-side config hiccup doesn't
-  // leave the team with no way to log in at all. Full-page redirect (signInWithOAuth's
-  // default), same as the magic link's own redirect-back-to-Site-URL behavior -- no popup
-  // handling needed. Uses PKCE the same way (flowType already set in ensureClient above),
-  // so the OAuth code exchange is handled automatically on the way back too.
+  // D149 (2026-07-15): magic-link email sign-in (D-B/D147/D148's signInWithEmail) removed
+  // -- Google OAuth verified working end-to-end (D148) and is now the only login path.
+  // Full-page redirect (signInWithOAuth's default), same PKCE flowType already set in
+  // ensureClient() above, so the callback's code exchange is handled automatically.
   async function signInWithGoogle() {
     const c = await ensureClient();
     const { error } = await c.auth.signInWithOAuth({ provider: "google" });
     if (error) throw error;
   }
 
-  return { isConfigured, ensureClient, currentMember, saveRun, signInWithEmail, signInWithGoogle };
+  return { isConfigured, ensureClient, currentMember, saveRun, signInWithGoogle };
 })();

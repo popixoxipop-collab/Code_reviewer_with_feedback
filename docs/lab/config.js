@@ -87,22 +87,7 @@ const LabConfig = (() => {
   }
 
   function wireLogin() {
-    const btn = document.getElementById("login-btn");
-    const emailEl = document.getElementById("login-email");
     const statusEl = document.getElementById("login-status");
-    if (!btn) return;
-    btn.addEventListener("click", async () => {
-      const email = (emailEl.value || "").trim();
-      if (!email) { statusEl.textContent = "이메일을 입력하세요"; return; }
-      statusEl.textContent = "전송 중...";
-      try {
-        await LabDB.signInWithEmail(email);
-        statusEl.textContent = `${email}로 매직 링크 전송됨 — 메일함에서 링크를 클릭하면 이 탭이 로그인됨`;
-      } catch (err) {
-        statusEl.textContent = `실패: ${err.message}`;
-      }
-    });
-
     const googleBtn = document.getElementById("google-login-btn");
     if (!googleBtn) return;
     googleBtn.addEventListener("click", async () => {
