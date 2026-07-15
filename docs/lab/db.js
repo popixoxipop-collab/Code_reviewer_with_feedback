@@ -122,6 +122,12 @@ const LabDB = (() => {
     try {
       return await currentMember();
     } catch (e) {
+      // D152: currentMember() throws on the ordinary "nobody's logged in" case too, so
+      // this can't distinguish that from a real failure (bad code exchange, network
+      // error, misconfigured client) just by swallowing everything silently -- log it so
+      // an actual bug is visible in devtools instead of looking identical to "not logged
+      // in yet" on screen.
+      console.error("[LabDB] currentMemberOrNull:", e);
       return null;
     }
   }
