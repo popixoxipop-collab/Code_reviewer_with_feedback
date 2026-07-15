@@ -1138,6 +1138,17 @@ python3 pipeline/compare_methodologies.py
   - EXIT: 다시 보여야 하면 `renderParamGrid()`의 `if (p.locked) continue;` 한 줄만 되돌리면 됨.
   - 커밋: `d0287b3`, push 완료.
 
+- **D158** ([`docs/lab/llm.js`](./docs/lab/llm.js), [`docs/lab/p01-runner.js`](./docs/lab/p01-runner.js)) — 실제 251페이지/26청크 병렬 실행(D156 배포 후 첫 실전 실행)에서 청크 2개(p91-100, p191-200)가 JSON 파싱 실패, repair 프롬프트로도 복구 안 됨. 원본 파이썬 파이프라인(`scripts/java_curriculum_nvidia_pipeline.py`)의 `--max-tokens-chunk` 기본값도 확인해보니 마찬가지로 1800 — 즉 이 값 자체는 웹 도구가 임의로 정한 게 아니라 기존 파이프라인 값을 그대로 물려받은 것.
+  - **원인 확정**: `LabLLM.chatJSON()`이 응답이 비어있을 때만 `finish_reason`을 확인하고 있어서, "내용은 있는데 잘렸다"는 상황을 구분할 방법이 없었음(D-비어있음 케이스와 다른 실패 모드). `finishReason`을 항상 반환하도록 수정한 뒤 재현 테스트로 확인 — 에러 메시지 패턴(`Expected ',' or ']' after array element`)은 정확히 배열 중간에서 잘린 응답의 시그니처였음.
+  - **수정(정적 상한 추측 대신 신호 기반 재시도)**: `max_tokens`를 그냥 임의의 더 큰 숫자로 올리는 대신(데이터 근거 없이 새 숫자를 고르는 셈이라 §13 원칙 위반), `callPromptStage()`가 `finishReason === "length"`(진짜 토큰 부족으로 잘림)일 때만 **같은 요청을 max_tokens 2배로 재시도**하도록 분기 추가 — 그 외 사유(포맷 실수 등, finish_reason="stop")는 기존 repair-프롬프트 경로 그대로 유지(repair는 "잘린 응답"엔 애초에 안 맞는 도구였음 — 같은 토큰 예산으로 같은 콘텐츠를 다시 포맷팅하라고 시키는 것뿐이라 근본 원인을 못 고침).
+  - **검증**: 헤드리스 브라우저로 `LabLLM.chatJSON`을 몬키패치해 청크 하나만 1차 호출에서 `finishReason:"length"`+깨진 JSON을 반환하도록 재현 → 정확히 2배(1800→3600) max_tokens로 재시도되어 성공, 전체 실행 정상 완료 확인.
+  - **DB 확인(사용자 요청)**: Management API로 `runs`/`artifacts` 테이블 직접 조회(anon 키와 달리 RLS 안 걸림) — 이 실행(z-ai/glm-5.2, 01:48:52~01:58:54)이 실제로 저장돼 있고, `unit_map`은 8개 유닛으로 안 잘린 채 정상 저장, `questions`는 질문 생성 단계가 429로 실패해서 빈 `{questions:[]}`로 저장됨을 확인 — 로그가 보고한 그대로 정직하게 반영됨.
+  - **별도 관찰(미수정)**: 같은 실행의 질문 생성 단계가 `NVIDIA HTTP 429(attempt 3/3)`로 실패 — D156의 26청크 동시 병렬화가 단일 API 키에 순간적으로 부하를 몰아준 결과로 보임(사전에 사용자에게 고지했던 트레이드오프). 재시도 간격(`RETRY_DELAY_SECONDS=5`)이 분당 레이트리밋을 기다리기엔 짧을 수 있음 — 아직 수정 안 함, 별도 확인 필요.
+  - WHY: 정적 상한을 추측하는 대신 모델이 스스로 알려주는 신호(finish_reason)에 반응하는 쪽이 데이터 근거 없이 숫자를 고르는 것보다 안전함.
+  - COST: 잘림이 실제로 발생하면 그 청크만 최대 2회 호출(왕복 지연 추가), 그래도 여전히 실패하면 명확한 사유(잘림+재시도했지만도 실패)로 보고됨.
+  - EXIT: 2배로도 계속 부족하면 배율을 더 올리거나 청크 자체를 더 작게(`chunk_size` 축소) 나누는 쪽을 고려.
+  - 커밋: `81e35cc`, push 완료.
+
 
 ## 다음 단계 (미해결)
 
