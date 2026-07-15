@@ -237,6 +237,8 @@ const P01Runner = (() => {
     return unitMap;
   }
 
+  // Scoped to a single-unit slice of unitMap (e.g. {[unitId]: unit}) by callers that
+  // want per-unit question generation -- see D173 below.
   function buildGraphNodes(unitMap) {
     const nodes = [];
     for (const [unitId, unit] of Object.entries(unitMap)) {
@@ -248,6 +250,72 @@ const P01Runner = (() => {
       }
     }
     return nodes;
+  }
+
+  // D173 (2026-07-15): the real pipeline's build_graph() (scripts/java_curriculum_nvidia_
+  // pipeline.py:451) returns BOTH nodes and links (contains_unit/teaches/shows_code/warns/
+  // sourced_by/audits/found_issue/issue_page relations) -- this web tool's port
+  // (buildGraphNodes above) only ever built the flat node list, dropping every
+  // relationship, and the result wasn't even included in the saved/displayed output at
+  // all. User asked directly whether the graph relationships were missing -- confirmed by
+  // reading the real function: yes, both the edges themselves and the graph's presence in
+  // the result were gaps. This ports build_graph()'s full logic (same id scheme, same
+  // relation names) so the result JSON actually matches what the real pipeline produces,
+  // not just a node list.
+  function buildGraph(unitMap, audits) {
+    const nodes = [];
+    const links = [];
+    const seen = new Set();
+    function addNode(id, label, type, attrs) {
+      if (seen.has(id)) return;
+      seen.add(id);
+      nodes.push({ id, label, type, ...(attrs || {}) });
+    }
+    function addLink(source, target, relation, attrs) {
+      links.push({ source, target, relation, ...(attrs || {}) });
+    }
+    addNode("doc:curriculum", "curriculum", "document");
+    for (const [unitId, unit] of Object.entries(unitMap)) {
+      const uid = `unit:${unitId}`;
+      addNode(uid, `Unit ${unitId} ${unit.unit_title || ""}`.trim(), "unit", { source_pages: unit.source_pages || [] });
+      addLink("doc:curriculum", uid, "contains_unit");
+      for (const [group, relation] of [["concepts", "teaches"], ["code_examples", "shows_code"], ["cautions", "warns"]]) {
+        (unit[group] || []).forEach((item, idx) => {
+          const cid = `${group}:${unitId}:${idx + 1}`;
+          const pages = item.source_pages || [];
+          addNode(cid, item.name || cid, group.endsWith("s") ? group.slice(0, -1) : group, {
+            summary: item.summary || "", evidence: item.evidence || "", source_pages: pages, chunk_range: item.chunk_range || "",
+          });
+          addLink(uid, cid, relation);
+          for (const page of pages) {
+            const pid = `page:${page}`;
+            addNode(pid, `p${page}`, "page", { page });
+            addLink(cid, pid, "sourced_by");
+          }
+        });
+      }
+    }
+    (audits || []).forEach((audit, idx) => {
+      const aid = `audit:${audit.iteration || idx + 1}`;
+      addNode(aid, `refine iteration ${audit.iteration}`, "refine_audit", { status: audit.status });
+      addLink(aid, "doc:curriculum", "audits");
+      (audit.issues || []).forEach((issue, iidx) => {
+        const iid = `${aid}:issue:${iidx + 1}`;
+        const pages = issue.source_pages || [];
+        addNode(iid, issue.issue || iid, "refine_issue", { severity: issue.severity, source_pages: pages });
+        addLink(aid, iid, "found_issue");
+        for (const page of pages) {
+          const pid = `page:${page}`;
+          addNode(pid, `p${page}`, "page", { page });
+          addLink(iid, pid, "issue_page");
+        }
+      });
+    });
+    return {
+      directed: true, multigraph: false,
+      graph: { name: "curriculum_page_grounded_graph", schema: "graphify-compatible node-link" },
+      nodes, links,
+    };
   }
 
   // D158 (2026-07-15): a real 251-page/26-chunk run hit 2 chunks that failed JSON
@@ -459,14 +527,70 @@ const P01Runner = (() => {
         LabApp.log(pipelineId, `⚠ refine 최대 반복(${maxRefineIters}) 도달 -- checklist 통과 못 함, 마지막 상태로 질문 생성 진행`);
       }
 
-      const graphNodes = buildGraphNodes(unitMap);
-      LabApp.log(pipelineId, "질문 생성 중...");
-      let questions = { questions: [] };
+      // D173: graph_generated is a plain code-level fact (did buildGraph() run
+      // successfully), not something an LLM judges -- kept separate from p01-3's own
+      // audit checklist (which is a subjective read of unit_map content) rather than
+      // folded into it, since refine's call doesn't even receive graph data to judge.
+      let graph = null;
+      let graphGenerated = false;
       try {
-        questions = await callPromptStage("p01-4", { course_label: courseLabel, graph_nodes_json: JSON.stringify(graphNodes).slice(0, 24000) });
+        graph = buildGraph(unitMap, audits);
+        graphGenerated = true;
       } catch (err) {
-        LabApp.log(pipelineId, `질문 생성 실패: ${err.message}`);
+        LabApp.log(pipelineId, `그래프 생성 실패: ${err.message}`);
       }
+
+      // D173: real unit_map data has genuinely distinct units (confirmed via direct DB
+      // query on real runs -- e.g. 6 to 13+ unit_ids per document, some with sub-splits
+      // like "03-1"/"04-2"), but the old single graph_nodes_json call handed the model
+      // the WHOLE multi-unit graph at once and let it decide how to spread questions --
+      // in practice it clustered on whichever unit it looked at first (usually "01").
+      // Looping per unit and scoping each call's graph_nodes_json to just that unit's own
+      // nodes forces real coverage: total question count now scales with how many units
+      // actually exist instead of depending on the model's own (apparently uneven)
+      // judgment. Same wave/round-retry shape as D168/D169's chunk loop (maxAttempts:1,
+      // only retryable failures carry into the next round, CHUNK_CONCURRENCY/
+      // MAX_RETRY_ROUNDS/ROUND_RETRY_DELAY_MS reused rather than new constants) --
+      // written out separately rather than extracted into a shared helper, since the
+      // chunk loop's result-shape handling (chunk_range/error fields feeding
+      // makeUnitMap) is different enough that sharing risked destabilizing already-
+      // verified D168/D169 behavior for a same-day change.
+      const unitEntries = Object.entries(unitMap);
+      LabApp.log(pipelineId, `유닛 ${unitEntries.length}개별 질문 생성 시작: ${unitEntries.map(([id]) => id).join(", ")}`);
+      const unitQState = unitEntries.map(([unitId, unit]) => ({ unitId, unit, result: null, err: null, retryable: false }));
+      for (let round = 1; round <= MAX_RETRY_ROUNDS; round++) {
+        const targets = unitQState.filter((s) => !s.result && (round === 1 || s.retryable));
+        if (!targets.length) break;
+        if (round > 1) LabApp.log(pipelineId, `질문 생성 재시도 라운드 ${round}/${MAX_RETRY_ROUNDS} (${targets.length}개 유닛)`);
+        for (let i = 0; i < targets.length; i += CHUNK_CONCURRENCY) {
+          const wave = targets.slice(i, i + CHUNK_CONCURRENCY);
+          await Promise.all(wave.map(async (state) => {
+            const unitNodes = buildGraphNodes({ [state.unitId]: state.unit });
+            try {
+              const result = await callPromptStage("p01-4", {
+                course_label: courseLabel, graph_nodes_json: JSON.stringify(unitNodes).slice(0, 24000),
+              }, { maxAttempts: 1 });
+              state.result = result;
+              LabApp.log(pipelineId, `유닛 ${state.unitId} 질문 ${(result.questions || []).length}개 생성 완료`);
+            } catch (err) {
+              state.err = err;
+              state.retryable = !!err.retryable;
+              LabApp.log(pipelineId, `유닛 ${state.unitId} 질문 생성 실패${state.retryable ? " (다음 라운드에 재시도)" : ""}: ${err.message}`);
+            }
+          }));
+        }
+        const stillRetryable = unitQState.filter((s) => !s.result && s.retryable);
+        if (!stillRetryable.length) break;
+        if (round < MAX_RETRY_ROUNDS) {
+          LabApp.log(pipelineId, `${stillRetryable.length}개 유닛 질문 생성 재시도 대기 중 (${ROUND_RETRY_DELAY_MS / 1000}초)...`);
+          await new Promise((resolve) => setTimeout(resolve, ROUND_RETRY_DELAY_MS));
+        }
+      }
+      const failedUnits = unitQState.filter((s) => !s.result);
+      if (failedUnits.length) {
+        LabApp.log(pipelineId, `⚠ 유닛 ${failedUnits.length}개 질문 생성 실패 (${failedUnits.map((s) => s.unitId).join(", ")})`);
+      }
+      const questions = { questions: unitQState.flatMap((s) => (s.result && s.result.questions) || []) };
 
       const finishedAt = new Date();
       LabApp.stopTimer(pipelineId);
@@ -474,6 +598,7 @@ const P01Runner = (() => {
       const result = {
         unit_map: unitMap, refine_audits: audits, questions, chunk_count: chunks.length, extractor: "pdfjs",
         failed_chunks: failedChunks.map((c) => ({ chunk_range: c.chunk_range, error: c.error })),
+        graph, graph_generated: graphGenerated,
       };
       renderResults(result);
       await maybeSaveRun(result, startedAt, finishedAt);
@@ -486,8 +611,11 @@ const P01Runner = (() => {
   }
 
   function renderResults(result) {
+    const graphSummary = result.graph_generated
+      ? `그래프 <b>${result.graph.nodes.length}</b>노드/<b>${result.graph.links.length}</b>관계`
+      : `그래프 <b style="color:var(--status-blocked);">생성 실패</b>`;
     let html = `<p>유닛 <b>${Object.keys(result.unit_map).length}</b>개 · 질문 <b>${(result.questions.questions || []).length}</b>개 · 청크 <b>${result.chunk_count}</b>개
-      · <code>extractor: pdfjs</code></p>`;
+      · ${graphSummary} · <code>extractor: pdfjs</code></p>`;
     // D168: failed chunks used to only ever show up in the scrolling progress log --
     // easy to miss once the run finishes and the log isn't the thing on screen anymore.
     // Surfaced here too so an incomplete unit_map is never silently mistaken for a
@@ -515,10 +643,16 @@ const P01Runner = (() => {
       await LabDB.saveRun({
         pipeline: "p01",
         model: selectedModel,
-        input_meta: { extractor: "pdfjs", chunk_count: result.chunk_count, failed_chunk_count: result.failed_chunks.length },
+        input_meta: {
+          extractor: "pdfjs", chunk_count: result.chunk_count, failed_chunk_count: result.failed_chunks.length,
+          unit_count: Object.keys(result.unit_map).length, graph_generated: result.graph_generated,
+        },
         overrides: {},
         rubric_overridden: false,
-        artifacts: [{ kind: "unit_map", content: result.unit_map }, { kind: "questions", content: result.questions }],
+        artifacts: [
+          { kind: "unit_map", content: result.unit_map }, { kind: "questions", content: result.questions },
+          { kind: "graph", content: result.graph_generated ? result.graph : { error: "graph_generated=false" } },
+        ],
         started_at: startedAt.toISOString(), finished_at: finishedAt.toISOString(),
       });
       LabApp.log("p01", `결과가 팀 DB에 저장됨 (소요시간 ${LabApp.formatElapsed(finishedAt - startedAt)})`);
