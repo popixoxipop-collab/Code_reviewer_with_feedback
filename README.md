@@ -1407,6 +1407,14 @@ python3 pipeline/compare_methodologies.py
   - EXIT: 나중에 이 도구를 실제 학생/지원자 평가용으로도 쓰게 되면, 세션 중 verdict 숨김은 그대로 유지되므로 "채점 후 즉시 노출"만 다시 게이트로 되돌리면 됨(로직 자체는 간단히 복원 가능하도록 변경 범위를 좁게 유지함).
   - 커밋: `d9dca86`, push 완료(워커 변경 없음, GitHub Pages만).
 
+- **D185** ([`docs/lab/trainee/`](./docs/lab/trainee/), [`docs/lab/p02-engine.js`](./docs/lab/p02-engine.js), [`docs/lab/p03-engine.js`](./docs/lab/p03-engine.js), [`docs/lab/lab-core.js`](./docs/lab/lab-core.js), [`docs/lab/traffic-rate.js`](./docs/lab/traffic-rate.js), [`docs/lab/session-state.js`](./docs/lab/session-state.js), [`docs/lab/iz-tokens.css`](./docs/lab/iz-tokens.css)) — 사용자가 "Team-IZ/Frontend(`team-iz.github.io/Frontend/`)와 같은 UI/UX로 P02→P03→결과 화면을 다시 입혀달라"고 요청. 처음엔 별도 저장소(`Team-IZ/AI`)에 새 브랜치로 이식했으나, 그 저장소에 admin 권한이 없어 GitHub Pages를 직접 켤 수 없었음(`push`는 되지만 `admin: false`) — 사용자가 "복잡하다, 원래 쓰던 이 주소(`docs/lab/`)에 붙여넣어줘, 기능 다 유지되게"로 지시 변경.
+  - **접근**: 기존 `index.html`(P01/P02/P03 탭 + 스테이지카드 프롬프트 편집기 + debug-traffic 차트)은 **한 글자도 안 건드림** — 완전히 별개인 `trainee/submission.html`/`session.html`/`result.html` 3페이지를 같은 `docs/lab/` 아래 추가만 함. `config.js`/`db.js`/`llm.js`/`pyodide-shared.js`/`prompt_manifest.json`/`webtool_driver.py`는 새 페이지도 기존 파일을 그대로 재사용(diff로 100% 동일 확인 후 중복 생성 안 함). `p02-runner.js`/`p03-runner.js`/`app.js`/`debug-traffic.js`는 그대로 두고, 이 4개 파일에서 DOM 렌더링만 뺀 "엔진" 버전(`p02-engine.js`/`p03-engine.js`/`lab-core.js`/`traffic-rate.js`)을 새로 추가해 `run()`이 훅 객체를 받는 형태로 재구성(원본 Python `turn_engine.py`의 `answer_fn` 시임 복원). `Team-IZ/AI`용으로 만들었던 파일들을 그대로 가져오되, `../shared/` 상대경로만 `../`로 일괄 치환(공유 파일들이 이제 `docs/lab/` 바로 아래 있으므로).
+  - **검증**: (1) 로컬 정적 서버로 새 `trainee/*.html` 3개 + 기존 `index.html` 전부 200 응답 확인. (2) 새 페이지에서 실제 ZIP 스캔 실행 — finding 정상 산출, 진행 체크리스트 아이콘 정상. (3) session.html/result.html 직접 접근(세션 데이터 없이) 시 폴백 화면 정상 표시. (4) 기존 `index.html`에서 P01/P02/P03 탭 3개 전부 클릭 — 콘솔 에러 없음(로그인 필요/로컬 CORS 경고만, 기존에도 있던 것). 인터뷰 세션 자체의 P03 로직(4턴 진행/분류/채점)은 이전에 별도로 `Team-IZ/AI` 브랜치에서 실제 NVIDIA 호출로 이미 검증했고 이번엔 파일 위치만 바뀐 것이라, 같은 5분짜리 실제 LLM 인터뷰를 다시 돌리지 않고 위 4가지 경로 확인으로 대체.
+  - WHY: 사용자가 별도 저장소 배포의 admin 권한 장벽을 보고 "복잡하다"며 이미 관리 중인 주소로 방향 전환을 직접 지시.
+  - COST: `docs/lab/`에 새 파일 9개(엔진 4개+토큰 CSS+trainee 3페이지+session-state.js) 추가 — 기존 파일과 이름 충돌 없음(`p02-engine.js` vs `p02-runner.js` 등 의도적으로 다른 이름).
+  - EXIT: `index.html`과 `trainee/*.html`은 서로 링크 없이 완전히 독립된 두 입구 — 나중에 서로 연결하는 네비게이션을 추가하고 싶으면 별도 요청 필요(이번 범위엔 없음).
+  - `Team-IZ/AI` 브랜치(`feature/verification-ui`)는 그대로 남아있음(삭제 안 함), 이번 결정으로 사용은 안 하지만 재참고 가능.
+
 
 ## 다음 단계 (미해결)
 
