@@ -1159,6 +1159,17 @@ python3 pipeline/compare_methodologies.py
   - EXIT: 서버 쪽 재시도까지 보려면 `worker/nvidia-proxy.js`가 요청 시각을 KV 등에 기록하고 클라이언트가 그걸 폴링하는 구조가 필요 — 아직 그정도 필요성이 실측되지 않아 구현 안 함.
   - 커밋: `a313b11`, push 완료. Worker 재배포 완료(Version ID `e9a4c44e-3fdc-4893-82d9-0d6cf3dc94ce`).
 
+- **D160** ([`worker/nvidia-proxy.js`](./worker/nvidia-proxy.js), [`docs/lab/debug-traffic.js`](./docs/lab/debug-traffic.js)) — 사용자 지시: "필요한데?"(D159에서 명시한 "서버 쪽 재시도는 안 잡힌다"는 한계를 실제로 메워달라는 요청). 이 탭만 보던 클라이언트 전용 카운트를, **모든 클라이언트(+서버 재시도)를 보는 서버 집계**로 확장.
+  - **구현**: `worker/nvidia-proxy.js`에 `recordTrafficSample(env)` 추가 — `queue()`에서 실제로 NVIDIA에 `fetch()`하는 시점마다(최초 시도+재시도 전부) 호출, KV에 **고유 키 하나씩**(`traffic:{timestamp}:{uuid}`, TTL 5분) 기록. `GET /?traffic=1`을 새 엔드포인트로 추가해 `KV.list({prefix:"traffic:"})`로 최근 샘플들을 반환.
+  - **동시성 설계**: 공유 리스트 키 하나에 read-modify-write로 append하는 대신 고유 키마다 무조건 put — D-J(at-least-once 배달)에서 이미 겪은 "여러 컨슈머가 동시에 같은 키를 읽고-쓰다 서로 덮어쓰는" 레이스를 애초에 원천 차단(읽기 자체가 없으니 경쟁도 없음). 26개 청크가 동시에 재시도해도 전부 유실 없이 개별 기록됨.
+  - **클라이언트**: `docs/lab/debug-traffic.js`가 이 새 엔드포인트를 먼저 폴링, 실패(프록시 미설정·연결 안 됨)하면 기존 `LabLLM.getRequestLog()`(이 탭 전용)로 자동 폴백 — 화면에 지금 어느 모드인지("서버 기준" vs "이 탭 기준만") 항상 표시.
+  - **정직하게 유지한 한계**: 그래도 여전히 "이 NVIDIA 키에 대한 절대적으로 모든 트래픽"은 아님 — SETUP.md가 팀원 각자 자기 프록시 Worker를 따로 배포해도 된다고 안내하므로, **다른 프록시 인스턴스**를 거친 트래픽은 이 엔드포인트에 안 잡힘. 과장하지 않고 코드 주석·UI에 그대로 명시.
+  - **검증**: 로컬 `wrangler dev`(실제 KV 로컬 에뮬레이션)로 실제 NVIDIA 키를 써서 실제 job 1개 제출 → `?traffic=1`이 `[]`에서 실제 타임스탬프 1개로 바뀜을 확인, job 자체도 정상 완료(회귀 없음) 확인. 헤드리스 브라우저로 이 로컬 워커를 가리키게 하면 "서버 기준(...)" 라벨+정확한 카운트로 전환됨을 확인, 프록시를 일부러 접속 불가로 만들면 "이 탭 기준만" 폴백으로 정확히 전환됨도 확인.
+  - WHY: 클라이언트 전용 카운트로는 "40rpm을 실제로 넘었는지" 확정할 수 없었음(서버 재시도가 안 보여서) — 이번 요청은 그 격차를 실제로 메워달라는 것.
+  - COST: KV 쓰기 1회(요청당, 실패해도 무시하도록 설계돼 실제 job 처리엔 영향 없음), `list()` 호출 1회(읽기 쪽, 저비용).
+  - EXIT: 트래픽 양이 KV `list()`가 감당 못 할 정도로 커지면 Analytics Engine이나 Durable Object로 전환 — 지금 규모(5분 윈도우, 수십~수백 건)에선 불필요.
+  - 커밋: `722c9bd`, push 완료. Worker 재배포 완료(Version ID `35c23f23-da78-4a8a-ae2f-eeb8a587fd84`), `?traffic=1` 라이브 확인.
+
 
 ## 다음 단계 (미해결)
 
