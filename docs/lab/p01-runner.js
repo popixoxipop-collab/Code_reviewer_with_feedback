@@ -211,31 +211,53 @@ const P01Runner = (() => {
   // retries the ORIGINAL prompt at 2x max_tokens; anything else (a genuine malformed-
   // JSON mistake, finishReason "stop") goes through the existing repair-prompt path,
   // unchanged.
+  // D165 (2026-07-15): a real run's p01-4 (question generation, 6-unit graph,
+  // stepfun-ai/step-3.5-flash) got finish_reason=length at 1800, retried once at 3600
+  // per D158 above -- and STILL got length-truncated, so the one-shot retry gave up and
+  // the whole stage silently fell back to an empty result. Rather than guess a new fixed
+  // ceiling for this one stage (the same evidence says a bigger document/unit count could
+  // make even that wrong again), keep doubling while the model keeps reporting
+  // finish_reason=length -- same signal-driven principle as D158, just applied until the
+  // signal actually stops instead of only once. Capped at MAX_LENGTH_DOUBLINGS to match
+  // worker/nvidia-proxy.js's own MAX_ATTEMPTS=3 convention (1 original + 2 doublings = 3
+  // total attempts), not doubled forever -- an unbounded ceiling would trade truncation
+  // failures for a different one (very large max_tokens means very long non-streaming
+  // generation, which the 524 investigation already found raises timeout risk).
+  const MAX_LENGTH_DOUBLINGS = 2;
   async function callPromptStage(stageId, values) {
     const system = LabApp.resolveTemplate("p01", stageId, "system");
     const template = LabApp.resolveTemplate("p01", stageId, "user_template");
     const userMsg = LabApp.fillTemplate(template, values);
-    const maxTokens = LabApp.resolveParam("p01", stageId, "max_tokens") || 1800;
+    const baseMaxTokens = LabApp.resolveParam("p01", stageId, "max_tokens") || 1800;
     const model = LabApp.resolveParam("p01", stageId, "model") || selectedModel;
     const messages = [{ role: "system", content: system }, { role: "user", content: userMsg }];
-    const choice = await LabLLM.chatJSON({ model, messages, maxTokens });
+
+    let maxTokens = baseMaxTokens;
+    let choice = await LabLLM.chatJSON({ model, messages, maxTokens });
     try {
       return LabLLM.extractJsonObject(choice.content);
     } catch (e) {
       if (choice.finishReason === "length") {
-        const retried = await LabLLM.chatJSON({ model, messages, maxTokens: maxTokens * 2 });
-        try {
-          return LabLLM.extractJsonObject(retried.content);
-        } catch (e2) {
-          throw new Error(`응답이 잘림(finish_reason=length) → max_tokens ${maxTokens * 2}로 재시도했으나 여전히 파싱 실패: ${e2.message}`);
+        for (let attempt = 1; attempt <= MAX_LENGTH_DOUBLINGS; attempt++) {
+          maxTokens *= 2;
+          choice = await LabLLM.chatJSON({ model, messages, maxTokens });
+          try {
+            return LabLLM.extractJsonObject(choice.content);
+          } catch (e2) {
+            if (choice.finishReason !== "length") {
+              throw new Error(`응답 잘림 재시도 중(max_tokens ${maxTokens}) 다른 사유로 파싱 실패: ${e2.message}`);
+            }
+            // still length-truncated -- loop again at a higher budget unless out of attempts
+          }
         }
+        throw new Error(`응답이 계속 잘림(finish_reason=length) → max_tokens ${maxTokens}까지 올려도 여전히 파싱 실패`);
       }
       // mirrors chat_json()'s repair-prompt fallback in the real pipeline -- for
       // finishReason other than "length" (a genuine malformed-JSON mistake, not a
       // token-budget problem)
       const repairStage = LabApp.getStage("p01", "p01-json-repair");
       const repairMsg = LabApp.fillTemplate(repairStage.user_template, { malformed_content: (choice.content || "").slice(0, 14000) });
-      const repaired = await LabLLM.chatJSON({ model, messages: [{ role: "system", content: repairStage.system }, { role: "user", content: repairMsg }], maxTokens });
+      const repaired = await LabLLM.chatJSON({ model, messages: [{ role: "system", content: repairStage.system }, { role: "user", content: repairMsg }], maxTokens: baseMaxTokens });
       return LabLLM.extractJsonObject(repaired.content);
     }
   }
