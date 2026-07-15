@@ -8,6 +8,17 @@ const P01Runner = (() => {
   let pdfPassword = "";
   let selectedModel = null; // initialized from manifest.shared.default_model on first render, then sticky across tab switches
 
+  // D163 (2026-07-15): a real run's refine stage hit 3 straight NVIDIA HTTP 524s right
+  // after the 26-way parallel chunk burst finished -- reproducing the identical refine
+  // request standalone (no preceding burst) succeeded cleanly in 94.4s, pointing at
+  // residual NVIDIA-side congestion from the burst rather than anything wrong with the
+  // refine request itself (see README's 524 investigation notes). User asked for a fixed
+  // cooldown between the burst finishing and refine starting to let that congestion clear.
+  // 60s reuses worker/nvidia-proxy.js's own RATE_LIMIT_RETRY_DELAY_SECONDS=60 (D159's
+  // already-established "wait out an NVIDIA load window" constant) rather than a fresh
+  // guess -- user's own choice of "1분" lines up with that existing precedent.
+  const POST_CHUNK_COOLDOWN_MS = 60_000;
+
   // Ranking + notes sourced from docs/pipelines.html's 11-model 4-axis table (D116). That
   // benchmark measures a DIFFERENT task (P03 question-gen x grading) -- P01-T1 (D119/D120)
   // separately found step-3.5-flash (rank #1 there) fails completely on P01's chunk-analysis
@@ -275,6 +286,11 @@ const P01Runner = (() => {
 
       const unitMap = makeUnitMap(chunkResults.filter((c) => !c.error));
       LabApp.log(pipelineId, `unit_map 생성: 유닛 ${Object.keys(unitMap).length}개`);
+
+      // D163: give NVIDIA-side congestion from the burst above a chance to clear before
+      // firing the next (sequential, single) request -- see the constant's own comment.
+      LabApp.log(pipelineId, `NVIDIA 서버 부하 완화 대기 중 (${POST_CHUNK_COOLDOWN_MS / 1000}초 쿨다운)...`);
+      await new Promise((resolve) => setTimeout(resolve, POST_CHUNK_COOLDOWN_MS));
 
       const refineIters = LabApp.resolveParam("p01", "p01-3", "refine_iters") || 2;
       const audits = [];
