@@ -19,6 +19,19 @@ const P01Runner = (() => {
   // guess -- user's own choice of "1분" lines up with that existing precedent.
   const POST_CHUNK_COOLDOWN_MS = 60_000;
 
+  // D168 (2026-07-15): a real 251-page/26-chunk run hit 5x 429 and 2x 524 across the
+  // chunk-analysis burst -- D156's Promise.all() fires all 26 requests (against a single
+  // NVIDIA key) in the same instant, and with the worker's own MAX_ATTEMPTS=3 retries on
+  // top, a bad run can produce up to 26*3=78 actual attempts clustered close together.
+  // nvidia-keypool-guard.py's documented ~40rpm free-tier ceiling / MAX_ATTEMPTS=3 ≈ 13.3 --
+  // capping initial concurrency well under that (8) keeps even the pathological
+  // every-chunk-retries-3-times case (8*3=24) under the ceiling, while still batching
+  // instead of running fully sequential. Same pattern p02-runner.js's fetchGithubRepo()
+  // already uses for GitHub's own rate limit (CONCURRENCY=6 there) -- reused here, not a
+  // new one-off idea, just derived from THIS API's own documented ceiling instead of
+  // copying that unrelated constant.
+  const CHUNK_CONCURRENCY = 8;
+
   // Ranking + notes sourced from docs/pipelines.html's 11-model 4-axis table (D116). That
   // benchmark measures a DIFFERENT task (P03 question-gen x grading) -- P01-T1 (D119/D120)
   // separately found step-3.5-flash (rank #1 there) fails completely on P01's chunk-analysis
@@ -288,24 +301,43 @@ const P01Runner = (() => {
       // on the backend assumes these arrive sequentially. Each mapped function catches
       // its own error and always resolves (never rejects) so one failing chunk can't
       // abort the rest via Promise.all -- same fault-tolerance as the old sequential
-      // loop, just concurrent. Promise.all preserves chunks' input order in the result
-      // array regardless of which one actually finishes first.
-      LabApp.log(pipelineId, `청크 ${chunks.length}개 동시 분석 시작: p${chunks.map((c) => c.range).join(", p")}`);
-      const chunkResults = await Promise.all(chunks.map(async (chunk) => {
-        try {
-          const result = await callPromptStage("p01-2", {
-            course_label: courseLabel, chunk_range: chunk.range, chunk_start: chunk.start, chunk_end: chunk.end,
-            chunk_text: chunk.text.slice(0, 18000),
-          });
-          result.chunk_range = result.chunk_range || chunk.range;
-          LabApp.log(pipelineId, `청크 p${chunk.range} 완료`);
-          return result;
-        } catch (err) {
-          LabApp.log(pipelineId, `청크 p${chunk.range} 실패: ${err.message}`);
-          return { chunk_range: chunk.range, units: [], concepts: [], error: String(err.message) };
-        }
-      }));
+      // loop, just concurrent.
+      //
+      // D168 (2026-07-15): a real run hit 5x 429 + 2x 524 across this burst -- all 26
+      // fired in the same instant against one NVIDIA key. Now batched in waves of
+      // CHUNK_CONCURRENCY (8, see that constant's own comment for the ~40rpm-derived
+      // math), each wave run with Promise.all (so within a wave, still genuinely
+      // concurrent) and waves processed with a real `for` loop (NOT `forEach(async...)`,
+      // which wouldn't actually wait between iterations and would silently defeat the
+      // whole cap -- confirmed via an independent Codex read of this exact code before
+      // implementing). chunkResults is built by pushing each wave's results in order, so
+      // the existing "Promise.all preserves input order" property downstream
+      // (makeUnitMap doesn't care, but this keeps the invariant simple) still holds.
+      LabApp.log(pipelineId, `청크 ${chunks.length}개를 ${CHUNK_CONCURRENCY}개씩 나눠 분석 시작: p${chunks.map((c) => c.range).join(", p")}`);
+      const chunkResults = [];
+      for (let i = 0; i < chunks.length; i += CHUNK_CONCURRENCY) {
+        const wave = chunks.slice(i, i + CHUNK_CONCURRENCY);
+        const waveResults = await Promise.all(wave.map(async (chunk) => {
+          try {
+            const result = await callPromptStage("p01-2", {
+              course_label: courseLabel, chunk_range: chunk.range, chunk_start: chunk.start, chunk_end: chunk.end,
+              chunk_text: chunk.text.slice(0, 18000),
+            });
+            result.chunk_range = result.chunk_range || chunk.range;
+            LabApp.log(pipelineId, `청크 p${chunk.range} 완료`);
+            return result;
+          } catch (err) {
+            LabApp.log(pipelineId, `청크 p${chunk.range} 실패: ${err.message}`);
+            return { chunk_range: chunk.range, units: [], concepts: [], error: String(err.message) };
+          }
+        }));
+        chunkResults.push(...waveResults);
+      }
 
+      const failedChunks = chunkResults.filter((c) => c.error);
+      if (failedChunks.length) {
+        LabApp.log(pipelineId, `⚠ 청크 ${failedChunks.length}개 분석 실패 (p${failedChunks.map((c) => c.chunk_range).join(", p")}) -- unit_map에서 빠짐`);
+      }
       const unitMap = makeUnitMap(chunkResults.filter((c) => !c.error));
       LabApp.log(pipelineId, `unit_map 생성: 유닛 ${Object.keys(unitMap).length}개`);
 
@@ -340,7 +372,10 @@ const P01Runner = (() => {
       const finishedAt = new Date();
       LabApp.stopTimer(pipelineId);
       LabApp.setStatus(pipelineId, "완료", "done");
-      const result = { unit_map: unitMap, refine_audits: audits, questions, chunk_count: chunks.length, extractor: "pdfjs" };
+      const result = {
+        unit_map: unitMap, refine_audits: audits, questions, chunk_count: chunks.length, extractor: "pdfjs",
+        failed_chunks: failedChunks.map((c) => ({ chunk_range: c.chunk_range, error: c.error })),
+      };
       renderResults(result);
       await maybeSaveRun(result, startedAt, finishedAt);
     } catch (err) {
@@ -354,6 +389,14 @@ const P01Runner = (() => {
   function renderResults(result) {
     let html = `<p>유닛 <b>${Object.keys(result.unit_map).length}</b>개 · 질문 <b>${(result.questions.questions || []).length}</b>개 · 청크 <b>${result.chunk_count}</b>개
       · <code>extractor: pdfjs</code></p>`;
+    // D168: failed chunks used to only ever show up in the scrolling progress log --
+    // easy to miss once the run finishes and the log isn't the thing on screen anymore.
+    // Surfaced here too so an incomplete unit_map is never silently mistaken for a
+    // complete one.
+    if (result.failed_chunks && result.failed_chunks.length) {
+      html += `<p style="color:var(--status-blocked);">⚠ 청크 ${result.failed_chunks.length}개 분석 실패 -- 이 페이지 범위는 unit_map에서 빠짐:
+        ${result.failed_chunks.map((c) => `<code>p${LabApp.escapeHtml(c.chunk_range)}</code>`).join(", ")}</p>`;
+    }
     for (const q of (result.questions.questions || []).slice(0, 10)) {
       html += `<div class="finding-card">
         <div class="fid">${LabApp.escapeHtml(q.unit || "")} · pages: ${LabApp.escapeHtml(JSON.stringify(q.source_pages || []))}</div>
@@ -373,7 +416,7 @@ const P01Runner = (() => {
       await LabDB.saveRun({
         pipeline: "p01",
         model: selectedModel,
-        input_meta: { extractor: "pdfjs", chunk_count: result.chunk_count },
+        input_meta: { extractor: "pdfjs", chunk_count: result.chunk_count, failed_chunk_count: result.failed_chunks.length },
         overrides: {},
         rubric_overridden: false,
         artifacts: [{ kind: "unit_map", content: result.unit_map }, { kind: "questions", content: result.questions }],
