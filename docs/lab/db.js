@@ -62,13 +62,18 @@ const LabDB = (() => {
     return data.user;
   }
 
-  async function saveRun({ pipeline, model, input_meta, overrides, rubric_overridden, artifacts, started_at, finished_at }) {
+  // D175 (2026-07-15): status/error now overridable (default unchanged: "done", null) --
+  // every prior caller passed neither, so this is additive, not a breaking change to any
+  // existing call site. Added so a run that throws before ever reaching a success-shaped
+  // maybeSaveRun() can still leave a row behind -- see LabApp.saveFailedRun() in app.js,
+  // the actual place this gets used.
+  async function saveRun({ pipeline, model, input_meta, overrides, rubric_overridden, artifacts, started_at, finished_at, status, error }) {
     const c = await ensureClient();
     const user = await currentMember();
     const { data: run, error: runErr } = await c
       .from("runs")
       .insert({
-        member_id: user.id, pipeline, model, status: "done",
+        member_id: user.id, pipeline, model, status: status || "done", error: error || null,
         started_at: started_at || new Date().toISOString(),
         finished_at: finished_at || new Date().toISOString(),
         input_meta: input_meta || {}, overrides: overrides || {}, rubric_overridden: Boolean(rubric_overridden),

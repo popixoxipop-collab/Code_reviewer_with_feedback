@@ -240,6 +240,7 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
       console.error(err);
       LabApp.setStatus(pipelineId, `오류: ${err.message}`, "error");
       LabApp.log(pipelineId, `오류: ${err.message}`);
+      await LabApp.saveFailedRun("p03", (LabApp.getManifest().shared || {}).default_model, err, startedAt);
     }
   }
 

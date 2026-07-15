@@ -379,6 +379,28 @@ const LabApp = (() => {
     view.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
+  // D175 (2026-07-15): a Codex-assisted DB/code audit (requested by the user) found that a
+  // run whose outer try/catch fires (a hard failure before reaching its own success-shaped
+  // maybeSaveRun()) leaves NO trace in the DB at all -- not even a status='error' row.
+  // Every pipeline's outer catch already has pipelineId/model/startedAt/err in scope, so
+  // this is a single shared helper (not tripled across p01/p02/p03-runner.js) called from
+  // each. Mirrors maybeSaveRun()'s own existing "not configured / not logged in -> just
+  // log, never throw" tolerance -- a failed attempt to record a failure must never itself
+  // crash the run() catch block that's already handling a real error.
+  async function saveFailedRun(pipelineId, model, err, startedAt) {
+    if (!LabDB.isConfigured()) return;
+    try {
+      await LabDB.saveRun({
+        pipeline: pipelineId, model: model || null, input_meta: {}, overrides: {}, rubric_overridden: false,
+        artifacts: [], status: "error", error: String((err && err.message) || err),
+        started_at: startedAt.toISOString(), finished_at: new Date().toISOString(),
+      });
+      log(pipelineId, "실패한 실행이 DB에 기록됨");
+    } catch (saveErr) {
+      log(pipelineId, `실패 기록 DB 저장도 실패: ${saveErr.message}`);
+    }
+  }
+
   // D162 (2026-07-15): all 3 runners' "원본 JSON" block used to hardcode
   // `.slice(0, 20000)` with no indication anything was cut -- a real 9-unit/26-chunk P01
   // result silently lost content mid-structure, and the CSS has no height clipping
@@ -415,7 +437,7 @@ const LabApp = (() => {
   return {
     init, getManifest, getStage, getOverride, setOverride, resolveTemplate, resolveParam,
     registerRunner, fillTemplate, log, setStatus, showResults, escapeHtml,
-    startTimer, stopTimer, formatElapsed, jsonResultBlock,
+    startTimer, stopTimer, formatElapsed, jsonResultBlock, saveFailedRun,
   };
 })();
 

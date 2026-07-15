@@ -346,6 +346,7 @@ _result = webtool_driver.run_scan("/target", overrides_json)
       console.error(err);
       LabApp.setStatus(pipelineId, `오류: ${err.message}`, "error");
       LabApp.log(pipelineId, `오류: ${err.message}`);
+      await LabApp.saveFailedRun("p02", null, err, startedAt);
     }
   }
 

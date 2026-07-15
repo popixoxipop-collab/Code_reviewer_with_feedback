@@ -6,6 +6,7 @@
 const P01Runner = (() => {
   let pdfBytes = null;
   let pdfPassword = "";
+  let pdfFileName = null; // D175: captured so input_meta.source_filename can identify which document a run analyzed -- previously never saved anywhere
   let selectedModel = null; // initialized from manifest.shared.default_model on first render, then sticky across tab switches
 
   // D163 (2026-07-15): a real run's refine stage hit 3 straight NVIDIA HTTP 524s right
@@ -185,6 +186,7 @@ const P01Runner = (() => {
     const status = container.querySelector("#p01-pdf-status");
     status.textContent = `읽는 중: ${file.name}...`;
     pdfBytes = new Uint8Array(await file.arrayBuffer());
+    pdfFileName = file.name;
     status.textContent = `${file.name} (${(file.size / 1024 / 1024).toFixed(1)}MB) 로드됨 — 실행 버튼을 누르면 페이지 수를 확인한다`;
   }
 
@@ -780,6 +782,7 @@ const P01Runner = (() => {
       console.error(err);
       LabApp.setStatus(pipelineId, `오류: ${err.message}`, "error");
       LabApp.log(pipelineId, `오류: ${err.message}`);
+      await LabApp.saveFailedRun("p01", selectedModel, err, startedAt);
     }
   }
 
@@ -835,6 +838,7 @@ const P01Runner = (() => {
           unit_count: Object.keys(result.unit_map).length, graph_generated: result.graph_generated,
           refine_fixes_applied: result.refine_fixes.filter((f) => f.applied).length,
           refine_fixes_rejected: result.refine_fixes.filter((f) => !f.applied).length,
+          source_filename: pdfFileName, // D175: previously never captured anywhere -- runs saved before this ship have no way to know which document they analyzed
         },
         overrides: {},
         rubric_overridden: false,
