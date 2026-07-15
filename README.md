@@ -1057,6 +1057,15 @@ python3 pipeline/compare_methodologies.py
   - EXIT: PKCE로도 계속 실패하면(예: 스캐너가 아니라 다른 원인이면) 매직 링크 대신 OTP 코드 입력 방식(`{{ .Token }}` 이메일 템플릿 + `verifyOtp()`)으로 전환 — 링크 자체가 없어 스캐너가 원천적으로 개입 불가.
   - 커밋: `74138f9`, push 완료.
 
+- **D148** ([`docs/lab/db.js`](./docs/lab/db.js), [`docs/lab/config.js`](./docs/lab/config.js), [`docs/lab/index.html`](./docs/lab/index.html)) — 사용자 질문 "매직 링크가 왜 필요해?"에서 시작 — 로그인 자체의 목적(팀 공용 DB `runs` 테이블 RLS가 `member_id = auth.uid()`를 강제해서 인증 없인 저장이 아예 불가능, 실행 자체는 로그인 없이도 다 됨)을 설명한 뒤, 매직 링크의 구조적 취약점(D147)을 감안해 **Google OAuth를 매직 링크의 대안으로 추가**(대체 아님 — 한쪽이 막혀도 다른 쪽으로 로그인 가능하게).
+  - **진행**: 사용자가 Google Cloud Console에서 OAuth 2.0 Client ID/Secret 발급(계정 소유자만 가능한 단계). Supabase Management API로 `external_google_enabled`/`external_google_client_id`/`external_google_secret` 설정, `docs/lab/index.html`에 "Google로 로그인" 버튼 추가, `LabDB.signInWithGoogle()`(`signInWithOAuth({provider:"google"})`, 전체 페이지 리다이렉트, D147의 PKCE 설정을 그대로 재사용)로 연결.
+  - **1차 실측에서 진짜 버그 발견**: 헤드리스 브라우저로 실제 버튼을 클릭해 Google의 실제 OAuth 엔드포인트까지 태워봤더니 `Error 400: redirect_uri_mismatch`. Google이 반환한 에러의 base64 인코딩된 상세 정보를 직접 디코딩해서 Supabase가 실제로 보낸 `redirect_uri` 값(`https://oziaeqcvrkrqkhwrybfj.supabase.co/auth/v1/callback`)이 사용자에게 안내한 값과 정확히 일치함을 확인 — 즉 안내는 정확했고, 사용자의 Google Cloud Console OAuth 클라이언트에 그 URI가 실제로 등록 안 돼 있었던 것. 사용자가 등록 확인 후 재시도.
+  - **검증**: 같은 방식으로 재실행 — 이번엔 에러 없이 실제 Google 로그인 화면("Sign in to continue to oziaeqcvrkrqkhwrybfj.supabase.co")까지 정상 도달 확인. 실제 계정으로 로그인 완료하는 마지막 단계는 팀원 계정이 필요해 에이전트가 검증할 수 없는 경계 — 여기까지가 코드/설정으로 확인 가능한 전부.
+  - WHY: 이메일 링크 계열 문제(D147)는 완전히 없애기 어려운 카테고리라, 완전히 다른 실패 모드를 갖는 대안을 나란히 두는 게 안전함.
+  - COST: 로그인 UI에 버튼 하나 추가(복잡도 소폭 증가). Google Cloud Console 쪽 설정은 계정 소유자가 유지보수해야 함(OAuth 동의 화면 검증 만료 등).
+  - EXIT: Google OAuth가 팀 전체에 안정적으로 자리잡으면 이메일 매직 링크 필드를 빼고 Google 단일 로그인으로 단순화할 수 있음(현재는 의도적으로 둘 다 유지).
+  - 커밋: `e3c1d24`, push 완료.
+
 
 ## 다음 단계 (미해결)
 
