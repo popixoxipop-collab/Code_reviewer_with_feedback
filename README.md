@@ -1046,6 +1046,17 @@ python3 pipeline/compare_methodologies.py
   - EXIT: 파이프라인 개수가 크게 늘어나 초기 로드 시 전부 미리 그리는 비용이 문제되면, `renderedPipelines` 체크를 유지한 채 "첫 방문 시에만 빌드"는 그대로 두고 지연 로딩 범위만 좁히면 됨(구조 변경 불필요).
   - 커밋: `cce5c95`, push 완료. GitHub Pages는 push 시 자동 재배포(별도 배포 명령 불필요).
 
+- **D147** ([`docs/lab/db.js`](./docs/lab/db.js)) — 사용자 보고: 매직 링크 클릭 시 계속 `otp_expired`. 두 개 가설을 실측으로 기각한 뒤 진짜 원인 확정.
+  - **기각 1**: "Site URL이 잘못 설정됨" — Management API로 실제 `config/auth`를 직접 조회하니 `site_url`이 이미 정확한 값(`.../docs/lab/`)이었음. 확인 없이 내렸던 결론이라 정정.
+  - **기각 2(부분)**: "기본 메일러 rate limit(`smtp_max_frequency=60`, `rate_limit_email_sent=2`)에 걸려 새 이메일이 안 감" — 실측 설정으로는 사실이지만, 실제 재현 원인은 아니었음(둘 다 진짜 문제이긴 하나 부차적).
+  - **확정(auth 로그 직접 조회로 확인)**: `analytics/endpoints/logs.all`로 최근 `/verify` 요청을 보니 **4초 사이에 서로 다른 `/verify` 요청 3건이 전부 "One-time token not found"로 실패** — 사람이 4초 안에 링크를 여러 번 누를 리는 없으므로, 이메일 보안 스캐너(Safe Links류)가 사람보다 먼저 링크를 열어 1회용 토큰을 미리 소진시키는 전형적 패턴. `docs/lab/db.js`의 `createClient()`가 `flowType`을 지정 안 해서 `@supabase/supabase-js@2.45.4`의 기본값 `"implicit"`으로 동작 중이었음(CDN에서 받은 실제 번들 코드를 직접 확인) — implicit 플로우는 링크의 토큰 자체가 바로 유효해서 누가 먼저 `/verify`를 때리든 그 요청이 이김.
+  - **수정**: `createClient()`에 `{ auth: { flowType: "pkce" } }` 추가. PKCE는 링크에 `code`만 담고, 실제 세션 교환엔 요청을 시작한 그 브라우저의 localStorage에 있는 `code_verifier`가 필요함 — 서버 사이드로 URL만 훑는 스캐너는 이걸 가질 수 없어 세션을 가로챌 수 없음. `detectSessionInUrl`(기본 true, 안 건드림)이 코드 교환도 자동 처리한다는 것까지 CDN 번들 코드로 직접 확인 — 앱 코드 추가 변경 불필요.
+  - **검증**: 로컬(`localhost:8712/lab/`)에서 `LabDB.ensureClient()` 호출 후 `client.auth.flowType`이 실제로 `"pkce"`로 나오는 것 확인, 콘솔 에러 없음.
+  - WHY: rate-limit/Site-URL은 실측으로 둘 다 사실이었지만 재현되는 실패 패턴(4초 내 다중 `/verify`)을 설명 못 함 — 로그를 직접 보고 나서야 진짜 원인이 나옴.
+  - COST: 없음(설정 1줄) — 단, 이 수정 **이전에** 발급된 매직 링크는 여전히 implicit 방식으로 발급된 것이라 이 수정과 무관하게 그대로 안 됨. 배포 이후 새로 요청한 링크부터 적용됨.
+  - EXIT: PKCE로도 계속 실패하면(예: 스캐너가 아니라 다른 원인이면) 매직 링크 대신 OTP 코드 입력 방식(`{{ .Token }}` 이메일 템플릿 + `verifyOtp()`)으로 전환 — 링크 자체가 없어 스캐너가 원천적으로 개입 불가.
+  - 커밋: `74138f9`, push 완료.
+
 
 ## 다음 단계 (미해결)
 
