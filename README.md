@@ -1424,7 +1424,7 @@ python3 pipeline/compare_methodologies.py
   - COST: 없음 — 페이지 전체가 뷰포트보다 커질 필요가 원래 없었음(의도한 2패널 레이아웃 자체가 항상 화면 안에 맞아야 하는 구조).
   - EXIT: 나중에 세션 페이지에 그 외 콘텐츠(예: 상단 배너)가 추가돼 뷰포트보다 커져야 한다면, `overflow: hidden`을 빼고 `#session-root`에 자체 `height: 100vh`를 주는 방식으로 전환.
   - `Team-IZ/AI` 브랜치의 동일 파일에도 같은 수정 적용(커밋 `644a8c0`).
-  - 커밋: `<다음 커밋에서 채움>`, push 예정.
+  - 커밋: `b496b82`, push 예정(GitHub Pages 재배포로 라이브 반영).
 
 
 ## 다음 단계 (미해결)
