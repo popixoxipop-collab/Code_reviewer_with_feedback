@@ -41,9 +41,12 @@ const P03Runner = (() => {
   // panel additionally lets a human tab between them for display only.
   let pendingCodeContexts = [];
   let selectedContextIndex = 0;
-  // D176: Team-IZ 검증세션 패턴 -- 채점 결과를 세션 중엔 숨기고, 완료 후 별도 클릭으로만 노출.
-  // run()이 끝나도 renderResults()를 바로 부르지 않고 여기 보관해뒀다가 "리포트 보기"에서 사용.
-  let pendingReportResult = null;
+  // D176 (2026-07-15) → D184 (2026-07-15): Team-IZ 검증세션 패턴은 채점 결과를 세션 중엔
+  // 숨기고 완료 후 별도 클릭으로만 노출했었음 -- 이건 "학생이 자기 점수를 실시간으로 못 보게"
+  // 막는 실제 평가 시나리오를 위한 UX였는데, 이 도구의 실제 사용자(팀원들의 파이프라인 자체
+  // 테스트)는 그 시나리오가 아니라서 클릭 한 번의 마찰이 그냥 불필요했음(사용자 직접 지적).
+  // 라이브 진행 중(턴 사이 appendTranscriptEntry)엔 여전히 verdict를 안 보여주지만(그 부분은
+  // 그대로 유효 -- 다음 질문에 영향 안 주려는 의도), 채점이 끝나면 클릭 없이 바로 renderResults().
   let countdownIntervalId = null;
   // D181: unmeasured/provisional -- see resolveMaxAttempts()'s comment for the reasoning.
   const ELEVATED_RATE_THRESHOLD = 30;
@@ -83,10 +86,6 @@ const P03Runner = (() => {
             <button class="primary" id="p03-submit-answer" style="margin-top:8px;">답변 제출</button>
           </div>
         </div>
-      </div>
-      <div class="input-panel hidden" id="p03-report-gate">
-        <p style="margin:0 0 10px;">🔒 인터뷰 완료 — Team-IZ 검증세션 패턴에 따라 채점 결과는 세션 중에는 비공개입니다.</p>
-        <button class="secondary" id="p03-show-report">리포트 보기 →</button>
       </div>`;
 
     container.querySelector("#p03-load-findings").addEventListener("click", () => {
@@ -97,8 +96,6 @@ const P03Runner = (() => {
         selectedFinding = null;
         pendingCodeContexts = []; // D176/D181: 수동 붙여넣기는 실제 파일 내용을 알 길이 없음
         selectedContextIndex = 0;
-        pendingReportResult = null;
-        hideReportGate();
         renderCodePanel();
         const select = container.querySelector("#p03-finding-select");
         select.innerHTML = findings.map((f, i) => `<option value="${i}">${LabApp.escapeHtml(f.id || `finding ${i}`)}</option>`).join("");
@@ -111,19 +108,9 @@ const P03Runner = (() => {
       selectedFinding = findings[parseInt(e.target.value, 10)] || null;
       pendingCodeContexts = []; // D176/D181: 드롭다운 재선택 시 이전(P02발) 코드 컨텍스트는 항상 폐기
       selectedContextIndex = 0;
-      pendingReportResult = null;
-      hideReportGate();
       renderCodePanel();
     });
-    container.querySelector("#p03-show-report").addEventListener("click", () => {
-      if (pendingReportResult) renderResults(pendingReportResult);
-    });
     LabApp.renderModelToggle(container, "#p03-model-group", "#p03-model-note", () => selectedModel, (v) => { selectedModel = v; });
-  }
-
-  function hideReportGate() {
-    const gate = document.getElementById("p03-report-gate");
-    if (gate) gate.classList.add("hidden");
   }
 
   // D181: renders the left code panel from pendingCodeContexts/selectedContextIndex. Safe
@@ -210,8 +197,6 @@ const P03Runner = (() => {
     selectedFinding = finding;
     pendingCodeContexts = Array.isArray(codeContexts) ? codeContexts : [];
     selectedContextIndex = 0;
-    pendingReportResult = null;
-    hideReportGate();
     renderCodePanel();
     const select = document.getElementById("p03-finding-select");
     if (select) {
@@ -423,7 +408,6 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
       return;
     }
     document.getElementById("p03-session").classList.remove("hidden");
-    hideReportGate();
     document.getElementById("p03-transcript").innerHTML = "";
     document.getElementById("p03-progress").textContent = "질문 -/-";
     selectedContextIndex = 0;
@@ -486,11 +470,9 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
       const finishedAt = new Date();
       LabApp.stopTimer(pipelineId);
       stopCountdown();
-      LabApp.setStatus(pipelineId, "완료 (채점은 비공개 -- 리포트 보기)", "done");
+      LabApp.setStatus(pipelineId, "완료", "done");
       const result = { finding: selectedFinding, verdict, turns: transcript.length, transcript, grades, rubric_overridden };
-      pendingReportResult = result;
-      const gate = document.getElementById("p03-report-gate");
-      if (gate) gate.classList.remove("hidden");
+      renderResults(result); // D184: shown immediately now, no separate "리포트 보기" click required -- see the module-level comment on why
       await maybeSaveRun(result, startedAt, finishedAt);
     } catch (err) {
       LabApp.stopTimer(pipelineId);
