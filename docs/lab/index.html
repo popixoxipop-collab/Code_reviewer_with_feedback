@@ -75,6 +75,22 @@
     호출은 프록시를 거치고(프록시 코드는 <a href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback/blob/main/worker/nvidia-proxy.js" target="_blank" rel="noopener">worker/nvidia-proxy.js</a>에 공개돼 있어 검증 가능), GitHub PAT은 api.github.com에 직접
     전달된다(프록시 안 거침). 자세한 아키텍처/보안 모델은 <a href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback/blob/main/experiments/web_lab/PLAN.md" target="_blank" rel="noopener">PLAN.md</a> 참고.</p>
   </footer>
+
+  <!-- D159 (2026-07-15): debugging aid -- is THIS TAB's own request rate approaching
+       NVIDIA's free-tier ~40rpm ceiling. Only counts requests this tab initiated, not
+       server-side retries inside worker/nvidia-proxy.js's queue() -- see llm.js's
+       requestLog comment for why that's a real limitation, not an oversight. -->
+  <section id="debug-traffic" class="debug-traffic">
+    <h2>디버그 · NVIDIA 요청 트래픽(이 탭 기준)</h2>
+    <p class="debug-traffic-note">최근 60초간 이 탭에서 보낸 NVIDIA 요청 수 — 서버 쪽 재시도(worker/nvidia-proxy.js)는 안 잡힘, 참고용.</p>
+    <div class="debug-traffic-body">
+      <div class="debug-traffic-current" id="debug-traffic-current">0 / 40</div>
+      <div class="debug-traffic-chart-wrap">
+        <svg id="debug-traffic-svg" viewBox="0 0 900 160" preserveAspectRatio="none"></svg>
+        <div id="debug-traffic-tooltip" class="debug-traffic-tooltip hidden"></div>
+      </div>
+    </div>
+  </section>
 </main>
 
 <script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"
@@ -86,6 +102,7 @@
 <script type="module" src="pdfjs-loader.js"></script>
 <script src="config.js"></script>
 <script src="llm.js"></script>
+<script src="debug-traffic.js"></script>
 <script src="db.js"></script>
 <script src="app.js"></script>
 <script src="pyodide-shared.js"></script>

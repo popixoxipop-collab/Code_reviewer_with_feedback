@@ -30,7 +30,31 @@ const LabLLM = (() => {
   // 35min gives headroom for Cloudflare's own redelivery scheduling latency on top of that.
   const MAX_POLL_MS = 35 * 60 * 1000;
 
+  // D159 (2026-07-15): request timestamps for the debug traffic graph (docs/lab/
+  // debug-traffic.js) -- "did this tab's own burst momentarily exceed NVIDIA's ~40rpm
+  // free-tier ceiling" (nvidia-keypool-guard.py's own documented figure). Deliberately
+  // just an in-memory array, capped and trimmed below -- this is a debugging aid, not a
+  // metrics store, and it only sees requests THIS tab initiated (D156's parallel chunk
+  // calls are the actual client-visible submissions; server-side retries inside
+  // worker/nvidia-proxy.js's queue() happen invisibly to the browser and aren't counted
+  // here -- a real limitation, not an oversight, noted so this graph isn't over-trusted
+  // as the complete picture of load on the key).
+  const requestLog = [];
+  const REQUEST_LOG_MAX_AGE_MS = 15 * 60 * 1000; // trim anything older than the chart ever shows
+
+  function recordRequest() {
+    const now = Date.now();
+    requestLog.push(now);
+    const cutoff = now - REQUEST_LOG_MAX_AGE_MS;
+    while (requestLog.length && requestLog[0] < cutoff) requestLog.shift();
+  }
+
+  function getRequestLog() {
+    return requestLog.slice();
+  }
+
   async function submitAndPoll(proxyUrl, apiKey, body) {
+    recordRequest();
     const submitRes = await fetch(proxyUrl, {
       method: "POST",
       headers: { "content-type": "application/json", "x-nvidia-api-key": apiKey },
@@ -121,5 +145,5 @@ const LabLLM = (() => {
     }
   }
 
-  return { chatJSON, chatTool, extractJsonObject };
+  return { chatJSON, chatTool, extractJsonObject, getRequestLog };
 })();

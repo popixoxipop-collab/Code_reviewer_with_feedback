@@ -82,6 +82,15 @@ const JOB_TTL_SECONDS = 3600; // 1 hour -- generous for an actively-polling clie
 const RETRYABLE_STATUSES = new Set([429, 500, 502, 503, 524]);
 const MAX_ATTEMPTS = 3; // message.attempts is 1-indexed; this allows 2 retries
 const RETRY_DELAY_SECONDS = 5; // brief gap before Cloudflare redelivers -- avoid hammering NVIDIA back-to-back
+// D159 (2026-07-15): 429 specifically means "you're being rate-limited, wait longer" --
+// a real 26-way parallel chunk-analysis burst (D156) hit this on a later, unrelated call
+// (question-generation) using the same key, consistent with nvidia-keypool-guard.py's
+// own documented ~40rpm free-tier ceiling. A 5s retry can't outlast a per-minute window;
+// 429 specifically now waits the length of that window instead. Every OTHER retryable
+// status (500/502/503/524, timeouts) keeps the short 5s delay -- those are generic
+// transient blips, not a "you're over budget, wait out the window" signal, so forcing
+// them to wait a full minute too would just slow down otherwise-quick recoveries.
+const RATE_LIMIT_RETRY_DELAY_SECONDS = 60;
 const PER_ATTEMPT_TIMEOUT_MS = 600_000; // 600s, == feedback/nvidia_client.py's DEFAULT_TIMEOUT_S (D98-derived, not a new guess)
 
 function corsHeaders(origin) {
@@ -224,13 +233,14 @@ export default {
         }
 
         if (RETRYABLE_STATUSES.has(upstream.status) && message.attempts < MAX_ATTEMPTS) {
+          const delaySeconds = upstream.status === 429 ? RATE_LIMIT_RETRY_DELAY_SECONDS : RETRY_DELAY_SECONDS;
           const wrote = await putIfNotTerminal(env, jobId, {
             status: "pending",
-            note: `attempt ${message.attempts}/${MAX_ATTEMPTS} got HTTP ${upstream.status}, retrying`,
+            note: `attempt ${message.attempts}/${MAX_ATTEMPTS} got HTTP ${upstream.status}, retrying in ${delaySeconds}s`,
           });
           // If another delivery already reached done/error, this job's fate is already
           // sealed -- don't retry a job nobody's waiting on anymore, just ack it away.
-          if (wrote) message.retry({ delaySeconds: RETRY_DELAY_SECONDS });
+          if (wrote) message.retry({ delaySeconds });
           else message.ack();
           continue;
         }
