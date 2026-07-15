@@ -1323,6 +1323,19 @@ python3 pipeline/compare_methodologies.py
   - EXIT: `overrides_hash` 미사용, P02의 `overrides` 배열 vs P01/P03의 객체 불일치는 Codex 감사에서 나왔지만 지금은 안 건드림 — 필요해지면 그때.
   - 커밋: `275acb5`, push 완료(워커 변경 없음, GitHub Pages만).
 
+- **D176** ([`docs/lab/p02-runner.js`](./docs/lab/p02-runner.js), [`docs/lab/p03-runner.js`](./docs/lab/p03-runner.js), [`docs/lab/prompt_manifest.json`](./docs/lab/prompt_manifest.json), [`docs/lab/lab.css`](./docs/lab/lab.css)) — 사용자가 외부 프로젝트 Team-IZ의 "검증세션"(`team-iz.github.io/Frontend`)을 UX 참고로 제시하며, P02 finding을 손으로 JSON 복붙하지 않고 P03 소크라틱 질문 파이프라인으로 바로 연결해 팀원들이 실제로 써보며 DB에 기록을 쌓게 해달라고 요청. AskUserQuestion으로 범위를 물어 "연결 자동화 + Team-IZ UX 패턴까지 전부" 전체 스코프를 확인받음.
+  - **연결 자동화**: P02 `renderResults()`가 finding마다 `f.file`이 있고 해당 파일 내용이 `files` 맵에 실제로 로드돼 있을 때만 "인터뷰 시작" 버튼을 붙임(`judgment/score_findings.py`를 직접 읽어 확인: `repeated-pattern`류는 여러 파일에 걸쳐 `file: null`이 구조적으로 정상이라 이 경우엔 버튼 대신 이유를 설명하는 문구를 대신 표시). 클릭 시 P03 탭으로 전환 후(DOM이 먼저 만들어지도록 탭 전환을 먼저 실행) `P03Runner.loadFindingFromP02(finding, codeContext)`를 호출해 finding·드롭다운·textarea를 미리 채움 — 자동 실행은 안 함(NVIDIA 키 확인도 필요하고, 실제 LLM 호출 전에 팀원이 뭘 보내는지 보게 함).
+  - **`codeContext` 버그 수정**: P03의 `generateQuestion()` 호출이 처음부터 `codeContext` 인자에 하드코딩된 `null`을 넘기고 있어서, 이 도구가 지금까지 생성한 모든 소크라틱 질문은 실제 코드를 전혀 못 보고 만들어진 것이었음(이번 세션에 Team-IZ 조사 중 발견). P02에서 넘어온 실제 파일 내용을 매니페스트가 이미 명시하고 있던 `p03-1.truncation.code_context`(4000자) 컷으로 잘라 프롬프트에 포함하도록 수정 — 새 숫자를 만들지 않고 이미 있던 실제 파이프라인 값을 그대로 재사용.
+  - **2단 레이아웃**: `.p03-session`을 CSS grid로 좌(고정, `position: sticky`) — 대상 파일명+실제 코드 — / 우(동적) — 진행률+카운트다운+L1~Reflection 실시간 트랜스크립트 — 로 분리. 기존 단일 컬럼 `#p03-interview-panel`을 대체.
+  - **카운트다운 타이머**: 기존 경과시간 스톱워치(`LabApp.startTimer`, 전 파이프라인 공용)와 별개로 신설. `p03-6`에 `session_timeout_minutes`(기본 15, 잠금 해제) 파라미터 추가 — 실사용 세션시간 데이터가 없어 turn당 체감 3-4분×max_turns(4)의 추정치임을 매니페스트 note에 명시(CLAUDE.md 데이터 우선주의). 표시 전용이며 0에 도달해도 세션을 강제 종료하지 않음(진행 중 답변 유실 방지가 우선이라는 의도적 스코프 축소).
+  - **채점 비공개**: Team-IZ 패턴대로 `appendTranscriptEntry()`에서 verdict 표시 인자를 아예 제거해 실시간 트랜스크립트엔 질문/답변만 노출, 분류 자체(내부 진행 제어용)는 그대로 유지. 채점 완료 후 `renderResults()`를 즉시 호출하지 않고 결과를 모듈 변수에 보관한 채 "🔒 채점 결과는 세션 중 비공개" 게이트만 표시, "리포트 보기" 클릭 시에만 기존 `renderResults()`(5축 채점 + 원본 JSON) 호출.
+  - **검증**: Playwright로 실제 파이프라인 전체를 라이브 구동. `eval(req.query.expr)`을 담은 `app.js`와, 두 파일에 동일한 `processPayment` 함수를 넣은 zip을 `two_tier_scan.py`/`score_findings.py` 원본에 직접 태워 `tier-b-risk:app.js:dangerous-html`(file 있음)과 `repeated-pattern:duplicate-definition:processPayment`(file 없음)를 실제로 산출시킴 — 파일 있는 finding에만 버튼이 뜨고 없는 쪽엔 안내문이 뜨는 것, 클릭 시 탭 전환+사전입력, `LabLLM.chatTool` 호출을 가로채 L1 질문 생성 프롬프트에 실제 코드 마커 문자열이 포함되는 것(=버그 수정의 직접 증거), 4턴 내내 라이브 화면에 verdict 텍스트가 전혀 없다가 "리포트 보기" 클릭 후에만 채점 마커가 나타나는 것, 카운트다운이 15:00→14:56으로 실제로 줄어드는 것까지 전부 확인.
+    - **자가 발견 실수**: 처음엔 P02 결과를 결정론적으로 만들려고 공유 Pyodide 인스턴스의 `globals.get`을 직접 몽키패치했는데, 이게 Pyodide 내부 FFI proxy를 손상시켜 바로 다음 P03 classify 호출에서 실제 `RangeError: Maximum call stack size exceeded`를 유발함(재현·콘솔 스택트레이스로 확인). `.get`을 원복해도 이미 손상된 상태라 재발 — 원인 진단 후 이 방식을 완전히 버리고, 대신 실제 pipeline 소스(`score_findings.py`)를 읽어 진짜 트리거 조건에 맞는 zip을 만들어 파이프라인을 있는 그대로 구동하는 방식으로 교체해서 해결.
+  - WHY: 사용자가 팀원들의 실사용 테스트+DB 축적을 목표로 명시, Team-IZ 패턴 전체 채택도 AskUserQuestion으로 명시적 확인.
+  - COST: `codeContext` 포함 시 프롬프트 길이 증가(최대 4000자, 매니페스트 기존값). `session_timeout_minutes`는 실사용 데이터 없는 잠정치. 카운트다운이 0 밑으로 가도 강제 종료 안 하므로 "진짜 시간 제한"은 아직 아님.
+  - EXIT: `session_timeout_minutes` 기본값(15)은 팀원 실사용 세션 로그가 쌓이면 재보정. 강제 종료 여부는 실사용 피드백에서 "너무 길어진다"는 신호가 나오면 재검토.
+  - 커밋: `b9d9ac6`, push 예정(워커 변경 없음, GitHub Pages만).
+
 
 ## 다음 단계 (미해결)
 
