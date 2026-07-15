@@ -84,6 +84,28 @@ const P02Runner = (() => {
     return codeParts.join("\n\n");
   }
 
+  // D179 (2026-07-15): real user report -- against a real subdirectory-nested zip, the D176
+  // "인터뷰 시작" connector produced ZERO buttons even though findings had non-null `file`
+  // values. Root cause confirmed by reading cognition/two_tier_scan.py directly:
+  // tier_a_structural_scan() builds fan_in_keys via os.path.basename(f) (line ~186), and
+  // tier_b's flagged dict is keyed the same way (line ~233) -- every finding.file the REAL
+  // pipeline ever reports is a bare basename, with any subdirectory prefix stripped, by
+  // design (unrelated to this web tool, can't change without diverging from the real
+  // pipeline). But `files` here is keyed by the FULL zip-relative path (entry.name), which
+  // keeps subdirectory prefixes -- so files[finding.file] silently misses for any nested
+  // file, and hasCode was always false whenever the zip had folders at all. This resolver
+  // matches by basename instead of requiring an exact key match; a plain root-level file
+  // still matches on the first branch (all D176 test fixtures happened to be flat, which is
+  // why this didn't surface until a real nested zip). If two files share a basename in
+  // different folders, this picks the first Object.keys() match -- not a new ambiguity this
+  // code introduces, since the real pipeline's own os.path.basename() reduction already
+  // collapses same-named files from different folders into one fan_in key.
+  function findFileByBasename(files, basename) {
+    if (!basename) return null;
+    if (files[basename] !== undefined) return basename;
+    return Object.keys(files).find((relPath) => relPath.split("/").pop() === basename) || null;
+  }
+
   function renderInput(container) {
     container.innerHTML = `
       <div class="input-panel">
@@ -365,7 +387,8 @@ _result = webtool_driver.run_scan("/target", overrides_json)
       // D176: only findings tied to one real, loaded file can hand P03 real code context --
       // repeated-pattern findings (see judgment/score_findings.py) are cross-file by nature
       // and legitimately have file: null, so this is a real category, not a data gap.
-      const hasCode = Boolean(f.file && files[f.file] !== undefined);
+      // D179: match by basename (findFileByBasename), not exact key -- see its comment.
+      const hasCode = Boolean(findFileByBasename(files, f.file));
       html += `<div class="finding-card">
         <div class="fid">${LabApp.escapeHtml(f.id)} · priority: ${LabApp.escapeHtml(f.priority || "")}</div>
         <div>${LabApp.escapeHtml(f.finding || "")}</div>
@@ -390,7 +413,8 @@ _result = webtool_driver.run_scan("/target", overrides_json)
       btn.addEventListener("click", () => {
         const finding = j.findings[parseInt(btn.dataset.interviewIdx, 10)];
         if (!finding) return;
-        const codeContext = finding.file ? files[finding.file] : null;
+        const matchedPath = findFileByBasename(files, finding.file);
+        const codeContext = matchedPath ? files[matchedPath] : null;
         document.querySelector('.tab-btn[data-pipeline="p03"]').click();
         P03Runner.loadFindingFromP02(finding, codeContext);
         P03Runner.run();
