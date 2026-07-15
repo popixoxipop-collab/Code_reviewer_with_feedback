@@ -227,21 +227,30 @@ const P01Runner = (() => {
       const chunks = buildChunks(pages, chunkSize);
       LabApp.log(pipelineId, `${pages.length}페이지 → ${chunks.length}개 청크 (chunk_size=${chunkSize}, 전체 문서)`);
 
-      const chunkResults = [];
-      for (const chunk of chunks) {
-        LabApp.log(pipelineId, `청크 분석 중: p${chunk.range}...`);
+      // D156 (2026-07-15): chunks analysed in parallel instead of one-at-a-time -- they
+      // don't depend on each other (makeUnitMap() below just aggregates whatever comes
+      // back, order doesn't matter), and the proxy already treats each callPromptStage()
+      // as its own Cloudflare Queue job with its own retry budget (D144/D145), so nothing
+      // on the backend assumes these arrive sequentially. Each mapped function catches
+      // its own error and always resolves (never rejects) so one failing chunk can't
+      // abort the rest via Promise.all -- same fault-tolerance as the old sequential
+      // loop, just concurrent. Promise.all preserves chunks' input order in the result
+      // array regardless of which one actually finishes first.
+      LabApp.log(pipelineId, `청크 ${chunks.length}개 동시 분석 시작: p${chunks.map((c) => c.range).join(", p")}`);
+      const chunkResults = await Promise.all(chunks.map(async (chunk) => {
         try {
           const result = await callPromptStage("p01-2", {
             course_label: courseLabel, chunk_range: chunk.range, chunk_start: chunk.start, chunk_end: chunk.end,
             chunk_text: chunk.text.slice(0, 18000),
           });
           result.chunk_range = result.chunk_range || chunk.range;
-          chunkResults.push(result);
+          LabApp.log(pipelineId, `청크 p${chunk.range} 완료`);
+          return result;
         } catch (err) {
           LabApp.log(pipelineId, `청크 p${chunk.range} 실패: ${err.message}`);
-          chunkResults.push({ chunk_range: chunk.range, units: [], concepts: [], error: String(err.message) });
+          return { chunk_range: chunk.range, units: [], concepts: [], error: String(err.message) };
         }
-      }
+      }));
 
       const unitMap = makeUnitMap(chunkResults.filter((c) => !c.error));
       LabApp.log(pipelineId, `unit_map 생성: 유닛 ${Object.keys(unitMap).length}개`);
