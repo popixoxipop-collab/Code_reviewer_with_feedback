@@ -79,11 +79,16 @@ const LabLLM = (() => {
     // D131/D142's fallback chain, ported from the real pipeline -- some models (step-3.5-flash)
     // put their actual JSON-mode answer in reasoning_content, leaving content null/empty.
     const resolved = choice.content || choice.reasoning_content;
+    const finishReason = data.choices[0].finish_reason;
     if (!resolved) {
-      const finishReason = data.choices[0].finish_reason;
       throw new Error(`빈 응답 (content 없음, finish_reason=${finishReason})`);
     }
-    return { role: "assistant", content: resolved };
+    // D158 (2026-07-15): finishReason now always returned, not just logged on the empty-
+    // content path -- a real 251-page run had 2/26 chunks fail JSON parsing with "Expected
+    // ',' or ']' after array element", the textbook signature of a response cut off
+    // mid-array. Without finish_reason, that was a guess; callers can now check
+    // finishReason === "length" and know for certain rather than infer from parse errors.
+    return { role: "assistant", content: resolved, finishReason };
   }
 
   async function chatTool({ model, messages, tool, maxTokens, temperature = 0.0 }) {

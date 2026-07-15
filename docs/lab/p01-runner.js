@@ -190,17 +190,38 @@ const P01Runner = (() => {
     return nodes;
   }
 
-  async function callPromptStage(stageId, values, tokensParam) {
+  // D158 (2026-07-15): a real 251-page/26-chunk run hit 2 chunks that failed JSON
+  // parsing ("Expected ',' or ']' after array element" -- the signature of a response
+  // cut off mid-array) even after the repair-prompt fallback below. The repair prompt
+  // asks the model to fix malformed JSON, but if the real cause is "ran out of
+  // max_tokens before finishing", asking it to reformat the same truncated text at the
+  // same token budget can't help -- it needs more room, not a second opinion. Now
+  // branches on the actual finishReason instead of guessing: a real length cutoff
+  // retries the ORIGINAL prompt at 2x max_tokens; anything else (a genuine malformed-
+  // JSON mistake, finishReason "stop") goes through the existing repair-prompt path,
+  // unchanged.
+  async function callPromptStage(stageId, values) {
     const system = LabApp.resolveTemplate("p01", stageId, "system");
     const template = LabApp.resolveTemplate("p01", stageId, "user_template");
     const userMsg = LabApp.fillTemplate(template, values);
     const maxTokens = LabApp.resolveParam("p01", stageId, "max_tokens") || 1800;
     const model = LabApp.resolveParam("p01", stageId, "model") || selectedModel;
-    const choice = await LabLLM.chatJSON({ model, messages: [{ role: "system", content: system }, { role: "user", content: userMsg }], maxTokens });
+    const messages = [{ role: "system", content: system }, { role: "user", content: userMsg }];
+    const choice = await LabLLM.chatJSON({ model, messages, maxTokens });
     try {
       return LabLLM.extractJsonObject(choice.content);
     } catch (e) {
-      // mirrors chat_json()'s repair-prompt fallback in the real pipeline
+      if (choice.finishReason === "length") {
+        const retried = await LabLLM.chatJSON({ model, messages, maxTokens: maxTokens * 2 });
+        try {
+          return LabLLM.extractJsonObject(retried.content);
+        } catch (e2) {
+          throw new Error(`응답이 잘림(finish_reason=length) → max_tokens ${maxTokens * 2}로 재시도했으나 여전히 파싱 실패: ${e2.message}`);
+        }
+      }
+      // mirrors chat_json()'s repair-prompt fallback in the real pipeline -- for
+      // finishReason other than "length" (a genuine malformed-JSON mistake, not a
+      // token-budget problem)
       const repairStage = LabApp.getStage("p01", "p01-json-repair");
       const repairMsg = LabApp.fillTemplate(repairStage.user_template, { malformed_content: (choice.content || "").slice(0, 14000) });
       const repaired = await LabLLM.chatJSON({ model, messages: [{ role: "system", content: repairStage.system }, { role: "user", content: repairMsg }], maxTokens });
