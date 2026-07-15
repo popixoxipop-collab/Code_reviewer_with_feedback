@@ -1295,6 +1295,23 @@ python3 pipeline/compare_methodologies.py
   - EXIT: 유닛별 호출이 너무 잘게 쪼개진다고 판단되면(예: 유닛이 아주 많은 문서) 유닛을 몇 개씩 묶어 배치 호출하는 것도 고려 가능 — 아직 그 필요성 실측 안 됨.
   - 커밋: `57c5260`, push 완료(워커 변경 없음, GitHub Pages만).
 
+- **D174** ([`docs/lab/p01-runner.js`](./docs/lab/p01-runner.js), [`docs/lab/prompt_manifest.json`](./docs/lab/prompt_manifest.json)) — D172/D173에서 예고했던 구조적 한계("refine은 감사만 하고 unit_map을 실제로 안 고침")를 Codex(`codex:codex-rescue`)에게 계획 수립을 요청, 그 계획의 4단계를 전부 구현. 이 세션 최대 규모 단일 변경 — 특히 "감사 결과를 실제 반영"은 페이지 근거 훼손 위험이 핵심이라 검증 로직에 공을 들임.
+  - **Phase 1 — 결정론적 정리**(`normalizeUnitMap()`): 정확히 같은 name+pages인 중복 항목 병합, 페이지 배열 정렬/중복제거, `source_pages`가 빈 항목은 근거 없음으로 간주해 제외(개수는 로그로 표시, 조용히 사라지지 않게). `makeUnitMap()` 직후 1회, Phase 3의 수정안 검증 시에도 재사용. LLM 호출 없음 — 위험 없음.
+    - WHY: 안전하게 무조건 실행 가능(모델 판단 불필요, 데이터를 추가하지 않고 빼기만 함).
+    - COST: 없음(관찰됨).
+    - EXIT: name+pages 정확 일치로는 못 잡는 유사-중복은 Phase 3(모델 기반 apply)의 몫 — 이 pass 자체를 퍼지 매칭으로 확장하지 않음.
+  - **Phase 2 — audit 스키마 확장**: `p01-3`(refine) 출력의 각 `issues[]` 항목에 `issue_type`(duplicate_exact/missing_pages/overbroad_unit/boundary_split_needed/coverage_gap_failed_chunk/other)과 `affected_unit_ids` 추가. 아직 unit_map을 안 건드림 — Phase 3가 라우팅에 쓸 신호만 준비.
+  - **Phase 3 — 모델 기반 자동수정**(`p01-3b` 신설, 원본 파이프라인에 대응 함수 없음 — D172에 이은 두 번째 의도적 이탈): `ACTIONABLE_ISSUE_TYPES`(duplicate_exact/overbroad_unit/boundary_split_needed)만 자동수정 대상으로 라우팅 — `missing_pages`는 "페이지를 지어내라"는 것과 같아서 제외, `coverage_gap_failed_chunk`는 D169의 실패 청크 문제라 애초에 복구 대상 아님(Codex 계획 3번 항목 그대로 반영). `unit_map_json`+해당 이슈만+원본 청크 단위 분석 결과(`chunkResultsForUnits()`로 영향받는 유닛의 실제 페이지에 겹치는 청크만 추림, 이미 요약된 unit_map이 아니라 근거 원천에 접근하게 함)를 넘겨 `{revised_unit_map, changes, unresolved_issues}`를 받음. **결과는 무조건 신뢰 안 함** — `normalizeUnitMap()`으로 한 번 더 정리한 뒤 `validateUnitMapGrounding()` 통과해야만 `unitMap`(이제 `const`가 아니라 `let`) 교체: 근거 있는 항목 수가 20%+ 급감, `source_pages` 없는 항목, 분석된 적 없는 페이지 인용, `evidence` 없는 항목 중 하나라도 걸리면 그 라운드는 통째로 거부되고 이전 unitMap 그대로 유지.
+    - WHY: Codex 계획의 명시적 권고(감사와 수정을 같은 호출에 합치면 "채점자가 자기 답안도 채점"하는 구조가 됨) 그대로 채택.
+    - COST: 위험한 이슈 유형에서는 아예 시도 안 하므로 그 종류의 문제는 여전히 사람이 audit report 읽고 판단해야 함(원본 파이프라인이 애초에 가정하던 방식과 동일하게 남음).
+    - EXIT: 항목 수 급감 임계값(20%)은 실측 근거 없는 잠정치 — 오탐 거부가 잦아지면 데이터로 재조정, 검사 자체를 없애는 방향은 아님.
+  - **Phase 4 — 영속화/가시성**: 라운드별 수정 시도(적용됨/거부됨+사유+변경사항)를 `result.refine_fixes`로 최종 결과·DB(`kind: "refine_fixes"` artifact, `input_meta.refine_fixes_applied/rejected`)에 기록, 결과 화면에도 색상 구분해 표시(D168의 "로그에만 남기지 않는다" 원칙 재사용).
+  - **검증(3단계)**: ①Phase 1 — 청크 분석이 정확한 중복+무근거 항목을 낸 상황을 시뮬레이션, 첫 audit이 실제로 받는 unit_map_json을 가로채 정리 후 상태(중복 1개→병합, 무근거 1개→제외) 직접 확인. ②Phase 3 accept — 액션 가능한 이슈+유효한 수정안을 시뮬레이션, `p01-3b` 정확히 1회 호출·적용됨 로그·화면 표시 확인. ③Phase 3 reject — `p01-3b`가 분석 안 된 페이지(99)를 인용하는 항목을 지어내도록 시뮬레이션 → **다운로드 링크의 실제 JSON 바이트를 직접 파싱해**(페이지 텍스트 grep이 아니라) `result.unit_map`에 지어낸 항목이 전혀 없고 원본(`concept-A`)만 그대로 남아있음을 확인(거부 사유 로그엔 투명성을 위해 해당 항목명이 언급되는데, 이걸 "오염"으로 오탐한 첫 테스트 실수를 스스로 잡아 재검증함). ④non-actionable 이슈(coverage_gap_failed_chunk)만 나오는 상황에서 `p01-3b`가 단 한 번도 호출 안 됨, 상한까지 정상 도달 확인.
+  - WHY: 사용자가 Codex 계획 전체(phase4까지) 실행을 명시적으로 요청.
+  - COST: refine 라운드마다 이슈가 액션 가능하면 추가 LLM 호출 1회(p01-3b) — 라운드 소요시간 증가. 근거 검증 실패 시 그 라운드는 사실상 낭비(수정 시도했으나 반영 안 됨).
+  - EXIT: Phase 3의 검증 임계값(20% 급감)이나 `ACTIONABLE_ISSUE_TYPES` 범위는 실사용 데이터로 조정 대상 — 지금은 전부 첫 구현의 보수적 잠정치.
+  - 커밋: `f4a1bcd`, push 완료(워커 변경 없음, GitHub Pages만).
+
 
 ## 다음 단계 (미해결)
 
