@@ -21,18 +21,29 @@ const LabApp = (() => {
   // separately found step-3.5-flash (rank #1 there) fails completely on P01's chunk-analysis
   // task (0/50) while qwen3-next-80b succeeds 96%. So `tier` below is P01-specific evidence
   // (good/bad), not a re-skin of the P03 rank -- the other 9 are honestly labeled unverified
-  // for P01 rather than implying the P03 ranking transfers. (D-G, 2026-07-14: that "0/50"
-  // verdict is itself now suspect -- the original pipeline's chat_json() has no
-  // reasoning_content fallback and a live curl confirmed step-3.5-flash puts its real answer
-  // there with content:null; this tool's llm.js already carries that fallback, so a run here
-  // is a cleaner test than D120's ever was -- downgraded "bad"->"unverified" pending retest.)
+  // for P01 rather than implying the P03 ranking transfers.
+  //
+  // D183 (2026-07-15): D-G's "0/50 might be a reasoning_content bug" suspicion (2026-07-14)
+  // is now CONFIRMED, not just theorized -- a real 524 on a P03 interview (D181's 4000-char
+  // duplicate-definition code context) prompted a from-scratch investigation. Direct curl to
+  // NVIDIA, same prompt, model-only swapped: qwen3-next-80b took 75.9-95.9s per call (3/3
+  // eventually succeeded, but this project's own history shows this model intermittently
+  // 524s exactly in this range -- D142/D144/D145); step-3.5-flash took 1.5-3.9s for the
+  // identical prompt via chatTool's real tool_choice path (tool_calls populated correctly
+  // every time, questions were concretely grounded in the actual code). Separately verified
+  // step-3.5-flash's chatJSON path too (P01's actual mechanism, not just P03's): a
+  // realistic 10-page chunk-analysis prompt came back in 4.1-5.3s, answer in
+  // reasoning_content with content:null every time -- exactly D-G's hypothesis, and
+  // llm.js's existing D131 fallback recovered it cleanly in all 3 calls. D120's "0/50" was
+  // measuring the OLD pipeline's missing fallback, not a real model failure. Promoted to
+  // shared.default_model for both P01 and P03 on this evidence, not speculation.
   const MODEL_CHOICES = [
-    { id: "stepfun-ai/step-3.5-flash", label: "step-3.5-flash", tier: "unverified",
-      note: "P01-T1(D120)의 '0/50 완전실패'는 reasoning_content 버그로 오염됐을 가능성이 큼(D-G) -- 이 도구는 그 폴백이 있어 재검증 가치 있음." },
+    { id: "stepfun-ai/step-3.5-flash", label: "step-3.5-flash", tier: "good",
+      note: "기본값(D183) · D120의 '0/50'은 구파이프라인 reasoning_content 버그로 확정(D-G 이론을 실측 확인) · 재검증: P03 tool_calls 1.5-3.9s 3/3, P01 JSON모드 4.1-5.3s 3/3(reasoning_content 경유, 폴백 정상 동작)." },
     { id: "mistralai/mistral-medium-3.5-128b", label: "mistral-medium-3.5", tier: "unverified",
-      note: "P01 기준 미검증 · P03 종합 2위(0.749)." },
-    { id: "qwen/qwen3-next-80b-a3b-instruct", label: "qwen3-next-80b", tier: "good",
-      note: "팀 Locked 모델 · P01-T1 실측 96% 성공(D120) · 기본값." },
+      note: "P01 기준 미검증 · P03 종합 2위(0.749) · D183 부수측정: 동일 4000자 프롬프트 13.2-17.3s(qwen 대비 5-6배 빠름, qwen과의 상대비교로만 측정, 단독 신뢰도 검증은 아직 부족)." },
+    { id: "qwen/qwen3-next-80b-a3b-instruct", label: "qwen3-next-80b", tier: "unverified",
+      note: "P01-T1 실측 96% 성공(D120, 표본 50). D183: 동일 프롬프트에서 step-3.5-flash 대비 20-50배 느림(75.9-95.9s, 이전 회차엔 3회 중 1회 524도 있었음) -- 더는 기본값 아님, 느림/간헐적 524(D142/D144/D145 기존 이력)로 tier 재평가." },
     { id: "nvidia/nemotron-3-super-120b-a12b", label: "nemotron-3-super-120b", tier: "unverified",
       note: "P01 기준 미검증 · P03에서 범위 밖 점수 출력 결함 이력." },
     { id: "qwen/qwen3.5-122b-a10b", label: "qwen3.5-122b", tier: "unverified",
