@@ -1082,6 +1082,15 @@ python3 pipeline/compare_methodologies.py
   - EXIT: 이 수정 후에도 잘못된 곳으로 떨어지면 `uri_allow_list` 자체를 재확인(로컬 와일드카드 패턴이 실제로 이 경로를 커버하는지 등).
   - 커밋: `e0fe2ad`, push 완료.
 
+- **D151** ([`docs/lab/index.html`](./docs/lab/index.html), [`docs/lab/config.js`](./docs/lab/config.js), [`docs/lab/db.js`](./docs/lab/db.js)) — 사용자 보고: "로그인 된 상태인지 아닌지 구분이 안 가". 코드 확인 결과 실제 버그 — `renderStatus()`(`auth-status` 영역)가 NVIDIA 키/프록시 URL 존재 여부만 보고 있었고, `DB 저장 켜짐(팀 공용) — 로그인해야 실제로 저장됨`은 로그인 여부와 무관한 고정 문자열이었음. 로그인에 성공하든 실패하든 화면이 똑같아서 구분 자체가 불가능했던 것.
+  - **수정**: `db.js`에 `currentMemberOrNull()`(기존 `currentMember()`는 미로그인 시 throw하도록 설계돼 있어 상태 표시용으로 부적합, non-throwing 버전 추가)과 `signOut()` 추가. `renderStatus()`가 실제 세션을 확인해 로그인 시 이메일을 표시하고 로그인/로그아웃 버튼을 토글하도록 재작성. `index.html`에 `logout-btn` 추가.
+  - **1차 구현에 즉시 실측으로 잡은 자기 회귀**: Playwright로 로그인 상태를 시뮬레이션해 검증하던 중, 로그인 상태로 바꿔도 화면이 안 바뀌는 걸 발견 — 원인은 `if (window.LabDB) ...` 체크였음. 이 프로젝트의 `docs/lab/*.js`는 전부 classic `<script>`라 최상위 `const LabDB`가 `window.LabDB`가 되지 않는다는, 이미 D136에서 문서화된 바로 그 함정을 그대로 반복한 것 — `window.LabDB` 체크 제거하고 bare identifier(`LabDB.currentMemberOrNull()`)로 직접 호출하도록 수정.
+  - **검증**: Playwright로 `LabDB.currentMemberOrNull`을 스텁해 로그인 상태를 시뮬레이션 — 수정 전엔 로그아웃 상태 문구가 그대로 유지(버그 재현), 수정 후엔 `로그인됨: {email} — DB 저장 켜짐`으로 정확히 바뀌고 로그인/로그아웃 버튼도 올바르게 토글됨을 확인.
+  - WHY: 화면에 실제 세션 상태를 반영하는 요소가 하나도 없었던 게 근본 원인 — 사용자 경험 문제가 아니라 순수 버그.
+  - COST: 없음.
+  - EXIT: 로그인 상태가 탭을 열어둔 채로 만료되는 경우까지 실시간 반영하려면 `onAuthStateChange` 리스너 추가 필요(현재는 페이지 로드/필드 입력 시점에만 재확인) — 아직 요청받지 않아 보류.
+  - 커밋: `55fc9b7`, push 완료.
+
 
 ## 다음 단계 (미해결)
 
