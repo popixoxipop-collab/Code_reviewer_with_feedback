@@ -76,13 +76,15 @@
     전달된다(프록시 안 거침). 자세한 아키텍처/보안 모델은 <a href="https://github.com/popixoxipop-collab/Code_reviewer_with_feedback/blob/main/experiments/web_lab/PLAN.md" target="_blank" rel="noopener">PLAN.md</a> 참고.</p>
   </footer>
 
-  <!-- D159 (2026-07-15): debugging aid -- is THIS TAB's own request rate approaching
-       NVIDIA's free-tier ~40rpm ceiling. Only counts requests this tab initiated, not
-       server-side retries inside worker/nvidia-proxy.js's queue() -- see llm.js's
-       requestLog comment for why that's a real limitation, not an oversight. -->
+  <!-- D159/D160 (2026-07-15): debugging aid -- is the request rate through this proxy
+       approaching NVIDIA's free-tier ~40rpm ceiling. Prefers worker/nvidia-proxy.js's
+       GET ?traffic=1 (every actual attempt, incl. server-side retries, from every client
+       through this deployed Worker); falls back to this-tab-only counting if that's
+       unreachable -- see docs/lab/debug-traffic.js for exactly what each mode does and
+       doesn't see (e.g. a teammate's separately-deployed proxy is never visible here). -->
   <section id="debug-traffic" class="debug-traffic">
-    <h2>디버그 · NVIDIA 요청 트래픽(이 탭 기준)</h2>
-    <p class="debug-traffic-note">최근 60초간 이 탭에서 보낸 NVIDIA 요청 수 — 서버 쪽 재시도(worker/nvidia-proxy.js)는 안 잡힘, 참고용.</p>
+    <h2>디버그 · NVIDIA 요청 트래픽</h2>
+    <p class="debug-traffic-note">최근 60초간 NVIDIA로 나간 요청 수(참고용). <span id="debug-traffic-source"></span></p>
     <div class="debug-traffic-body">
       <div class="debug-traffic-current" id="debug-traffic-current">0 / 40</div>
       <div class="debug-traffic-chart-wrap">

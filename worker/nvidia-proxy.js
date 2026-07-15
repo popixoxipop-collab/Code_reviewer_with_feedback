@@ -93,6 +93,35 @@ const RETRY_DELAY_SECONDS = 5; // brief gap before Cloudflare redelivers -- avoi
 const RATE_LIMIT_RETRY_DELAY_SECONDS = 60;
 const PER_ATTEMPT_TIMEOUT_MS = 600_000; // 600s, == feedback/nvidia_client.py's DEFAULT_TIMEOUT_S (D98-derived, not a new guess)
 
+// D160 (2026-07-15): docs/lab/debug-traffic.js's graph only counted requests one browser
+// tab initiated -- it couldn't see server-side retries inside queue() below, so a burst
+// that looked under the 40rpm line there could still be over budget once retries (or
+// other teammates going through this same deployed Worker) are counted. Records the
+// timestamp of every ACTUAL fetch() to NVIDIA here (first attempt and every retry alike,
+// from every job/every client), one unique KV key per sample.
+//   WHY unique keys, not one shared "list of timestamps" key: D-J already established
+//     that this KV can have many concurrent consumer invocations (parallel chunk jobs,
+//     retries, other teammates) -- a shared key would need read-modify-write-append,
+//     which races exactly like D-J's duplicate-delivery problem (two invocations read
+//     the same list, both append, the loser's write is silently lost). A unique key per
+//     sample turns every write into an unconditional put -- no read, no race, ever.
+//   COST: relies on KV list() to reconstruct the log for reading (see the new GET
+//     ?traffic=1 handler below) -- fine at this scale (a handful to low hundreds of
+//     samples in the 5-minute window), would need Analytics Engine or a Durable Object
+//     if traffic ever got large enough for list() itself to become the bottleneck.
+//   EXIT: if this KV traffic namespace ever needs its own lifecycle separate from job
+//     records, split it into a second KV binding -- not necessary at this scale.
+const TRAFFIC_SAMPLE_TTL_SECONDS = 300; // matches docs/lab/debug-traffic.js's 5-minute HISTORY_MS
+
+async function recordTrafficSample(env) {
+  try {
+    const key = `traffic:${Date.now()}:${crypto.randomUUID()}`;
+    await env.NVIDIA_JOBS.put(key, "1", { expirationTtl: TRAFFIC_SAMPLE_TTL_SECONDS });
+  } catch (e) {
+    // best-effort -- a dropped traffic sample must never fail or delay the real NVIDIA call
+  }
+}
+
 function corsHeaders(origin) {
   return {
     "access-control-allow-origin": ALLOWED_ORIGIN === "*" ? "*" : ALLOWED_ORIGIN,
@@ -153,6 +182,17 @@ export default {
 
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: corsHeaders(origin) });
+    }
+
+    // GET /?traffic=1 -- D160: recent actual NVIDIA request timestamps (every attempt,
+    // first + retries, from every client through this Worker) for docs/lab/debug-traffic.js.
+    // Read-only, best-effort -- never blocks or affects job submission/polling.
+    if (request.method === "GET" && url.searchParams.has("traffic")) {
+      const list = await env.NVIDIA_JOBS.list({ prefix: "traffic:" });
+      const timestamps = list.keys
+        .map((k) => Number(k.name.split(":")[1]))
+        .filter((n) => Number.isFinite(n));
+      return jsonResponse({ timestamps }, 200, origin);
     }
 
     // GET /?job=<id> -- poll for a previously-submitted job.
@@ -217,6 +257,7 @@ export default {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), PER_ATTEMPT_TIMEOUT_MS);
       try {
+        await recordTrafficSample(env); // D160: log this attempt (first or retry) before the real call
         const upstream = await fetch(NVIDIA_URL, {
           method: "POST",
           headers: { "content-type": "application/json", authorization: `Bearer ${apiKey}` },
