@@ -32,6 +32,22 @@ const P01Runner = (() => {
   // copying that unrelated constant.
   const CHUNK_CONCURRENCY = 8;
 
+  // D169 (2026-07-15): D168 kept the worker's per-job independent retry (D-I) but capped
+  // how many jobs could be in flight at once. User asked to go further -- move retry
+  // ownership for chunk-analysis to the client entirely, since it (unlike any single
+  // worker job) can see every chunk's outcome and coordinate them, instead of 26 jobs each
+  // independently guessing when to retry. Each chunk-analysis call now goes out with
+  // x-max-attempts:1 (worker attempts it exactly once, see worker/nvidia-proxy.js), and
+  // this function collects whichever ones failed in a RETRYABLE way (job.retryable, not a
+  // hard client error) and resubmits just those in the next round -- concurrency-capped
+  // the same way as the first pass. MAX_RETRY_ROUNDS=3 (1 initial + 2 retry rounds)
+  // mirrors the worker's own former MAX_ATTEMPTS=3 total-attempts convention, just
+  // coordinated now instead of per-job independent. ROUND_RETRY_DELAY_MS reuses D159's
+  // RATE_LIMIT_RETRY_DELAY_SECONDS=60 -- user's own "1분 단위" request lines up with that
+  // same existing value, not a fresh guess.
+  const MAX_RETRY_ROUNDS = 3;
+  const ROUND_RETRY_DELAY_MS = 60_000;
+
   // Ranking + notes sourced from docs/pipelines.html's 11-model 4-axis table (D116). That
   // benchmark measures a DIFFERENT task (P03 question-gen x grading) -- P01-T1 (D119/D120)
   // separately found step-3.5-flash (rank #1 there) fails completely on P01's chunk-analysis
@@ -237,23 +253,28 @@ const P01Runner = (() => {
   // failures for a different one (very large max_tokens means very long non-streaming
   // generation, which the 524 investigation already found raises timeout risk).
   const MAX_LENGTH_DOUBLINGS = 2;
-  async function callPromptStage(stageId, values) {
+  // D169: opts.maxAttempts forwarded to every LabLLM.chatJSON call this function makes
+  // (initial, length-doubling retries, and the repair-prompt fallback alike) -- undefined
+  // (the default, used by refine/question-gen callers below) preserves the worker's
+  // existing MAX_ATTEMPTS=3 auto-retry untouched.
+  async function callPromptStage(stageId, values, opts = {}) {
     const system = LabApp.resolveTemplate("p01", stageId, "system");
     const template = LabApp.resolveTemplate("p01", stageId, "user_template");
     const userMsg = LabApp.fillTemplate(template, values);
     const baseMaxTokens = LabApp.resolveParam("p01", stageId, "max_tokens") || 1800;
     const model = LabApp.resolveParam("p01", stageId, "model") || selectedModel;
     const messages = [{ role: "system", content: system }, { role: "user", content: userMsg }];
+    const maxAttempts = opts.maxAttempts;
 
     let maxTokens = baseMaxTokens;
-    let choice = await LabLLM.chatJSON({ model, messages, maxTokens });
+    let choice = await LabLLM.chatJSON({ model, messages, maxTokens, maxAttempts });
     try {
       return LabLLM.extractJsonObject(choice.content);
     } catch (e) {
       if (choice.finishReason === "length") {
         for (let attempt = 1; attempt <= MAX_LENGTH_DOUBLINGS; attempt++) {
           maxTokens *= 2;
-          choice = await LabLLM.chatJSON({ model, messages, maxTokens });
+          choice = await LabLLM.chatJSON({ model, messages, maxTokens, maxAttempts });
           try {
             return LabLLM.extractJsonObject(choice.content);
           } catch (e2) {
@@ -270,7 +291,7 @@ const P01Runner = (() => {
       // token-budget problem)
       const repairStage = LabApp.getStage("p01", "p01-json-repair");
       const repairMsg = LabApp.fillTemplate(repairStage.user_template, { malformed_content: (choice.content || "").slice(0, 14000) });
-      const repaired = await LabLLM.chatJSON({ model, messages: [{ role: "system", content: repairStage.system }, { role: "user", content: repairMsg }], maxTokens: baseMaxTokens });
+      const repaired = await LabLLM.chatJSON({ model, messages: [{ role: "system", content: repairStage.system }, { role: "user", content: repairMsg }], maxTokens: baseMaxTokens, maxAttempts });
       return LabLLM.extractJsonObject(repaired.content);
     }
   }
@@ -296,44 +317,62 @@ const P01Runner = (() => {
 
       // D156 (2026-07-15): chunks analysed in parallel instead of one-at-a-time -- they
       // don't depend on each other (makeUnitMap() below just aggregates whatever comes
-      // back, order doesn't matter), and the proxy already treats each callPromptStage()
-      // as its own Cloudflare Queue job with its own retry budget (D144/D145), so nothing
-      // on the backend assumes these arrive sequentially. Each mapped function catches
-      // its own error and always resolves (never rejects) so one failing chunk can't
-      // abort the rest via Promise.all -- same fault-tolerance as the old sequential
-      // loop, just concurrent.
+      // back, order doesn't matter), so nothing downstream assumes these arrive
+      // sequentially.
       //
-      // D168 (2026-07-15): a real run hit 5x 429 + 2x 524 across this burst -- all 26
-      // fired in the same instant against one NVIDIA key. Now batched in waves of
-      // CHUNK_CONCURRENCY (8, see that constant's own comment for the ~40rpm-derived
-      // math), each wave run with Promise.all (so within a wave, still genuinely
-      // concurrent) and waves processed with a real `for` loop (NOT `forEach(async...)`,
-      // which wouldn't actually wait between iterations and would silently defeat the
-      // whole cap -- confirmed via an independent Codex read of this exact code before
-      // implementing). chunkResults is built by pushing each wave's results in order, so
-      // the existing "Promise.all preserves input order" property downstream
-      // (makeUnitMap doesn't care, but this keeps the invariant simple) still holds.
-      LabApp.log(pipelineId, `청크 ${chunks.length}개를 ${CHUNK_CONCURRENCY}개씩 나눠 분석 시작: p${chunks.map((c) => c.range).join(", p")}`);
-      const chunkResults = [];
-      for (let i = 0; i < chunks.length; i += CHUNK_CONCURRENCY) {
-        const wave = chunks.slice(i, i + CHUNK_CONCURRENCY);
-        const waveResults = await Promise.all(wave.map(async (chunk) => {
-          try {
-            const result = await callPromptStage("p01-2", {
-              course_label: courseLabel, chunk_range: chunk.range, chunk_start: chunk.start, chunk_end: chunk.end,
-              chunk_text: chunk.text.slice(0, 18000),
-            });
-            result.chunk_range = result.chunk_range || chunk.range;
-            LabApp.log(pipelineId, `청크 p${chunk.range} 완료`);
-            return result;
-          } catch (err) {
-            LabApp.log(pipelineId, `청크 p${chunk.range} 실패: ${err.message}`);
-            return { chunk_range: chunk.range, units: [], concepts: [], error: String(err.message) };
-          }
-        }));
-        chunkResults.push(...waveResults);
+      // D169 (2026-07-15): D168 capped how many chunk jobs could be in flight at once
+      // (CHUNK_CONCURRENCY) but still let each job retry independently inside the worker
+      // (D-I) -- 26 uncoordinated jobs each guessing when to retry. User asked to move
+      // retry ownership to the client instead, since THIS function can see every chunk's
+      // outcome and coordinate them. Each chunk-analysis call now goes out with
+      // maxAttempts:1 (worker tries it exactly once -- see worker/nvidia-proxy.js), and
+      // chunkState tracks every chunk's status across rounds: round 1 attempts all of
+      // them, and each following round retries only whichever ones failed in a way the
+      // worker marked `retryable` (a genuine NVIDIA/network hiccup, not e.g. a malformed-
+      // request client error) -- up to MAX_RETRY_ROUNDS total, with a shared
+      // ROUND_RETRY_DELAY_MS pause between rounds so a retry round doesn't immediately
+      // re-hit whatever just rate-limited the previous one. Concurrency within any single
+      // round's wave is still capped at CHUNK_CONCURRENCY, processed with a real `for`
+      // loop (not `forEach(async...)`, which wouldn't actually wait between iterations and
+      // would silently defeat the cap -- confirmed via an independent Codex read of this
+      // exact code before implementing).
+      const chunkState = chunks.map((chunk) => ({ chunk, result: null, err: null, retryable: false }));
+      for (let round = 1; round <= MAX_RETRY_ROUNDS; round++) {
+        const targets = chunkState.filter((s) => !s.result && (round === 1 || s.retryable));
+        if (!targets.length) break;
+        LabApp.log(pipelineId, round === 1
+          ? `청크 ${targets.length}개를 ${CHUNK_CONCURRENCY}개씩 나눠 분석 시작: p${targets.map((s) => s.chunk.range).join(", p")}`
+          : `청크 재시도 라운드 ${round}/${MAX_RETRY_ROUNDS} (${targets.length}개): p${targets.map((s) => s.chunk.range).join(", p")}`);
+        for (let i = 0; i < targets.length; i += CHUNK_CONCURRENCY) {
+          const wave = targets.slice(i, i + CHUNK_CONCURRENCY);
+          await Promise.all(wave.map(async (state) => {
+            const chunk = state.chunk;
+            try {
+              const result = await callPromptStage("p01-2", {
+                course_label: courseLabel, chunk_range: chunk.range, chunk_start: chunk.start, chunk_end: chunk.end,
+                chunk_text: chunk.text.slice(0, 18000),
+              }, { maxAttempts: 1 });
+              result.chunk_range = result.chunk_range || chunk.range;
+              state.result = result;
+              LabApp.log(pipelineId, `청크 p${chunk.range} 완료`);
+            } catch (err) {
+              state.err = err;
+              state.retryable = !!err.retryable;
+              LabApp.log(pipelineId, `청크 p${chunk.range} 실패${state.retryable ? " (다음 라운드에 재시도)" : ""}: ${err.message}`);
+            }
+          }));
+        }
+        const stillRetryable = chunkState.filter((s) => !s.result && s.retryable);
+        if (!stillRetryable.length) break; // nothing left worth retrying
+        if (round < MAX_RETRY_ROUNDS) {
+          LabApp.log(pipelineId, `${stillRetryable.length}개 재시도 대기 중 (${ROUND_RETRY_DELAY_MS / 1000}초)...`);
+          await new Promise((resolve) => setTimeout(resolve, ROUND_RETRY_DELAY_MS));
+        }
       }
 
+      const chunkResults = chunkState.map((s) => s.result || {
+        chunk_range: s.chunk.range, units: [], concepts: [], error: String(s.err ? s.err.message : "알 수 없는 오류"),
+      });
       const failedChunks = chunkResults.filter((c) => c.error);
       if (failedChunks.length) {
         LabApp.log(pipelineId, `⚠ 청크 ${failedChunks.length}개 분석 실패 (p${failedChunks.map((c) => c.chunk_range).join(", p")}) -- unit_map에서 빠짐`);

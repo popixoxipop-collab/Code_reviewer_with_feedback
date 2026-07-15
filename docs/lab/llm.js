@@ -53,11 +53,20 @@ const LabLLM = (() => {
     return requestLog.slice();
   }
 
-  async function submitAndPoll(proxyUrl, apiKey, body) {
+  // D169 (2026-07-15): user asked to move retry ownership for P01's chunk-analysis burst
+  // from the worker (each of up to 26 jobs independently deciding when to retry, per D-I)
+  // to the client (this file + p01-runner.js), which can see all chunks' outcomes at once
+  // and retry them together in coordinated, concurrency-capped rounds instead. opts.maxAttempts
+  // is forwarded as the x-max-attempts header -- worker/nvidia-proxy.js falls back to its
+  // existing MAX_ATTEMPTS=3 auto-retry when this header is absent, so P03 and P01's own
+  // refine/question-gen calls (which never set it) are completely unaffected.
+  async function submitAndPoll(proxyUrl, apiKey, body, opts = {}) {
     recordRequest();
+    const headers = { "content-type": "application/json", "x-nvidia-api-key": apiKey };
+    if (opts.maxAttempts) headers["x-max-attempts"] = String(opts.maxAttempts);
     const submitRes = await fetch(proxyUrl, {
       method: "POST",
-      headers: { "content-type": "application/json", "x-nvidia-api-key": apiKey },
+      headers,
       body: JSON.stringify(body),
     });
     if (!submitRes.ok) {
@@ -83,13 +92,20 @@ const LabLLM = (() => {
       }
       if (job.status === "pending") continue;
       if (job.status === "done") return JSON.parse(job.result);
-      if (job.status === "error") throw new Error(`NVIDIA 호출 실패: ${job.error || "알 수 없는 오류"}`);
+      if (job.status === "error") {
+        // D169: job.retryable (set by worker/nvidia-proxy.js) lets a caller that owns its
+        // own retry decide whether resubmitting this exact job later is worth it, without
+        // string-matching the error message.
+        const err = new Error(`NVIDIA 호출 실패: ${job.error || "알 수 없는 오류"}`);
+        err.retryable = !!job.retryable;
+        throw err;
+      }
       throw new Error(`알 수 없는 작업 상태: ${JSON.stringify(job).slice(0, 200)}`);
     }
     throw new Error(`작업이 ${Math.round(MAX_POLL_MS / 60000)}분 안에 끝나지 않음 (job_id=${jobId})`);
   }
 
-  async function chatJSON({ model, messages, maxTokens, temperature = 0.0, jsonMode = true }) {
+  async function chatJSON({ model, messages, maxTokens, temperature = 0.0, jsonMode = true, maxAttempts }) {
     const proxyUrl = LabConfig.get("proxy-url");
     const apiKey = LabConfig.get("nvidia-key");
     if (!proxyUrl || !apiKey) {
@@ -97,7 +113,7 @@ const LabLLM = (() => {
     }
     const body = { model, messages, max_tokens: maxTokens, temperature };
     if (jsonMode) body.response_format = { type: "json_object" };
-    const data = await submitAndPoll(proxyUrl, apiKey, body);
+    const data = await submitAndPoll(proxyUrl, apiKey, body, { maxAttempts });
     const choice = data.choices && data.choices[0] && data.choices[0].message;
     if (!choice) throw new Error(`예상치 못한 응답 형태: ${JSON.stringify(data).slice(0, 300)}`);
     // D131/D142's fallback chain, ported from the real pipeline -- some models (step-3.5-flash)

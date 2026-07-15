@@ -126,7 +126,7 @@ function corsHeaders(origin) {
   return {
     "access-control-allow-origin": ALLOWED_ORIGIN === "*" ? "*" : ALLOWED_ORIGIN,
     "access-control-allow-methods": "GET, POST, OPTIONS",
-    "access-control-allow-headers": "content-type, x-nvidia-api-key",
+    "access-control-allow-headers": "content-type, x-nvidia-api-key, x-max-attempts",
     "access-control-max-age": "86400",
   };
 }
@@ -221,11 +221,21 @@ export default {
       return jsonResponse({ error: "request body must be valid JSON" }, 400, origin);
     }
 
+    // D169 (2026-07-15): optional per-job attempt-count override, requested by the client
+    // via this header -- lets P01's chunk-analysis stage own its own coordinated retry
+    // (see docs/lab/p01-runner.js) instead of each job independently retrying per D-I.
+    // Absent/invalid falls back to MAX_ATTEMPTS below unchanged, so P03 (and P01's own
+    // refine/question-gen calls, which never send this header) keep today's behavior
+    // exactly as-is -- this is opt-in per request, not a global policy change.
+    const maxAttemptsHeader = request.headers.get("x-max-attempts");
+    const maxAttemptsOverride = maxAttemptsHeader ? parseInt(maxAttemptsHeader, 10) : NaN;
+    const maxAttempts = Number.isInteger(maxAttemptsOverride) && maxAttemptsOverride > 0 ? maxAttemptsOverride : undefined;
+
     const jobId = crypto.randomUUID();
     await env.NVIDIA_JOBS.put(jobId, JSON.stringify({ status: "pending" }), { expirationTtl: JOB_TTL_SECONDS });
 
     try {
-      await env.NVIDIA_JOBS_QUEUE.send({ jobId, apiKey, body });
+      await env.NVIDIA_JOBS_QUEUE.send({ jobId, apiKey, body, maxAttempts });
     } catch (e) {
       await env.NVIDIA_JOBS.put(
         jobId,
@@ -244,7 +254,11 @@ export default {
   // why a single attempt still isn't the end of the story.
   async queue(batch, env) {
     for (const message of batch.messages) {
-      const { jobId, apiKey, body } = message.body;
+      const { jobId, apiKey, body, maxAttempts } = message.body;
+      // D169: per-job override (see the POST handler above) falls back to the existing
+      // MAX_ATTEMPTS when absent -- every caller that predates this change keeps behaving
+      // exactly as before.
+      const effectiveMaxAttempts = maxAttempts || MAX_ATTEMPTS;
 
       // D-J: cheap upfront exit for the common case -- a duplicate/stale delivery of a
       // job some other delivery already finished. Skips the NVIDIA call entirely instead
@@ -273,11 +287,11 @@ export default {
           continue;
         }
 
-        if (RETRYABLE_STATUSES.has(upstream.status) && message.attempts < MAX_ATTEMPTS) {
+        if (RETRYABLE_STATUSES.has(upstream.status) && message.attempts < effectiveMaxAttempts) {
           const delaySeconds = upstream.status === 429 ? RATE_LIMIT_RETRY_DELAY_SECONDS : RETRY_DELAY_SECONDS;
           const wrote = await putIfNotTerminal(env, jobId, {
             status: "pending",
-            note: `attempt ${message.attempts}/${MAX_ATTEMPTS} got HTTP ${upstream.status}, retrying in ${delaySeconds}s`,
+            note: `attempt ${message.attempts}/${effectiveMaxAttempts} got HTTP ${upstream.status}, retrying in ${delaySeconds}s`,
           });
           // If another delivery already reached done/error, this job's fate is already
           // sealed -- don't retry a job nobody's waiting on anymore, just ack it away.
@@ -288,7 +302,10 @@ export default {
 
         await putIfNotTerminal(env, jobId, {
           status: "error",
-          error: `NVIDIA HTTP ${upstream.status} (attempt ${message.attempts}/${MAX_ATTEMPTS}): ${text.slice(0, 500)}`,
+          error: `NVIDIA HTTP ${upstream.status} (attempt ${message.attempts}/${effectiveMaxAttempts}): ${text.slice(0, 500)}`,
+          // D169: lets a client that owns its own retry (x-max-attempts) know whether
+          // resubmitting this job later is worth it, without string-matching the error.
+          retryable: RETRYABLE_STATUSES.has(upstream.status),
         });
         message.ack();
       } catch (e) {
@@ -296,10 +313,10 @@ export default {
         const isTimeout = e.name === "AbortError";
         const reason = isTimeout ? `no response within ${PER_ATTEMPT_TIMEOUT_MS / 1000}s` : `upstream fetch failed: ${e.message}`;
 
-        if (message.attempts < MAX_ATTEMPTS) {
+        if (message.attempts < effectiveMaxAttempts) {
           const wrote = await putIfNotTerminal(env, jobId, {
             status: "pending",
-            note: `attempt ${message.attempts}/${MAX_ATTEMPTS} ${reason}, retrying`,
+            note: `attempt ${message.attempts}/${effectiveMaxAttempts} ${reason}, retrying`,
           });
           if (wrote) message.retry({ delaySeconds: RETRY_DELAY_SECONDS });
           else message.ack();
@@ -308,7 +325,8 @@ export default {
 
         await putIfNotTerminal(env, jobId, {
           status: "error",
-          error: `${reason} (attempt ${message.attempts}/${MAX_ATTEMPTS}, giving up)`,
+          error: `${reason} (attempt ${message.attempts}/${effectiveMaxAttempts}, giving up)`,
+          retryable: true, // timeouts/network errors are always worth a client-driven retry later
         });
         message.ack();
       }
