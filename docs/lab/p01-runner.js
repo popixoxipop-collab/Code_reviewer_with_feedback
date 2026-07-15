@@ -413,18 +413,50 @@ const P01Runner = (() => {
       LabApp.log(pipelineId, `NVIDIA 서버 부하 완화 대기 중 (${POST_CHUNK_COOLDOWN_MS / 1000}초 쿨다운)...`);
       await new Promise((resolve) => setTimeout(resolve, POST_CHUNK_COOLDOWN_MS));
 
-      const refineIters = LabApp.resolveParam("p01", "p01-3", "refine_iters") || 2;
+      // D172 (2026-07-15): the real pipeline (scripts/java_curriculum_nvidia_pipeline.py,
+      // --refine-iters, default 2) runs a fixed count and never actually reads
+      // checklist.question_generation_ready anywhere -- confirmed by reading that source
+      // directly, including its own exception-fallback audit which hardcodes
+      // "question_generation_ready": True. So a fixed loop wasn't a web-tool bug, it's an
+      // exact port of the real pipeline's actual (if confusingly-named) behavior. User
+      // explicitly asked for the web tool to diverge here: keep looping until the
+      // checklist says it's actually ready, not just N times. This is the first place
+      // this file's P01 stages intentionally behave differently from the real pipeline --
+      // everywhere else (prompts, params, chunk/refine/question-gen shapes) still mirrors
+      // it exactly.
+      //   WHY: user's stated intent for this one gate, verified against real pipeline
+      //     behavior first rather than assumed.
+      //   COST: this only changes the STOP condition, not what refine actually does --
+      //     refine_once() only ever produces an audit report, it never modifies unit_map,
+      //     so if the same structural issues (e.g. "unit_boundaries_clear: false" because
+      //     one giant chunk-derived unit spans the whole document) hold across iterations,
+      //     re-auditing the SAME unchanged unit_map may just repeat similar verdicts and
+      //     still hit maxRefineIters without ever passing -- looping alone can't fix
+      //     something only an "apply the suggested fixes back to unit_map" step could.
+      //   EXIT: if this reliably maxes out without passing on real documents, the next
+      //     step is making refine's issues/suggested_fix actually revise unit_map between
+      //     iterations, not raising maxRefineIters further.
+      const maxRefineIters = LabApp.resolveParam("p01", "p01-3", "refine_iters") || 5;
       const audits = [];
-      for (let i = 1; i <= refineIters; i++) {
-        LabApp.log(pipelineId, `refine 반복 ${i}/${refineIters}...`);
+      let refineReady = false;
+      for (let i = 1; i <= maxRefineIters; i++) {
+        LabApp.log(pipelineId, `refine 반복 ${i}/${maxRefineIters}...`);
         try {
           const audit = await callPromptStage("p01-3", {
             course_label: courseLabel, iteration: i, unit_map_json: JSON.stringify(unitMap).slice(0, 24000),
           });
           audits.push(audit);
+          if (audit.checklist && audit.checklist.question_generation_ready === true) {
+            refineReady = true;
+            LabApp.log(pipelineId, `refine checklist 통과(question_generation_ready) — ${i}회 만에 종료`);
+            break;
+          }
         } catch (err) {
           LabApp.log(pipelineId, `refine ${i} 실패: ${err.message}`);
         }
+      }
+      if (!refineReady) {
+        LabApp.log(pipelineId, `⚠ refine 최대 반복(${maxRefineIters}) 도달 -- checklist 통과 못 함, 마지막 상태로 질문 생성 진행`);
       }
 
       const graphNodes = buildGraphNodes(unitMap);

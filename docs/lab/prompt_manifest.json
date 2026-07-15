@@ -45,7 +45,7 @@
           "optional_placeholders": ["course_label"],
           "truncation": { "unit_map_json": 24000 },
           "params": [
-            { "key": "refine_iters", "type": "int", "default": 2 },
+            { "key": "refine_iters", "type": "int", "default": 5, "note": "D172: 최대 반복 횟수(안전 상한) -- checklist.question_generation_ready가 true가 되면 그 전에 멈춤. 실측 수렴 데이터 없어 2에서 잠정적으로 상향, 실사용 데이터 쌓이면 재조정" },
             { "key": "max_tokens", "type": "int", "default": 1600 },
             { "key": "temperature", "type": "float", "default": 0.0, "locked": true }
           ]
