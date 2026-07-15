@@ -38,6 +38,10 @@ const P02Runner = (() => {
   let currentMethod = "pat"; // "pat" | "zip"
   let zipFiles = null; // { relPath: content }
 
+  function isSkippedDir(relPath) {
+    return relPath.split("/").some((p) => SKIP_DIR_NAMES.has(p));
+  }
+
   // D164 (2026-07-15): Codex root-cause investigation (user-delegated) into a real "스캔
   // 대상 소스 파일을 찾지 못함" failure confirmed this via a direct Node repro: extension
   // matching was case-SENSITIVE against an all-lowercase SRC_EXTS, so a legitimately-source
@@ -46,11 +50,38 @@ const P02Runner = (() => {
   // only ever ADD previously-wrongly-excluded valid source files to the scan -- it can't
   // cause any new false inclusion, since it's still the same whitelist, just case-normalized.
   function isSkippedPath(relPath) {
-    const parts = relPath.split("/");
-    if (parts.some((p) => SKIP_DIR_NAMES.has(p))) return true;
+    if (isSkippedDir(relPath)) return true;
     const ext = "." + (relPath.split(".").pop() || "").toLowerCase();
     if (!SRC_EXTS.includes(ext)) return true;
     return false;
+  }
+
+  // D166 (2026-07-15): a real user's zip (AI_LLMOps_3일차_실습예시파일.zip, confirmed via
+  // D153's own diagnostic surfacing ".ipynb×3") was made ENTIRELY of Jupyter notebooks --
+  // 0 files ever loadable, not a bug, just genuinely unsupported. A .ipynb is JSON (cells,
+  // outputs, execution_count, metadata), not source text -- adding it to SRC_EXTS and
+  // feeding the raw JSON to the (unmodified) Python pipeline would scan notebook plumbing,
+  // not code. Instead: extract only the code cells' actual source and present that to the
+  // pipeline as a virtual .py file, so cognition/two_tier_scan.py etc. need zero changes.
+  // Markdown/raw cells are dropped (they're commentary, not code the scan pipeline judges)
+  // -- a possible future enhancement, not needed to fix "0 files found".
+  function isNotebookPath(relPath) {
+    return !isSkippedDir(relPath) && relPath.toLowerCase().endsWith(".ipynb");
+  }
+
+  function extractNotebookSource(jsonText) {
+    let nb;
+    try {
+      nb = JSON.parse(jsonText);
+    } catch (e) {
+      return null; // malformed notebook JSON
+    }
+    const cells = Array.isArray(nb.cells) ? nb.cells : [];
+    const codeParts = cells
+      .filter((c) => c.cell_type === "code")
+      .map((c) => (Array.isArray(c.source) ? c.source.join("") : (c.source || "")))
+      .filter((s) => s.trim());
+    return codeParts.join("\n\n");
   }
 
   function renderInput(container) {
@@ -115,7 +146,23 @@ const P02Runner = (() => {
       // 확장자별 개수를 세어뒀다가, 0개일 때만 진단으로 보여줌 -- 정상 로드 시엔
       // 기존 메시지 그대로.
       const skippedExtCounts = {};
+      let notebookCodeCount = 0;
       for (const entry of entries) {
+        if (isNotebookPath(entry.name)) {
+          try {
+            const raw = await entry.async("string");
+            const src = extractNotebookSource(raw);
+            if (src && src.trim()) {
+              files[entry.name + ".py"] = src;
+              notebookCodeCount += 1;
+            } else {
+              skippedExtCounts[".ipynb(코드셀 없음/파싱실패)"] = (skippedExtCounts[".ipynb(코드셀 없음/파싱실패)"] || 0) + 1;
+            }
+          } catch (e) {
+            skippedExtCounts[".ipynb(읽기실패)"] = (skippedExtCounts[".ipynb(읽기실패)"] || 0) + 1;
+          }
+          continue;
+        }
         if (isSkippedPath(entry.name)) {
           const ext = "." + (entry.name.split(".").pop() || "") || "(확장자 없음)";
           skippedExtCounts[ext] = (skippedExtCounts[ext] || 0) + 1;
@@ -133,9 +180,10 @@ const P02Runner = (() => {
           .slice(0, 6)
           .map(([ext, n]) => `${ext}×${n}`)
           .join(", ");
-        status.textContent = `${file.name}: 소스 파일 0개 로드됨 -- zip 안 파일: ${breakdown} (지원 확장자: ${SRC_EXTS.join(", ")})`;
+        status.textContent = `${file.name}: 소스 파일 0개 로드됨 -- zip 안 파일: ${breakdown} (지원 확장자: ${SRC_EXTS.join(", ")}, .ipynb는 코드 셀만 추출해서 지원)`;
       } else {
-        status.textContent = `${file.name}: 소스 파일 ${loadedCount}개 로드됨`;
+        const notebookNote = notebookCodeCount ? ` (그 중 .ipynb에서 추출: ${notebookCodeCount}개)` : "";
+        status.textContent = `${file.name}: 소스 파일 ${loadedCount}개 로드됨${notebookNote}`;
       }
     } catch (err) {
       status.textContent = `압축 해제 실패: ${err.message}`;
@@ -165,7 +213,10 @@ const P02Runner = (() => {
     const tree = await treeRes.json();
     if (tree.truncated) onProgress("경고: repo가 커서 GitHub API가 파일 목록을 일부만 반환함");
 
-    const blobs = (tree.tree || []).filter((t) => t.type === "blob" && !isSkippedPath(t.path));
+    // D166: notebooks pass this filter too now (isSkippedPath alone would still reject
+    // .ipynb) so they reach the per-blob step below, where the actual code-cell
+    // extraction happens -- same handling as the ZIP path.
+    const blobs = (tree.tree || []).filter((t) => t.type === "blob" && (isNotebookPath(t.path) || !isSkippedPath(t.path)));
     onProgress(`소스 파일 ${blobs.length}개 발견, 내용 가져오는 중...`);
 
     const files = {};
@@ -179,7 +230,13 @@ const P02Runner = (() => {
           const blobData = await blobRes.json();
           if (blobData.encoding === "base64") {
             try {
-              files[b.path] = decodeURIComponent(escape(atob(blobData.content.replace(/\n/g, ""))));
+              const decoded = decodeURIComponent(escape(atob(blobData.content.replace(/\n/g, ""))));
+              if (isNotebookPath(b.path)) {
+                const src = extractNotebookSource(decoded);
+                if (src && src.trim()) files[b.path + ".py"] = src;
+              } else {
+                files[b.path] = decoded;
+              }
             } catch (e) { /* binary content, skip */ }
           }
         }
