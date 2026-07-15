@@ -139,13 +139,17 @@ const P01Runner = (() => {
     return pages;
   }
 
-  function buildChunks(pages, chunkSize, maxChunks) {
+  // D155 (2026-07-15): max_chunks removed -- it used to cap this at a "smoke test" of 3
+  // chunks by default, which a user could raise to null for a full run, but nothing
+  // stopped it from silently staying at 3 for a real document. User asked for this to be
+  // structural: chunk count is always ceil(pages/chunkSize), covering the whole PDF, with
+  // no control anywhere that could leave a run silently partial.
+  function buildChunks(pages, chunkSize) {
     const chunks = [];
     for (let start = 1; start <= pages.length; start += chunkSize) {
       const end = Math.min(start + chunkSize - 1, pages.length);
       const text = pages.slice(start - 1, end).join("\n");
       chunks.push({ start, end, range: `${start}-${end}`, text });
-      if (maxChunks && chunks.length >= maxChunks) break;
     }
     return chunks;
   }
@@ -216,13 +220,12 @@ const P01Runner = (() => {
       }
       const courseLabel = LabApp.resolveParam("p01", "p01-2", "course_label") || "Java";
       const chunkSize = LabApp.resolveParam("p01", "p01-1", "chunk_size") || 10;
-      const maxChunks = LabApp.resolveParam("p01", "p01-1", "max_chunks");
 
       LabApp.log(pipelineId, `모델: ${selectedModel}`);
       LabApp.log(pipelineId, "PDF 텍스트 추출 중 (pdf.js)...");
       const pages = await extractPages((msg) => LabApp.log(pipelineId, msg));
-      const chunks = buildChunks(pages, chunkSize, maxChunks);
-      LabApp.log(pipelineId, `${pages.length}페이지 → ${chunks.length}개 청크 (chunk_size=${chunkSize}${maxChunks ? `, max_chunks=${maxChunks}` : ""})`);
+      const chunks = buildChunks(pages, chunkSize);
+      LabApp.log(pipelineId, `${pages.length}페이지 → ${chunks.length}개 청크 (chunk_size=${chunkSize}, 전체 문서)`);
 
       const chunkResults = [];
       for (const chunk of chunks) {

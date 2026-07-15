@@ -14,8 +14,7 @@
           "function": "build_chunks() / pdf_page_count() / extract_pages()",
           "note": "LLM 호출 없음 — pdftotext -layout으로 페이지 텍스트 추출 (웹 도구에선 pdf.js로 대체, 완전히 동일한 결과는 아님).",
           "params": [
-            { "key": "chunk_size", "type": "int", "default": 10, "note": "몇 페이지씩 한 청크로 묶을지" },
-            { "key": "max_chunks", "type": "int_or_null", "default": 3, "note": "스모크 모드 기본값 — 전체 실행은 null" }
+            { "key": "chunk_size", "type": "int", "default": 10, "note": "몇 페이지씩 한 청크로 묶을지" }
           ]
         },
         {
