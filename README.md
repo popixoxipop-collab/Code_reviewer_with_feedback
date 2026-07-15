@@ -1114,6 +1114,14 @@ python3 pipeline/compare_methodologies.py
   - EXIT: 만약 나중에 스테이지별 모델 오버라이드가 실제로 필요해지면, `resolveParam`이 아니라 `callPromptStage`가 명시적으로 "이 스테이지는 오버라이드 허용" 플래그를 확인하도록 다시 설계할 것 — 매니페스트에 파라미터를 슬쩍 추가하는 방식은 반복하지 말 것(이번에 그렇게 두 번 재발함).
   - 커밋: `ae797d4`, push 완료.
 
+- **D155** ([`docs/lab/prompt_manifest.json`](./docs/lab/prompt_manifest.json), [`docs/lab/p01-runner.js`](./docs/lab/p01-runner.js)) — 사용자 지시: "max_chunks=3 기본값 대신 pdf page / chunk_size로 자동 계산되게, 사용자가 못 건들게 구조적으로 고정". 실제 251페이지 실행(위 D154 검증 실행)이 여전히 `max_chunks=3`(스모크 모드 기본값)이라 3청크(30페이지)만 처리하고 있었던 것.
+  - **수정**: `max_chunks` 파라미터를 매니페스트에서 완전히 제거(D154와 같은 원칙 — 조정 가능한 컨트롤 자체를 없애 "실수로 부분 실행" 여지를 구조적으로 차단). `buildChunks(pages, chunkSize)`에서 `maxChunks`/조기 종료 분기 삭제 — 이제 `Math.ceil(pages.length/chunkSize)`개 청크로 항상 문서 전체를 처리.
+  - **검증**: 헤드리스 브라우저로 p01-1 스테이지에 `max_chunks` 필드가 더 이상 없음, `resolveParam`이 `undefined` 반환함을 확인. 청크 수 계산 로직은 수식으로 직접 검산(251페이지/10 → 26청크).
+  - WHY: "기본값이 스모크 모드인데 사용자가 안 바꾸면 조용히 부분 실행됨"이 실제로 방금 벌어진 일 — D154와 동일하게 컨트롤 자체를 없애는 게 맞는 해법.
+  - COST: 스모크 모드(빠른 부분 테스트)로 되돌릴 UI 경로가 없어짐 — 필요해지면 코드 레벨에서 임시로 재도입해야 함.
+  - EXIT: 다시 스모크 모드가 필요해지면 `chunk_size`를 일시적으로 크게(예: 999) 설정해 자연스럽게 청크 수를 줄이는 우회가 가능 — 별도 컨트롤 재도입보다 이쪽을 먼저 고려할 것.
+  - 커밋: `85751f3`, push 완료.
+
 
 ## 다음 단계 (미해결)
 
