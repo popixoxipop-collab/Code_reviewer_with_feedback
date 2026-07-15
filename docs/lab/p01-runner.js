@@ -21,16 +21,36 @@ const P01Runner = (() => {
 
   // D168 (2026-07-15): a real 251-page/26-chunk run hit 5x 429 and 2x 524 across the
   // chunk-analysis burst -- D156's Promise.all() fires all 26 requests (against a single
-  // NVIDIA key) in the same instant, and with the worker's own MAX_ATTEMPTS=3 retries on
-  // top, a bad run can produce up to 26*3=78 actual attempts clustered close together.
-  // nvidia-keypool-guard.py's documented ~40rpm free-tier ceiling / MAX_ATTEMPTS=3 ≈ 13.3 --
-  // capping initial concurrency well under that (8) keeps even the pathological
-  // every-chunk-retries-3-times case (8*3=24) under the ceiling, while still batching
-  // instead of running fully sequential. Same pattern p02-runner.js's fetchGithubRepo()
-  // already uses for GitHub's own rate limit (CONCURRENCY=6 there) -- reused here, not a
-  // new one-off idea, just derived from THIS API's own documented ceiling instead of
-  // copying that unrelated constant.
-  const CHUNK_CONCURRENCY = 8;
+  // NVIDIA key) in the same instant. nvidia-keypool-guard.py's documented ~40rpm free-tier
+  // ceiling / worker's (then-)MAX_ATTEMPTS=3 ≈ 13.3 -- originally capped at 8 (well under
+  // that) to cover the pathological every-chunk-retries-3-times-within-the-same-burst
+  // case (8*3=24 under 40). Same pattern p02-runner.js's fetchGithubRepo() already uses
+  // for GitHub's own rate limit (CONCURRENCY=6 there) -- reused here, not a new one-off
+  // idea, just derived from THIS API's own documented ceiling instead of copying that
+  // unrelated constant.
+  //
+  // Raised to 40 (2026-07-15, same day, via an intermediate 13): D169 changed what "worst
+  // case" means here -- chunk-analysis retries no longer stack inside the same wave (each
+  // attempt is now maxAttempts:1; a retry only happens in a LATER round,
+  // ROUND_RETRY_DELAY_MS=60s away). So the *3 that originally justified capping well under
+  // 13.3 no longer applies within a single round, and the user pushed the reasoning to its
+  // actual conclusion: nvidia-keypool-guard.py's own ~40rpm ceiling IS the number, not
+  // something to divide down further.
+  //   WHY 40 and not something still under it: post-D169, being "too aggressive" here is
+  //     cheap -- any 429s a 40-wide burst causes just become retryable failures the round
+  //     loop above already retries 60s later, not a hard failure. The ~40 is still labeled
+  //     an approximation (observed 429 history, not a documented contractual limit) and a
+  //     teammate's tab or P03 sharing this same key isn't visible to this number -- but the
+  //     user weighed that and chose to spend the whole documented budget on this burst
+  //     rather than reserve headroom for a scenario (concurrent same-key usage) that isn't
+  //     happening in this tool's actual current usage.
+  //   COST: zero margin if the ~40 figure is even slightly optimistic, or if something else
+  //     is genuinely hitting this same key at the same moment -- expect more 429s to show up
+  //     as normal (not alarming) round-2/round-3 activity in the log versus 13.
+  //   EXIT: if 429s become the common case rather than the rare one, that's this margin
+  //     being wrong in practice -- pull the number back down (13 already proved itself a
+  //     working middle ground) rather than adding yet another retry layer on top.
+  const CHUNK_CONCURRENCY = 40;
 
   // D169 (2026-07-15): D168 kept the worker's per-job independent retry (D-I) but capped
   // how many jobs could be in flight at once. User asked to go further -- move retry
