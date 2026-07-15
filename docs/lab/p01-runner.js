@@ -360,8 +360,16 @@ const P01Runner = (() => {
       for (let round = 1; round <= MAX_RETRY_ROUNDS; round++) {
         const targets = chunkState.filter((s) => !s.result && (round === 1 || s.retryable));
         if (!targets.length) break;
+        // D171 (2026-07-15): "26개를 40개씩 나눠"는 정말 나눌 때(targets.length >
+        // CHUNK_CONCURRENCY)만 말이 됨 -- 전체가 한 파도에 다 들어가는 흔한 경우(D170
+        // 이후 40 이하 문서는 전부 이 경우)에도 항상 "나눠"라고 말해서 실제로 안 일어나는
+        // 일을 하는 것처럼 보였음. 파도가 실제로 여러 개일 때만 그 표현을 쓰고, 하나면
+        // 그냥 "동시 분석"이라고 정확히 말함.
+        const waveCount = Math.ceil(targets.length / CHUNK_CONCURRENCY);
         LabApp.log(pipelineId, round === 1
-          ? `청크 ${targets.length}개를 ${CHUNK_CONCURRENCY}개씩 나눠 분석 시작: p${targets.map((s) => s.chunk.range).join(", p")}`
+          ? (waveCount > 1
+              ? `청크 ${targets.length}개를 ${CHUNK_CONCURRENCY}개씩 나눠 분석 시작: p${targets.map((s) => s.chunk.range).join(", p")}`
+              : `청크 ${targets.length}개 동시 분석 시작: p${targets.map((s) => s.chunk.range).join(", p")}`)
           : `청크 재시도 라운드 ${round}/${MAX_RETRY_ROUNDS} (${targets.length}개): p${targets.map((s) => s.chunk.range).join(", p")}`);
         for (let i = 0; i < targets.length; i += CHUNK_CONCURRENCY) {
           const wave = targets.slice(i, i + CHUNK_CONCURRENCY);
