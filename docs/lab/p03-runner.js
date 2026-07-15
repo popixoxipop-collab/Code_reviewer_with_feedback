@@ -25,12 +25,20 @@ const P03Runner = (() => {
   let findings = [];
   let selectedFinding = null;
   let pendingAnswerResolve = null;
+  // D176: real source content for the currently-selected finding, when it came from P02's
+  // "인터뷰 시작" connector (see loadFindingFromP02). null for manual JSON-paste findings,
+  // which never had a `files` map to draw real code from in the first place.
+  let pendingCodeContext = null;
+  // D176: Team-IZ 검증세션 패턴 -- 채점 결과를 세션 중엔 숨기고, 완료 후 별도 클릭으로만 노출.
+  // run()이 끝나도 renderResults()를 바로 부르지 않고 여기 보관해뒀다가 "리포트 보기"에서 사용.
+  let pendingReportResult = null;
+  let countdownIntervalId = null;
 
   function renderInput(container) {
     container.innerHTML = `
       <div class="input-panel">
         <h3>인터뷰 대상 finding</h3>
-        <p style="color:var(--ink-faint); font-size:0.78rem;">P02 실행 결과 JSON(findings 배열)을 붙여넣거나 파일로 올리세요.</p>
+        <p style="color:var(--ink-faint); font-size:0.78rem;">P02 결과 화면의 "인터뷰 시작"을 누르면 자동으로 채워집니다. 직접 붙여넣기도 가능합니다.</p>
         <textarea id="p03-findings-input" placeholder='[{"id": "architecture-diffusion:App.js", "file": "App.js", "finding": "...", "priority": "질문 대상"}]' style="width:100%; min-height:80px; font-family:var(--mono); font-size:0.76rem; padding:8px; border-radius:4px; border:1px solid var(--line-strong); background:var(--bg-panel); color:var(--ink);"></textarea>
         <div class="input-row">
           <button class="secondary" id="p03-load-findings">findings 불러오기</button>
@@ -39,13 +47,26 @@ const P03Runner = (() => {
           </select>
         </div>
       </div>
-      <div class="input-panel" id="p03-interview-panel" style="display:none;">
-        <h3>인터뷰</h3>
-        <div id="p03-transcript"></div>
-        <div id="p03-answer-row" style="display:none;">
-          <textarea id="p03-answer-input" placeholder="답변을 입력하세요..." style="width:100%; min-height:70px; font-family:var(--sans); font-size:0.84rem; padding:10px; border-radius:4px; border:1px solid var(--line-strong); background:var(--bg-panel); color:var(--ink);"></textarea>
-          <button class="primary" id="p03-submit-answer" style="margin-top:8px;">답변 제출</button>
+      <div class="p03-session hidden" id="p03-session">
+        <div class="p03-session-code">
+          <div class="p03-session-code-header">📄 <span id="p03-session-filename">-</span></div>
+          <pre class="p03-session-code-body" id="p03-session-code-body">(코드 컨텍스트 없음)</pre>
         </div>
+        <div class="p03-session-chat">
+          <div class="p03-session-status">
+            <span id="p03-progress">질문 -/-</span>
+            <span id="p03-countdown"></span>
+          </div>
+          <div id="p03-transcript"></div>
+          <div id="p03-answer-row" class="hidden">
+            <textarea id="p03-answer-input" placeholder="답변을 입력하세요..." style="width:100%; min-height:70px; font-family:var(--sans); font-size:0.84rem; padding:10px; border-radius:4px; border:1px solid var(--line-strong); background:var(--bg-panel); color:var(--ink);"></textarea>
+            <button class="primary" id="p03-submit-answer" style="margin-top:8px;">답변 제출</button>
+          </div>
+        </div>
+      </div>
+      <div class="input-panel hidden" id="p03-report-gate">
+        <p style="margin:0 0 10px;">🔒 인터뷰 완료 — Team-IZ 검증세션 패턴에 따라 채점 결과는 세션 중에는 비공개입니다.</p>
+        <button class="secondary" id="p03-show-report">리포트 보기 →</button>
       </div>`;
 
     container.querySelector("#p03-load-findings").addEventListener("click", () => {
@@ -53,6 +74,10 @@ const P03Runner = (() => {
       try {
         findings = JSON.parse(raw);
         if (!Array.isArray(findings)) throw new Error("배열이어야 함");
+        selectedFinding = null;
+        pendingCodeContext = null; // D176: 수동 붙여넣기는 실제 파일 내용을 알 길이 없음
+        pendingReportResult = null;
+        hideReportGate();
         const select = container.querySelector("#p03-finding-select");
         select.innerHTML = findings.map((f, i) => `<option value="${i}">${LabApp.escapeHtml(f.id || `finding ${i}`)}</option>`).join("");
         LabApp.log("p03", `finding ${findings.length}건 로드됨`);
@@ -62,7 +87,40 @@ const P03Runner = (() => {
     });
     container.querySelector("#p03-finding-select").addEventListener("change", (e) => {
       selectedFinding = findings[parseInt(e.target.value, 10)] || null;
+      pendingCodeContext = null; // D176: 드롭다운 재선택 시 이전(P02발) 코드 컨텍스트는 항상 폐기
+      pendingReportResult = null;
+      hideReportGate();
     });
+    container.querySelector("#p03-show-report").addEventListener("click", () => {
+      if (pendingReportResult) renderResults(pendingReportResult);
+    });
+  }
+
+  function hideReportGate() {
+    const gate = document.getElementById("p03-report-gate");
+    if (gate) gate.classList.add("hidden");
+  }
+
+  // D176: entry point called from p02-runner.js's "인터뷰 시작" button. The caller switches
+  // to the P03 tab BEFORE calling this (so renderPipeline("p03") has already built the DOM
+  // once, synchronously -- see app.js's renderPipeline/D-K), so the direct-DOM writes below
+  // are safe. Does NOT auto-run: a teammate should see what finding/code they're about to
+  // send to a real LLM call before it fires, and run() still needs to check the NVIDIA
+  // key/proxy config regardless.
+  function loadFindingFromP02(finding, codeContext) {
+    findings = [finding];
+    selectedFinding = finding;
+    pendingCodeContext = codeContext || null;
+    pendingReportResult = null;
+    hideReportGate();
+    const select = document.getElementById("p03-finding-select");
+    if (select) {
+      select.innerHTML = `<option value="0">${LabApp.escapeHtml(finding.id || "finding 0")}</option>`;
+      select.value = "0";
+    }
+    const textarea = document.getElementById("p03-findings-input");
+    if (textarea) textarea.value = JSON.stringify([finding], null, 2);
+    LabApp.log("p03", `P02에서 finding 전달받음: ${finding.id}${pendingCodeContext ? ` (코드 컨텍스트 ${pendingCodeContext.length}자 포함)` : " (코드 컨텍스트 없음)"}`);
   }
 
   function findingCategory(findingId) {
@@ -115,11 +173,14 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     return JSON.parse(pyodide.globals.get("_classify_result"));
   }
 
-  function appendTranscriptEntry(level, question, answer, verdict) {
+  // D176: Team-IZ 검증세션 패턴 -- verdict는 세션 중 화면에 절대 안 보여준다(분류 자체는
+  // 여전히 내부적으로 진행 로직에 쓰임, 표시만 안 함). 최종 채점은 "리포트 보기" 클릭 후
+  // renderResults()에서만 노출.
+  function appendTranscriptEntry(level, question, answer) {
     const el = document.getElementById("p03-transcript");
     const div = document.createElement("div");
     div.className = "finding-card";
-    div.innerHTML = `<div class="fid">[${LabApp.escapeHtml(level.toUpperCase())}]${verdict ? " · verdict: " + LabApp.escapeHtml(verdict) : ""}</div>
+    div.innerHTML = `<div class="fid">[${LabApp.escapeHtml(level.toUpperCase())}]</div>
       <div><b>질문:</b> ${LabApp.escapeHtml(question)}</div>
       ${answer ? `<div style="margin-top:6px;"><b>답변:</b> ${LabApp.escapeHtml(answer)}</div>` : ""}`;
     el.appendChild(div);
@@ -128,7 +189,7 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
   function waitForAnswer() {
     const row = document.getElementById("p03-answer-row");
     const input = document.getElementById("p03-answer-input");
-    row.style.display = "block";
+    row.classList.remove("hidden");
     input.value = "";
     input.focus();
     return new Promise((resolve) => { pendingAnswerResolve = resolve; });
@@ -139,11 +200,38 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
       const input = document.getElementById("p03-answer-input");
       const val = input.value.trim();
       if (!val || !pendingAnswerResolve) return;
-      document.getElementById("p03-answer-row").style.display = "none";
+      document.getElementById("p03-answer-row").classList.add("hidden");
       const resolve = pendingAnswerResolve;
       pendingAnswerResolve = null;
       resolve(val);
     });
+  }
+
+  // D176: display-only countdown next to the live transcript -- reuses LabApp.formatElapsed
+  // (already mm:ss) rather than re-implementing the same formatting. Deliberately never
+  // force-ends the session at 0 (see prompt_manifest.json p03-6 note): aborting mid-LLM-call
+  // or mid-answer-typing risks losing a teammate's real answer, which this tool has
+  // consistently treated as worse than an over-long session (D162's whole reason for
+  // existing was "never silently lose output").
+  function startCountdown(totalMinutes) {
+    stopCountdown();
+    const el = document.getElementById("p03-countdown");
+    if (!el || !totalMinutes) return;
+    const totalMs = totalMinutes * 60 * 1000;
+    const startMs = Date.now();
+    const tick = () => {
+      const remainingMs = Math.max(0, totalMs - (Date.now() - startMs));
+      el.textContent = `남은 ${LabApp.formatElapsed(remainingMs)}`;
+      el.classList.toggle("p03-countdown-over", remainingMs <= 0);
+    };
+    tick();
+    countdownIntervalId = setInterval(tick, 1000);
+  }
+
+  function stopCountdown() {
+    if (countdownIntervalId) { clearInterval(countdownIntervalId); countdownIntervalId = null; }
+    const el = document.getElementById("p03-countdown");
+    if (el) { el.textContent = ""; el.classList.remove("p03-countdown-over"); }
   }
 
   function buildLevelPrompt(level, finding, codeContext, transcript, classification) {
@@ -197,31 +285,54 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
       LabApp.setStatus(pipelineId, "NVIDIA 키 + 프록시 URL이 필요합니다", "error");
       return;
     }
-    document.getElementById("p03-interview-panel").style.display = "block";
+    document.getElementById("p03-session").classList.remove("hidden");
+    hideReportGate();
     document.getElementById("p03-transcript").innerHTML = "";
+    document.getElementById("p03-progress").textContent = "질문 -/-";
+    document.getElementById("p03-session-filename").textContent = selectedFinding.file || "(특정 파일 없음)";
     wireAnswerSubmit();
     LabApp.setStatus(pipelineId, "진행 중...", "running");
     const startedAt = new Date();
     LabApp.startTimer(pipelineId);
+    const sessionTimeoutMinutes = LabApp.resolveParam("p03", "p03-6", "session_timeout_minutes") || 0;
+    startCountdown(sessionTimeoutMinutes);
     try {
       await ensureClassifiers((msg) => LabApp.log(pipelineId, msg));
       const category = findingCategory(selectedFinding.id);
+
+      // D176: fixes a pre-existing bug -- generateQuestion() was always called with a
+      // hardcoded null codeContext, so every P03 question this tool ever generated was
+      // written with zero real-code visibility no matter how the finding was loaded.
+      // codeContext now flows from the real P02 file content (when the finding arrived via
+      // the new "인터뷰 시작" connector) through the SAME char cap the real pipeline's own
+      // manifest already specifies (p03-1.truncation.code_context) -- reusing an
+      // already-established number instead of inventing one.
+      const stage1 = LabApp.getStage("p03", "p03-1");
+      const codeCap = stage1 && stage1.truncation && stage1.truncation.code_context;
+      const codeContext = pendingCodeContext
+        ? (codeCap ? pendingCodeContext.slice(0, codeCap) : pendingCodeContext)
+        : null;
+      document.getElementById("p03-session-code-body").textContent = codeContext || "(코드 컨텍스트 없음 -- 특정 파일에 결부되지 않은 finding이거나 수동 입력)";
+      LabApp.log(pipelineId, codeContext ? `코드 컨텍스트 포함 (${codeContext.length}자)` : "코드 컨텍스트 없음 -- 질문이 파일 내용 없이 생성됨");
+
       const transcript = [];
       let verdict = "exhausted_at_cap";
       const maxTurns = LabApp.resolveParam("p03", "p03-6", "max_turns") || 4;
+      const totalTurns = Math.min(LEVELS.length, maxTurns);
 
-      for (let i = 0; i < Math.min(LEVELS.length, maxTurns); i++) {
+      for (let i = 0; i < totalTurns; i++) {
         const level = LEVELS[i];
+        document.getElementById("p03-progress").textContent = `질문 ${i + 1}/${totalTurns}`;
         const prevClassification = transcript.length ? transcript[transcript.length - 1].classification : null;
         LabApp.log(pipelineId, `${level.toUpperCase()} 질문 생성 중...`);
-        const question = await generateQuestion(level, selectedFinding, null, transcript, prevClassification);
-        appendTranscriptEntry(level, question, null, null);
+        const question = await generateQuestion(level, selectedFinding, codeContext, transcript, prevClassification);
+        appendTranscriptEntry(level, question, null);
         LabApp.log(pipelineId, "답변 대기 중...");
         const answer = await waitForAnswer();
         LabApp.log(pipelineId, "답변 분류 중 (결정론적 분류기, LLM 아님)...");
         const classification = await classifyAnswer(category, answer, level);
         transcript.push({ level, question, answer, classification });
-        appendTranscriptEntry(level, question, answer, classification.verdict);
+        appendTranscriptEntry(level, question, answer);
         if (classification.verdict === "defended") { verdict = "defended"; break; }
       }
 
@@ -231,12 +342,16 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
 
       const finishedAt = new Date();
       LabApp.stopTimer(pipelineId);
-      LabApp.setStatus(pipelineId, "완료", "done");
+      stopCountdown();
+      LabApp.setStatus(pipelineId, "완료 (채점은 비공개 -- 리포트 보기)", "done");
       const result = { finding: selectedFinding, verdict, turns: transcript.length, transcript, grades, rubric_overridden };
-      renderResults(result);
+      pendingReportResult = result;
+      const gate = document.getElementById("p03-report-gate");
+      if (gate) gate.classList.remove("hidden");
       await maybeSaveRun(result, startedAt, finishedAt);
     } catch (err) {
       LabApp.stopTimer(pipelineId);
+      stopCountdown();
       console.error(err);
       LabApp.setStatus(pipelineId, `오류: ${err.message}`, "error");
       LabApp.log(pipelineId, `오류: ${err.message}`);
@@ -245,7 +360,7 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
   }
 
   function renderResults(result) {
-    let html = `<p>verdict: <b>${LabApp.escapeHtml(result.verdict)}</b> · ${result.turns}턴${result.rubric_overridden ? ' · <span style="color:var(--before);">rubric_overridden</span>' : ""}</p>`;
+    let html = `<p>verdict: <b>${LabApp.escapeHtml(result.verdict)}</b> · ${result.turns}턴${result.rubric_overridden ? ' · <span style="color:var(--status-blocked);">rubric_overridden</span>' : ""}</p>`;
     html += `<div class="param-grid">`;
     for (const [axis, g] of Object.entries(result.grades)) {
       html += `<div class="finding-card"><div class="fid">${LabApp.escapeHtml(axis)}: ${LabApp.escapeHtml(String(g.score))}점</div><div>${LabApp.escapeHtml(g.evidence || "")}</div></div>`;
@@ -277,5 +392,5 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
   }
 
   LabApp.registerRunner("p03", { renderInput, run });
-  return { renderInput, run };
+  return { renderInput, run, loadFindingFromP02 };
 })();

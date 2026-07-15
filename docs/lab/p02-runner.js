@@ -361,14 +361,35 @@ _result = webtool_driver.run_scan("/target", overrides_json)
     if (j.findings.length === 0) {
       html += `<p style="color:var(--ink-faint);">이번 실행에서는 finding이 나오지 않았다.</p>`;
     }
-    for (const f of j.findings) {
+    j.findings.forEach((f, idx) => {
+      // D176: only findings tied to one real, loaded file can hand P03 real code context --
+      // repeated-pattern findings (see judgment/score_findings.py) are cross-file by nature
+      // and legitimately have file: null, so this is a real category, not a data gap.
+      const hasCode = Boolean(f.file && files[f.file] !== undefined);
       html += `<div class="finding-card">
         <div class="fid">${LabApp.escapeHtml(f.id)} · priority: ${LabApp.escapeHtml(f.priority || "")}</div>
         <div>${LabApp.escapeHtml(f.finding || "")}</div>
+        ${hasCode
+          ? `<button class="secondary" data-interview-idx="${idx}" style="margin-top:8px; font-size:0.72rem;">인터뷰 시작 →</button>`
+          : `<div style="margin-top:8px; font-size:0.7rem; color:var(--ink-faint);">코드 컨텍스트 없음 — 특정 파일에 종속되지 않은 finding이라 인터뷰 연결 불가</div>`}
       </div>`;
-    }
+    });
     html += LabApp.jsonResultBlock("원본 scan/judgment JSON", result, "p02-result.json");
     LabApp.showResults(html);
+
+    // D176: wired after showResults() replaces #results-content's innerHTML -- the buttons
+    // don't exist until then. P03Runner is a later <script> in index.html, but this only
+    // runs at click time (long after all scripts finish loading), so the load order is fine
+    // (same classic-script-scope pattern already relied on throughout this codebase).
+    document.querySelectorAll("[data-interview-idx]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const finding = j.findings[parseInt(btn.dataset.interviewIdx, 10)];
+        if (!finding) return;
+        const codeContext = finding.file ? files[finding.file] : null;
+        document.querySelector('.tab-btn[data-pipeline="p03"]').click();
+        P03Runner.loadFindingFromP02(finding, codeContext);
+      });
+    });
   }
 
   async function maybeSaveRun(result, files, startedAt, finishedAt) {

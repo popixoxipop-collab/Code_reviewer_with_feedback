@@ -209,6 +209,29 @@ button.secondary:hover { color: var(--ink); border-color: var(--ink-dim); }
 .finding-card { border: 1px solid var(--line); border-left: 3px solid var(--status-active); border-radius: 4px; padding: 10px 14px; margin-bottom: 8px; font-size: 0.8rem; }
 .finding-card .fid { font-family: var(--mono); font-size: 0.7rem; color: var(--ink-faint); }
 
+/* D176: P03 2-column verification-session layout (Team-IZ 검증세션 참고) -- LEFT is the
+   pinned source file, fixed for the whole session; RIGHT is the live Socratic transcript. */
+.p03-session { display: grid; grid-template-columns: minmax(240px, 38%) 1fr; gap: 16px; margin-bottom: 18px; align-items: start; }
+.p03-session-code {
+  position: sticky; top: 16px; border: 1px solid var(--line); border-radius: 4px; background: var(--bg);
+  max-height: 70vh; display: flex; flex-direction: column; overflow: hidden;
+}
+.p03-session-code-header {
+  font-family: var(--mono); font-size: 0.74rem; color: var(--ink-dim); padding: 8px 12px;
+  border-bottom: 1px solid var(--line); background: var(--bg-panel); white-space: nowrap; overflow-x: auto; flex: none;
+}
+.p03-session-code-body {
+  margin: 0; padding: 12px 14px; overflow: auto; flex: 1; font-family: var(--mono); font-size: 0.72rem;
+  line-height: 1.5; color: var(--ink-dim); white-space: pre;
+}
+.p03-session-chat { min-width: 0; }
+.p03-session-status {
+  display: flex; justify-content: space-between; align-items: center; font-family: var(--mono);
+  font-size: 0.76rem; color: var(--ink-faint); margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--line);
+}
+#p03-countdown { font-variant-numeric: tabular-nums; }
+#p03-countdown.p03-countdown-over { color: var(--status-blocked); font-weight: 600; }
+
 footer { margin-top: 34px; border-top: 1px solid var(--line); padding-top: 18px; font-size: 0.78rem; color: var(--ink-dim); max-width: 90ch; }
 footer b { color: var(--ink); }
 footer a { color: var(--accent); }

@@ -46,7 +46,7 @@
           "truncation": { "unit_map_json": 24000 },
           "note": "D174 Phase 2: issue_type/affected_unit_ids added so p01-runner.js can route only genuinely-actionable issues (duplicate_exact/overbroad_unit/boundary_split_needed) to the new p01-3b apply stage -- missing_pages and coverage_gap_failed_chunk are surfaced but never auto-\"fixed\" (the former risks inventing pages, the latter is D169's failed-chunk gap, explicitly out of scope for restructuring).",
           "params": [
-            { "key": "refine_iters", "type": "int", "default": 5, "note": "D172: 최대 반복 횟수(안전 상한) -- checklist.question_generation_ready가 true가 되면 그 전에 멈춤. 실측 수렴 데이터 없어 2에서 잠정적으로 상향, 실사용 데이터 쌓이면 재조정" },
+            { "key": "refine_iters", "type": "int", "default": 5, "note": "D172: 최대 반복 횟수(안전 상한) -- checklist.question_generation_ready가 true가 되면 그 전에 멈춤. D174 이후: 이 상한은 감사(p01-3) 호출뿐 아니라 그 안에서 조건부로 호출되는 자동수정(p01-3b) 시도 횟수까지 같이 제한함 -- 자동수정은 수렴 '확률'을 높일 뿐 보장하지 않으므로(missing_pages/coverage_gap_failed_chunk는 애초에 자동수정 대상이 아니고, 시도해도 근거검증 실패로 거부될 수 있음) 이 상한 자체는 여전히 필요. 실측 수렴 데이터 없어 2에서 잠정적으로 상향, 실사용 데이터 쌓이면 재조정" },
             { "key": "max_tokens", "type": "int", "default": 1600 },
             { "key": "temperature", "type": "float", "default": 0.0, "locked": true }
           ]
@@ -211,7 +211,8 @@
           "kind": "params",
           "function": "run_decision_point()",
           "params": [
-            { "key": "max_turns", "type": "int", "default": 4, "locked": true, "note": "L1→L2→L3→Reflection 4단계 고정 순서" }
+            { "key": "max_turns", "type": "int", "default": 4, "locked": true, "note": "L1→L2→L3→Reflection 4단계 고정 순서" },
+            { "key": "session_timeout_minutes", "type": "int", "default": 15, "locked": false, "note": "D176: Team-IZ 검증세션 UX 참고로 신설. 실사용 세션시간 데이터 없음 -- turn당 체감 3-4분(읽기+사고+타이핑) × max_turns(4)의 추정치일 뿐(CLAUDE.md 데이터 우선주의, 재보정 필요). 표시 전용 카운트다운이며 0 도달 시에도 세션을 강제 종료하지 않음(진행 중 답변 유실 방지 우선)." }
           ]
         },
         {
