@@ -1216,6 +1216,14 @@ python3 pipeline/compare_methodologies.py
   - EXIT: 7200에서도 계속 부족한 사례가 나오면 `MAX_LENGTH_DOUBLINGS`을 올리기보다 `chunk_size`/그래프 노드 수 자체를 줄이는 쪽(입력을 작게 나누는 구조적 해법)을 먼저 검토 — 이미 524 조사로 "response 크기를 무한정 키우는 건 타임아웃 위험과 상충"이라는 게 확인됐기 때문.
   - 커밋: `97dbd40`, push 완료.
 
+- **D166** ([`docs/lab/p02-runner.js`](./docs/lab/p02-runner.js)) — 사용자가 화면 스크린샷으로 실제 원인 확인해줌: D153의 진단 메시지가 정확히 `AI_LLMOps_3일차_실습예시파일.zip: 소스 파일 0개 로드됨 -- zip 안 파일: .ipynb×3`을 보여줌 — 이 zip이 전부 `.ipynb`(Jupyter 노트북) 3개뿐이었음. D164의 대소문자 버그도, static/build 과잉제외도 아니고, 애초에 `.ipynb`를 전혀 지원하지 않았던 것(이전 세션부터 미해결이던 질문이 여기서 확정). "이것도 해결해" 지시.
+  - **수정**: `.ipynb`를 `SRC_EXTS`에 그냥 추가하지 않음 — 노트북은 JSON(cell/output/execution_count 등 메타데이터 포함)이라 원문 그대로 Python 파이프라인에 넘기면 코드가 아니라 노트북 플러밍을 스캔하게 됨. 대신 `extractNotebookSource()`가 `cell_type==="code"`인 셀의 실제 소스만 추출해 이어붙이고, `isSkippedPath` 검사 전에 가로채서 `원본경로.ipynb.py`라는 가상 경로로 저장 — `cognition/two_tier_scan.py` 등 실제(수정 없는) 파이프라인 코드는 그냥 평범한 `.py` 파일로 보게 됨(D-E의 "원본 파이프라인 코드 수정 안 함" 원칙 유지). 마크다운/raw 셀은 버림(코드가 아니라 설명이라 스캔 판단 대상이 아님). ZIP 경로(`handleZipFile`)와 GitHub PAT 경로(`fetchGithubRepo`) 둘 다 동일하게 적용(같은 패턴이 두 경로에 다 있었음). 디렉터리 제외(`SKIP_DIR_NAMES`)는 노트북에도 그대로 적용되도록 `isSkippedDir()`로 분리해서 공유.
+  - **검증**: 실제로 만든 zip(마크다운 셀 1개+코드 셀 2개짜리 진짜 `.ipynb`)을 드롭 → 상태 메시지가 `소스 파일 1개 로드됨 (그 중 .ipynb에서 추출: 1개)`로 정확히 표시됨. 여기서 멈추지 않고 **실제 파이프라인까지 끝까지 실행**(Pyodide로 raw.githubusercontent.com에서 원본 `two_tier_scan.py` 그대로 로드) — 결과 JSON에 `total_source_files: 1`, `hub: "notebook1.ipynb.py"`로 정상 인식·스캔 완료됨을 확인(이전엔 이 지점까지 가지도 못하고 0개로 끝났음). 기존 `.py`/`.js` 등 파일 처리는 로직 분기상 전혀 안 건드림(노트북 아닌 파일은 기존 경로 그대로).
+  - WHY: D153의 진단이 정확히 제 역할을 해서(원인=`.ipynb` 미지원) 추측 없이 바로 확정, 원본 파이프라인은 안 건드리고 웹 도구 레이어에서만 변환.
+  - COST: zip/repo 안 노트북 하나당 JSON 파싱 1회 — 무시할 수준.
+  - EXIT: 마크다운 셀도 컨텍스트로 포함하고 싶어지면(예: 판단 블록이 "코드가 의도와 맞는지" 볼 때 설명 텍스트가 도움될 수 있음) 그때 추가 — 지금은 "0개 로드됨" 해결에 필요한 범위만.
+  - 커밋: `aace483`, push 완료.
+
 
 ## 다음 단계 (미해결)
 
