@@ -21,7 +21,20 @@ const LabDB = (() => {
             "sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug"
           );
         }
-        client = window.supabase.createClient(LabConfig.get("supabase-url"), LabConfig.get("supabase-anon-key"));
+        // D-L (2026-07-15, README D147): flowType left at supabase-js's default ("implicit")
+        // meant the magic link's token gets consumed by whoever's request reaches
+        // GoTrue's /verify first -- confirmed via project auth logs: multiple /verify
+        // hits landed within a 4-second window, all failing "One-time token not found",
+        // the signature of an email security scanner (Safe Links-style prefetching)
+        // racing the real click and winning. PKCE flow closes this: the link carries a
+        // `code`, not a usable token, and completing sign-in requires a code_verifier
+        // that only the browser which originally called signInWithOtp() has (in its own
+        // localStorage) -- a server-side scanner fetching the URL can't produce that, so
+        // it can't consume the real session. detectSessionInUrl (default true, unchanged)
+        // already handles the code exchange automatically, so no other app code changes.
+        client = window.supabase.createClient(LabConfig.get("supabase-url"), LabConfig.get("supabase-anon-key"), {
+          auth: { flowType: "pkce" },
+        });
       })();
     }
     await loadingPromise;
