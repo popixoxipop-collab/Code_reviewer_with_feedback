@@ -1334,7 +1334,14 @@ python3 pipeline/compare_methodologies.py
   - WHY: 사용자가 팀원들의 실사용 테스트+DB 축적을 목표로 명시, Team-IZ 패턴 전체 채택도 AskUserQuestion으로 명시적 확인.
   - COST: `codeContext` 포함 시 프롬프트 길이 증가(최대 4000자, 매니페스트 기존값). `session_timeout_minutes`는 실사용 데이터 없는 잠정치. 카운트다운이 0 밑으로 가도 강제 종료 안 하므로 "진짜 시간 제한"은 아직 아님.
   - EXIT: `session_timeout_minutes` 기본값(15)은 팀원 실사용 세션 로그가 쌓이면 재보정. 강제 종료 여부는 실사용 피드백에서 "너무 길어진다"는 신호가 나오면 재검토.
-  - 커밋: `b9d9ac6`, push 예정(워커 변경 없음, GitHub Pages만).
+  - 커밋: `b9d9ac6`, push 완료(워커 변경 없음, GitHub Pages만).
+
+- **D177** (Supabase DB, repo 파일 변경 없음 — D175와 동일하게 순수 라이브 뷰) — 사용자가 D175의 `p01_questions_view`(원본자료/모델/질문리스트 3열) 스크린샷을 보고, 파일명 미기록 표시는 이해하지만 "어떤 이메일 사용자가 했는지"가 안 보인다고 지적.
+  - `runs_with_email`(D175)와 같은 `members` 조인 패턴으로 `email` 컬럼 추가. Postgres의 `CREATE OR REPLACE VIEW`는 기존 컬럼 순서 중간에 새 컬럼을 못 끼워 넣어(끝에만 추가 가능) `run_id` 바로 뒤에 오도록 `DROP VIEW` 후 재생성. `members` 조인을 D175의 `runs_with_email`처럼 INNER가 아니라 LEFT JOIN으로 둬서, 혹시 `member_id`가 비어있는 실행이 있어도(현재 운영 경로상 발생 안 하지만) 행 자체가 조용히 사라지지 않게 함.
+  - **검증**: Management API로 뷰 재생성 직후 실제 프로덕션 데이터 조회 — 기존 6개 실행 전부 `email: aoaagent@gmail.com`으로 정확히 채워짐을 직접 확인(하드코딩이 아니라 `members` 테이블의 실제 join 결과).
+  - WHY: 사용자가 스크린샷으로 직접 지적.
+  - COST: 없음(뷰 재정의, 데이터 이동 없음).
+  - EXIT: 없음 — `runs_with_email`/`artifacts_with_email`과 동일한 패턴이라 추가로 재보정할 계수가 없음.
 
 
 ## 다음 단계 (미해결)
