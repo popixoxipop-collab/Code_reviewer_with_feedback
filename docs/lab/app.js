@@ -175,16 +175,25 @@ const LabApp = (() => {
     wireStageInputs(pipelineId, stage, container);
   }
 
+  // D157 (2026-07-15): locked params (e.g. P01/P03's temperature=0, "고정 — 재현성
+  // 요구사항") used to still render as a disabled input with a "고정" tag -- user
+  // pointed out there's no reason to show a value nobody can ever change. Skipped
+  // entirely now instead of shown-but-disabled; the fixed value and its reason still
+  // live in the manifest's `note` and this file's own decision log, just not on screen.
   function renderParamGrid(pipelineId, stage) {
+    // If every param on this stage is locked (e.g. P03's p03-6, which only ever had
+    // max_turns), there's nothing left to show -- skip the "파라미터" heading too rather
+    // than leaving an empty grid under a label.
+    if (!stage.params.some((p) => !p.locked)) return "";
     let html = `<div class="field-label">파라미터</div><div class="param-grid">`;
     const safeStageId = escapeHtml(stage.id);
     for (const p of stage.params) {
+      if (p.locked) continue; // D157: locked params aren't shown at all, not just disabled
       const val = resolveParam(pipelineId, stage.id, p.key);
       const safeKey = escapeHtml(p.key);
-      const locked = p.locked ? ` <span class="locked-tag">고정</span>` : "";
       if (p.type === "string_list") {
-        html += `<label class="param-field"><span>${safeKey}${locked}</span>
-          <input type="text" data-field="param" data-key="${safeKey}" data-pipeline="${pipelineId}" data-stage="${safeStageId}" value="${escapeHtml((val || []).join(", "))}" ${p.locked ? "disabled" : ""}></label>`;
+        html += `<label class="param-field"><span>${safeKey}</span>
+          <input type="text" data-field="param" data-key="${safeKey}" data-pipeline="${pipelineId}" data-stage="${safeStageId}" value="${escapeHtml((val || []).join(", "))}"></label>`;
       } else if (p.type === "regex_readonly") {
         html += `<label class="param-field"><span>${safeKey} <span class="locked-tag">읽기전용(v1)</span></span>
           <input type="text" value="${escapeHtml(val)}" disabled></label>`;
@@ -192,8 +201,8 @@ const LabApp = (() => {
         html += `<label class="param-field"><span>${safeKey}</span>
           <input type="password" data-field="param" data-key="${safeKey}" data-pipeline="${pipelineId}" data-stage="${safeStageId}" value=""></label>`;
       } else {
-        html += `<label class="param-field${p.locked ? " locked" : ""}"><span>${safeKey}${locked}</span>
-          <input type="text" data-field="param" data-key="${safeKey}" data-pipeline="${pipelineId}" data-stage="${safeStageId}" value="${escapeHtml(val === null || val === undefined ? "" : String(val))}" ${p.locked ? "disabled" : ""}></label>`;
+        html += `<label class="param-field"><span>${safeKey}</span>
+          <input type="text" data-field="param" data-key="${safeKey}" data-pipeline="${pipelineId}" data-stage="${safeStageId}" value="${escapeHtml(val === null || val === undefined ? "" : String(val))}"></label>`;
       }
     }
     html += `</div>`;
