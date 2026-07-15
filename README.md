@@ -1245,6 +1245,17 @@ python3 pipeline/compare_methodologies.py
   - EXIT: 8개씩으로도 429/524가 계속 나오면, Codex가 제안한 "클라이언트 전용 paced waves"(파도 사이에 명시적 대기 추가)를 다음 단계로 고려 — Durable Object는 그 다음에도 안 되면.
   - 커밋: `999557d`, push 완료.
 
+- **D169** ([`worker/nvidia-proxy.js`](./worker/nvidia-proxy.js), [`docs/lab/llm.js`](./docs/lab/llm.js), [`docs/lab/p01-runner.js`](./docs/lab/p01-runner.js)) — D168 배포 뒤 사용자가 D168에서 검토만 하고 보류했던 B2("클라이언트가 재시도를 전부 가져온다 — 워커의 자동 재시도를 끄고, 실패한 청크들을 클라이언트가 모아뒀다가 통제된 배치로 다시 제출")를 실제로 구현해달라고 요청. P01/P03가 워커를 공유하므로 P03에 영향 없이 이걸 하는 게 핵심 과제.
+  - **설계**: 워커 자동재시도를 전역으로 끄는 대신, **요청 헤더로 옵트인**하는 방식 채택 — `x-max-attempts` 헤더가 있으면 그 값을, 없으면 기존 `MAX_ATTEMPTS=3`을 그대로 사용(`effectiveMaxAttempts = maxAttempts || MAX_ATTEMPTS`). P01의 청크 분석만 `maxAttempts:1`을 보내고, P03과 P01의 refine/질문생성은 이 옵션을 아예 안 보내므로 코드 변경 없이 기존 동작 그대로 유지됨. 워커는 재시도 여부와 무관하게 종료 상태(`error`)에 `retryable`(429/500/502/503/524/타임아웃=true, 그 외=false) 필드를 추가로 남겨서, 클라이언트가 문자열 매칭 없이 "이건 나중에 다시 시도할 가치가 있다"를 판단할 수 있게 함. CORS `access-control-allow-headers`에 `x-max-attempts` 추가 필수(빠뜨리면 프리플라이트가 막아서 헤더 자체가 전송 안 됨 — 실제로 빠뜨렸다가 구현 중 발견해서 넣음).
+  - `docs/lab/llm.js`: `submitAndPoll`/`chatJSON`이 `maxAttempts` 옵션을 받아 `x-max-attempts` 헤더로 전달, 종료 상태 `error` job의 `retryable` 필드를 던지는 Error 객체에 `err.retryable`로 실어 보냄.
+  - `docs/lab/p01-runner.js`: `callPromptStage(stageId, values, opts)`가 `opts.maxAttempts`를 모든 내부 `LabLLM.chatJSON` 호출(최초 시도, D165 길이 재시도 루프, repair 프롬프트 폴백까지)에 일관되게 전달. 청크 처리를 `chunkState` 배열로 라운드마다 추적하는 구조로 교체: 1라운드는 전체, 이후 라운드는 `retryable===true`로 실패한 것만 타깃, 라운드 사이 `ROUND_RETRY_DELAY_MS=60_000`(D159의 기존 60초 값 재사용, 사용자의 "1분 단위" 요청과 일치) 대기, 라운드 내에서도 D168의 `CHUNK_CONCURRENCY=8` 파도 처리 그대로 적용. `MAX_RETRY_ROUNDS=3`(원래 워커의 MAX_ATTEMPTS=3 관례를 그대로 유지하되 조율된 형태로).
+  - **검증(2단계)**: (1) 워커 로직만 따로 — `worker/nvidia-proxy.js`를 Node에서 직접 import해 KV/fetch를 목으로 교체한 유닛 테스트로 5개 시나리오 확인: `maxAttempts:1`+429→정확히 1회 호출 후 종료(`retryable:true`), `maxAttempts:1`+200→1회로 성공, `maxAttempts:1`+400→1회 종료(`retryable:false`), **`maxAttempts` 미지정→기존대로 3회**(P03 영향 없음 확인), `maxAttempts:1`은 2번째 시도에서 성공할 상황이어도 정말 딱 1번만 시도. (2) 클라이언트 전체 흐름 — Playwright로 15개 청크 중 `1-1`은 1라운드 실패·2라운드 성공, `2-2`는 1라운드 실패(재시도불가, 이후 라운드 대상에서 제외), `3-3`은 3라운드 전부 실패하도록 시뮬레이션 → 정확히 `1-1`은 2회 호출(성공), `2-2`는 1회만(재시도 안 됨), `3-3`은 3회 전부 호출, 최종 결과엔 `2-2`/`3-3`만 실패로 남고 `1-1`은 정상 포함됨을 확인.
+  - WHY: 사용자가 D168에서 보류했던 방향을 다시 요청 — 이번엔 P03 영향 범위를 헤더 옵트인으로 명확히 봉쇄하는 설계로 구현.
+  - COST: 코드 복잡도 증가(청크 처리가 단순 배치→라운드 추적 상태머신으로), 최악의 경우(계속 재시도 필요) 라운드 사이 60초씩 최대 2번 추가 대기.
+  - EXIT: `retryable` 판정 기준이 실제로 부정확하다고 밝혀지면(예: 특정 4xx가 사실 일시적) `RETRYABLE_STATUSES` 집합 자체를 조정 — 이 필드가 그 판단의 유일한 출처이므로.
+  - **라이브 스모크 테스트(배포 후)**: (1) CORS 프리플라이트에 `x-max-attempts` 정상 포함 확인(배포 직후 엣지 전파 지연 몇 초 있었음, 재확인으로 해소). (2) 실제 NVIDIA 키+`x-max-attempts:1`+정상 모델(qwen3-next-80b)로 실제 요청 → 정상 `done` 완료. (3) 존재하지 않는 모델명으로 실제 요청 → NVIDIA 404 → `"attempt 1/1"`로 정확히 1회만 시도 후 `retryable:false`로 종료 확인.
+  - 커밋: `38957d6`, push+워커 배포 완료(Version ID `e1305b98-5e7e-49df-943b-f2ab992e8909`).
+
 
 ## 다음 단계 (미해결)
 
