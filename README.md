@@ -1360,6 +1360,14 @@ python3 pipeline/compare_methodologies.py
   - EXIT: 동일 베이스네임이 여러 폴더에 걸쳐 존재하는 실제 사례가 나오면(예: 여러 챕터 폴더에 같은 이름의 노트북) 첫 매치가 아니라 사용자가 명시적으로 고르게 하는 UI 필요할 수 있음 — 아직 실사용 데이터 없음.
   - 커밋: `47535b7`, push 완료(워커 변경 없음, GitHub Pages만).
 
+- **D180** ([`docs/lab/p02-runner.js`](./docs/lab/p02-runner.js)) — D179 배포 후에도 사용자가 "인터뷰 시작 버튼이 어디 있는데" 재문의. 이번엔 사용자가 실제 렌더링된 HTML 전체를 그대로 붙여넣어줘서(추측 없이) 바로 원인 확정: 이번 실행(`AI_멀티 Agent_2일차_실습예시파일.zip`)에서 나온 finding 2건이 전부 `repeated-pattern:duplicate-definition:*`(동일 함수/클래스가 여러 파일에 복붙됨) 타입이었고, 이 타입은 원본 파이프라인이 애초에 `"file": null`로 보고함(`judgment/score_findings.py`의 `find_duplicate_definitions()` — 여러 파일에 걸친 문제라 단일 파일이 없는 게 정상). D176/D179는 이 케이스를 "연결 불가"로 정확히 처리하고 있었을 뿐, 버그가 아니었음. 다만 사용자가 실제로 시도한 두 번의 zip이 공교롭게 전부 이 타입만 나와서 커넥터 자체를 한 번도 못 본 상황 — AskUserQuestion으로 "그래도 연결할지" 확인 → 사용자가 "언급된 파일 중 하나 자동 선택" 선택.
+  - **구현**: `finding.file`이 null이어도, finding 설명 텍스트 자체엔 실제 걸린 파일명이 나열돼 있음(예: `"...['Ch06. Supervisor 패턴.ipynb.py', 'Ch07. Network 패턴.ipynb.py', ...]..."` — Python list repr을 f-string으로 그대로 박은 것). 이 Python repr 문법을 직접 파싱하지 않고(파일명 자체에 대괄호가 들어갈 수 있어 위험 — 실제로 사용자 zip의 `"Ch08. [추가 과제]멀티 Agent 시스템 구축.ipynb.py"`가 이 사례), 대신 이미 로드된 `files`의 각 실제 파일명이 finding 텍스트 안에 **부분 문자열로 등장하는지**만 검사(`findReferencedFiles`). `resolveConnectableFile()`로 D179의 직접매치(`f.file` 있음)와 이 텍스트매치(`f.file` 없음)를 한 진입점으로 통합 — 직접매치 우선, 없으면 텍스트매치 첫 번째 파일 채택. 버튼 옆에 "(finding에 언급된 N개 파일 중 첫 번째: 파일명)" 안내를 붙여 어떤 파일이 골라졌는지 투명하게 표시.
+  - **검증**: 사용자의 실제 케이스를 정확히 재현하는 zip(노트북 3개, 동일 `load_api_keys` 함수 복붙) 신설 → 실제 파이프라인 실행 결과가 사용자 스크린샷과 동일한 구조(`repeated-pattern:duplicate-definition:load_api_keys`, `file: null`, 3개 파일 나열)로 나오는 것 확인, 수정 전이었다면 버튼 0개였을 상황에서 버튼이 뜨고 안내 문구도 표시됨, 클릭 시 첫 번째 언급 파일의 실제 코드(126자)가 P03에 정상 전달됨까지 확인.
+  - WHY: 사용자가 실제 HTML을 통째로 붙여넣어줘서 추측 없이 즉시 확정 — AskUserQuestion으로 연결 확장 여부 명시적 확인 후 구현.
+  - COST: 없음 — 텍스트 매칭은 순수 문자열 포함 검사, 실패해도 기존처럼 "연결 불가" 문구로 안전하게 폴백.
+  - EXIT: 텍스트에 언급된 파일이 실제로 여러 개일 때 항상 첫 번째만 자동 선택 — 팀원이 다른 파일로 바꾸고 싶으면 아직 UI가 없음(수동으로 P03 textarea를 고쳐야 함). 실사용 피드백에서 필요성이 확인되면 파일 선택 드롭다운 추가 검토.
+  - 커밋: `7bab65f`, push 완료(워커 변경 없음, GitHub Pages만).
+
 
 ## 다음 단계 (미해결)
 
