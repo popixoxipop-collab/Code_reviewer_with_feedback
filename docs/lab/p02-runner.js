@@ -381,6 +381,11 @@ _result = webtool_driver.run_scan("/target", overrides_json)
     // don't exist until then. P03Runner is a later <script> in index.html, but this only
     // runs at click time (long after all scripts finish loading), so the load order is fine
     // (same classic-script-scope pattern already relied on throughout this codebase).
+    // D178: user explicitly chose one-click auto-run over a pre-fill-then-manual-run step
+    // (asked directly after D176 shipped) -- loadFindingFromP02() only pre-fills state/DOM,
+    // so the actual firing of a real LLM call is this one extra P03Runner.run() below, not
+    // something loadFindingFromP02() does itself. run()'s own NVIDIA key/proxy guard is the
+    // only thing left protecting an unconfigured teammate from a confusing failure.
     document.querySelectorAll("[data-interview-idx]").forEach((btn) => {
       btn.addEventListener("click", () => {
         const finding = j.findings[parseInt(btn.dataset.interviewIdx, 10)];
@@ -388,6 +393,7 @@ _result = webtool_driver.run_scan("/target", overrides_json)
         const codeContext = finding.file ? files[finding.file] : null;
         document.querySelector('.tab-btn[data-pipeline="p03"]').click();
         P03Runner.loadFindingFromP02(finding, codeContext);
+        P03Runner.run();
       });
     });
   }

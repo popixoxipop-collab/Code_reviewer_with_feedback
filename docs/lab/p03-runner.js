@@ -104,9 +104,11 @@ const P03Runner = (() => {
   // D176: entry point called from p02-runner.js's "인터뷰 시작" button. The caller switches
   // to the P03 tab BEFORE calling this (so renderPipeline("p03") has already built the DOM
   // once, synchronously -- see app.js's renderPipeline/D-K), so the direct-DOM writes below
-  // are safe. Does NOT auto-run: a teammate should see what finding/code they're about to
-  // send to a real LLM call before it fires, and run() still needs to check the NVIDIA
-  // key/proxy config regardless.
+  // are safe. This function itself never runs anything -- it only pre-fills state/DOM.
+  // D178: the caller now calls P03Runner.run() immediately after this (user's explicit
+  // choice over a manual-confirm step), so in practice a real LLM call fires right after
+  // this returns; run()'s own NVIDIA key/proxy guard is what's left protecting an
+  // unconfigured teammate from a confusing failure.
   function loadFindingFromP02(finding, codeContext) {
     findings = [finding];
     selectedFinding = finding;
