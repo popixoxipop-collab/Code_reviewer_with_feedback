@@ -95,9 +95,22 @@ const LabDB = (() => {
   // -- Google OAuth verified working end-to-end (D148) and is now the only login path.
   // Full-page redirect (signInWithOAuth's default), same PKCE flowType already set in
   // ensureClient() above, so the callback's code exchange is handled automatically.
+  //
+  // D150 (2026-07-15): explicit redirectTo added after a real failure -- without it,
+  // supabase-js sent no redirect_to at all to /auth/v1/authorize (confirmed by tracing
+  // the actual network request), and despite the project's site_url being correctly
+  // https://.../docs/lab/ (reconfirmed live via Management API), the post-login redirect
+  // landed on the bare https://popixoxipop-collab.github.io/ root -- a 404 (screenshotted
+  // live by the user, mid Google consent flow). Whatever default resolution Supabase uses
+  // server-side when redirect_to is omitted didn't match its own documented "falls back
+  // to site_url" behavior in this case, so this stops depending on that default entirely.
+  // origin+pathname (not full href) so any leftover query/hash from an earlier OAuth
+  // attempt on this same tab isn't carried into the value being requested; matches
+  // uri_allow_list's entries exactly (prod: exact path, local: localhost:8712/lab/**).
   async function signInWithGoogle() {
     const c = await ensureClient();
-    const { error } = await c.auth.signInWithOAuth({ provider: "google" });
+    const redirectTo = window.location.origin + window.location.pathname;
+    const { error } = await c.auth.signInWithOAuth({ provider: "google", options: { redirectTo } });
     if (error) throw error;
   }
 
