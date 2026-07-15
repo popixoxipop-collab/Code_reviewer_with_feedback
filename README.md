@@ -1073,6 +1073,15 @@ python3 pipeline/compare_methodologies.py
   - EXIT: 다시 필요해지면 D148 커밋(`e3c1d24`)의 `signInWithEmail()`/이메일 입력 UI를 그대로 복원하면 됨(로직 자체는 삭제됐지만 git 이력에 온전히 남아있음).
   - 커밋: `4cfca13`, push 완료.
 
+- **D150** ([`docs/lab/db.js`](./docs/lab/db.js)) — 사용자가 실제로 Google 로그인 끝까지 진행(스크린샷 첨부): Google 동의 화면까지는 정상이었으나, 최종적으로 `https://popixoxipop-collab.github.io/?code=...`(경로 없는 최상위 도메인)로 떨어져 GitHub Pages 404. `site_url`은 Management API로 재확인해도 여전히 정확한 값(`.../docs/lab/`)이었는데도 실제 결과가 다름.
+  - **원인(추측 대신 네트워크 요청 직접 추적)**: Playwright로 실제 요청을 가로채 보니 `signInWithGoogle()`이 Supabase `/auth/v1/authorize`에 `redirect_to` 파라미터를 **아예 안 보내고** 있었음(`provider`+PKCE 파라미터만 있음, redirectTo 옵션 미지정). Supabase 공식 문서는 "redirect_to 없으면 site_url로 fallback"이라고 하지만, 실측 결과(site_url 정상인데도 bare 도메인으로 감)는 이 문서화된 동작과 어긋남 — 정확한 내부 원인은 불명이나, 기본값에 의존하는 것 자체를 없애는 쪽으로 수정.
+  - **수정**: `signInWithOAuth()` 호출에 `options: { redirectTo: window.location.origin + window.location.pathname }` 명시 추가 — 현재 페이지 기준으로 동적으로 만들어서 프로덕션/로컬 둘 다 `uri_allow_list`에 이미 등록된 값과 정확히 일치(로컬은 `**` 와일드카드로 커버). 쿼리/해시는 제외(origin+pathname만) — 같은 탭에서 이전 시도의 잔여 파라미터가 섞여 들어가는 것 방지.
+  - **검증**: 로컬에서 실제 네트워크 요청을 다시 추적해 `redirect_to=http://localhost:8712/lab/`가 정확히 포함됨을 확인, 전체 흐름이 여전히 에러 없이 Google 로그인 화면까지 도달함을 재확인. **실제 로그인 완료 후 최종 랜딩까지는 사용자 확인 필요**(에이전트가 실 계정으로 로그인할 수 없는 경계는 D148과 동일).
+  - WHY: 문서화된 기본 동작과 실측이 어긋나는 상황에서, 원인을 계속 파고들기보다 애초에 기본값에 의존하지 않는 게 더 견고함.
+  - COST: 없음.
+  - EXIT: 이 수정 후에도 잘못된 곳으로 떨어지면 `uri_allow_list` 자체를 재확인(로컬 와일드카드 패턴이 실제로 이 경로를 커버하는지 등).
+  - 커밋: `e0fe2ad`, push 완료.
+
 
 ## 다음 단계 (미해결)
 
