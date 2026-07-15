@@ -1414,6 +1414,7 @@ python3 pipeline/compare_methodologies.py
   - COST: `docs/lab/`에 새 파일 9개(엔진 4개+토큰 CSS+trainee 3페이지+session-state.js) 추가 — 기존 파일과 이름 충돌 없음(`p02-engine.js` vs `p02-runner.js` 등 의도적으로 다른 이름).
   - EXIT: `index.html`과 `trainee/*.html`은 서로 링크 없이 완전히 독립된 두 입구 — 나중에 서로 연결하는 네비게이션을 추가하고 싶으면 별도 요청 필요(이번 범위엔 없음).
   - `Team-IZ/AI` 브랜치(`feature/verification-ui`)는 그대로 남아있음(삭제 안 함), 이번 결정으로 사용은 안 하지만 재참고 가능.
+  - 커밋: `82e39f0`, push 예정(GitHub Pages 재배포로 라이브 반영).
 
 
 ## 다음 단계 (미해결)
