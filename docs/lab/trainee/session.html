@@ -6,7 +6,20 @@
 <title>검증 세션 · IZ-Get</title>
 <link rel="stylesheet" href="../iz-tokens.css">
 <style>
-  body { min-height: 100vh; display: flex; flex-direction: column; }
+  /* D186: WHY -- body previously used min-height:100vh, which only sets a floor, not a
+     ceiling. A tall codepanel (long file) made body grow past the viewport, so .split's
+     flex:1 never resolved to a bounded pixel height -- .codebody/.chatbody's
+     overflow:auto never kicked in, the whole PAGE scrolled instead, and the composer
+     (last in DOM order) ended up wherever the tall code panel happened to end.
+     height:100dvh (dynamic viewport height, falls back fine in older browsers that
+     ignore the unknown value and keep the vh line above) + overflow:hidden makes body
+     itself a hard ceiling, so .split's flex:1 gets a real pixel value and each panel's
+     own overflow:auto takes over independently. COST: nothing lost -- the outer page
+     never needed to scroll as a whole; only the two panels did. EXIT: if a future layout
+     genuinely needs the page taller than the viewport, drop overflow:hidden here and
+     give #session-root its own height:100vh instead. */
+  html, body { height: 100vh; height: 100dvh; overflow: hidden; }
+  body { display: flex; flex-direction: column; }
   .sbar { height: 56px; background: var(--c-surface); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; padding: 0 var(--sp-5); }
   .sbar .l { display: flex; align-items: center; gap: var(--sp-4); }
   .sbar .brand { display: flex; align-items: center; gap: var(--sp-2); font-weight: 700; font-size: var(--fs-base); }

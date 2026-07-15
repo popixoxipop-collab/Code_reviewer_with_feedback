@@ -1414,7 +1414,17 @@ python3 pipeline/compare_methodologies.py
   - COST: `docs/lab/`에 새 파일 9개(엔진 4개+토큰 CSS+trainee 3페이지+session-state.js) 추가 — 기존 파일과 이름 충돌 없음(`p02-engine.js` vs `p02-runner.js` 등 의도적으로 다른 이름).
   - EXIT: `index.html`과 `trainee/*.html`은 서로 링크 없이 완전히 독립된 두 입구 — 나중에 서로 연결하는 네비게이션을 추가하고 싶으면 별도 요청 필요(이번 범위엔 없음).
   - `Team-IZ/AI` 브랜치(`feature/verification-ui`)는 그대로 남아있음(삭제 안 함), 이번 결정으로 사용은 안 하지만 재참고 가능.
-  - 커밋: `82e39f0`, push 예정(GitHub Pages 재배포로 라이브 반영).
+  - 커밋: `82e39f0`+`a20fa44`, push 완료(GitHub Pages 재배포로 라이브 반영, 신규/기존 페이지 전부 200 확인).
+
+- **D186** ([`docs/lab/trainee/session.html`](./docs/lab/trainee/session.html)) — 사용자가 실제 라이브 스크린샷으로 신고: 근거 코드가 긴 finding에서 답변 입력창이 코드 길이만큼 아래로 밀려 화면 밖으로 사라짐. "근거코드는 스크롤 형태로, 입력단은 우측 고정 + 대화방처럼 위로 밀려 올라가게" 요청.
+  - **근본원인**: `body { min-height: 100vh; ... }` — `min-height`는 하한선만 정할 뿐 상한을 안 잡음. 코드 패널이 길어지면 `body` 전체가 뷰포트보다 커지고, 그 결과 `.split`의 `flex: 1`이 실제 픽셀 높이로 확정되지 못해 `.codebody`/`.chatbody`의 `overflow: auto`가 아예 발동하지 않음 — 개별 패널이 아니라 페이지 전체가 스크롤되면서, DOM상 마지막에 오는 답변 입력창(`.composer`)이 코드 패널 길이만큼 아래로 밀려남.
+  - **수정**: `html, body { height: 100vh; height: 100dvh; overflow: hidden; }`로 뷰포트를 실제 상한으로 고정. 이후 `.split`의 `flex:1`이 진짜 픽셀 값으로 확정되고, `.codebody`/`.chatbody` 각각의 `overflow: auto`가 독립적으로 작동 — 코드 패널은 자체 스크롤, 채팅은 `appendBubble()`의 기존 `scrollTop = scrollHeight` 로직으로 새 턴마다 위로 밀려 올라가며, `.composer`는 항상 뷰포트 안(채팅 컬럼 맨 아래)에 고정.
+  - **검증**: Playwright로 가짜 sessionStorage 제출 데이터(120줄 코드 파일) + 6턴 채팅을 직접 주입해 순수 레이아웃만 격리 테스트 — (1) `document.documentElement.scrollHeight === window.innerHeight`(페이지 자체는 안 스크롤됨), (2) 코드 패널 `scrollHeight(2479px) > clientHeight(687px)`(자체 스크롤 확인), (3) `.composer`가 뷰포트 상하 범위 안에 완전히 위치(항상 보임) — 3가지 전부 통과. 스크린샷으로도 육안 확인.
+  - WHY: 사용자가 실제 사용 중 발견한 화면 버그를 스크린샷과 함께 신고.
+  - COST: 없음 — 페이지 전체가 뷰포트보다 커질 필요가 원래 없었음(의도한 2패널 레이아웃 자체가 항상 화면 안에 맞아야 하는 구조).
+  - EXIT: 나중에 세션 페이지에 그 외 콘텐츠(예: 상단 배너)가 추가돼 뷰포트보다 커져야 한다면, `overflow: hidden`을 빼고 `#session-root`에 자체 `height: 100vh`를 주는 방식으로 전환.
+  - `Team-IZ/AI` 브랜치의 동일 파일에도 같은 수정 적용(커밋 `644a8c0`).
+  - 커밋: `<다음 커밋에서 채움>`, push 예정.
 
 
 ## 다음 단계 (미해결)
