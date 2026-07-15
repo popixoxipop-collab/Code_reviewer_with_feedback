@@ -1104,6 +1104,16 @@ python3 pipeline/compare_methodologies.py
   - EXIT: 진단 결과 `.ipynb`가 확정되면 셀 추출 로직 구현, 다른 확장자로 밝혀지면 그에 맞게 `SRC_EXTS` 또는 스킵 로직 조정.
   - 커밋: `11aa229`, push 완료.
 
+- **D154** ([`docs/lab/prompt_manifest.json`](./docs/lab/prompt_manifest.json)) — 사용자가 연달아 지적: "모델이 왜 중복 선택이야? 하나로 쭉 가야하잖아" / "pdf password는 왜 두 번 입력받는 구조야? 맨 위에꺼 하나만 놔둬". 둘 다 같은 클래스의 실제 버그였음.
+  - **원인**: `p01-runner.js`의 `callPromptStage()`가 `const model = LabApp.resolveParam("p01", stageId, "model") || selectedModel;`로 돼 있어, 매니페스트에 그 스테이지용 `model` 파라미터가 하나라도 있으면(디폴트값이 빈 문자열이 아닌 한) `resolveParam`이 항상 그 값을 반환해 `|| selectedModel`(상단 토글)까지 절대 안 감. `prompt_manifest.json`을 확인해보니 **p01-2("청크 분석")에만** `model` 파라미터가 `qwen/qwen3-next-80b-a3b-instruct` 고정값으로 남아있었음(p01-3/p01-4/json-repair는 없어서 정상적으로 토글을 따르고 있었음) — 즉 상단 "모델 선택" UI 라벨이 "3개 프롬프트 단계+JSON 복구 전부에 적용"이라고 명시하는데도, 가장 중요한 청크 분석 단계만 실제로는 그 선택을 무시하고 있었음. `pdf_password`도 같은 패턴 — `extractPages()`가 실제로 쓰는 건 상단 PDF 입력 패널의 `pdfPassword` 모듈 변수뿐, p01-1 스테이지의 `pdf_password` 파라미터는 `resolveParam`으로 조회되는 곳이 코드 어디에도 없어 완전히 장식용이었음.
+  - **되짚어보면**: 이 세션 앞부분의 실측 A/B 테스트(step-3.5-flash vs qwen3-next-80b)와는 무관 — 그건 직접 curl로 모델을 지정한 것이라 이 버그의 영향을 안 받음. 다만 사용자의 **실제 웹 도구 P01 실행**(오늘 앞서 있었던, "3청크 전부 524" 사례)에서 화면엔 step-3.5-flash가 선택돼 있었지만, 로그의 "모델: stepfun-ai/step-3.5-flash"는 `selectedModel` 변수를 그대로 찍은 것일 뿐 — 실제 청크 분석 API 호출에 쓰인 모델은 이 버그 때문에 `qwen/qwen3-next-80b-a3b-instruct`였을 가능성이 높음(그때는 이 사실을 모른 채 분석했음, 사후 기록으로 남김).
+  - **수정**: 두 파라미터를 매니페스트에서 완전히 제거(동기화 시도 아님 — P01은 자체 상단 UI가 있으므로 스테이지 레벨 오버라이드 자체가 불필요). p01-1: `chunk_size`/`max_chunks`만 남음. p01-2: `course_label`/`max_tokens`/`temperature`/`response_format_json`만 남음.
+  - **검증**: 헤드리스 브라우저로 두 스테이지 카드를 열어 필드가 실제로 사라졌음을 확인, `LabApp.resolveParam("p01","p01-2","model")`이 `undefined`를 반환함을 확인(→ `|| selectedModel`이 이제 실제로 동작), 상단 토글 클릭이 여전히 정상 작동함을 확인.
+  - WHY: P01은 P02/P03과 달리 자체 top-level 토글/입력 UI가 있는데, 매니페스트의 범용 스테이지-파라미터 편집 패턴이 그대로 남아있어 충돌 — "하나로 쭉" 가야 한다는 사용자 기대가 정확히 옳은 설계 의도였음(D136 라벨이 이미 그렇게 약속하고 있었음).
+  - COST: 없음(제거된 필드들은 애초에 안 쓰이거나 잘못 쓰이고 있었음).
+  - EXIT: 만약 나중에 스테이지별 모델 오버라이드가 실제로 필요해지면, `resolveParam`이 아니라 `callPromptStage`가 명시적으로 "이 스테이지는 오버라이드 허용" 플래그를 확인하도록 다시 설계할 것 — 매니페스트에 파라미터를 슬쩍 추가하는 방식은 반복하지 말 것(이번에 그렇게 두 번 재발함).
+  - 커밋: `ae797d4`, push 완료.
+
 
 ## 다음 단계 (미해결)
 
