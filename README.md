@@ -1312,6 +1312,17 @@ python3 pipeline/compare_methodologies.py
   - EXIT: Phase 3의 검증 임계값(20% 급감)이나 `ACTIONABLE_ISSUE_TYPES` 범위는 실사용 데이터로 조정 대상 — 지금은 전부 첫 구현의 보수적 잠정치.
   - 커밋: `f4a1bcd`, push 완료(워커 변경 없음, GitHub Pages만).
 
+- **D175** ([`docs/lab/db.js`](./docs/lab/db.js), [`docs/lab/app.js`](./docs/lab/app.js), [`docs/lab/p01-runner.js`](./docs/lab/p01-runner.js), [`docs/lab/p02-runner.js`](./docs/lab/p02-runner.js), [`docs/lab/p03-runner.js`](./docs/lab/p03-runner.js)) — Codex(`codex:codex-rescue`)에게 실제 DB 스키마와 코드 흐름이 정합하는지 감사 요청, 결과 중 사용자가 "지금 고쳐"로 지시한 것 반영 + 별도로 질문 리스트를 원본자료/모델/질문 3열 표로 보고 싶다는 요청.
+  - **Codex 감사에서 나온 "진짜 버그" 판정 중 하나는 제가 직접 검증해서 기각**: "`members` 테이블에 쓰는 코드가 docs/lab에 없다"는 관찰은 맞지만 결론("member_id가 존재 안 하는 row를 참조할 수 있다")은 틀림 — `auth.users`에 `on_auth_user_created` 트리거가 걸려 `handle_new_member()`가 DB 쪽에서 자동 생성함(직접 트리거 조회로 확인). Codex는 클라이언트 코드만 보라고 범위를 좁혀줬어서 이 부분을 놓쳤던 것 — agent 결론을 그대로 전달하지 않고 검증 후 정정.
+  - **수정 1: 실패한 실행도 DB에 기록됨**. 이전엔 `run()`의 바깥쪽 catch(성공 경로의 `maybeSaveRun()`에 도달하기 전 실패)가 콘솔·화면 로그에만 남고 DB엔 흔적이 전혀 없었음 — 왜 실패했는지 나중에 DB로 조회할 방법이 없었음. `db.js`의 `saveRun()`이 `status`/`error`를 오버라이드 가능하게(기본값은 그대로 `"done"`/`null`이라 기존 호출부 전부 무변경) 확장, `app.js`에 공유 헬퍼 `LabApp.saveFailedRun(pipelineId, model, err, startedAt)` 신설(3개 파이프라인에 중복 구현 안 함), 세 파이프라인의 바깥쪽 catch에서 호출.
+  - **수정 2: P01 원본 PDF 파일명이 처음으로 저장됨**. 질문 리스트 표를 "원본 자료" 열로 요청받았는데, 그동안 PDF 파일명 자체를 어디에도 저장한 적이 없었음(`handlePdfFile`이 상태 텍스트에만 잠깐 씀) — `pdfFileName` 모듈 변수 추가해 캡처, `input_meta.source_filename`으로 저장.
+  - **질문 리스트 view**: `p01_questions_view`(원본자료/모델/질문리스트 3열 + run_id/시각/개수) 신설 — `source_filename`이 없는 기존 실행은 조용히 비우지 않고 "(파일명 미기록 -- D175 이전 실행)"으로 명시 표시(D153/D162와 같은 원칙).
+  - **검증**: Playwright로 `LabDB.saveRun`을 가로채는 스텁 사용 — ①NVIDIA 키 미입력으로 즉시 실패하는 실행을 유도해 `saveRun`이 정확히 1회, `status:"error"`+실제 에러 메시지로 호출됨을 확인. ②정상 실행에서 업로드한 파일명("my-textbook.pdf")이 `input_meta.source_filename`에 정확히 들어감을 확인. view는 실제 프로덕션 데이터로 조회해 기존 5개 실행 전부 "파일명 미기록" 안내문이 뜨는 것까지 확인.
+  - WHY: 사용자가 감사 결과 중 하나는 즉시 수정 지시, 나머지는 실용적 가치 낮다고 판단해 기록만.
+  - COST: 실패 시 DB 저장 1회 추가(무시할 수준). `source_filename`은 이 배포 이전 실행엔 소급 적용 안 됨(과거 데이터를 새로 만들어낼 방법이 없음 — 정직하게 "미기록"으로 표시).
+  - EXIT: `overrides_hash` 미사용, P02의 `overrides` 배열 vs P01/P03의 객체 불일치는 Codex 감사에서 나왔지만 지금은 안 건드림 — 필요해지면 그때.
+  - 커밋: `275acb5`, push 완료(워커 변경 없음, GitHub Pages만).
+
 
 ## 다음 단계 (미해결)
 
