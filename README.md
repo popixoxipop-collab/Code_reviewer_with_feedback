@@ -1283,6 +1283,18 @@ python3 pipeline/compare_methodologies.py
   - EXIT: 실사용에서 매번 상한까지 다 쓰고도 통과 못 하는 게 확인되면, 다음 단계는 `refine_iters`를 더 올리는 게 아니라 audit의 `issues`/`suggested_fix`를 실제로 unit_map에 반영하는 단계 추가.
   - 커밋: `cec87ff`, push 완료(워커 변경 없음, GitHub Pages만).
 
+- **D173** ([`docs/lab/p01-runner.js`](./docs/lab/p01-runner.js), [`docs/lab/prompt_manifest.json`](./docs/lab/prompt_manifest.json)) — 사용자 지시 두 건이 겹침: ①"질문 생성이 Unit01에만 집중됐다, 유닛 개수만큼 늘리고 다양화해라" ②"그래프 관계 그리라고 했었는데 원본 JSON에서 빠진 거 같다, 확인해달라". 제가 "unit_map이 원래 하나의 큰 유닛뿐이라 그런가" 가정하고 있었는데, 사용자가 "unit_id 값을 확인하라는 말"이라고 명시적으로 정정 — DB 직접 조회로 실제 unit_map이 이미 6~13개+의 서로 다른 unit_id(서브유닛 `03-1`/`04-2` 등 포함)를 갖고 있음을 확인, 가정이 틀렸음을 인정.
+  - **그래프 관계 확인**: 원본 파이프라인의 `build_graph()`(scripts/java_curriculum_nvidia_pipeline.py:451)를 직접 읽어 확인 — `nodes`뿐 아니라 `links`(contains_unit/teaches/shows_code/warns/sourced_by/audits/found_issue/issue_page 관계)도 만드는데, 웹 도구의 `buildGraphNodes()`는 노드만 만들고 그 결과조차 최종 result JSON에 아예 없었음. 확인 결과 사용자 말이 맞았음.
+  - **질문 쏠림 원인 확정**: unit_map엔 유닛이 많은데도, 기존 코드는 전체 그래프를 통째로 한 번의 LLM 호출에 넘기고 분배를 모델 판단에 맡기고 있었음 — 실제로는 모델이 대체로 첫 번째(대개 Unit01)에 쏠렸던 것.
+  - **체크리스트에 "그래프 생성 여부" 추가 제안 관련 결정**: 사용자에게 직접 확인 — LLM이 판단하는 주관적 audit 체크리스트(refine이 애초에 그래프 데이터를 안 받음)에 넣지 않고, **코드가 이미 확실히 아는 사실**(`buildGraph()` 성공/실패)이니 별도 코드 레벨 플래그로 두기로 결정(사용자 선택, 권장안).
+  - **수정**: (1) `buildGraph(unitMap, audits)` 신설 — 원본과 동일한 id 체계·관계명으로 `nodes`+`links` 생성, `result.graph`/`result.graph_generated`(코드 레벨 true/false)로 최종 결과·DB에 포함. (2) 질문 생성을 전체 그래프 1회 호출에서 **유닛별 반복 호출**로 재구성 — `unitMap`의 각 유닛마다 `buildGraphNodes({[unitId]: unit})`로 범위를 좁혀 개별 호출, D168/D169와 같은 파도+라운드 재시도 구조(`maxAttempts:1`, `retryable`만 다음 라운드) 재사용 — 이걸로 P01이 원본과 두 번째로 의도적으로 갈라지는 지점(D172에 이어). 질문 개수가 이제 유닛 수에 자연히 비례. (3) p01-4 프롬프트에 "이 유닛 안에서 서로 다른 노드를 다양하게 다뤄라" 규칙 한 줄 추가(사용자의 "다양화" 요청 반영).
+  - **검증**: 30페이지/3청크 PDF를 청크마다 다른 unit_id(01/02/03)를 반환하도록 시뮬레이션 → 실제로 유닛 3개로 정확히 분리 인식, 질문 생성이 유닛별로 각각 호출됨(유닛02는 1차 재시도 가능 실패 후 2차 성공까지 정상 작동) 확인, 최종 질문 개수 3개(유닛당 고르게 분산, 쏠림 없음), 그래프 9노드/10관계로 정상 생성·화면 표시 확인.
+  - **별도 진행 중**: refine의 audit 결과(`issues`/`suggested_fix`)를 실제로 unit_map에 반영해 유닛 경계 자체를 고치는 단계는 아직 없음(D172의 COST에서 이미 예고) — Codex에게 별도로 계획 수립을 요청해 진행 중.
+  - WHY: 두 사용자 지시 모두 실측(DB 조회, 원본 코드 읽기)으로 근거 확인 후 반영.
+  - COST: 유닛 수만큼 LLM 호출이 늘어남(이전 1회 → 유닛 수만큼) — 총 호출량 증가, 단 D168/D169의 동시성 캡+재시도 구조를 그대로 재사용해 관리됨.
+  - EXIT: 유닛별 호출이 너무 잘게 쪼개진다고 판단되면(예: 유닛이 아주 많은 문서) 유닛을 몇 개씩 묶어 배치 호출하는 것도 고려 가능 — 아직 그 필요성 실측 안 됨.
+  - 커밋: `57c5260`, push 완료(워커 변경 없음, GitHub Pages만).
+
 
 ## 다음 단계 (미해결)
 
