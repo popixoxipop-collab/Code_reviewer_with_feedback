@@ -66,12 +66,30 @@ const LabConfig = (() => {
     for (const f of FIELDS) sessionStorage.setItem(SESSION_PREFIX + f, state[f] || "");
   }
 
-  function renderStatus() {
+  // D151 (2026-07-15): the "DB 저장..." half of this used to be a fixed string regardless
+  // of whether anyone was actually logged in -- no element anywhere reflected the real
+  // session, so a successful Google login was visually indistinguishable from a failed
+  // one. Now checks LabDB's actual session and shows the signed-in email (or its absence),
+  // and toggles which of the login/logout buttons is shown.
+  async function renderStatus() {
     const el = document.getElementById("auth-status");
     if (!el) return;
     const parts = [];
     parts.push(state["nvidia-key"] && state["proxy-url"] ? "P01/P03 실행 가능" : "P01/P03: NVIDIA 키 + 프록시 URL 필요");
-    parts.push("DB 저장 켜짐(팀 공용) — 로그인해야 실제로 저장됨");
+
+    const loginBtn = document.getElementById("google-login-btn");
+    const logoutBtn = document.getElementById("logout-btn");
+    const user = await LabDB.currentMemberOrNull();
+    if (user) {
+      parts.push(`로그인됨: ${user.email} — DB 저장 켜짐`);
+      if (loginBtn) loginBtn.classList.add("hidden");
+      if (logoutBtn) { logoutBtn.classList.remove("hidden"); logoutBtn.textContent = `로그아웃 (${user.email})`; }
+    } else {
+      parts.push("로그인 필요 — 지금은 DB 저장 안 됨");
+      if (loginBtn) loginBtn.classList.remove("hidden");
+      if (logoutBtn) logoutBtn.classList.add("hidden");
+    }
+
     el.textContent = parts.join(" · ");
     el.className = "auth-status" + (state["nvidia-key"] && state["proxy-url"] ? " ok" : "");
   }
@@ -89,15 +107,29 @@ const LabConfig = (() => {
   function wireLogin() {
     const statusEl = document.getElementById("login-status");
     const googleBtn = document.getElementById("google-login-btn");
-    if (!googleBtn) return;
-    googleBtn.addEventListener("click", async () => {
-      statusEl.textContent = "Google로 이동 중...";
-      try {
-        await LabDB.signInWithGoogle(); // full-page redirect -- nothing runs after this on success
-      } catch (err) {
-        statusEl.textContent = `실패: ${err.message}`;
-      }
-    });
+    if (googleBtn) {
+      googleBtn.addEventListener("click", async () => {
+        statusEl.textContent = "Google로 이동 중...";
+        try {
+          await LabDB.signInWithGoogle(); // full-page redirect -- nothing runs after this on success
+        } catch (err) {
+          statusEl.textContent = `실패: ${err.message}`;
+        }
+      });
+    }
+
+    const logoutBtn = document.getElementById("logout-btn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", async () => {
+        try {
+          await LabDB.signOut();
+          statusEl.textContent = "로그아웃됨";
+          renderStatus();
+        } catch (err) {
+          statusEl.textContent = `실패: ${err.message}`;
+        }
+      });
+    }
   }
 
   function applyDefaults() {

@@ -114,5 +114,23 @@ const LabDB = (() => {
     if (error) throw error;
   }
 
-  return { isConfigured, ensureClient, currentMember, saveRun, signInWithGoogle };
+  // D151 (2026-07-15): "로그인 된 상태인지 안 가" -- there was genuinely no UI anywhere
+  // that reflected actual session state (renderStatus() in config.js only ever checked
+  // NVIDIA-key/proxy-url presence, never LabDB's own session). currentMember() throws by
+  // design (saveRun() wants that), so this is a non-throwing variant for status display.
+  async function currentMemberOrNull() {
+    try {
+      return await currentMember();
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async function signOut() {
+    const c = await ensureClient();
+    const { error } = await c.auth.signOut();
+    if (error) throw error;
+  }
+
+  return { isConfigured, ensureClient, currentMember, currentMemberOrNull, saveRun, signInWithGoogle, signOut };
 })();
