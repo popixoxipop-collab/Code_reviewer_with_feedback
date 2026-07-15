@@ -103,14 +103,33 @@ const P02Runner = (() => {
       const zip = await JSZip.loadAsync(file);
       const entries = Object.values(zip.files).filter((e) => !e.dir);
       const files = {};
+      // D153: "소스 파일 0개 로드됨"만으로는 zip 안에 뭐가 있었는지 전혀 안 보여서
+      // 원인 파악이 안 됨(사용자 실측: LLMOps 실습 zip이 전부 0개로 나옴). 스킵된
+      // 확장자별 개수를 세어뒀다가, 0개일 때만 진단으로 보여줌 -- 정상 로드 시엔
+      // 기존 메시지 그대로.
+      const skippedExtCounts = {};
       for (const entry of entries) {
-        if (isSkippedPath(entry.name)) continue;
+        if (isSkippedPath(entry.name)) {
+          const ext = "." + (entry.name.split(".").pop() || "") || "(확장자 없음)";
+          skippedExtCounts[ext] = (skippedExtCounts[ext] || 0) + 1;
+          continue;
+        }
         try {
           files[entry.name] = await entry.async("string");
         } catch (e) { /* binary file, skip */ }
       }
       zipFiles = files;
-      status.textContent = `${file.name}: 소스 파일 ${Object.keys(files).length}개 로드됨`;
+      const loadedCount = Object.keys(files).length;
+      if (loadedCount === 0 && Object.keys(skippedExtCounts).length) {
+        const breakdown = Object.entries(skippedExtCounts)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 6)
+          .map(([ext, n]) => `${ext}×${n}`)
+          .join(", ");
+        status.textContent = `${file.name}: 소스 파일 0개 로드됨 -- zip 안 파일: ${breakdown} (지원 확장자: ${SRC_EXTS.join(", ")})`;
+      } else {
+        status.textContent = `${file.name}: 소스 파일 ${loadedCount}개 로드됨`;
+      }
     } catch (err) {
       status.textContent = `압축 해제 실패: ${err.message}`;
       zipFiles = null;
