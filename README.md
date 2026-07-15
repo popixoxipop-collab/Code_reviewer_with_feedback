@@ -1130,6 +1130,14 @@ python3 pipeline/compare_methodologies.py
   - EXIT: 실제로 레이트리밋 문제가 실측되면 청크를 배치로 나눠(예: 5개씩) `Promise.all`을 여러 번 도는 식으로 동시성 상한을 두는 것으로 되돌릴 수 있음 — 아직 그럴 필요가 실측되지 않아 구현 안 함.
   - 커밋: `2478e0c`, push 완료.
 
+- **D157** ([`docs/lab/app.js`](./docs/lab/app.js)) — 사용자 지시: "P01 파이프라인에서 2,3,4번에 temperature는 고정이니까 안보이게 빼". 매니페스트 전체에서 `locked: true` 사용처를 확인해보니 P01(p01-2/3/4의 temperature) 3곳 외에 P03에도 2곳(p03-6의 max_turns, p03-7의 temperature) 있어서, P01만 따로 처리하지 않고 공용 `renderParamGrid()`에서 한 번에 처리.
+  - **수정**: `locked: true` 파라미터는 이제 비활성화 입력창+"고정" 태그로 보여주는 대신 아예 렌더링 자체를 건너뜀. 부수적으로 발견: p03-6은 파라미터가 `max_turns` 하나뿐이라 그게 사라지면 "파라미터" 라벨만 덩그러니 남는 엣지케이스 → `renderParamGrid()`가 표시할 non-locked 파라미터가 하나도 없으면 라벨 자체를 안 그리도록 추가 수정.
+  - **검증**: 헤드리스 브라우저로 p01-2/3/4, p03-6/7 전부 열어 확인 — locked 파라미터(temperature ×4, max_turns)는 전부 안 보이고, 나머지 필드(course_label/max_tokens/response_format_json/refine_iters/model)는 그대로 정상 렌더링됨. p03-6은 빈 라벨 없이 깔끔하게 표시됨. 콘솔 에러 없음.
+  - WHY: 고정값을 disabled 입력창으로 보여주는 건 "바꿀 수 있어 보이는데 안 되는" 불필요한 UI 노이즈였음 — 값과 근거(재현성 요구사항 등)는 매니페스트 `note`와 이 README에 이미 남아있어 화면에 또 보일 필요 없음.
+  - COST: 없음.
+  - EXIT: 다시 보여야 하면 `renderParamGrid()`의 `if (p.locked) continue;` 한 줄만 되돌리면 됨.
+  - 커밋: `d0287b3`, push 완료.
+
 
 ## 다음 단계 (미해결)
 
