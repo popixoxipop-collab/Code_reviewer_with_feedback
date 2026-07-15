@@ -38,10 +38,17 @@ const P02Runner = (() => {
   let currentMethod = "pat"; // "pat" | "zip"
   let zipFiles = null; // { relPath: content }
 
+  // D164 (2026-07-15): Codex root-cause investigation (user-delegated) into a real "스캔
+  // 대상 소스 파일을 찾지 못함" failure confirmed this via a direct Node repro: extension
+  // matching was case-SENSITIVE against an all-lowercase SRC_EXTS, so a legitimately-source
+  // file named e.g. MAIN.PY or App.TS (case varies across platforms/editors/exports) was
+  // silently treated as non-source and skipped. Lowercasing before the SRC_EXTS check can
+  // only ever ADD previously-wrongly-excluded valid source files to the scan -- it can't
+  // cause any new false inclusion, since it's still the same whitelist, just case-normalized.
   function isSkippedPath(relPath) {
     const parts = relPath.split("/");
     if (parts.some((p) => SKIP_DIR_NAMES.has(p))) return true;
-    const ext = "." + (relPath.split(".").pop() || "");
+    const ext = "." + (relPath.split(".").pop() || "").toLowerCase();
     if (!SRC_EXTS.includes(ext)) return true;
     return false;
   }
