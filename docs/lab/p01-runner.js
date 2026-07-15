@@ -52,6 +52,16 @@ const P01Runner = (() => {
   //     working middle ground) rather than adding yet another retry layer on top.
   const CHUNK_CONCURRENCY = 40;
 
+  // D174 Phase 3 (2026-07-15): which of p01-3's issue_type values (see D174 Phase 2's
+  // manifest note) are safe to route to the p01-3b apply stage at all. duplicate_exact and
+  // unit-boundary issues are restructuring within already-cited real content -- safe for a
+  // model to attempt (still gated by validateUnitMapGrounding() afterward). missing_pages
+  // is deliberately excluded: "fixing" it would mean inventing a page number, exactly the
+  // grounding risk this whole feature has to avoid. coverage_gap_failed_chunk is D169's
+  // failed-chunk gap -- per Codex's plan, explicitly out of scope (missing content stays
+  // missing, not fabricated to look complete).
+  const ACTIONABLE_ISSUE_TYPES = new Set(["duplicate_exact", "overbroad_unit", "boundary_split_needed"]);
+
   // D169 (2026-07-15): D168 kept the worker's per-job independent retry (D-I) but capped
   // how many jobs could be in flight at once. User asked to go further -- move retry
   // ownership for chunk-analysis to the client entirely, since it (unlike any single
@@ -235,6 +245,116 @@ const P01Runner = (() => {
     }
     for (const u of Object.values(unitMap)) u.source_pages = [...new Set(u.source_pages)].sort((a, b) => a - b);
     return unitMap;
+  }
+
+  // D174 Phase 1 (2026-07-15): D172's refine loop re-audits an unchanged unit_map every
+  // round (refine_once() only ever produces a report, never edits unit_map) -- Codex's
+  // plan (asked for by the user) for closing that gap starts with the cheapest,
+  // zero-risk win: deterministic cleanup that can't corrupt grounding, run BEFORE the
+  // model ever sees the data. Exact-duplicate concepts (same name + same page set) are
+  // genuinely redundant, not a judgment call. An item with zero source_pages is, by this
+  // whole tool's own premise, not a real finding -- it's dropped rather than kept and
+  // silently treated as grounded (counted+logged so the drop is visible, not silent).
+  //   WHY: safe to run unconditionally, no LLM call, no risk of inventing content.
+  //   COST: none observed -- purely subtractive (dedup, drop-ungrounded), never adds data.
+  //   EXIT: if exact-name+page matching proves too narrow (near-duplicates with slightly
+  //     different names slip through), that's Phase 3's job (duplicate_exact issue_type
+  //     routed to the model apply stage), not a reason to make this pass fuzzier.
+  function normalizeUnitMap(unitMap, pipelineId) {
+    let droppedUngrounded = 0;
+    let droppedDuplicates = 0;
+    const normalized = {};
+    for (const [unitId, unit] of Object.entries(unitMap)) {
+      const dedupeItems = (items) => {
+        const seen = new Set();
+        const result = [];
+        for (const item of items || []) {
+          const pages = [...new Set(item.source_pages || [])].sort((a, b) => a - b);
+          if (!pages.length) { droppedUngrounded += 1; continue; }
+          const key = `${item.name || ""}::${pages.join(",")}`;
+          if (seen.has(key)) { droppedDuplicates += 1; continue; }
+          seen.add(key);
+          result.push({ ...item, source_pages: pages });
+        }
+        return result;
+      };
+      normalized[unitId] = {
+        ...unit,
+        source_pages: [...new Set(unit.source_pages || [])].sort((a, b) => a - b),
+        concepts: dedupeItems(unit.concepts),
+        code_examples: dedupeItems(unit.code_examples),
+        cautions: dedupeItems(unit.cautions),
+      };
+    }
+    if ((droppedUngrounded || droppedDuplicates) && pipelineId) {
+      LabApp.log(pipelineId, `unit_map 정리: 근거 없는 항목 ${droppedUngrounded}개 제외, 중복 항목 ${droppedDuplicates}개 병합`);
+    }
+    return normalized;
+  }
+
+  function countGroundedItems(unitMap) {
+    return Object.values(unitMap).reduce(
+      (sum, u) => sum + (u.concepts || []).length + (u.code_examples || []).length + (u.cautions || []).length, 0
+    );
+  }
+
+  // D174 Phase 1/3: the one safety net every unit_map revision (Phase 3's model-driven
+  // fix included) must pass before being accepted. Rejects rather than repairs -- an
+  // invalid revision just means "the fix step failed this time", handled the same way any
+  // other failed LLM call is (log it, keep the previous known-good state, move on).
+  //   WHY: this pipeline's whole premise is page-grounded claims -- a fix step that only
+  //     sees the already-summarized unit_map (not original chunk text) can invent or
+  //     misattribute content while "cleaning up" structure. This is the check that catches
+  //     that, not a court of last resort.
+  //   COST: a real, useful restructuring that happens to also trip this (e.g. a legitimate
+  //     20%+ reduction from merging genuinely-duplicate items) gets rejected too --
+  //     conservative by design, false-rejects are a much cheaper mistake here than
+  //     false-accepts of corrupted grounding.
+  //   EXIT: if false-rejects turn out to be common in practice, loosen the item-count-drop
+  //     threshold (currently 0.8, not measured -- a provisional guess) with real data, not
+  //     by removing the check.
+  function validateUnitMapGrounding(revisedMap, originalMap, successfulPages) {
+    const originalCount = countGroundedItems(originalMap);
+    const revisedCount = countGroundedItems(revisedMap);
+    if (originalCount > 0 && revisedCount < originalCount * 0.8) {
+      return { ok: false, reason: `근거 있는 항목 수 급감(${originalCount}개→${revisedCount}개, 20%+ 감소) — 내용 유실 의심` };
+    }
+    for (const [unitId, unit] of Object.entries(revisedMap)) {
+      for (const group of ["concepts", "code_examples", "cautions"]) {
+        for (const item of unit[group] || []) {
+          if (!item.source_pages || !item.source_pages.length) {
+            return { ok: false, reason: `유닛 ${unitId}의 "${item.name}"에 source_pages 없음` };
+          }
+          for (const page of item.source_pages) {
+            if (!successfulPages.has(page)) {
+              return { ok: false, reason: `유닛 ${unitId}의 "${item.name}"이 분석되지 않은 페이지(${page})를 인용함` };
+            }
+          }
+          if (!item.evidence) {
+            return { ok: false, reason: `유닛 ${unitId}의 "${item.name}"에 evidence 없음` };
+          }
+        }
+      }
+    }
+    return { ok: true };
+  }
+
+  // D174 Phase 3: grounding context for the apply stage -- the ORIGINAL per-chunk
+  // analysis results (not the already-condensed unit_map) for whichever chunks overlap
+  // the affected units' pages, so a fix can point back to real extracted evidence instead
+  // of only seeing unit_map's own summary of itself.
+  function chunkResultsForUnits(unitIds, unitMap, chunkState) {
+    const pages = new Set();
+    for (const uid of unitIds) {
+      for (const p of (unitMap[uid] && unitMap[uid].source_pages) || []) pages.add(p);
+    }
+    return chunkState
+      .filter((s) => s.result && !s.result.error)
+      .filter((s) => {
+        for (let p = s.chunk.start; p <= s.chunk.end; p++) if (pages.has(p)) return true;
+        return false;
+      })
+      .map((s) => s.result);
   }
 
   // Scoped to a single-unit slice of unitMap (e.g. {[unitId]: unit}) by callers that
@@ -473,8 +593,20 @@ const P01Runner = (() => {
       if (failedChunks.length) {
         LabApp.log(pipelineId, `⚠ 청크 ${failedChunks.length}개 분석 실패 (p${failedChunks.map((c) => c.chunk_range).join(", p")}) -- unit_map에서 빠짐`);
       }
-      const unitMap = makeUnitMap(chunkResults.filter((c) => !c.error));
+      // `let` (not `const`): Phase 3's apply stage below can replace this with a
+      // validated revision between refine rounds.
+      let unitMap = normalizeUnitMap(makeUnitMap(chunkResults.filter((c) => !c.error)), pipelineId);
       LabApp.log(pipelineId, `unit_map 생성: 유닛 ${Object.keys(unitMap).length}개`);
+      // Every page any successfully-analyzed chunk actually covered -- the grounding
+      // fence Phase 3's validation checks revised source_pages against, so a fix can
+      // never cite a page nothing here actually looked at.
+      const successfulPages = new Set(
+        chunkState.filter((s) => s.result).flatMap((s) => {
+          const pages = [];
+          for (let p = s.chunk.start; p <= s.chunk.end; p++) pages.push(p);
+          return pages;
+        })
+      );
 
       // D163: give NVIDIA-side congestion from the burst above a chance to clear before
       // firing the next (sequential, single) request -- see the constant's own comment.
@@ -504,23 +636,64 @@ const P01Runner = (() => {
       //   EXIT: if this reliably maxes out without passing on real documents, the next
       //     step is making refine's issues/suggested_fix actually revise unit_map between
       //     iterations, not raising maxRefineIters further.
+      // D174 Phase 3 (2026-07-15): extends D172's checklist loop with the actual "apply
+      // the fix" step Codex's plan called for. Per round: audit the CURRENT unitMap; if
+      // ready, stop; otherwise pull out the actionable issues (ACTIONABLE_ISSUE_TYPES)
+      // and, if there's at least one AND another audit round remains to benefit from it,
+      // call p01-3b with unitMap + those issues + real chunk-level evidence for the
+      // affected units. The result is normalized (Phase 1) and run through
+      // validateUnitMapGrounding() -- only a PASSING revision replaces unitMap; a failing
+      // one is logged and discarded, next round just re-audits the unchanged map (same as
+      // D172's original behavior when no fix is attempted). fixLog (Phase 4) records every
+      // attempt, applied or not, for the final result/DB.
       const maxRefineIters = LabApp.resolveParam("p01", "p01-3", "refine_iters") || 5;
       const audits = [];
+      const fixLog = [];
       let refineReady = false;
       for (let i = 1; i <= maxRefineIters; i++) {
         LabApp.log(pipelineId, `refine 반복 ${i}/${maxRefineIters}...`);
+        let audit;
         try {
-          const audit = await callPromptStage("p01-3", {
+          audit = await callPromptStage("p01-3", {
             course_label: courseLabel, iteration: i, unit_map_json: JSON.stringify(unitMap).slice(0, 24000),
           });
           audits.push(audit);
-          if (audit.checklist && audit.checklist.question_generation_ready === true) {
-            refineReady = true;
-            LabApp.log(pipelineId, `refine checklist 통과(question_generation_ready) — ${i}회 만에 종료`);
-            break;
-          }
         } catch (err) {
           LabApp.log(pipelineId, `refine ${i} 실패: ${err.message}`);
+          continue;
+        }
+        if (audit.checklist && audit.checklist.question_generation_ready === true) {
+          refineReady = true;
+          LabApp.log(pipelineId, `refine checklist 통과(question_generation_ready) — ${i}회 만에 종료`);
+          break;
+        }
+
+        const actionableIssues = (audit.issues || []).filter((iss) => ACTIONABLE_ISSUE_TYPES.has(iss.issue_type));
+        if (!actionableIssues.length) continue; // nothing this stage can safely act on
+        if (i >= maxRefineIters) continue; // no next audit round left to benefit from a fix
+
+        const affectedUnitIds = [...new Set(actionableIssues.flatMap((iss) => iss.affected_unit_ids || []))];
+        LabApp.log(pipelineId, `refine 이슈 ${actionableIssues.length}건(유닛 ${affectedUnitIds.join(", ") || "미상"}) 자동 수정 시도...`);
+        try {
+          const fixResult = await callPromptStage("p01-3b", {
+            course_label: courseLabel,
+            unit_map_json: JSON.stringify(unitMap).slice(0, 24000),
+            issues_json: JSON.stringify(actionableIssues).slice(0, 8000),
+            source_chunks_json: JSON.stringify(chunkResultsForUnits(affectedUnitIds, unitMap, chunkState)).slice(0, 16000),
+          });
+          const revised = normalizeUnitMap(fixResult.revised_unit_map || {});
+          const validation = validateUnitMapGrounding(revised, unitMap, successfulPages);
+          if (validation.ok) {
+            unitMap = revised;
+            fixLog.push({ iteration: i, applied: true, changes: fixResult.changes || [], unresolved_issues: fixResult.unresolved_issues || [] });
+            LabApp.log(pipelineId, `refine 수정 적용됨: ${(fixResult.changes || []).length}건 (미해결 ${(fixResult.unresolved_issues || []).length}건)`);
+          } else {
+            fixLog.push({ iteration: i, applied: false, reason: validation.reason, changes: [] });
+            LabApp.log(pipelineId, `⚠ refine 수정 거부됨(근거 검증 실패): ${validation.reason}`);
+          }
+        } catch (err) {
+          fixLog.push({ iteration: i, applied: false, reason: err.message, changes: [] });
+          LabApp.log(pipelineId, `refine 수정 시도 실패: ${err.message}`);
         }
       }
       if (!refineReady) {
@@ -596,7 +769,7 @@ const P01Runner = (() => {
       LabApp.stopTimer(pipelineId);
       LabApp.setStatus(pipelineId, "완료", "done");
       const result = {
-        unit_map: unitMap, refine_audits: audits, questions, chunk_count: chunks.length, extractor: "pdfjs",
+        unit_map: unitMap, refine_audits: audits, refine_fixes: fixLog, questions, chunk_count: chunks.length, extractor: "pdfjs",
         failed_chunks: failedChunks.map((c) => ({ chunk_range: c.chunk_range, error: c.error })),
         graph, graph_generated: graphGenerated,
       };
@@ -624,6 +797,20 @@ const P01Runner = (() => {
       html += `<p style="color:var(--status-blocked);">⚠ 청크 ${result.failed_chunks.length}개 분석 실패 -- 이 페이지 범위는 unit_map에서 빠짐:
         ${result.failed_chunks.map((c) => `<code>p${LabApp.escapeHtml(c.chunk_range)}</code>`).join(", ")}</p>`;
     }
+    // D174 Phase 4: applied/rejected auto-fix attempts, same "never leave it only in the
+    // scrolling log" principle as D168's failed-chunks display above.
+    if (result.refine_fixes && result.refine_fixes.length) {
+      html += `<div class="field-label" style="margin-top:10px;">refine 자동수정 시도 (${result.refine_fixes.length}건)</div>`;
+      for (const fix of result.refine_fixes) {
+        const color = fix.applied ? "var(--status-ok)" : "var(--status-blocked)";
+        const label = fix.applied ? `적용됨 · ${fix.changes.length}건 변경` : `거부됨 · ${LabApp.escapeHtml(fix.reason || "")}`;
+        html += `<p style="color:${color}; font-size:0.8rem; margin:4px 0;">반복 ${fix.iteration}: ${label}</p>`;
+        if (fix.applied && fix.changes.length) {
+          html += `<ul style="margin:0 0 6px; padding-left:20px; font-size:0.78rem; color:var(--ink-dim);">
+            ${fix.changes.map((c) => `<li>${LabApp.escapeHtml(c)}</li>`).join("")}</ul>`;
+        }
+      }
+    }
     for (const q of (result.questions.questions || []).slice(0, 10)) {
       html += `<div class="finding-card">
         <div class="fid">${LabApp.escapeHtml(q.unit || "")} · pages: ${LabApp.escapeHtml(JSON.stringify(q.source_pages || []))}</div>
@@ -646,12 +833,15 @@ const P01Runner = (() => {
         input_meta: {
           extractor: "pdfjs", chunk_count: result.chunk_count, failed_chunk_count: result.failed_chunks.length,
           unit_count: Object.keys(result.unit_map).length, graph_generated: result.graph_generated,
+          refine_fixes_applied: result.refine_fixes.filter((f) => f.applied).length,
+          refine_fixes_rejected: result.refine_fixes.filter((f) => !f.applied).length,
         },
         overrides: {},
         rubric_overridden: false,
         artifacts: [
           { kind: "unit_map", content: result.unit_map }, { kind: "questions", content: result.questions },
           { kind: "graph", content: result.graph_generated ? result.graph : { error: "graph_generated=false" } },
+          { kind: "refine_fixes", content: result.refine_fixes },
         ],
         started_at: startedAt.toISOString(), finished_at: finishedAt.toISOString(),
       });
