@@ -1091,6 +1091,11 @@ python3 pipeline/compare_methodologies.py
   - EXIT: 로그인 상태가 탭을 열어둔 채로 만료되는 경우까지 실시간 반영하려면 `onAuthStateChange` 리스너 추가 필요(현재는 페이지 로드/필드 입력 시점에만 재확인) — 아직 요청받지 않아 보류.
   - 커밋: `55fc9b7`, push 완료.
 
+- **D152** ([`docs/lab/db.js`](./docs/lab/db.js)) — D151 배포 후 사용자가 실제로 재로그인 시도했는데도 "여전히 구분이 안 감" — 화면 변화 없음. 원인 후보를 좁히려 supabase-js@2.45.4 소스를 직접 확인: `getUser()`/`getSession()` 둘 다 `await this.initializePromise`를 먼저 하도록 구현돼 있어, PKCE 코드 교환이 끝나기 전에 세션 조회가 먼저 도는 레이스 컨디션 가설은 **기각**(라이브러리 자체가 이미 방어함).
+  - **남은 문제**: `currentMemberOrNull()`이 `currentMember()`의 모든 예외를 무조건 삼켜서(`catch(e){return null}`), "로그인 자체를 안 함"과 "코드 교환 실패 등 진짜 에러"를 화면에서 구분할 방법이 전혀 없었음 — `console.error`로 로깅 추가.
+  - **미해결**: 브라우저 캐시(GitHub Pages 갱신 직후 이전 JS가 캐시돼 있을 가능성) 배제가 필요 — 사용자에게 강력 새로고침(Cmd+Shift+R) 후 재시도, 재로그인 직후 URL에 `?code=...`가 남아있는지, 개발자 콘솔(F12)에 에러가 뜨는지 확인 요청. 로그 추가 자체는 진단 도구일 뿐 아직 근본 수정 아님 — 사용자 회신 대기.
+  - 커밋: `5001e31`, push 완료.
+
 
 ## 다음 단계 (미해결)
 
