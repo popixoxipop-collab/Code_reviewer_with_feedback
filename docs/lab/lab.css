@@ -220,6 +220,19 @@ button.secondary:hover { color: var(--ink); border-color: var(--ink-dim); }
   font-family: var(--mono); font-size: 0.74rem; color: var(--ink-dim); padding: 8px 12px;
   border-bottom: 1px solid var(--line); background: var(--bg-panel); white-space: nowrap; overflow-x: auto; flex: none;
 }
+/* D181: file tabs for multi-file (duplicate-definition) findings -- display only, doesn't
+   affect what's actually sent to the LLM (buildCombinedCodeContext always uses all files). */
+.p03-session-code-tabs {
+  display: flex; gap: 4px; flex-wrap: wrap; padding: 6px 8px; border-bottom: 1px solid var(--line);
+  background: var(--bg-panel); flex: none;
+}
+.p03-session-code-tabs:empty { display: none; }
+.p03-code-tab {
+  font-family: var(--mono); font-size: 0.66rem; padding: 3px 9px; border-radius: 999px;
+  border: 1px solid var(--line-strong); background: var(--bg); color: var(--ink-faint); cursor: pointer;
+}
+.p03-code-tab:hover { color: var(--ink); }
+.p03-code-tab.active { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); font-weight: 600; }
 .p03-session-code-body {
   margin: 0; padding: 12px 14px; overflow: auto; flex: 1; font-family: var(--mono); font-size: 0.72rem;
   line-height: 1.5; color: var(--ink-dim); white-space: pre;

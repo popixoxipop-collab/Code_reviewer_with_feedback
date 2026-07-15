@@ -134,6 +134,24 @@ const DebugTraffic = (() => {
     render(usingServerData ? serverTimestamps : LabLLM.getRequestLog());
   }
 
+  // D181: exposes the same rolling-60s count this chart already computes for itself, so a
+  // caller (p03-runner.js, before firing an interview LLM call) can check current shared
+  // traffic and request more retry budget if it's elevated. Reuses maybeFetchServerTimestamps()
+  // as-is -- already throttled to once per SERVER_FETCH_INTERVAL_MS (60s) regardless of how
+  // often this is called, so calling it before every P03 turn doesn't add new server load.
+  // Returns isServerWide so callers can be honest about scope in their own log messages too
+  // (this-tab-only undercounts other teammates' traffic, same limitation the chart itself
+  // already documents -- not repeating that caveat here would let a caller imply more
+  // confidence than the number actually supports).
+  async function getCurrentRate() {
+    const serverTimestamps = await maybeFetchServerTimestamps();
+    const isServerWide = serverTimestamps !== null;
+    const log = isServerWide ? serverTimestamps : LabLLM.getRequestLog();
+    const now = Date.now();
+    const count = log.filter((ts) => ts > now - WINDOW_MS).length;
+    return { count, isServerWide, threshold: RATE_LIMIT_THRESHOLD };
+  }
+
   function wireTooltip() {
     tooltipEl = containerEl.querySelector("#debug-traffic-tooltip");
     svgEl.addEventListener("mousemove", (e) => {
@@ -159,7 +177,7 @@ const DebugTraffic = (() => {
     setInterval(tick, REFRESH_MS);
   }
 
-  return { init };
+  return { init, getCurrentRate };
 })();
 
 document.addEventListener("DOMContentLoaded", DebugTraffic.init);

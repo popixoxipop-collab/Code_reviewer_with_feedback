@@ -33,6 +33,13 @@ const P02Runner = (() => {
   ];
   const SKIP_DIR_NAMES = new Set(["node_modules", ".git", "dist", "build", "__pycache__", ".venv", "venv", "static", "vendor", "vendored"]);
   const SRC_EXTS = [".ts", ".tsx", ".js", ".jsx", ".py", ".java", ".c", ".h", ".cpp", ".cc", ".cxx", ".hpp", ".swift"];
+  // D181: cap on how many text-mentioned files (D180) get sent as code context for one
+  // finding -- unmeasured/provisional, chosen against p03-1's own existing 4000-char total
+  // prompt budget (manifest truncation.code_context): 3 files leaves roughly 1300 chars
+  // each on average, workable for typical function/class bodies but not derived from real
+  // usage data. Only applies to the multi-file text-mention fallback (D180) -- a direct
+  // file-field match (D179) is always exactly one file regardless of this constant.
+  const MAX_CONNECT_FILES = 3;
 
   let pyodide = null;
   let currentMethod = "pat"; // "pat" | "zip"
@@ -425,14 +432,20 @@ _result = webtool_driver.run_scan("/target", overrides_json)
       // real user's two separate test zips both produced ONLY repeated-pattern findings
       // (file: null) -- resolveConnectableFile() falls back to the files actually mentioned
       // in the finding's own description text, so this category can connect too.
+      // D181: D180 silently used only the FIRST matched file, dropping the others -- but
+      // the whole point of a duplicate-definition finding is comparing copies, and the
+      // user's stated goal is generating questions that are maximally checkable against the
+      // 5-axis rubric (a grader can't verify "did they accurately describe the duplication"
+      // without seeing all the actual copies). Now ALL matched files (capped, see
+      // MAX_CONNECT_FILES) are included, not just one.
       const resolved = resolveConnectableFile(files, f);
       let connectHtml;
       if (!resolved) {
         connectHtml = `<div style="margin-top:8px; font-size:0.7rem; color:var(--ink-faint);">코드 컨텍스트 없음 — 언급된 파일도 로드된 파일 중에 없어 인터뷰 연결 불가</div>`;
       } else if (resolved.viaText) {
-        const note = resolved.allPaths.length > 1
-          ? ` <span style="color:var(--ink-faint);">(finding에 언급된 ${resolved.allPaths.length}개 파일 중 첫 번째: ${LabApp.escapeHtml(resolved.path.split("/").pop())})</span>`
-          : "";
+        const shown = resolved.allPaths.slice(0, MAX_CONNECT_FILES);
+        const omitted = resolved.allPaths.length - shown.length;
+        const note = ` <span style="color:var(--ink-faint);">(finding에 언급된 파일 ${shown.length}개 코드 포함${omitted > 0 ? `, ${omitted}개는 길이 제한으로 제외` : ""})</span>`;
         connectHtml = `<button class="secondary" data-interview-idx="${idx}" style="margin-top:8px; font-size:0.72rem;">인터뷰 시작 →</button>${note}`;
       } else {
         connectHtml = `<button class="secondary" data-interview-idx="${idx}" style="margin-top:8px; font-size:0.72rem;">인터뷰 시작 →</button>`;
@@ -460,9 +473,14 @@ _result = webtool_driver.run_scan("/target", overrides_json)
         const finding = j.findings[parseInt(btn.dataset.interviewIdx, 10)];
         if (!finding) return;
         const resolved = resolveConnectableFile(files, finding);
-        const codeContext = resolved ? files[resolved.path] : null;
+        // D181: pass ALL matched files (capped), not just resolved.path (the first) -- see
+        // MAX_CONNECT_FILES. codeContexts is always an array now, even for the common
+        // single-file case (D179's direct match), so P03Runner has one shape to handle.
+        const codeContexts = resolved
+          ? resolved.allPaths.slice(0, MAX_CONNECT_FILES).map((p) => ({ path: p, content: files[p] }))
+          : [];
         document.querySelector('.tab-btn[data-pipeline="p03"]').click();
-        P03Runner.loadFindingFromP02(finding, codeContext);
+        P03Runner.loadFindingFromP02(finding, codeContexts);
         P03Runner.run();
       });
     });

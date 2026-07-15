@@ -131,7 +131,12 @@ const LabLLM = (() => {
     return { role: "assistant", content: resolved, finishReason };
   }
 
-  async function chatTool({ model, messages, tool, maxTokens, temperature = 0.0 }) {
+  // D181: maxAttempts wasn't threaded through here even though submitAndPoll/the worker
+  // have supported it since D169 -- chatJSON (P01's chunk-analysis) was the only caller
+  // that ever needed it before now. P03's interview calls all go through this function, so
+  // without this they had no way to opt into more retry budget under elevated shared
+  // traffic (see debug-traffic.js's getCurrentRate(), used by p03-runner.js).
+  async function chatTool({ model, messages, tool, maxTokens, temperature = 0.0, maxAttempts }) {
     const proxyUrl = LabConfig.get("proxy-url");
     const apiKey = LabConfig.get("nvidia-key");
     if (!proxyUrl || !apiKey) {
@@ -142,7 +147,7 @@ const LabLLM = (() => {
       tools: [{ type: "function", function: { name: tool.name, description: tool.description, parameters: tool.input_schema } }],
       tool_choice: { type: "function", function: { name: tool.name } },
     };
-    const data = await submitAndPoll(proxyUrl, apiKey, body);
+    const data = await submitAndPoll(proxyUrl, apiKey, body, { maxAttempts });
     const choice = data.choices && data.choices[0] && data.choices[0].message;
     const call = choice && choice.tool_calls && choice.tool_calls.find((c) => c.function.name === tool.name);
     if (!call) throw new Error(`tool_calls에서 ${tool.name}을 찾지 못함: ${JSON.stringify(data).slice(0, 300)}`);

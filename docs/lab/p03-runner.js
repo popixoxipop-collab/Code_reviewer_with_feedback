@@ -26,13 +26,22 @@ const P03Runner = (() => {
   let selectedFinding = null;
   let pendingAnswerResolve = null;
   // D176: real source content for the currently-selected finding, when it came from P02's
-  // "인터뷰 시작" connector (see loadFindingFromP02). null for manual JSON-paste findings,
-  // which never had a `files` map to draw real code from in the first place.
-  let pendingCodeContext = null;
+  // "인터뷰 시작" connector (see loadFindingFromP02). Empty array for manual JSON-paste
+  // findings, which never had a `files` map to draw real code from in the first place.
+  // D181: was a single string (one file) -- now an array of {path, content}, since a
+  // duplicate-definition finding genuinely spans multiple real files and picking only the
+  // first one silently dropped the others (see resolveConnectableFile()/D180 in
+  // p02-runner.js). ALL of these feed the LLM prompt (buildCombinedCodeContext); the code
+  // panel additionally lets a human tab between them for display only.
+  let pendingCodeContexts = [];
+  let selectedContextIndex = 0;
   // D176: Team-IZ 검증세션 패턴 -- 채점 결과를 세션 중엔 숨기고, 완료 후 별도 클릭으로만 노출.
   // run()이 끝나도 renderResults()를 바로 부르지 않고 여기 보관해뒀다가 "리포트 보기"에서 사용.
   let pendingReportResult = null;
   let countdownIntervalId = null;
+  // D181: unmeasured/provisional -- see resolveMaxAttempts()'s comment for the reasoning.
+  const ELEVATED_RATE_THRESHOLD = 30;
+  const ELEVATED_MAX_ATTEMPTS = 5;
 
   function renderInput(container) {
     container.innerHTML = `
@@ -50,6 +59,7 @@ const P03Runner = (() => {
       <div class="p03-session hidden" id="p03-session">
         <div class="p03-session-code">
           <div class="p03-session-code-header">📄 <span id="p03-session-filename">-</span></div>
+          <div class="p03-session-code-tabs" id="p03-session-code-tabs"></div>
           <pre class="p03-session-code-body" id="p03-session-code-body">(코드 컨텍스트 없음)</pre>
         </div>
         <div class="p03-session-chat">
@@ -75,9 +85,11 @@ const P03Runner = (() => {
         findings = JSON.parse(raw);
         if (!Array.isArray(findings)) throw new Error("배열이어야 함");
         selectedFinding = null;
-        pendingCodeContext = null; // D176: 수동 붙여넣기는 실제 파일 내용을 알 길이 없음
+        pendingCodeContexts = []; // D176/D181: 수동 붙여넣기는 실제 파일 내용을 알 길이 없음
+        selectedContextIndex = 0;
         pendingReportResult = null;
         hideReportGate();
+        renderCodePanel();
         const select = container.querySelector("#p03-finding-select");
         select.innerHTML = findings.map((f, i) => `<option value="${i}">${LabApp.escapeHtml(f.id || `finding ${i}`)}</option>`).join("");
         LabApp.log("p03", `finding ${findings.length}건 로드됨`);
@@ -87,9 +99,11 @@ const P03Runner = (() => {
     });
     container.querySelector("#p03-finding-select").addEventListener("change", (e) => {
       selectedFinding = findings[parseInt(e.target.value, 10)] || null;
-      pendingCodeContext = null; // D176: 드롭다운 재선택 시 이전(P02발) 코드 컨텍스트는 항상 폐기
+      pendingCodeContexts = []; // D176/D181: 드롭다운 재선택 시 이전(P02발) 코드 컨텍스트는 항상 폐기
+      selectedContextIndex = 0;
       pendingReportResult = null;
       hideReportGate();
+      renderCodePanel();
     });
     container.querySelector("#p03-show-report").addEventListener("click", () => {
       if (pendingReportResult) renderResults(pendingReportResult);
@@ -101,6 +115,75 @@ const P03Runner = (() => {
     if (gate) gate.classList.add("hidden");
   }
 
+  // D181: renders the left code panel from pendingCodeContexts/selectedContextIndex. Safe
+  // to call any time (findings load, dropdown change, run() start) -- no-ops gracefully if
+  // the panel's DOM doesn't exist yet (P03 tab never visited) or there's nothing to show.
+  // Purely a DISPLAY concern -- which tab is selected here never changes what actually goes
+  // into the LLM prompt (buildCombinedCodeContext always uses ALL contexts, regardless of
+  // what the human happens to be looking at at any given moment).
+  function renderCodePanel() {
+    const header = document.getElementById("p03-session-filename");
+    const tabsEl = document.getElementById("p03-session-code-tabs");
+    const body = document.getElementById("p03-session-code-body");
+    if (!header || !tabsEl || !body) return;
+    if (!pendingCodeContexts.length) {
+      header.textContent = "(특정 파일 없음)";
+      tabsEl.innerHTML = "";
+      body.textContent = "(코드 컨텍스트 없음)";
+      return;
+    }
+    if (selectedContextIndex >= pendingCodeContexts.length) selectedContextIndex = 0;
+    if (pendingCodeContexts.length > 1) {
+      header.textContent = `${pendingCodeContexts.length}개 파일 (전부 질문 생성에 포함됨 -- 탭은 화면 표시용)`;
+      tabsEl.innerHTML = pendingCodeContexts
+        .map((c, i) => `<button class="p03-code-tab${i === selectedContextIndex ? " active" : ""}" data-tab-idx="${i}">${LabApp.escapeHtml(c.path.split("/").pop())}</button>`)
+        .join("");
+      tabsEl.querySelectorAll("[data-tab-idx]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          selectedContextIndex = parseInt(btn.dataset.tabIdx, 10);
+          renderCodePanel();
+        });
+      });
+    } else {
+      header.textContent = pendingCodeContexts[0].path;
+      tabsEl.innerHTML = "";
+    }
+    body.textContent = pendingCodeContexts[selectedContextIndex].content || "(코드 컨텍스트 없음)";
+  }
+
+  // D181: concatenates every candidate file (labeled with its path) into one prompt-ready
+  // string, then applies the manifest's own existing p03-1.truncation.code_context cap to
+  // the WHOLE combined text (same simple cap D176 already used for the single-file case --
+  // not proportionally splitting per file, a deliberately simple choice: if the first
+  // file's content alone exceeds the cap, later files get cut, which is an acceptable
+  // provisional behavior, not a silent data-loss regression since D176's single-file case
+  // already had this exact same truncation shape).
+  function buildCombinedCodeContext(contexts, cap) {
+    if (!contexts || !contexts.length) return null;
+    const labeled = contexts.map((c) => `--- ${c.path} ---\n${c.content}`).join("\n\n");
+    return cap ? labeled.slice(0, cap) : labeled;
+  }
+
+  // D181: shared 40rpm ceiling has real prior incidents from P01's chunk bursts (D163-171).
+  // P03's own calls are never a burst by themselves (one in-flight call at a time,
+  // human-paced between turns) -- the actual risk here is several teammates' P03 sessions
+  // overlapping against the same shared proxy/key, invisible to each other without this
+  // check. Reuses DebugTraffic's own already-throttled rolling count (no extra server
+  // load from calling this before every turn) and, if it's elevated, asks the worker for
+  // more retry budget via the SAME x-max-attempts mechanism D169 built for P01, rather than
+  // inventing a second retry system. ELEVATED_RATE_THRESHOLD/ELEVATED_MAX_ATTEMPTS (top of
+  // file) are both unmeasured/provisional -- 75% of the documented ~40rpm ceiling, and one
+  // more than the worker's own MAX_ATTEMPTS=3 default -- flagged as such, not derived from
+  // real incident data the way D169's numbers eventually were.
+  async function resolveMaxAttempts(pipelineId) {
+    if (typeof DebugTraffic === "undefined" || !DebugTraffic.getCurrentRate) return undefined;
+    const { count, isServerWide, threshold } = await DebugTraffic.getCurrentRate();
+    if (count < ELEVATED_RATE_THRESHOLD) return undefined;
+    const scopeNote = isServerWide ? "" : " (이 탭 기준만 -- 다른 팀원 트래픽은 안 잡힘)";
+    LabApp.log(pipelineId, `⚠ 현재 트래픽 ${count}/${threshold}${scopeNote} -- 재시도 여유를 ${ELEVATED_MAX_ATTEMPTS}회로 늘려서 요청`);
+    return ELEVATED_MAX_ATTEMPTS;
+  }
+
   // D176: entry point called from p02-runner.js's "인터뷰 시작" button. The caller switches
   // to the P03 tab BEFORE calling this (so renderPipeline("p03") has already built the DOM
   // once, synchronously -- see app.js's renderPipeline/D-K), so the direct-DOM writes below
@@ -109,12 +192,16 @@ const P03Runner = (() => {
   // choice over a manual-confirm step), so in practice a real LLM call fires right after
   // this returns; run()'s own NVIDIA key/proxy guard is what's left protecting an
   // unconfigured teammate from a confusing failure.
-  function loadFindingFromP02(finding, codeContext) {
+  // D181: codeContexts is now an array of {path, content} (was a single string) -- see the
+  // module-level pendingCodeContexts comment.
+  function loadFindingFromP02(finding, codeContexts) {
     findings = [finding];
     selectedFinding = finding;
-    pendingCodeContext = codeContext || null;
+    pendingCodeContexts = Array.isArray(codeContexts) ? codeContexts : [];
+    selectedContextIndex = 0;
     pendingReportResult = null;
     hideReportGate();
+    renderCodePanel();
     const select = document.getElementById("p03-finding-select");
     if (select) {
       select.innerHTML = `<option value="0">${LabApp.escapeHtml(finding.id || "finding 0")}</option>`;
@@ -122,7 +209,8 @@ const P03Runner = (() => {
     }
     const textarea = document.getElementById("p03-findings-input");
     if (textarea) textarea.value = JSON.stringify([finding], null, 2);
-    LabApp.log("p03", `P02에서 finding 전달받음: ${finding.id}${pendingCodeContext ? ` (코드 컨텍스트 ${pendingCodeContext.length}자 포함)` : " (코드 컨텍스트 없음)"}`);
+    const fileNote = pendingCodeContexts.length ? ` (코드 컨텍스트 ${pendingCodeContexts.length}개 파일 포함)` : " (코드 컨텍스트 없음)";
+    LabApp.log("p03", `P02에서 finding 전달받음: ${finding.id}${fileNote}`);
   }
 
   function findingCategory(findingId) {
@@ -249,15 +337,15 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     return header + LabApp.fillTemplate(LabApp.resolveTemplate("p03", stageId, "level_template"), { transcript: transcriptText, verdict_note: verdictNote });
   }
 
-  async function generateQuestion(level, finding, codeContext, transcript, classification) {
+  async function generateQuestion(level, finding, codeContext, transcript, classification, maxAttempts) {
     const model = LabApp.resolveParam("p03", "p03-1", "model") || (LabApp.getManifest().shared || {}).default_model;
     const prompt = buildLevelPrompt(level, finding, codeContext, transcript, classification);
     const tool = { name: "ask_question", description: "학생에게 던질 질문 하나를 생성한다.", input_schema: { type: "object", properties: { question: { type: "string" } }, required: ["question"] } };
-    const result = await LabLLM.chatTool({ model, messages: [{ role: "user", content: prompt }], tool, maxTokens: 2048 });
+    const result = await LabLLM.chatTool({ model, messages: [{ role: "user", content: prompt }], tool, maxTokens: 2048, maxAttempts });
     return result.question;
   }
 
-  async function gradeAnswer(finding, question, answer) {
+  async function gradeAnswer(finding, question, answer, maxAttempts) {
     const stage = LabApp.getStage("p03", "p03-7");
     const rubric = (LabApp.getOverride("p03", "p03-7") || {}).rubric || stage.rubric;
     const rubricOverridden = Boolean((LabApp.getOverride("p03", "p03-7") || {}).rubric_overridden);
@@ -276,7 +364,7 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
       input_schema: { type: "object", properties: Object.fromEntries(axes.map((a) => [a, { type: "object", properties: { score: { type: "integer" }, evidence: { type: "string" } }, required: ["score", "evidence"] }])), required: axes },
     };
     const model = LabApp.resolveParam("p03", "p03-7", "model") || (LabApp.getManifest().shared || {}).default_model;
-    const grades = await LabLLM.chatTool({ model, messages: [{ role: "user", content: userMsg }], tool, maxTokens: 2048 });
+    const grades = await LabLLM.chatTool({ model, messages: [{ role: "user", content: userMsg }], tool, maxTokens: 2048, maxAttempts });
     return { grades, rubric_overridden: rubricOverridden };
   }
 
@@ -291,7 +379,8 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     hideReportGate();
     document.getElementById("p03-transcript").innerHTML = "";
     document.getElementById("p03-progress").textContent = "질문 -/-";
-    document.getElementById("p03-session-filename").textContent = selectedFinding.file || "(특정 파일 없음)";
+    selectedContextIndex = 0;
+    renderCodePanel();
     wireAnswerSubmit();
     LabApp.setStatus(pipelineId, "진행 중...", "running");
     const startedAt = new Date();
@@ -308,14 +397,14 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
       // codeContext now flows from the real P02 file content (when the finding arrived via
       // the new "인터뷰 시작" connector) through the SAME char cap the real pipeline's own
       // manifest already specifies (p03-1.truncation.code_context) -- reusing an
-      // already-established number instead of inventing one.
+      // already-established number instead of inventing one. D181: now built from ALL
+      // matched files (buildCombinedCodeContext), not just the first -- see its comment.
       const stage1 = LabApp.getStage("p03", "p03-1");
       const codeCap = stage1 && stage1.truncation && stage1.truncation.code_context;
-      const codeContext = pendingCodeContext
-        ? (codeCap ? pendingCodeContext.slice(0, codeCap) : pendingCodeContext)
-        : null;
-      document.getElementById("p03-session-code-body").textContent = codeContext || "(코드 컨텍스트 없음 -- 특정 파일에 결부되지 않은 finding이거나 수동 입력)";
-      LabApp.log(pipelineId, codeContext ? `코드 컨텍스트 포함 (${codeContext.length}자)` : "코드 컨텍스트 없음 -- 질문이 파일 내용 없이 생성됨");
+      const codeContext = buildCombinedCodeContext(pendingCodeContexts, codeCap);
+      LabApp.log(pipelineId, codeContext
+        ? `코드 컨텍스트 포함 (${pendingCodeContexts.length}개 파일, 총 ${codeContext.length}자)`
+        : "코드 컨텍스트 없음 -- 질문이 파일 내용 없이 생성됨");
 
       const transcript = [];
       let verdict = "exhausted_at_cap";
@@ -326,8 +415,9 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
         const level = LEVELS[i];
         document.getElementById("p03-progress").textContent = `질문 ${i + 1}/${totalTurns}`;
         const prevClassification = transcript.length ? transcript[transcript.length - 1].classification : null;
+        const genAttempts = await resolveMaxAttempts(pipelineId);
         LabApp.log(pipelineId, `${level.toUpperCase()} 질문 생성 중...`);
-        const question = await generateQuestion(level, selectedFinding, codeContext, transcript, prevClassification);
+        const question = await generateQuestion(level, selectedFinding, codeContext, transcript, prevClassification, genAttempts);
         appendTranscriptEntry(level, question, null);
         LabApp.log(pipelineId, "답변 대기 중...");
         const answer = await waitForAnswer();
@@ -340,7 +430,8 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
 
       LabApp.log(pipelineId, "5축 채점 중...");
       const last = transcript[transcript.length - 1];
-      const { grades, rubric_overridden } = await gradeAnswer(selectedFinding, last.question, last.answer);
+      const gradeAttempts = await resolveMaxAttempts(pipelineId);
+      const { grades, rubric_overridden } = await gradeAnswer(selectedFinding, last.question, last.answer, gradeAttempts);
 
       const finishedAt = new Date();
       LabApp.stopTimer(pipelineId);
