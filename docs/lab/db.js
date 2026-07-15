@@ -97,5 +97,17 @@ const LabDB = (() => {
     if (error) throw error;
   }
 
-  return { isConfigured, ensureClient, currentMember, saveRun, signInWithEmail };
+  // D147 addition: Google OAuth as an alternative to the magic-link email flow (D-B/D147
+  // above) -- kept alongside it, not replacing it, so a Google-side config hiccup doesn't
+  // leave the team with no way to log in at all. Full-page redirect (signInWithOAuth's
+  // default), same as the magic link's own redirect-back-to-Site-URL behavior -- no popup
+  // handling needed. Uses PKCE the same way (flowType already set in ensureClient above),
+  // so the OAuth code exchange is handled automatically on the way back too.
+  async function signInWithGoogle() {
+    const c = await ensureClient();
+    const { error } = await c.auth.signInWithOAuth({ provider: "google" });
+    if (error) throw error;
+  }
+
+  return { isConfigured, ensureClient, currentMember, saveRun, signInWithEmail, signInWithGoogle };
 })();

@@ -102,6 +102,17 @@ const LabConfig = (() => {
         statusEl.textContent = `실패: ${err.message}`;
       }
     });
+
+    const googleBtn = document.getElementById("google-login-btn");
+    if (!googleBtn) return;
+    googleBtn.addEventListener("click", async () => {
+      statusEl.textContent = "Google로 이동 중...";
+      try {
+        await LabDB.signInWithGoogle(); // full-page redirect -- nothing runs after this on success
+      } catch (err) {
+        statusEl.textContent = `실패: ${err.message}`;
+      }
+    });
   }
 
   function applyDefaults() {
