@@ -106,6 +106,41 @@ const P02Runner = (() => {
     return Object.keys(files).find((relPath) => relPath.split("/").pop() === basename) || null;
   }
 
+  // D180 (2026-07-15): real user report -- against TWO separate real practice-notebook zips
+  // in a row, every finding produced was repeated-pattern:duplicate-definition:* (file:
+  // null by design, see score_findings.py's find_duplicate_definitions() loop -- a "same
+  // function copy-pasted into N files" finding has no single file, so file is genuinely
+  // null, not a bug). That made the connector button never appear at all for this user's
+  // actual content, even though D179's fix was correct for what it covered. User confirmed
+  // (AskUserQuestion) they want this connected anyway, auto-picking one of the referenced
+  // files.
+  //
+  // The real files ARE named in the finding's free-text description though, e.g.
+  // "'load_api_keys' 정의가 3개 파일에... 재등장: ['Ch06...ipynb.py', 'Ch07...ipynb.py', ...]"
+  // -- Python's f-string interpolation of a list/dict repr. Rather than parsing Python repr
+  // syntax (fragile: filenames here can themselves contain brackets, e.g. "Ch08. [추가
+  // 과제]...ipynb.py", which would confuse a naive bracket-matching parser), this instead
+  // checks EACH already-known real filename (from `files`, the actual loaded set) for
+  // whether its basename literally appears as a substring of the finding text. Any real
+  // filename that's mentioned will match; nothing needs to be parsed as list/dict syntax.
+  function findReferencedFiles(files, findingText) {
+    if (!findingText) return [];
+    return Object.keys(files).filter((relPath) => findingText.includes(relPath.split("/").pop()));
+  }
+
+  // Single entry point for "what file (if any) can this finding connect to" -- prefers the
+  // real file field (D179's basename match) when present, falls back to text-mention
+  // matching (D180) for file:null findings like repeated-pattern. Returns null, or
+  // {path, viaText, allPaths} where viaText marks the fallback case so callers can label
+  // the UI honestly ("여러 파일 중 하나" vs a direct match).
+  function resolveConnectableFile(files, finding) {
+    const direct = findFileByBasename(files, finding.file);
+    if (direct) return { path: direct, viaText: false, allPaths: [direct] };
+    const mentioned = findReferencedFiles(files, finding.finding);
+    if (mentioned.length) return { path: mentioned[0], viaText: true, allPaths: mentioned };
+    return null;
+  }
+
   function renderInput(container) {
     container.innerHTML = `
       <div class="input-panel">
@@ -386,15 +421,26 @@ _result = webtool_driver.run_scan("/target", overrides_json)
     j.findings.forEach((f, idx) => {
       // D176: only findings tied to one real, loaded file can hand P03 real code context --
       // repeated-pattern findings (see judgment/score_findings.py) are cross-file by nature
-      // and legitimately have file: null, so this is a real category, not a data gap.
-      // D179: match by basename (findFileByBasename), not exact key -- see its comment.
-      const hasCode = Boolean(findFileByBasename(files, f.file));
+      // and legitimately have file: null. D179: match by basename, not exact key. D180: a
+      // real user's two separate test zips both produced ONLY repeated-pattern findings
+      // (file: null) -- resolveConnectableFile() falls back to the files actually mentioned
+      // in the finding's own description text, so this category can connect too.
+      const resolved = resolveConnectableFile(files, f);
+      let connectHtml;
+      if (!resolved) {
+        connectHtml = `<div style="margin-top:8px; font-size:0.7rem; color:var(--ink-faint);">코드 컨텍스트 없음 — 언급된 파일도 로드된 파일 중에 없어 인터뷰 연결 불가</div>`;
+      } else if (resolved.viaText) {
+        const note = resolved.allPaths.length > 1
+          ? ` <span style="color:var(--ink-faint);">(finding에 언급된 ${resolved.allPaths.length}개 파일 중 첫 번째: ${LabApp.escapeHtml(resolved.path.split("/").pop())})</span>`
+          : "";
+        connectHtml = `<button class="secondary" data-interview-idx="${idx}" style="margin-top:8px; font-size:0.72rem;">인터뷰 시작 →</button>${note}`;
+      } else {
+        connectHtml = `<button class="secondary" data-interview-idx="${idx}" style="margin-top:8px; font-size:0.72rem;">인터뷰 시작 →</button>`;
+      }
       html += `<div class="finding-card">
         <div class="fid">${LabApp.escapeHtml(f.id)} · priority: ${LabApp.escapeHtml(f.priority || "")}</div>
         <div>${LabApp.escapeHtml(f.finding || "")}</div>
-        ${hasCode
-          ? `<button class="secondary" data-interview-idx="${idx}" style="margin-top:8px; font-size:0.72rem;">인터뷰 시작 →</button>`
-          : `<div style="margin-top:8px; font-size:0.7rem; color:var(--ink-faint);">코드 컨텍스트 없음 — 특정 파일에 종속되지 않은 finding이라 인터뷰 연결 불가</div>`}
+        ${connectHtml}
       </div>`;
     });
     html += LabApp.jsonResultBlock("원본 scan/judgment JSON", result, "p02-result.json");
@@ -413,8 +459,8 @@ _result = webtool_driver.run_scan("/target", overrides_json)
       btn.addEventListener("click", () => {
         const finding = j.findings[parseInt(btn.dataset.interviewIdx, 10)];
         if (!finding) return;
-        const matchedPath = findFileByBasename(files, finding.file);
-        const codeContext = matchedPath ? files[matchedPath] : null;
+        const resolved = resolveConnectableFile(files, finding);
+        const codeContext = resolved ? files[resolved.path] : null;
         document.querySelector('.tab-btn[data-pipeline="p03"]').click();
         P03Runner.loadFindingFromP02(finding, codeContext);
         P03Runner.run();
