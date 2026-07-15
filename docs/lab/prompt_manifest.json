@@ -29,7 +29,7 @@
           "truncation": { "chunk_text": 18000 },
           "params": [
             { "key": "course_label", "type": "string", "default": "Java", "note": "D131: 프롬프트 프레이밍용, 다른 커리큘럼(LLMOps 등)에 재사용할 때 바꾼다" },
-            { "key": "max_tokens", "type": "int", "default": 1800 },
+            { "key": "max_tokens", "type": "int", "default": 3600, "note": "D161: 1800이 실측으로 부족했음(D158) — 그 재시도가 성공한 값(2배)을 기본값으로 승격, 임의 숫자 아님" },
             { "key": "temperature", "type": "float", "default": 0.0, "locked": true, "note": "고정 — 재현성 요구사항" },
             { "key": "response_format_json", "type": "bool", "default": true }
           ]
