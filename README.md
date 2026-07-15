@@ -1377,6 +1377,15 @@ python3 pipeline/compare_methodologies.py
   - EXIT: `MAX_CONNECT_FILES`(3)/`ELEVATED_RATE_THRESHOLD`(30)/`ELEVATED_MAX_ATTEMPTS`(5) 전부 실사용 데이터 없는 잠정치 — 재보정 대상. D180의 "다른 파일 골라 다시 보기" UI 부재는 이번 탭으로 사실상 해결(첫 파일 고정에서 전부 보기로 바뀜).
   - 커밋: `3f1e081`, push 완료(워커 변경 없음, GitHub Pages만).
 
+- **D182** ([`docs/lab/app.js`](./docs/lab/app.js), [`docs/lab/p01-runner.js`](./docs/lab/p01-runner.js), [`docs/lab/p03-runner.js`](./docs/lab/p03-runner.js), [`docs/lab/prompt_manifest.json`](./docs/lab/prompt_manifest.json)) — D181 배포 직후 실사용 스크린샷으로 두 가지 지적: ①"질문이 생성 완료되기도 전에 카운트다운이 진행되고 있고" ②"상단에 모델 11종 중에 선택할 수 있어야할 거 같은데 교안 분석 파이프라인처럼".
+  - **파트 1 — 카운트다운이 답변시간이 아니라 전체대기시간을 재고 있었음**: `run()`이 시작하자마자(분류기 로딩+L1 질문 생성 LLM 호출보다도 먼저) 카운트다운이 돌기 시작해서, 사람이 질문을 보기도 전에 시간이 깎이고 있었음 — 세션타이머의 취지("답변에 쓸 수 있는 시간")에 안 맞음. `startCountdown`(즉시 tick 시작)을 `initCountdown`(총량만 설정, 표시만 하고 안 돎) + `resumeCountdown`/`pauseCountdown`으로 분리 — 질문이 화면에 뜨고 `waitForAnswer()` 대기가 시작되는 시점에만 `resumeCountdown()`, 답변 제출로 resolve되면 즉시 `pauseCountdown()`. 분류(Pyodide, 로컬)·다음 질문 생성(LLM)·채점(LLM) 구간은 전부 자동으로 정지 상태.
+  - **파트 2 — P03에도 P01과 동일한 모델 토글**: P03의 모델 선택이 스테이지 카드(`p03-1`엔 아예 없었고 `p03-7`엔 매니페스트 고정값)에 묻혀있어서 P01의 상단 토글 UI에 비해 훨씬 덜 눈에 띔. P01의 `MODEL_CHOICES`(11종, D116/D119/D120 실측 기반 tier/note)와 `renderModelToggle` 렌더링 로직을 `app.js`로 옮겨 `LabApp.MODEL_CHOICES`/`LabApp.renderModelToggle(container, groupSelector, noteSelector, getSelected, setSelected)`로 공유(두 파이프라인 각자 `selectedModel` 상태는 그대로 소유, 렌더링 로직만 공유라 서로 오염 안 됨) — P01은 원래 로직을 이 공유 함수 호출로 교체(리팩터, 동작 동일해야 함). P03에 동일한 토글 UI 신설, `generateQuestion`/`gradeAnswer`의 모델 결정을 `resolveParam(...) || selectedModel`로 변경 — 단, `p03-7`은 매니페스트에 `model` 고정값이 남아있어 토글이 무의미해지므로 D154와 같은 이유로 그 파라미터를 매니페스트에서 제거. `maybeSaveRun`/`saveFailedRun`이 여태 항상 "공유 기본 모델"만 기록하던 것도 실제 선택된 모델을 기록하도록 수정(토글이 생긴 이상 이것도 같이 안 고치면 DB 기록이 실제 실행과 어긋남).
+  - **검증**: Playwright로 실제 파이프라인 재현. 파트1 — L1 질문 생성 LLM 호출에 인위적 3초 지연을 심어서(분류기 로딩 시간까지 합쳐 실측 12.4초 경과) 질문이 화면에 뜬 시점의 카운트다운이 여전히 "15:00"(전혀 안 깎임) 확인, 이후 "생각하는 중" 2.5초를 기다리자 "14:57"로 그 구간만 정확히 감소하는 것 확인. 파트2 — P01 리팩터 후 11개 칩+기본선택("qwen3-next-80b")+클릭전환+note갱신 전부 회귀없이 동일 확인, P03도 동일 11개 칩(라벨까지 P01과 완전 일치) 확인, "step-3.5-flash" 선택 후 실행 시 실제 `LabLLM.chatTool` 호출에 정확히 이 모델이 전달됨을 직접 확인(placebo 아님).
+  - WHY: 사용자가 실사용 스크린샷으로 직접 지적한 두 UX 결함.
+  - COST: 없음 — 카운트다운은 표시 로직만 재구성(총 허용시간 자체는 불변), 모델 토글은 기존 스테이지-파라미터 경로를 대체할 뿐 새 상태 소스 추가 없음.
+  - EXIT: 없음 — 둘 다 이미 있던 P01/D176 패턴을 P03에 정합하게 맞춘 것이라 별도 재보정 대상 없음.
+  - 커밋: `3cf378b`, push 완료(워커 변경 없음, GitHub Pages만).
+
 
 ## 다음 단계 (미해결)
 
