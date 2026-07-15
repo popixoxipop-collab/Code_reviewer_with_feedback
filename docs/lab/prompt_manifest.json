@@ -15,8 +15,7 @@
           "note": "LLM 호출 없음 — pdftotext -layout으로 페이지 텍스트 추출 (웹 도구에선 pdf.js로 대체, 완전히 동일한 결과는 아님).",
           "params": [
             { "key": "chunk_size", "type": "int", "default": 10, "note": "몇 페이지씩 한 청크로 묶을지" },
-            { "key": "max_chunks", "type": "int_or_null", "default": 3, "note": "스모크 모드 기본값 — 전체 실행은 null" },
-            { "key": "pdf_password", "type": "string_secret", "default": "", "note": "PDF 열람 암호(있는 경우). 서버로 전송되지 않고 브라우저 내 pdf.js에만 사용." }
+            { "key": "max_chunks", "type": "int_or_null", "default": 3, "note": "스모크 모드 기본값 — 전체 실행은 null" }
           ]
         },
         {
@@ -31,7 +30,6 @@
           "truncation": { "chunk_text": 18000 },
           "params": [
             { "key": "course_label", "type": "string", "default": "Java", "note": "D131: 프롬프트 프레이밍용, 다른 커리큘럼(LLMOps 등)에 재사용할 때 바꾼다" },
-            { "key": "model", "type": "string", "default": "qwen/qwen3-next-80b-a3b-instruct" },
             { "key": "max_tokens", "type": "int", "default": 1800 },
             { "key": "temperature", "type": "float", "default": 0.0, "locked": true, "note": "고정 — 재현성 요구사항" },
             { "key": "response_format_json", "type": "bool", "default": true }
