@@ -263,7 +263,6 @@
             }
           },
           "params": [
-            { "key": "model", "type": "string", "default": "qwen/qwen3-next-80b-a3b-instruct" },
             { "key": "max_tokens", "type": "int", "default": 2048 },
             { "key": "temperature", "type": "float", "default": 0.0, "locked": true }
           ]

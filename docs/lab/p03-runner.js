@@ -25,6 +25,12 @@ const P03Runner = (() => {
   let findings = [];
   let selectedFinding = null;
   let pendingAnswerResolve = null;
+  // D182: P03's model choice used to live only inside p03-1/p03-7's collapsed stage-card
+  // param fields -- much less discoverable than P01's prominent top-level toggle, and the
+  // user asked for parity ("모델 11종 중에 선택할 수 있어야할 거 같은데 교안 분석
+  // 파이프라인처럼"). Same sticky-across-tab-switches pattern as P01Runner's own
+  // selectedModel (initialized from manifest.shared.default_model on first render).
+  let selectedModel = null;
   // D176: real source content for the currently-selected finding, when it came from P02's
   // "인터뷰 시작" connector (see loadFindingFromP02). Empty array for manual JSON-paste
   // findings, which never had a `files` map to draw real code from in the first place.
@@ -44,6 +50,7 @@ const P03Runner = (() => {
   const ELEVATED_MAX_ATTEMPTS = 5;
 
   function renderInput(container) {
+    if (!selectedModel) selectedModel = (LabApp.getManifest().shared || {}).default_model;
     container.innerHTML = `
       <div class="input-panel">
         <h3>인터뷰 대상 finding</h3>
@@ -55,6 +62,9 @@ const P03Runner = (() => {
             <option value="">— finding을 먼저 불러오세요 —</option>
           </select>
         </div>
+        <div class="field-label" style="margin-top:14px;">모델 선택 (11종 — 질문 생성+채점 전부에 적용)</div>
+        <div class="model-toggle-group" id="p03-model-group"></div>
+        <p class="model-note" id="p03-model-note"></p>
       </div>
       <div class="p03-session hidden" id="p03-session">
         <div class="p03-session-code">
@@ -108,6 +118,7 @@ const P03Runner = (() => {
     container.querySelector("#p03-show-report").addEventListener("click", () => {
       if (pendingReportResult) renderResults(pendingReportResult);
     });
+    LabApp.renderModelToggle(container, "#p03-model-group", "#p03-model-note", () => selectedModel, (v) => { selectedModel = v; });
   }
 
   function hideReportGate() {
@@ -303,14 +314,31 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
   // or mid-answer-typing risks losing a teammate's real answer, which this tool has
   // consistently treated as worse than an over-long session (D162's whole reason for
   // existing was "never silently lose output").
-  function startCountdown(totalMinutes) {
+  // D182: real user testing caught it ticking down during classifier loading + LLM question-
+  // generation latency, before the human had even SEEN the question yet -- burning their
+  // "answer time" budget on backend work they have zero control over. Split into initCountdown
+  // (sets the total, shows it, does NOT tick) + resumeCountdown/pauseCountdown, called right
+  // around waitForAnswer() so the clock only actually counts down while a human is reading/
+  // thinking/typing -- which is what a session timer for ANSWERING should measure.
+  let countdownRemainingMs = 0;
+  let countdownResumedAtMs = null;
+
+  function initCountdown(totalMinutes) {
     stopCountdown();
     const el = document.getElementById("p03-countdown");
     if (!el || !totalMinutes) return;
-    const totalMs = totalMinutes * 60 * 1000;
-    const startMs = Date.now();
+    countdownRemainingMs = totalMinutes * 60 * 1000;
+    el.textContent = `남은 ${LabApp.formatElapsed(countdownRemainingMs)}`;
+    el.classList.remove("p03-countdown-over");
+  }
+
+  function resumeCountdown() {
+    const el = document.getElementById("p03-countdown");
+    if (!el || countdownIntervalId || countdownRemainingMs <= 0) return; // not configured, already running, or exhausted
+    countdownResumedAtMs = Date.now();
     const tick = () => {
-      const remainingMs = Math.max(0, totalMs - (Date.now() - startMs));
+      const elapsed = Date.now() - countdownResumedAtMs;
+      const remainingMs = Math.max(0, countdownRemainingMs - elapsed);
       el.textContent = `남은 ${LabApp.formatElapsed(remainingMs)}`;
       el.classList.toggle("p03-countdown-over", remainingMs <= 0);
     };
@@ -318,8 +346,20 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     countdownIntervalId = setInterval(tick, 1000);
   }
 
+  function pauseCountdown() {
+    if (!countdownIntervalId) return;
+    clearInterval(countdownIntervalId);
+    countdownIntervalId = null;
+    if (countdownResumedAtMs !== null) {
+      countdownRemainingMs = Math.max(0, countdownRemainingMs - (Date.now() - countdownResumedAtMs));
+      countdownResumedAtMs = null;
+    }
+  }
+
   function stopCountdown() {
     if (countdownIntervalId) { clearInterval(countdownIntervalId); countdownIntervalId = null; }
+    countdownRemainingMs = 0;
+    countdownResumedAtMs = null;
     const el = document.getElementById("p03-countdown");
     if (el) { el.textContent = ""; el.classList.remove("p03-countdown-over"); }
   }
@@ -338,7 +378,10 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
   }
 
   async function generateQuestion(level, finding, codeContext, transcript, classification, maxAttempts) {
-    const model = LabApp.resolveParam("p03", "p03-1", "model") || (LabApp.getManifest().shared || {}).default_model;
+    // D182: falls through to the top-level toggle (selectedModel) now, same precedence as
+    // P01's model resolution -- p03-1 has no manifest `model` param at all (never did), so
+    // this was already effectively "shared default only" before; now it's "toggle" instead.
+    const model = LabApp.resolveParam("p03", "p03-1", "model") || selectedModel;
     const prompt = buildLevelPrompt(level, finding, codeContext, transcript, classification);
     const tool = { name: "ask_question", description: "학생에게 던질 질문 하나를 생성한다.", input_schema: { type: "object", properties: { question: { type: "string" } }, required: ["question"] } };
     const result = await LabLLM.chatTool({ model, messages: [{ role: "user", content: prompt }], tool, maxTokens: 2048, maxAttempts });
@@ -363,7 +406,11 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
       description: "학생 답변을 FR-04-01 5축 루브릭으로 채점한다.",
       input_schema: { type: "object", properties: Object.fromEntries(axes.map((a) => [a, { type: "object", properties: { score: { type: "integer" }, evidence: { type: "string" } }, required: ["score", "evidence"] }])), required: axes },
     };
-    const model = LabApp.resolveParam("p03", "p03-7", "model") || (LabApp.getManifest().shared || {}).default_model;
+    // D182: p03-7's manifest `model` param was removed (see prompt_manifest.json) so this
+    // falls through to the top-level toggle -- previously the manifest's fixed default would
+    // have won here every time via resolveParam's precedence, making a toggle pointless
+    // (same lesson D154 already applied to P01's stage-level model param).
+    const model = LabApp.resolveParam("p03", "p03-7", "model") || selectedModel;
     const grades = await LabLLM.chatTool({ model, messages: [{ role: "user", content: userMsg }], tool, maxTokens: 2048, maxAttempts });
     return { grades, rubric_overridden: rubricOverridden };
   }
@@ -386,8 +433,9 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     const startedAt = new Date();
     LabApp.startTimer(pipelineId);
     const sessionTimeoutMinutes = LabApp.resolveParam("p03", "p03-6", "session_timeout_minutes") || 0;
-    startCountdown(sessionTimeoutMinutes);
+    initCountdown(sessionTimeoutMinutes);
     try {
+      LabApp.log(pipelineId, `모델: ${selectedModel}`);
       await ensureClassifiers((msg) => LabApp.log(pipelineId, msg));
       const category = findingCategory(selectedFinding.id);
 
@@ -420,7 +468,9 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
         const question = await generateQuestion(level, selectedFinding, codeContext, transcript, prevClassification, genAttempts);
         appendTranscriptEntry(level, question, null);
         LabApp.log(pipelineId, "답변 대기 중...");
+        resumeCountdown(); // D182: only start ticking once the human can actually see+answer this question
         const answer = await waitForAnswer();
+        pauseCountdown();
         LabApp.log(pipelineId, "답변 분류 중 (결정론적 분류기, LLM 아님)...");
         const classification = await classifyAnswer(category, answer, level);
         transcript.push({ level, question, answer, classification });
@@ -448,7 +498,7 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
       console.error(err);
       LabApp.setStatus(pipelineId, `오류: ${err.message}`, "error");
       LabApp.log(pipelineId, `오류: ${err.message}`);
-      await LabApp.saveFailedRun("p03", (LabApp.getManifest().shared || {}).default_model, err, startedAt);
+      await LabApp.saveFailedRun("p03", selectedModel, err, startedAt); // D182: record what was actually selected, not the shared default
     }
   }
 
@@ -471,7 +521,7 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     try {
       await LabDB.saveRun({
         pipeline: "p03",
-        model: (LabApp.getManifest().shared || {}).default_model,
+        model: selectedModel, // D182: was always the shared default regardless of what actually ran
         input_meta: { finding_id: result.finding.id },
         overrides: {},
         rubric_overridden: result.rubric_overridden,

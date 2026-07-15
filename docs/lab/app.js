@@ -10,6 +10,75 @@ const LabApp = (() => {
   const timers = {}; // pipeline -> { startMs, intervalId }
   const renderedPipelines = new Set(); // D-K: which pipelines' DOM has already been built once
 
+  // D182: moved here from p01-runner.js (was a private const there) -- P03's model
+  // selection was buried inside a stage-card param field instead of getting the same
+  // top-level toggle P01 has, and this list's own notes already reference BOTH pipelines'
+  // benchmark results ("P03 종합 2위" etc.), so a single shared source was already the
+  // right shape, just not extracted yet. Two independent copies could silently drift.
+  //
+  // Ranking + notes sourced from docs/pipelines.html's 11-model 4-axis table (D116). That
+  // benchmark measures a DIFFERENT task (P03 question-gen x grading) -- P01-T1 (D119/D120)
+  // separately found step-3.5-flash (rank #1 there) fails completely on P01's chunk-analysis
+  // task (0/50) while qwen3-next-80b succeeds 96%. So `tier` below is P01-specific evidence
+  // (good/bad), not a re-skin of the P03 rank -- the other 9 are honestly labeled unverified
+  // for P01 rather than implying the P03 ranking transfers. (D-G, 2026-07-14: that "0/50"
+  // verdict is itself now suspect -- the original pipeline's chat_json() has no
+  // reasoning_content fallback and a live curl confirmed step-3.5-flash puts its real answer
+  // there with content:null; this tool's llm.js already carries that fallback, so a run here
+  // is a cleaner test than D120's ever was -- downgraded "bad"->"unverified" pending retest.)
+  const MODEL_CHOICES = [
+    { id: "stepfun-ai/step-3.5-flash", label: "step-3.5-flash", tier: "unverified",
+      note: "P01-T1(D120)의 '0/50 완전실패'는 reasoning_content 버그로 오염됐을 가능성이 큼(D-G) -- 이 도구는 그 폴백이 있어 재검증 가치 있음." },
+    { id: "mistralai/mistral-medium-3.5-128b", label: "mistral-medium-3.5", tier: "unverified",
+      note: "P01 기준 미검증 · P03 종합 2위(0.749)." },
+    { id: "qwen/qwen3-next-80b-a3b-instruct", label: "qwen3-next-80b", tier: "good",
+      note: "팀 Locked 모델 · P01-T1 실측 96% 성공(D120) · 기본값." },
+    { id: "nvidia/nemotron-3-super-120b-a12b", label: "nemotron-3-super-120b", tier: "unverified",
+      note: "P01 기준 미검증 · P03에서 범위 밖 점수 출력 결함 이력." },
+    { id: "qwen/qwen3.5-122b-a10b", label: "qwen3.5-122b", tier: "unverified",
+      note: "P01 기준 미검증 · P03 종합 5위(0.589)." },
+    { id: "nvidia/llama-3.3-nemotron-super-49b-v1.5", label: "nemotron-super-49b", tier: "unverified",
+      note: "P01 기준 미검증 · P03 종합 6위(0.531)." },
+    { id: "deepseek-ai/deepseek-v4-pro", label: "deepseek-v4-pro", tier: "unverified",
+      note: "P01 기준 미검증 · P03에서 쿼타 소진 이력(측정 당시 몇 시간 전엔 100%)." },
+    { id: "meta/llama-4-maverick-17b-128e-instruct", label: "llama-4-maverick", tier: "unverified",
+      note: "P01 기준 미검증 · P03에서 NVIDIA 서빙 장애로 측정 불가 이력." },
+    { id: "mistralai/mistral-large-3-675b-instruct-2512", label: "mistral-large-3", tier: "unverified",
+      note: "P01 기준 미검증 · P03 채점기 역할에서 퇴행 생성 루프 결함 이력(질문생성 역할만 정상)." },
+    { id: "z-ai/glm-5.2", label: "glm-5.2", tier: "unverified",
+      note: "P01 기준 미검증 · P03에서 쿼타 소진 이력." },
+    { id: "minimaxai/minimax-m3", label: "minimax-m3", tier: "unverified",
+      note: "P01 기준 미검증 · P03에서 100회 반복 중 DEGRADED 재발 이력." },
+  ];
+
+  // D182: shared model-toggle chip renderer -- P01 had this exact logic (chips, active
+  // highlight, note-on-select) as a private function; P03 needs identical behavior. Doesn't
+  // own selection state itself (getSelected/setSelected are the caller's own variable) so
+  // P01 and P03 picking different models never cross-contaminate each other.
+  function renderModelToggle(container, groupSelector, noteSelector, getSelected, setSelected) {
+    const group = container.querySelector(groupSelector);
+    const note = container.querySelector(noteSelector);
+    group.innerHTML = MODEL_CHOICES.map((m) => {
+      const cls = ["model-chip"];
+      if (m.id === getSelected()) cls.push("active");
+      if (m.tier === "bad") cls.push("warn");
+      return `<button type="button" class="${cls.join(" ")}" data-model="${escapeHtml(m.id)}">${escapeHtml(m.label)}</button>`;
+    }).join("");
+    const updateNote = () => {
+      const m = MODEL_CHOICES.find((x) => x.id === getSelected());
+      note.textContent = m ? m.note : "";
+      note.className = "model-note" + (m && m.tier === "bad" ? " warn" : "");
+    };
+    group.querySelectorAll(".model-chip").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        setSelected(btn.dataset.model);
+        group.querySelectorAll(".model-chip").forEach((b) => b.classList.toggle("active", b === btn));
+        updateNote();
+      });
+    });
+    updateNote();
+  }
+
   function formatElapsed(ms) {
     const totalSec = Math.max(0, Math.floor(ms / 1000));
     const m = Math.floor(totalSec / 60);
@@ -438,6 +507,7 @@ const LabApp = (() => {
     init, getManifest, getStage, getOverride, setOverride, resolveTemplate, resolveParam,
     registerRunner, fillTemplate, log, setStatus, showResults, escapeHtml,
     startTimer, stopTimer, formatElapsed, jsonResultBlock, saveFailedRun,
+    MODEL_CHOICES, renderModelToggle,
   };
 })();
 
