@@ -1066,6 +1066,13 @@ python3 pipeline/compare_methodologies.py
   - EXIT: Google OAuth가 팀 전체에 안정적으로 자리잡으면 이메일 매직 링크 필드를 빼고 Google 단일 로그인으로 단순화할 수 있음(현재는 의도적으로 둘 다 유지).
   - 커밋: `e3c1d24`, push 완료.
 
+- **D149** ([`docs/lab/index.html`](./docs/lab/index.html), [`docs/lab/config.js`](./docs/lab/config.js), [`docs/lab/db.js`](./docs/lab/db.js)) — 사용자 지시: "Google OAuth 쪽만 살려놔". D148에서 병행 유지했던 이메일 매직 링크 입력창·버튼·`signInWithEmail()`을 전부 제거, Google 로그인만 남김.
+  - **검증**: 로컬에서 헤드리스 브라우저로 `#login-email`/`#login-btn`이 DOM에 없음을 확인, `#google-login-btn`은 여전히 존재하고 클릭 시 실제 Google 로그인 화면까지 에러 없이 도달함을 재확인(제거 작업이 D148의 검증된 흐름을 안 건드렸는지 회귀 확인).
+  - WHY: Google OAuth가 실제로 동작 확인됐고(D148), 매직 링크 특유의 실패 모드(D147)를 계속 안고 갈 이유가 없어짐 — 사용자 판단으로 단순화.
+  - COST: Google 계정이 없는 팀원은 로그인 불가(이 팀 규모에서는 실질적 제약 아닌 것으로 판단됨). Supabase 프로젝트의 `external_email_enabled` 자체는 안 건드림 — UI에 노출되는 경로만 제거.
+  - EXIT: 다시 필요해지면 D148 커밋(`e3c1d24`)의 `signInWithEmail()`/이메일 입력 UI를 그대로 복원하면 됨(로직 자체는 삭제됐지만 git 이력에 온전히 남아있음).
+  - 커밋: `4cfca13`, push 완료.
+
 
 ## 다음 단계 (미해결)
 
