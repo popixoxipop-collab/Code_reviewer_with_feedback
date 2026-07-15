@@ -322,7 +322,7 @@ const P01Runner = (() => {
         <div>${LabApp.escapeHtml(q.question || "")}</div>
       </div>`;
     }
-    html += `<p class="field-label" style="margin-top:14px;">원본 JSON</p><pre>${LabApp.escapeHtml(JSON.stringify(result, null, 2)).slice(0, 20000)}</pre>`;
+    html += LabApp.jsonResultBlock("원본 JSON", result, "p01-result.json");
     LabApp.showResults(html);
   }
 

@@ -379,6 +379,31 @@ const LabApp = (() => {
     view.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
+  // D162 (2026-07-15): all 3 runners' "원본 JSON" block used to hardcode
+  // `.slice(0, 20000)` with no indication anything was cut -- a real 9-unit/26-chunk P01
+  // result silently lost content mid-structure, and the CSS has no height clipping
+  // (.results-view pre only sets overflow-x), so the user correctly read it as the raw
+  // JSON itself being cut, not a viewport issue. Same exact pattern existed identically in
+  // all 3 runners (grep-checked), so fixed once here instead of three separate patches.
+  // INLINE_CAP (500,000 chars) is a generous safety backstop against a truly pathological
+  // result, not a normal ceiling -- every real run seen so far (P01's 9-unit/26-chunk
+  // result included) is well under it. A full-JSON download link is offered unconditionally
+  // (not just when truncated) so the complete result is never only reachable by raising
+  // this number -- this mirrors D153's rule of never leaving output in a silently-partial
+  // state.
+  const JSON_BLOCK_INLINE_CAP = 500000;
+  function jsonResultBlock(title, obj, filename) {
+    const full = JSON.stringify(obj, null, 2);
+    const shown = full.length > JSON_BLOCK_INLINE_CAP ? full.slice(0, JSON_BLOCK_INLINE_CAP) : full;
+    const truncNote = full.length > JSON_BLOCK_INLINE_CAP
+      ? `<p style="color:var(--status-blocked); font-size:0.72rem; margin:4px 0;">전체 ${full.length.toLocaleString()}자 중 앞 ${JSON_BLOCK_INLINE_CAP.toLocaleString()}자만 표시됨 -- 전체는 다운로드로 확인.</p>`
+      : "";
+    const href = `data:application/json;charset=utf-8,${encodeURIComponent(full)}`;
+    return `<p class="field-label" style="margin-top:14px;">${escapeHtml(title)}
+        <a href="${href}" download="${escapeHtml(filename)}" style="margin-left:10px; font-size:0.72rem; font-weight:normal;">전체 JSON 다운로드</a></p>
+      ${truncNote}<pre>${escapeHtml(shown)}</pre>`;
+  }
+
   async function init() {
     await loadManifest();
     document.querySelectorAll(".tab-btn").forEach((btn) => {
@@ -390,7 +415,7 @@ const LabApp = (() => {
   return {
     init, getManifest, getStage, getOverride, setOverride, resolveTemplate, resolveParam,
     registerRunner, fillTemplate, log, setStatus, showResults, escapeHtml,
-    startTimer, stopTimer, formatElapsed,
+    startTimer, stopTimer, formatElapsed, jsonResultBlock,
   };
 })();
 

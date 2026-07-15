@@ -302,7 +302,7 @@ _result = webtool_driver.run_scan("/target", overrides_json)
         <div>${LabApp.escapeHtml(f.finding || "")}</div>
       </div>`;
     }
-    html += `<p class="field-label" style="margin-top:14px;">원본 scan/judgment JSON</p><pre>${LabApp.escapeHtml(JSON.stringify(result, null, 2)).slice(0, 20000)}</pre>`;
+    html += LabApp.jsonResultBlock("원본 scan/judgment JSON", result, "p02-result.json");
     LabApp.showResults(html);
   }
 

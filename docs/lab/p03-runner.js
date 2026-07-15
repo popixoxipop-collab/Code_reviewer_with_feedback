@@ -250,7 +250,7 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
       html += `<div class="finding-card"><div class="fid">${LabApp.escapeHtml(axis)}: ${LabApp.escapeHtml(String(g.score))}점</div><div>${LabApp.escapeHtml(g.evidence || "")}</div></div>`;
     }
     html += `</div>`;
-    html += `<p class="field-label" style="margin-top:14px;">원본 JSON</p><pre>${LabApp.escapeHtml(JSON.stringify(result, null, 2)).slice(0, 20000)}</pre>`;
+    html += LabApp.jsonResultBlock("원본 JSON", result, "p03-result.json");
     LabApp.showResults(html);
   }
 
