@@ -1492,7 +1492,7 @@ python3 pipeline/compare_methodologies.py
   - COST: 없음 — 기존 실패 경로의 메시지만 더 구체화, 성공 경로/기존 404·권한-403 메시지는 완전히 보존.
   - EXIT: PAT 사용자가 5,000회 한도까지 실제로 소진하는 사례가 관측되면 그때 배치 크기(현재 6-동시)나 파일 필터링 범위를 재검토.
   - `Team-IZ/AI` 저장소의 동일 파일(`shared/p02-engine.js`)에도 같은 수정 적용(byte-identical 확인).
-  - 커밋: 예정, push 예정(GitHub Pages 재배포로 라이브 반영).
+  - 커밋: `1c75ffc`, push 예정(GitHub Pages 재배포로 라이브 반영).
 
 ## 다음 단계 (미해결)
 
