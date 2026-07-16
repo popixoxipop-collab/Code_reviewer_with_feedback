@@ -1481,7 +1481,7 @@ python3 pipeline/compare_methodologies.py
   - COST: 없음 — 기존 `onProgress` 호출 위에 조건부 렌더링만 추가, 새 의존성·빌드스텝 없음.
   - EXIT: 인디케이터를 없애려면 `showTypingIndicator`/`removeTypingIndicator` 호출 두 줄과 관련 CSS 블록만 제거하면 됨(로직 재구성 불필요).
   - `Team-IZ/AI` 저장소의 동일 파일(`trainee/session.html`)에도 같은 수정 적용(diff로 `../shared/` 경로 접두사 외 100% 동일 확인).
-  - 커밋: 예정, push 예정(GitHub Pages 재배포로 라이브 반영).
+  - 커밋: `46757f4`, push 예정(GitHub Pages 재배포로 라이브 반영).
 
 ## 다음 단계 (미해결)
 
