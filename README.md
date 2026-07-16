@@ -1435,7 +1435,7 @@ python3 pipeline/compare_methodologies.py
   - COST: 세션 시작까지 클릭 1회 추가(이전: 0회, D178 도입 이후 기준).
   - EXIT: 순수 자동실행으로 되돌리려면 `#start-btn`의 클릭 핸들러 본문을 `DOMContentLoaded` 안에서 그대로 직접 호출하고 게이트 엘리먼트를 지우면 됨(로직 재구성 없이 위치만 이동).
   - `Team-IZ/AI` 브랜치의 동일 파일에도 같은 수정 적용.
-  - 커밋: `<다음 커밋에서 채움>`, push 예정.
+  - 커밋: `5b10793`, push 예정(GitHub Pages 재배포로 라이브 반영).
 
 ## 다음 단계 (미해결)
 
