@@ -1460,6 +1460,17 @@ python3 pipeline/compare_methodologies.py
   - `Team-IZ/AI` 저장소의 동일 파일(`shared/session-state.js`, `trainee/submission.html`, `trainee/session.html`)에도 같은 수정 적용(diff로 `../shared/` 경로 접두사 외 100% 동일 확인).
   - 커밋: `d79bf08`, push 예정(GitHub Pages 재배포로 라이브 반영).
 
+
+- **D190** ([`docs/lab/p03-engine.js`](./docs/lab/p03-engine.js), [`docs/lab/p03-runner.js`](./docs/lab/p03-runner.js), [`feedback/turn_engine.py`](./feedback/turn_engine.py)) — 사용자가 D188 배포 후에도 실사용 스크린샷으로 재발 신고: 다른 finding(`repeated-pattern:duplicate-definition:load_api_keys`, `step-3.5-flash`)에서 이번엔 **L2와 Reflection(4턴째)이 byte-identical**. "L1은 독자 생성, L2는 L1 참고, L3는 L1·2 참조, L4는 L1·2·3 참조하는 방식으로 사전에 중복 질문 검출 hook을 두자"는 구체적 아키텍처 제안.
+  - **판단**: transcript는 이미 매 턴 전체 이력을 프롬프트에 넣고 있어(D188) "L2는 L1 참고" 자체는 이미 사실상 일어나는 중임 — 실제로 빠진 건 **사전 검출/차단 게이트**였다. D188은 프롬프트 텍스트만 고쳤는데(overlap 0.92→0.22), 확률적 생성인 이상 텍스트 지시만으로는 특정 모델×특정 finding 조합의 재발을 결정론적으로 막을 수 없음이 재실측으로 확인됨 — D188 보고서가 이미 "defense-in-depth"로 제안했던 코드 레벨 가드를 이번 재발로 실측 정당화.
+  - **적용**: `generateQuestion()`/`generate_question()`에 **생성→유사도 검사→필요시 재생성** 루프 신설. 유사도는 문자 3-gram Jaccard(한국어는 조사·어미 때문에 단어 토큰화가 불안정해 문자 n-gram이 표준)로, 새로 생성된 질문을 **이전 모든 레벨의 질문과** 비교(L2→L1, L3→L1·L2, reflection→L1·L2·L3 — transcript가 이미 누적돼 있어 자연히 이렇게 됨). 임계값 0.5는 이번 재발의 실측 데이터로 보정: 스크린샷 속 byte-identical 쌍 overlap=1.0, 같은 스크린샷의 정상 L2-vs-L3 쌍 overlap=0.20, D188의 기존 데이터(진짜중복 0.92 / 정상 0.06~0.22)와도 일관 — 그 사이 넓은 안전마진. 중복 감지 시 방금 반려된 질문을 프롬프트에 "겹치면 안 되는 추가 목록"으로 명시해 최대 2회 재생성, 그래도 안 되면 마지막 결과를 그대로 진행(무한루프/세션 중단 방지가 완전 차단보다 우선, `onProgress`/`on_retry` 콜백으로 경고만 표시). Python `turn_engine.py`의 `generate_question`도 JS와 동일 알고리즘·임계값으로 동기화(D188처럼 원본↔포팅 드리프트 방지 — `run_decision_point()`를 호출하는 `benchmark_turn_engine_*`/`hook_loop` 스크립트들도 자동으로 같은 보호를 받음). `docs/lab/p03-engine.js`(trainee 페이지용)와 `docs/lab/p03-runner.js`(원본 단일페이지 도구용) 둘 다 적용 — 하나만 고치면 원본 도구가 D188/D190 둘 다 안 받은 채로 남을 뻔했음.
+  - **검증**: (1) 이번 재발 스크린샷의 실제 텍스트로 임계값 자체를 먼저 실측(위 근거). (2) 실제 `p03-engine.js`/`turn_engine.py` 파일을 그대로 로드해(재구현 아님) LLM 응답을 스크립트로 고정한 3가지 시나리오 — A) 첫 시도 중복→재시도로 새 질문(정확히 2회 호출), B) 매번 중복(정확히 3회 호출 후 한도소진 경고와 함께 진행, 무한루프 없음), C) 첫 시도부터 정상(정확히 1회 호출, 재시도·경고 0건 — 오탐 없음 직접 확인) — JS(Node vm)·Python 양쪽에서 동일하게 통과. (3) 실제 NVIDIA API로 이번 사건과 동일한 finding/코드/모델(`step-3.5-flash`) 조합의 정상 L1→L2 흐름을 라이브 실행 — L2가 실제로 1회 호출만에, 오탐 재시도 없이, L1과 명백히 다른 질문("여러 프로젝트에서 각각 다른 키 파일을 로드해야 한다면?")을 생성함을 확인(정상 케이스에 성능 저하 없음).
+  - WHY: 사용자가 D188 배포 후에도 다른 finding에서 재발을 직접 목격하고, 프롬프트 수정만으로는 불충분하다는 구체적 대안(사전 검출 hook)까지 제시.
+  - COST: 중복 감지 시에만 API 호출 1~2회 추가(레이턴시+비용) — 정상 케이스는 실측상 추가 호출 0건. 임계값 0.5는 이번 사건+D188 데이터 총 4개 anchor point로 보정된 값이라 완전한 보장은 아님(EXIT 참고).
+  - EXIT: 다른 모델/finding에서도 재발하면 임계값(0.5)이나 재시도 횟수(2)를 그 실측 데이터로 재보정. 특정 모델이 이 가드에 계속 걸리면 근본 해법은 여전히 프롬프트 강화(D188) 또는 그 모델을 P03 기본값에서 내리는 것 — 이 가드는 보험이지 근본수정의 대체가 아님.
+  - `Team-IZ/AI` 저장소의 동일 파일(`shared/p03-engine.js`)에도 같은 수정 적용(diff로 100% 동일 확인). `Team-IZ/AI`에는 `p03-runner.js`/`turn_engine.py` 대응 파일이 없음(trainee 페이지 전용 미러라 원본 단일페이지 도구·Python 파이프라인은 이 미러 범위 밖).
+  - 커밋: 예정, push 예정(GitHub Pages 재배포로 라이브 반영).
+
 ## 다음 단계 (미해결)
 
 1. ~~판단 블록에 "프레임워크 관용 패턴 목록" 대조 필터 추가~~ — D5~D7로 완료(javascript만 실증, 나머지 언어는 빈 상태)

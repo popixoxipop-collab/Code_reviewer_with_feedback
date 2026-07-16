@@ -349,7 +349,7 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     if (el) { el.textContent = ""; el.classList.remove("p03-countdown-over"); }
   }
 
-  function buildLevelPrompt(level, finding, codeContext, transcript, classification) {
+  function buildLevelPrompt(level, finding, codeContext, transcript, classification, extraBanned) {
     const codeBlock = codeContext ? `\n## 실제 코드\n\`\`\`\n${codeContext}\n\`\`\`\n` : "";
     const headerStage = LabApp.getStage("p03", "p03-1");
     const header = LabApp.fillTemplate(headerStage.shared_header, { finding_text: finding.finding || "", finding_file: finding.file || "", code_block: codeBlock });
@@ -359,7 +359,36 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     const transcriptText = transcript.map((t) => `[${t.level.toUpperCase()}] 질문: ${t.question}\n[${t.level.toUpperCase()}] 학생 답변: ${t.answer}`).join("\n");
     const verdictNote = { surface: "표면적(근거·구체성 부족)", partial: "부분적(일부 근거는 있으나 아직 충분히 깊지 않음)" }[classification.verdict] || classification.verdict;
     const stageId = { l2: "p03-2", l3: "p03-3", reflection: "p03-4" }[level];
-    return header + LabApp.fillTemplate(LabApp.resolveTemplate("p03", stageId, "level_template"), { transcript: transcriptText, verdict_note: verdictNote });
+    let prompt = header + LabApp.fillTemplate(LabApp.resolveTemplate("p03", stageId, "level_template"), { transcript: transcriptText, verdict_note: verdictNote });
+    // D190 (see p03-engine.js for the full WHY/COST/EXIT -- same fix, mirrored here):
+    // only non-empty on a dedup-triggered retry within the SAME level, since a rejected
+    // same-level attempt never makes it into `transcript` (that only happens after the
+    // turn's answer comes back).
+    if (extraBanned && extraBanned.length) {
+      prompt += `\n\n## 방금 생성했으나 반려된 질문 (이전 질문과 겹침 감지됨) — 이것과도 겹치면 안 됩니다\n` + extraBanned.map((q, i) => `${i + 1}. ${q}`).join("\n");
+    }
+    return prompt;
+  }
+
+  // D190: see p03-engine.js's generateQuestion for the full WHY/COST/EXIT -- this is the
+  // same near-duplicate regeneration guard, mirrored here so the original single-page tool
+  // (this file) doesn't silently keep the bug the trainee/ pages already fixed.
+  const DEDUP_JACCARD_THRESHOLD = 0.5;
+  const DEDUP_MAX_RETRIES = 2;
+
+  function normalizeForDedup(s) {
+    return (s || "").replace(/\s+/g, " ").trim();
+  }
+
+  function ngramJaccard(a, b, n = 3) {
+    const na = normalizeForDedup(a), nb = normalizeForDedup(b);
+    if (na.length < n || nb.length < n) return na === nb ? 1 : 0;
+    const gramsA = new Set(); for (let i = 0; i <= na.length - n; i++) gramsA.add(na.slice(i, i + n));
+    const gramsB = new Set(); for (let i = 0; i <= nb.length - n; i++) gramsB.add(nb.slice(i, i + n));
+    let intersection = 0;
+    for (const g of gramsA) if (gramsB.has(g)) intersection++;
+    const union = gramsA.size + gramsB.size - intersection;
+    return union === 0 ? 0 : intersection / union;
   }
 
   async function generateQuestion(level, finding, codeContext, transcript, classification, maxAttempts) {
@@ -367,10 +396,22 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     // P01's model resolution -- p03-1 has no manifest `model` param at all (never did), so
     // this was already effectively "shared default only" before; now it's "toggle" instead.
     const model = LabApp.resolveParam("p03", "p03-1", "model") || selectedModel;
-    const prompt = buildLevelPrompt(level, finding, codeContext, transcript, classification);
     const tool = { name: "ask_question", description: "학생에게 던질 질문 하나를 생성한다.", input_schema: { type: "object", properties: { question: { type: "string" } }, required: ["question"] } };
-    const result = await LabLLM.chatTool({ model, messages: [{ role: "user", content: prompt }], tool, maxTokens: 2048, maxAttempts });
-    return result.question;
+    const priorQuestions = transcript.map((t) => t.question);
+    const rejected = [];
+    for (let attempt = 0; attempt <= DEDUP_MAX_RETRIES; attempt++) {
+      const prompt = buildLevelPrompt(level, finding, codeContext, transcript, classification, rejected);
+      const result = await LabLLM.chatTool({ model, messages: [{ role: "user", content: prompt }], tool, maxTokens: 2048, maxAttempts });
+      const candidate = result.question;
+      const dupOf = priorQuestions.find((q) => ngramJaccard(candidate, q) >= DEDUP_JACCARD_THRESHOLD);
+      if (!dupOf) return candidate;
+      if (attempt === DEDUP_MAX_RETRIES) {
+        LabApp.log("p03", `⚠ ${level.toUpperCase()} 질문이 이전 질문과 유사해 보이지만 재생성 한도(${DEDUP_MAX_RETRIES}회) 소진 — 그대로 진행`);
+        return candidate;
+      }
+      LabApp.log("p03", `⚠ ${level.toUpperCase()} 질문이 이전 질문과 겹쳐 재생성 중 (${attempt + 1}/${DEDUP_MAX_RETRIES})...`);
+      rejected.push(candidate);
+    }
   }
 
   async function gradeAnswer(finding, question, answer, maxAttempts) {

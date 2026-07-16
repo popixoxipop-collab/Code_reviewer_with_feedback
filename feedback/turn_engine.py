@@ -130,7 +130,7 @@ SINGLE_QUESTION_TOOL = {
 }
 
 
-def _build_level_prompt(level, finding, code_context, transcript, classification):
+def _build_level_prompt(level, finding, code_context, transcript, classification, extra_banned=None):
     code_block = f"\n## 실제 코드\n```\n{code_context}\n```\n" if code_context else ""
     header = (
         "당신은 학생/지원자의 코드 이해도(Ownership)를 검증하는 면접관입니다. "
@@ -153,7 +153,7 @@ def _build_level_prompt(level, finding, code_context, transcript, classification
     }.get(classification["verdict"], classification["verdict"])
 
     if level == "l2":
-        return header + (
+        prompt = header + (
             f"\n## 이미 물어본 질문 — 아래를 반복하면 실패입니다\n{prior}\n\n"
             f"위에서 학생의 방금 답변이 {verdict_note}으로 판정됐습니다.\n\n"
             "지금은 2단계(트레이드오프 반례) 질문 차례입니다. 반드시 아래 규칙을 지키세요:\n"
@@ -165,8 +165,8 @@ def _build_level_prompt(level, finding, code_context, transcript, classification
             "3. 방금 답변에서 부족했던 근거·구체성을 정확히 겨냥하세요.\n\n"
             "이 규칙을 지켜, 앞 질문과 겹치지 않는 새로운 반례 질문 하나만 생성하세요."
         )
-    if level == "l3":
-        return header + (
+    elif level == "l3":
+        prompt = header + (
             f"\n## 이미 물어본 질문 — 아래를 반복하면 실패입니다\n{prior}\n\n"
             f"트레이드오프 반례에도 학생 답변이 {verdict_note}으로 판정됐습니다. 이번엔 "
             "훨씬 더 극단적인 시나리오(예: 규모가 100배 커지거나, 악의적 공격자가 있거나, "
@@ -174,15 +174,23 @@ def _build_level_prompt(level, finding, code_context, transcript, classification
             "견고한지 시험하는 질문을 던지세요. 위 '이미 물어본 질문'과 겹치지 않는 새로운 "
             "질문이어야 합니다."
         )
-    # reflection
-    return header + (
-        f"\n## 이미 물어본 질문 — 아래를 반복하면 실패입니다\n{prior}\n\n"
-        "극단 시나리오에도 학생이 방어하지 못했습니다. 이제 학생이 스스로 오류를 "
-        "인정하고 개선안을 생각해보도록 유도하는 질문을 던지세요 — 직접 정답을 알려주지 "
-        "말고, 학생이 스스로 '이 부분은 이렇게 바꿨어야 했다'는 결론에 도달하도록 "
-        "유도하는 확인 질문 하나만 던지세요. 위 '이미 물어본 질문'과 겹치지 않는 새로운 "
-        "질문이어야 합니다."
-    )
+    else:  # reflection
+        prompt = header + (
+            f"\n## 이미 물어본 질문 — 아래를 반복하면 실패입니다\n{prior}\n\n"
+            "극단 시나리오에도 학생이 방어하지 못했습니다. 이제 학생이 스스로 오류를 "
+            "인정하고 개선안을 생각해보도록 유도하는 질문을 던지세요 — 직접 정답을 알려주지 "
+            "말고, 학생이 스스로 '이 부분은 이렇게 바꿨어야 했다'는 결론에 도달하도록 "
+            "유도하는 확인 질문 하나만 던지세요. 위 '이미 물어본 질문'과 겹치지 않는 새로운 "
+            "질문이어야 합니다."
+        )
+
+    # D190: only non-empty on a dedup-triggered retry within the SAME level -- see
+    # generate_question(). A rejected same-level attempt never makes it into `transcript`
+    # (that only happens after the turn's answer comes back), so it has to be listed here.
+    if extra_banned:
+        banned_lines = "\n".join(f"{i + 1}. {q}" for i, q in enumerate(extra_banned))
+        prompt += f"\n\n## 방금 생성했으나 반려된 질문 (이전 질문과 겹침 감지됨) — 이것과도 겹치면 안 됩니다\n{banned_lines}"
+    return prompt
 
 
 def _parse_ask_question_response(response):
@@ -203,24 +211,70 @@ def _parse_ask_question_response(response):
     )
 
 
-def generate_question(level, finding, code_context, transcript, classification, client, model, max_tokens=DEFAULT_MAX_TOKENS):
-    prompt = _build_level_prompt(level, finding, code_context, transcript, classification)
+# D190: JS 자매 파일(docs/lab/p03-engine.js)과 동일한 재발 대응 -- D188은 프롬프트
+# 텍스트만 고쳤는데, 사용자가 실사용 중 다른 finding(step-3.5-flash, load_api_keys)에서
+# L2==Reflection 중복을 다시 목격. 확률적 생성인 이상 프롬프트만으로는 특정 모델x특정
+# finding 조합의 재발을 완전히 막을 보장이 없다는 게 재실측 확인됨 -- 전체 WHY/COST/
+# EXIT는 p03-engine.js의 동일 주석 참고(임계값 0.5는 이번 재발 실측: byte-identical
+# 중복=1.0, 같은 스크린샷 안 정상 L2-vs-L3 쌍=0.20, D188 기존 데이터=0.92/0.06~0.22와
+# 일관).
+DEDUP_JACCARD_THRESHOLD = 0.5
+DEDUP_MAX_RETRIES = 2
+
+
+def _normalize_for_dedup(s):
+    return " ".join((s or "").split())
+
+
+def _char_ngrams(s, n=3):
+    s = _normalize_for_dedup(s)
+    return {s[i:i + n] for i in range(len(s) - n + 1)} if len(s) >= n else set()
+
+
+def _ngram_jaccard(a, b, n=3):
+    na, nb = _char_ngrams(a, n), _char_ngrams(b, n)
+    if not na or not nb:
+        return 1.0 if _normalize_for_dedup(a) == _normalize_for_dedup(b) else 0.0
+    intersection = len(na & nb)
+    union = len(na | nb)
+    return intersection / union if union else 0.0
+
+
+def generate_question(level, finding, code_context, transcript, classification, client, model,
+                       max_tokens=DEFAULT_MAX_TOKENS, on_retry=None):
+    """on_retry(msg: str): 선택적 콜백 -- 중복 감지로 재생성할 때만 호출(기존 호출부는
+    안 건드려도 됨, 기본값 None이면 조용히 재시도만 함)."""
+    prior_questions = [t["question"] for t in transcript]
+    rejected = []
+    total_elapsed = 0.0
     tool = _as_openai_tool(SINGLE_QUESTION_TOOL)
-    t0 = time.time()
-    response = client.chat(
-        model=model,
-        messages=[{"role": "user", "content": prompt}],
-        tools=[tool],
-        tool_choice={"type": "function", "function": {"name": "ask_question"}},
-        max_tokens=max_tokens,
-        temperature=0.0,
-    )
-    elapsed = time.time() - t0
-    result = _parse_ask_question_response(response)
-    return result["question"], elapsed
+    for attempt in range(DEDUP_MAX_RETRIES + 1):
+        prompt = _build_level_prompt(level, finding, code_context, transcript, classification, extra_banned=rejected)
+        t0 = time.time()
+        response = client.chat(
+            model=model,
+            messages=[{"role": "user", "content": prompt}],
+            tools=[tool],
+            tool_choice={"type": "function", "function": {"name": "ask_question"}},
+            max_tokens=max_tokens,
+            temperature=0.0,
+        )
+        total_elapsed += time.time() - t0
+        result = _parse_ask_question_response(response)
+        question = result["question"]
+        dup_of = next((q for q in prior_questions if _ngram_jaccard(question, q) >= DEDUP_JACCARD_THRESHOLD), None)
+        if not dup_of:
+            return question, total_elapsed
+        if attempt == DEDUP_MAX_RETRIES:
+            if on_retry:
+                on_retry(f"{level} 질문이 이전 질문과 유사해 보이지만 재생성 한도({DEDUP_MAX_RETRIES}회) 소진 — 그대로 진행")
+            return question, total_elapsed
+        if on_retry:
+            on_retry(f"{level} 질문이 이전 질문과 겹쳐 재생성 중 ({attempt + 1}/{DEDUP_MAX_RETRIES})")
+        rejected.append(question)
 
 
-def run_decision_point(finding, repo_root, answer_fn, client, model, max_turns=4, max_tokens=DEFAULT_MAX_TOKENS):
+def run_decision_point(finding, repo_root, answer_fn, client, model, max_turns=4, max_tokens=DEFAULT_MAX_TOKENS, on_retry=None):
     """스펙 04시트의 6단계 흐름을 실행한다.
 
     answer_fn(question: str, level: str) -> str 는 실제 세션이면 학생에게 묻는 함수,
@@ -243,7 +297,7 @@ def run_decision_point(finding, repo_root, answer_fn, client, model, max_turns=4
                     "transcript": transcript, "elapsed_s": round(total_elapsed, 2)}
 
         classification = transcript[-1]["classification"] if transcript else None
-        question, elapsed = generate_question(level, finding, code_context, transcript, classification, client, model, max_tokens=max_tokens)
+        question, elapsed = generate_question(level, finding, code_context, transcript, classification, client, model, max_tokens=max_tokens, on_retry=on_retry)
         total_elapsed += elapsed
         answer = answer_fn(question, level)
         classification = classify_answer(category, answer, level=level)
