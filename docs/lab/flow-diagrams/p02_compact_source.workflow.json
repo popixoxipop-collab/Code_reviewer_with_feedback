@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "P02 코드 분석 서비스 흐름도",
+    "subtitle": "구조/판단 스캔 파이프라인 — 결정적 규칙 기반, LLM 호출 없음",
+    "output": "p02_base.html"
+  },
+  "lanes": [
+    { "id": "user", "label": "사용자(팀원)" },
+    { "id": "client", "label": "브라우저 클라이언트 (JS 엔진 + Pyodide)" },
+    { "id": "engine", "label": "원본 Python 스캔 엔진 (Pyodide 내부)" }
+  ],
+  "phases": [
+    { "id": "intake", "label": "입력 수집", "fromCol": 0, "toCol": 1 },
+    { "id": "scan", "label": "구조/위험 스캔", "fromCol": 2, "toCol": 3 },
+    { "id": "finalize", "label": "판정·반환", "fromCol": 4, "toCol": 5 }
+  ],
+  "mainPath": ["u_input", "c_gate", "e_gate_auth", "e_gate_or", "e_gate_and2", "c_result", "u_result"],
+  "nodes": [
+    { "id": "u_input", "lane": "user", "col": 0, "type": "frontend", "label": "입력 제출", "sublabel": "GitHub 또는 ZIP" },
+    { "id": "c_gate", "lane": "client", "col": 1, "type": "security", "label": "입력 판정", "sublabel": "GitHub OR ZIP", "tag": "OR", "width": 64 },
+    { "id": "e_gate_auth", "lane": "engine", "col": 2, "type": "security", "label": "auth 판정", "sublabel": "키워드+문자열화+throw", "tag": "AND", "width": 64 },
+    { "id": "e_gate_or", "lane": "engine", "col": 3, "type": "security", "label": "위험/후보", "sublabel": "risk·entry·idiom", "tag": "OR", "width": 64 },
+    { "id": "e_gate_and2", "lane": "engine", "col": 5, "type": "security", "label": "최종 판정", "sublabel": "억제+반복+idiom", "tag": "AND", "width": 64 },
+    { "id": "c_result", "lane": "client", "col": 5, "type": "backend", "label": "결과 반환", "sublabel": "JSON 파싱·DB 저장" },
+    { "id": "u_result", "lane": "user", "col": 5, "type": "frontend", "label": "결과 확인" }
+  ],
+  "edges": [
+    { "from": "u_input", "to": "c_gate", "fromSide": "bottom", "toSide": "top", "route": "drop" },
+    { "from": "c_gate", "to": "e_gate_auth", "fromSide": "bottom", "toSide": "top", "route": "drop" },
+    { "from": "e_gate_auth", "to": "e_gate_or", "variant": "default" },
+    { "from": "e_gate_or", "to": "e_gate_and2", "variant": "default" },
+    { "from": "e_gate_and2", "to": "c_result", "fromSide": "top", "toSide": "bottom", "route": "drop" },
+    { "from": "c_result", "to": "u_result", "fromSide": "top", "toSide": "bottom", "route": "drop" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "LLM 호출 없음",
+      "items": [
+        "P02는 결정적 규칙 기반 스캔(정규식/패턴 매칭)이며 NVIDIA/LLM lane이 없다",
+        "근거: docs/lab/p02-engine.js:35-40, :382"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "AND/OR Gate 근거 (원본 10개소, 로직 유형별로 4개 노드로 병합)",
+      "items": [
+        "입력방식(OR): GitHub 입력 OR ZIP 입력 — docs/lab/p02-engine.js:320-337 run()",
+        "파일판정(OR+AND-NOT): source OR .ipynb OR 제외, +skip 조건 — p02-engine.js:66-88, :94-110, :230, :245-249, :162-183",
+        "auth leak(AND): AUTH_KEYWORDS AND STRINGIFY_RE AND THROW_RE — cognition/two_tier_scan.py:62-64, :224-225",
+        "raw risk(OR): auth leak OR EVAL_RE OR SECRET_RE — two_tier_scan.py:74-80, :224-233",
+        "entry point(OR): main.* OR index.* — judgment/score_findings.py:39, :57-59, :153",
+        "diffusion idiom(OR): createContext(...) OR useQuery/useMutation — score_findings.py:201-225",
+        "Tier B 억제(AND): (trigger,matched_text) AND confirmed 목록 — judgment/tier_b_suppression_filter.py:14-19, tier_b_hook.py:88-90",
+        "snap 반복(AND): per-file hits>=MIN AND files>=MIN — score_findings.py:60-61, :228-238, :430-432",
+        "dup 반복(AND): regex match AND name allowed AND files>=MIN — score_findings.py:60, :80-90, :113-132, :462-490",
+        "confirmed idiom(AND): pattern_key AND file/lang AND confirmed idiom — judgment/idiom_filter.py:87-113, :115-130, score_findings.py:492"
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "다이어그램 단순화 메모",
+      "items": [
+        "원본 손제작 버전의 10개 게이트 인스턴스를 AND/OR 로직 유형별로 4개 노드(OR 2개 + AND 2개)로 병합 — 전체 근거는 위 표",
+        "client/engine lane 경계는 실제 프로세스 경계가 아니라 논리적 구분(Python 스캔 엔진이 Pyodide 안, 즉 브라우저 안에서 실행됨)",
+        "P14(10.3 남은 Tier B trigger 종류?)는 원본에서도 다이아몬드(단순 타입 분기)였고 AND/OR가 아니므로 게이트로 표현하지 않음 — e_gate_and2 sublabel에 흡수"
+      ]
+    }
+  ]
+}

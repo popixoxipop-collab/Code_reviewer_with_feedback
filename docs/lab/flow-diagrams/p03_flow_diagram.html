@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>P03 소크라틱 검증 세션 서비스 플로우</title>
+  <style>
+    :root {
+      --ink: #1f2933;
+      --muted: #5b6673;
+      --line: #2f3b4a;
+      --grid: #b7c0cc;
+      --header: #eef3f8;
+      --lane: #f9fbfd;
+      --process: #ffffff;
+      --accent: #1f6feb;
+      --soft-blue: #eaf3ff;
+      --soft-green: #edf8f0;
+      --soft-amber: #fff6df;
+      --soft-red: #fff0f0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #f3f6fa;
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", Arial, sans-serif;
+      line-height: 1.45;
+    }
+
+    .page {
+      width: 100%;
+      min-width: 1180px;
+      padding: 24px;
+    }
+
+    .header-box {
+      border: 2px solid var(--line);
+      background: var(--header);
+      padding: 18px 22px;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .flow-table {
+      display: grid;
+      grid-template-columns: 190px minmax(0, 1fr);
+      border: 2px solid var(--line);
+      border-top: 0;
+      background: #fff;
+    }
+
+    .lane-head {
+      border-right: 2px solid var(--line);
+      background: #f1f5f9;
+    }
+
+    .lane-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      text-align: center;
+      font-weight: 800;
+      color: #263241;
+    }
+
+    .lane-title + .lane-title {
+      border-top: 2px dashed var(--grid);
+    }
+
+    .lane-user { height: 170px; }
+    .lane-browser { height: 405px; }
+    .lane-llm { height: 185px; }
+
+    .canvas-wrap {
+      overflow-x: auto;
+      background: var(--lane);
+    }
+
+    svg {
+      display: block;
+      width: 5400px;
+      height: 760px;
+      background: #fbfdff;
+    }
+
+    .lane-boundary {
+      stroke: var(--grid);
+      stroke-width: 2;
+      stroke-dasharray: 10 9;
+    }
+
+    .shape {
+      fill: var(--process);
+      stroke: var(--line);
+      stroke-width: 2;
+    }
+
+    .user-step { fill: var(--soft-blue); }
+    .browser-step { fill: var(--soft-green); }
+    .llm-step { fill: var(--soft-amber); }
+    .stop-step { fill: var(--soft-red); }
+
+    .gate-path,
+    .diamond {
+      fill: #fff;
+      stroke: #111827;
+      stroke-width: 2.4;
+    }
+
+    .arrow {
+      fill: none;
+      stroke: var(--line);
+      stroke-width: 2.2;
+      marker-end: url(#arrowhead);
+    }
+
+    .return-arrow {
+      fill: none;
+      stroke: #5b6673;
+      stroke-width: 2.1;
+      stroke-dasharray: 8 7;
+      marker-end: url(#arrowhead-muted);
+    }
+
+    .label {
+      font-size: 18px;
+      font-weight: 700;
+      fill: var(--ink);
+    }
+
+    .small {
+      font-size: 15px;
+      fill: var(--muted);
+      font-weight: 600;
+    }
+
+    .tiny {
+      font-size: 13px;
+      fill: var(--muted);
+      font-weight: 600;
+    }
+
+    .gate-label {
+      font-size: 17px;
+      font-weight: 900;
+      fill: #111827;
+    }
+
+    .edge-label {
+      font-size: 15px;
+      font-weight: 800;
+      fill: #334155;
+    }
+
+    .evidence {
+      margin-top: 22px;
+      border: 2px solid var(--line);
+      background: #fff;
+      padding: 18px;
+    }
+
+    .evidence h2 {
+      margin: 0 0 12px;
+      font-size: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      border: 1px solid #aeb8c4;
+      padding: 10px 12px;
+      vertical-align: top;
+    }
+
+    th {
+      background: #eef3f8;
+      font-weight: 800;
+      text-align: left;
+    }
+
+    .footnote {
+      margin: 14px 0 0;
+      padding: 12px 14px;
+      border-left: 4px solid var(--accent);
+      background: #f7fbff;
+      color: #243244;
+      font-size: 14px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="header-box">프로세스번호: P03 · 프로세스명: 소크라틱 검증 세션</section>
+
+    <section class="flow-table" aria-label="P03 서비스 플로우 스윔레인">
+      <div class="lane-head" aria-hidden="true">
+        <div class="lane-title lane-user">사용자<br>(팀원, 답변 입력)</div>
+        <div class="lane-title lane-browser">브라우저 클라이언트<br>(JS + Pyodide 분류기)</div>
+        <div class="lane-title lane-llm">NVIDIA LLM<br>(프록시 경유)</div>
+      </div>
+
+      <div class="canvas-wrap">
+        <svg viewBox="0 0 5400 760" role="img" aria-labelledby="diagram-title diagram-desc">
+          <title id="diagram-title">P03 소크라틱 검증 세션 파이프라인</title>
+          <desc id="diagram-desc">사용자, 브라우저 클라이언트, NVIDIA LLM 3개 가로 스윔레인의 서비스 플로우 다이어그램</desc>
+
+          <defs>
+            <marker id="arrowhead" markerWidth="12" markerHeight="8" refX="11" refY="4" orient="auto">
+              <path d="M0,0 L12,4 L0,8 Z" fill="#2f3b4a"></path>
+            </marker>
+            <marker id="arrowhead-muted" markerWidth="12" markerHeight="8" refX="11" refY="4" orient="auto">
+              <path d="M0,0 L12,4 L0,8 Z" fill="#5b6673"></path>
+            </marker>
+          </defs>
+
+          <line class="lane-boundary" x1="0" y1="170" x2="5400" y2="170"></line>
+          <line class="lane-boundary" x1="0" y1="575" x2="5400" y2="575"></line>
+
+          <circle class="shape user-step" cx="54" cy="82" r="24"></circle>
+          <text class="label" x="54" y="88" text-anchor="middle">시작</text>
+
+          <g transform="translate(130 47)">
+            <rect class="shape user-step" width="170" height="70" rx="6"></rect>
+            <text class="label" x="85" y="30" text-anchor="middle">0.1</text>
+            <text class="small" x="85" y="52" text-anchor="middle">P02 finding 선택</text>
+          </g>
+
+          <g transform="translate(1395 47)">
+            <rect class="shape user-step" width="190" height="70" rx="6"></rect>
+            <text class="label" x="95" y="29" text-anchor="middle">2.3</text>
+            <text class="small" x="95" y="51" text-anchor="middle">검증 세션 시작 클릭</text>
+          </g>
+
+          <g transform="translate(2655 47)">
+            <rect class="shape user-step" width="190" height="70" rx="6"></rect>
+            <text class="label" x="95" y="29" text-anchor="middle">3.3</text>
+            <text class="small" x="95" y="51" text-anchor="middle">질문 확인</text>
+          </g>
+
+          <g transform="translate(2915 47)">
+            <rect class="shape user-step" width="190" height="70" rx="6"></rect>
+            <text class="label" x="95" y="29" text-anchor="middle">3.4</text>
+            <text class="small" x="95" y="51" text-anchor="middle">답변 입력/제출</text>
+          </g>
+
+          <circle class="shape user-step" cx="5260" cy="82" r="26"></circle>
+          <text class="label" x="5260" y="88" text-anchor="middle">종료</text>
+
+          <g transform="translate(250 230)">
+            <rect class="shape browser-step" width="210" height="90" rx="6"></rect>
+            <text class="label" x="105" y="30" text-anchor="middle">0.2</text>
+            <text class="small" x="105" y="54" text-anchor="middle">P02 결과 finding</text>
+            <text class="small" x="105" y="74" text-anchor="middle">+ files 확보</text>
+          </g>
+
+          <g class="logic-gate or-gate" transform="translate(555 244)">
+            <path class="gate-path" d="M8,0 C28,12 35,30 8,60 C36,55 61,45 78,30 C61,15 36,5 8,0 Z"></path>
+            <text class="gate-label" x="46" y="36" text-anchor="middle">OR</text>
+          </g>
+          <text class="small" x="594" y="226" text-anchor="middle">1.1 finding-code 연결 가능?</text>
+          <text class="tiny" x="594" y="323" text-anchor="middle">direct basename OR text mentions basename</text>
+
+          <g transform="translate(515 390)">
+            <rect class="shape stop-step" width="200" height="70" rx="6"></rect>
+            <text class="label" x="100" y="29" text-anchor="middle">1.2</text>
+            <text class="small" x="100" y="51" text-anchor="middle">인터뷰 연결 불가 표시</text>
+          </g>
+          <circle class="shape stop-step" cx="780" cy="425" r="23"></circle>
+          <text class="small" x="780" y="431" text-anchor="middle">종료</text>
+
+          <g transform="translate(770 230)">
+            <rect class="shape browser-step" width="190" height="90" rx="6"></rect>
+            <text class="label" x="95" y="30" text-anchor="middle">1.3</text>
+            <text class="small" x="95" y="54" text-anchor="middle">codeContexts 생성</text>
+            <text class="tiny" x="95" y="74" text-anchor="middle">최대 3개 파일</text>
+          </g>
+
+          <g transform="translate(1010 230)">
+            <rect class="shape browser-step" width="210" height="90" rx="6"></rect>
+            <text class="label" x="105" y="30" text-anchor="middle">1.4</text>
+            <text class="small" x="105" y="54" text-anchor="middle">finding + codeContexts</text>
+            <text class="tiny" x="105" y="74" text-anchor="middle">sessionStorage 저장</text>
+          </g>
+
+          <g class="logic-gate and-gate" transform="translate(1265 244)">
+            <path class="gate-path" d="M10,0 L44,0 C67,0 82,13 82,30 C82,47 67,60 44,60 L10,60 Z"></path>
+            <text class="gate-label" x="47" y="36" text-anchor="middle">AND</text>
+          </g>
+          <text class="small" x="1306" y="226" text-anchor="middle">2.1 세션 시작 전제조건 충족?</text>
+          <text class="tiny" x="1306" y="323" text-anchor="middle">finding/submission + key + proxy URL</text>
+
+          <g transform="translate(1215 390)">
+            <rect class="shape stop-step" width="210" height="70" rx="6"></rect>
+            <text class="label" x="105" y="29" text-anchor="middle">2.2</text>
+            <text class="small" x="105" y="51" text-anchor="middle">시작 불가(오류/폴백)</text>
+          </g>
+          <circle class="shape stop-step" cx="1490" cy="425" r="23"></circle>
+          <text class="small" x="1490" y="431" text-anchor="middle">종료</text>
+
+          <g transform="translate(1635 230)">
+            <rect class="shape browser-step" width="230" height="90" rx="6"></rect>
+            <text class="label" x="115" y="28" text-anchor="middle">2.4</text>
+            <text class="small" x="115" y="50" text-anchor="middle">manifest 로드, 모델 고정</text>
+            <text class="tiny" x="115" y="70" text-anchor="middle">Pyodide 분류기 로드</text>
+          </g>
+
+          <g transform="translate(1915 230)">
+            <rect class="shape browser-step" width="220" height="90" rx="6"></rect>
+            <text class="label" x="110" y="30" text-anchor="middle">2.5</text>
+            <text class="small" x="110" y="54" text-anchor="middle">codeContexts 결합</text>
+            <text class="tiny" x="110" y="74" text-anchor="middle">code_context cap 적용</text>
+          </g>
+
+          <g transform="translate(2190 230)">
+            <rect class="shape browser-step" width="210" height="90" rx="6"></rect>
+            <text class="label" x="105" y="30" text-anchor="middle">3.1</text>
+            <text class="small" x="105" y="54" text-anchor="middle">턴 선택</text>
+            <text class="tiny" x="105" y="74" text-anchor="middle">L1 → L2 → L3 → Reflection</text>
+          </g>
+
+          <g class="decision traffic-question" transform="translate(2480 275)">
+            <polygon class="diamond" points="70,0 140,55 70,110 0,55"></polygon>
+            <text class="label" x="70" y="45" text-anchor="middle">3.2</text>
+            <text class="small" x="70" y="67" text-anchor="middle">traffic ≥ 30?</text>
+          </g>
+          <text class="tiny" x="2550" y="405" text-anchor="middle">높으면 maxAttempts=5, 아니면 기본값</text>
+
+          <g transform="translate(2670 230)">
+            <rect class="shape browser-step" width="220" height="90" rx="6"></rect>
+            <text class="label" x="110" y="30" text-anchor="middle">3.3</text>
+            <text class="small" x="110" y="54" text-anchor="middle">질문 표시</text>
+            <text class="tiny" x="110" y="74" text-anchor="middle">카운트다운 재개</text>
+          </g>
+
+          <g transform="translate(2950 230)">
+            <rect class="shape browser-step" width="220" height="90" rx="6"></rect>
+            <text class="label" x="110" y="30" text-anchor="middle">3.5</text>
+            <text class="small" x="110" y="54" text-anchor="middle">카운트다운 일시정지</text>
+          </g>
+
+          <g class="decision category-branch" transform="translate(3235 235)">
+            <polygon class="diamond" points="80,0 160,65 80,130 0,65"></polygon>
+            <text class="label" x="80" y="45" text-anchor="middle">4.1</text>
+            <text class="small" x="80" y="67" text-anchor="middle">category =</text>
+            <text class="small" x="80" y="87" text-anchor="middle">cognition-isolation?</text>
+          </g>
+          <text class="tiny" x="3315" y="386" text-anchor="middle">단순 분기</text>
+
+          <g transform="translate(3480 200)">
+            <rect class="shape browser-step" width="230" height="78" rx="6"></rect>
+            <text class="label" x="115" y="28" text-anchor="middle">4.2</text>
+            <text class="small" x="115" y="50" text-anchor="middle">classify_justification</text>
+            <text class="tiny" x="115" y="68" text-anchor="middle">matched_categories 수 계산</text>
+          </g>
+
+          <g class="decision isolation-threshold" transform="translate(3785 200)">
+            <polygon class="diamond" points="72,0 144,55 72,110 0,55"></polygon>
+            <text class="label" x="72" y="42" text-anchor="middle">4.3</text>
+            <text class="small" x="72" y="64" text-anchor="middle">개수 임계값</text>
+          </g>
+          <text class="tiny" x="3857" y="328" text-anchor="middle">0 surface / 1 partial / 2+ defended</text>
+
+          <g class="decision reflection-level" transform="translate(3480 355)">
+            <polygon class="diamond" points="80,0 160,60 80,120 0,60"></polygon>
+            <text class="label" x="80" y="42" text-anchor="middle">4.4</text>
+            <text class="small" x="80" y="65" text-anchor="middle">현재 level =</text>
+            <text class="small" x="80" y="85" text-anchor="middle">reflection?</text>
+          </g>
+
+          <g transform="translate(3715 350)">
+            <rect class="shape browser-step" width="230" height="78" rx="6"></rect>
+            <text class="label" x="115" y="28" text-anchor="middle">4.5</text>
+            <text class="small" x="115" y="50" text-anchor="middle">evaluate_reflection</text>
+            <text class="tiny" x="115" y="68" text-anchor="middle">optional_matches 수 계산</text>
+          </g>
+
+          <g class="decision nonreflection-threshold" transform="translate(4000 350)">
+            <polygon class="diamond" points="72,0 144,55 72,110 0,55"></polygon>
+            <text class="label" x="72" y="42" text-anchor="middle">4.6</text>
+            <text class="small" x="72" y="64" text-anchor="middle">개수 임계값</text>
+          </g>
+          <text class="tiny" x="4072" y="478" text-anchor="middle">0 surface / 1 partial / 2+ defended</text>
+
+          <g transform="translate(3715 487)">
+            <rect class="shape browser-step" width="230" height="78" rx="6"></rect>
+            <text class="label" x="115" y="28" text-anchor="middle">4.7</text>
+            <text class="small" x="115" y="50" text-anchor="middle">evaluate_reflection</text>
+            <text class="tiny" x="115" y="68" text-anchor="middle">required_ok + optional 계산</text>
+          </g>
+
+          <g class="logic-gate and-gate" transform="translate(4030 496)">
+            <path class="gate-path" d="M10,0 L44,0 C67,0 82,13 82,30 C82,47 67,60 44,60 L10,60 Z"></path>
+            <text class="gate-label" x="47" y="36" text-anchor="middle">AND</text>
+          </g>
+          <text class="small" x="4071" y="485" text-anchor="middle">4.8 Reflection defended 조건?</text>
+          <text class="tiny" x="4071" y="570" text-anchor="middle">required_ok AND optional_matches ≥ min_optional_required</text>
+
+          <g transform="translate(4255 235)">
+            <rect class="shape browser-step" width="190" height="70" rx="6"></rect>
+            <text class="label" x="95" y="29" text-anchor="middle">5.1</text>
+            <text class="small" x="95" y="51" text-anchor="middle">verdict = defended</text>
+          </g>
+
+          <g transform="translate(4255 395)">
+            <rect class="shape browser-step" width="190" height="70" rx="6"></rect>
+            <text class="label" x="95" y="29" text-anchor="middle">5.2</text>
+            <text class="small" x="95" y="51" text-anchor="middle">surface/partial 기록</text>
+          </g>
+          <text class="tiny" x="4350" y="486" text-anchor="middle">다음 턴 준비</text>
+
+          <g class="logic-gate or-gate" transform="translate(4530 360)">
+            <path class="gate-path" d="M8,0 C28,12 35,30 8,60 C36,55 61,45 78,30 C61,15 36,5 8,0 Z"></path>
+            <text class="gate-label" x="46" y="36" text-anchor="middle">OR</text>
+          </g>
+          <text class="small" x="4569" y="342" text-anchor="middle">5.3 루프 종료 조건?</text>
+          <text class="tiny" x="4569" y="439" text-anchor="middle">defended OR 4턴 모두 소진</text>
+
+          <g transform="translate(4685 462)">
+            <rect class="shape browser-step" width="210" height="70" rx="6"></rect>
+            <text class="label" x="105" y="29" text-anchor="middle">5.4</text>
+            <text class="small" x="105" y="51" text-anchor="middle">verdict=exhausted_at_cap</text>
+          </g>
+
+          <g class="decision grade-traffic" transform="translate(4730 230)">
+            <polygon class="diamond" points="72,0 144,55 72,110 0,55"></polygon>
+            <text class="label" x="72" y="42" text-anchor="middle">6.1</text>
+            <text class="small" x="72" y="64" text-anchor="middle">traffic ≥ 30?</text>
+          </g>
+          <text class="tiny" x="4802" y="357" text-anchor="middle">채점 전 임계값 분기</text>
+
+          <g transform="translate(5050 230)">
+            <rect class="shape browser-step" width="235" height="90" rx="6"></rect>
+            <text class="label" x="117" y="30" text-anchor="middle">6.3</text>
+            <text class="small" x="117" y="54" text-anchor="middle">결과 구성/저장</text>
+            <text class="tiny" x="117" y="74" text-anchor="middle">finding, verdict, turns, transcript, grades</text>
+          </g>
+
+          <g transform="translate(2485 620)">
+            <rect class="shape llm-step" width="250" height="70" rx="6"></rect>
+            <text class="label" x="125" y="29" text-anchor="middle">3.2</text>
+            <text class="small" x="125" y="51" text-anchor="middle">ask_question 질문 생성</text>
+          </g>
+
+          <g transform="translate(4900 620)">
+            <rect class="shape llm-step" width="260" height="70" rx="6"></rect>
+            <text class="label" x="130" y="29" text-anchor="middle">6.2</text>
+            <text class="small" x="130" y="51" text-anchor="middle">grade_interview_answer 5축 채점</text>
+          </g>
+
+          <line class="arrow" x1="78" y1="82" x2="130" y2="82"></line>
+          <path class="arrow" d="M300,82 L355,82 L355,230"></path>
+          <line class="arrow" x1="460" y1="275" x2="555" y2="275"></line>
+          <line class="arrow" x1="633" y1="275" x2="770" y2="275"></line>
+          <text class="edge-label" x="695" y="262">YES</text>
+          <path class="arrow" d="M594,304 L594,390"></path>
+          <text class="edge-label" x="608" y="354">NO</text>
+          <line class="arrow" x1="715" y1="425" x2="757" y2="425"></line>
+          <line class="arrow" x1="960" y1="275" x2="1010" y2="275"></line>
+          <line class="arrow" x1="1220" y1="275" x2="1265" y2="275"></line>
+          <path class="arrow" d="M1347,275 L1372,275 L1372,425 L1215,425"></path>
+          <text class="edge-label" x="1382" y="352">NO</text>
+          <line class="arrow" x1="1425" y1="425" x2="1467" y2="425"></line>
+          <path class="arrow" d="M1347,275 L1490,275 L1490,117"></path>
+          <text class="edge-label" x="1410" y="262">YES</text>
+          <path class="arrow" d="M1585,82 L1750,82 L1750,230"></path>
+          <line class="arrow" x1="1865" y1="275" x2="1915" y2="275"></line>
+          <line class="arrow" x1="2135" y1="275" x2="2190" y2="275"></line>
+          <line class="arrow" x1="2400" y1="275" x2="2480" y2="330"></line>
+          <path class="arrow" d="M2550,385 L2550,620"></path>
+          <path class="arrow" d="M2735,655 L2780,655 L2780,320"></path>
+          <path class="arrow" d="M2780,230 L2780,117"></path>
+          <path class="arrow" d="M2845,82 L2915,82"></path>
+          <path class="arrow" d="M3105,82 L3060,82 L3060,230"></path>
+          <line class="arrow" x1="3170" y1="275" x2="3235" y2="300"></line>
+          <path class="arrow" d="M3395,300 L3480,239"></path>
+          <text class="edge-label" x="3420" y="260">YES</text>
+          <line class="arrow" x1="3710" y1="239" x2="3785" y2="255"></line>
+          <path class="arrow" d="M3929,255 L4255,270"></path>
+          <text class="edge-label" x="3988" y="246">defended</text>
+          <path class="arrow" d="M3929,255 L4160,395 L4255,430"></path>
+          <text class="edge-label" x="4075" y="360">surface/partial</text>
+          <path class="arrow" d="M3315,365 L3315,415 L3480,415"></path>
+          <text class="edge-label" x="3330" y="398">NO</text>
+          <path class="arrow" d="M3640,415 L3715,389"></path>
+          <text class="edge-label" x="3664" y="386">NO</text>
+          <line class="arrow" x1="3945" y1="389" x2="4000" y2="405"></line>
+          <path class="arrow" d="M4144,405 L4255,430"></path>
+          <path class="arrow" d="M4144,405 L4255,270"></path>
+          <path class="arrow" d="M3560,475 L3560,526 L3715,526"></path>
+          <text class="edge-label" x="3580" y="507">YES</text>
+          <line class="arrow" x1="3945" y1="526" x2="4030" y2="526"></line>
+          <path class="arrow" d="M4112,526 L4220,526 L4220,430 L4255,430"></path>
+          <text class="edge-label" x="4150" y="515">NO</text>
+          <path class="arrow" d="M4112,526 L4190,526 L4190,270 L4255,270"></path>
+          <text class="edge-label" x="4148" y="386">YES</text>
+          <path class="arrow" d="M4445,270 L4569,270 L4569,360"></path>
+          <path class="arrow" d="M4445,430 L4530,390"></path>
+          <line class="arrow" x1="4608" y1="390" x2="4730" y2="285"></line>
+          <text class="edge-label" x="4640" y="326">YES defended</text>
+          <path class="arrow" d="M4608,390 L4685,497"></path>
+          <text class="edge-label" x="4622" y="464">YES 4턴 소진</text>
+          <path class="arrow" d="M4895,497 L4935,497 L4935,285 L4874,285"></path>
+          <path class="return-arrow" d="M4530,390 L4530,548 L2295,548 L2295,320"></path>
+          <text class="edge-label" x="3500" y="538">NO: 다음 턴 있음</text>
+          <path class="arrow" d="M4874,285 L5030,285 L5030,620"></path>
+          <path class="arrow" d="M5160,655 L5170,655 L5170,320"></path>
+          <line class="arrow" x1="5170" y1="275" x2="5050" y2="275"></line>
+          <path class="arrow" d="M5285,275 L5320,275 L5320,82 L5286,82"></path>
+        </svg>
+      </div>
+    </section>
+
+    <section class="evidence" aria-label="AND OR 게이트 설명표">
+      <h2>AND/OR 게이트 설명표</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 24%;">게이트 위치</th>
+            <th>조건</th>
+            <th style="width: 9%;">구분</th>
+            <th style="width: 31%;">근거</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1.1 finding-code 연결 가능</td>
+            <td>finding.file basename 직접 매치 또는 finding 설명 텍스트에 로드된 파일 basename 언급</td>
+            <td>OR</td>
+            <td>docs/lab/p02-engine.js:120-146 (findFileByBasename, findReferencedFiles, resolveConnectableFile)</td>
+          </tr>
+          <tr>
+            <td>2.1 세션 시작 전제조건</td>
+            <td>finding/submission 존재, NVIDIA key 존재, proxy URL 존재</td>
+            <td>AND</td>
+            <td>docs/lab/trainee/session.html:209-218, docs/lab/p03-engine.js:281-290</td>
+          </tr>
+          <tr>
+            <td>4.8 Reflection defended 조건</td>
+            <td>required_ok 참, optional_matches &gt;= min_optional_required</td>
+            <td>AND</td>
+            <td>feedback/reflection_signal.py:46-48, feedback/turn_engine.py:100-107, docs/lab/p03-engine.js:151-159</td>
+          </tr>
+          <tr>
+            <td>5.3 루프 종료 조건</td>
+            <td>verdict === "defended" 또는 L1/L2/L3/Reflection 최대 턴 소진</td>
+            <td>OR</td>
+            <td>feedback/turn_engine.py:233-253, docs/lab/p03-engine.js:312-334</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="footnote">resolveConnectableFile은 p03-engine.js가 아니라 p02-engine.js에 있다. Reflection AND 판정은 비-cognition-isolation 카테고리이면서 level=='reflection'인 경로에만 적용된다. cognition-isolation과 비-cognition L1~L3은 matched_categories/optional_matches 개수 임계값 분기이지 AND/OR 게이트가 아니다.</p>
+    </section>
+  </main>
+</body>
+</html>

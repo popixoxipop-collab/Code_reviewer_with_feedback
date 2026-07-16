@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "P01 교안/커리큘럼 분석 서비스 플로우",
+    "subtitle": "사용자 → 브라우저 클라이언트(JS 엔진) → NVIDIA LLM, 3중 재시도 루프",
+    "output": "p01_flow_diagram.html"
+  },
+  "lanes": [
+    { "id": "user", "label": "사용자" },
+    { "id": "client", "label": "브라우저 클라이언트 (JS 엔진)" },
+    { "id": "exceptions", "label": "예외 처리", "variant": "exception" },
+    { "id": "llm", "label": "NVIDIA LLM" }
+  ],
+  "phases": [
+    { "id": "intake", "label": "입력·전제", "fromCol": 0, "toCol": 0 },
+    { "id": "chunk", "label": "청크 분석", "fromCol": 1, "toCol": 1, "variant": "emphasis" },
+    { "id": "refine", "label": "refine 검수", "fromCol": 3, "toCol": 3, "variant": "emphasis" },
+    { "id": "question", "label": "질문 생성·결과", "fromCol": 5, "toCol": 5 }
+  ],
+  "mainPath": ["u-upload", "gate-precond", "gate-chunk", "gate-refine", "gate-question", "u-result"],
+  "nodes": [
+    { "id": "u-upload", "lane": "user", "col": 0, "type": "frontend", "label": "PDF 업로드", "sublabel": "key/proxy 설정" },
+    { "id": "u-result", "lane": "user", "col": 5, "type": "frontend", "label": "결과 확인", "sublabel": "질문/그래프" },
+
+    { "id": "gate-precond", "lane": "client", "col": 0, "type": "security", "label": "실행 전제", "sublabel": "AND", "tag": "PDF∧key∧proxy" },
+    { "id": "gate-chunk", "lane": "client", "col": 1, "type": "security", "label": "청크 분석", "sublabel": "AND 루프", "tag": "선택∧재시도∧fan-in" },
+    { "id": "gate-refine", "lane": "client", "col": 3, "type": "security", "label": "refine 검수", "sublabel": "OR 종료", "tag": "자동수정∧수용 내재" },
+    { "id": "gate-question", "lane": "client", "col": 5, "type": "security", "label": "질문 생성", "sublabel": "AND 루프", "tag": "선택∧재시도∧fan-in" },
+
+    { "id": "error-precond", "lane": "exceptions", "col": 0, "type": "external", "label": "오류 표시", "sublabel": "NO: 종료" },
+
+    { "id": "llm-analyse", "lane": "llm", "col": 1, "type": "cloud", "label": "analyse_chunk", "sublabel": "청크 분석" },
+    { "id": "llm-refine", "lane": "llm", "col": 3, "type": "cloud", "label": "refine 감사", "sublabel": "수정 응답" },
+    { "id": "llm-questions", "lane": "llm", "col": 5, "type": "cloud", "label": "generate_qs", "sublabel": "질문 생성" }
+  ],
+  "edges": [
+    { "from": "u-upload", "to": "gate-precond", "fromSide": "bottom", "toSide": "top", "route": "drop" },
+    { "from": "gate-precond", "to": "gate-chunk", "label": "YES", "variant": "emphasis" },
+    { "from": "gate-precond", "to": "error-precond", "label": "NO", "variant": "security", "role": "error", "fromSide": "bottom", "toSide": "top", "route": "drop", "labelDy": 22 },
+
+    { "from": "gate-chunk", "to": "llm-analyse", "variant": "emphasis", "fromSide": "bottom", "toSide": "top", "route": "drop" },
+    { "from": "llm-analyse", "to": "gate-chunk", "label": "결과·재시도", "role": "return", "variant": "dashed", "fromSide": "left", "toSide": "left", "route": "return-left", "labelDy": -20 },
+    { "from": "gate-chunk", "to": "gate-refine", "label": "완료", "variant": "emphasis" },
+
+    { "from": "gate-refine", "to": "llm-refine", "variant": "emphasis", "fromSide": "bottom", "toSide": "top", "route": "drop" },
+    { "from": "llm-refine", "to": "gate-refine", "label": "감사·수정", "role": "return", "variant": "dashed", "fromSide": "left", "toSide": "left", "route": "return-left" },
+    { "from": "gate-refine", "to": "gate-question", "label": "종료", "variant": "emphasis" },
+
+    { "from": "gate-question", "to": "llm-questions", "variant": "emphasis", "fromSide": "bottom", "toSide": "top", "route": "drop" },
+    { "from": "llm-questions", "to": "gate-question", "label": "결과·재시도", "role": "return", "variant": "dashed", "fromSide": "left", "toSide": "left", "route": "return-left" },
+    { "from": "gate-question", "to": "u-result", "label": "완료", "variant": "emphasis" }
+  ],
+  "cards": [
+    {
+      "dot": "violet",
+      "title": "AND/OR 게이트 근거 (파일:라인) — 4개 노드로 시각화, 원본 평가표는 10행",
+      "items": [
+        "실행 전제(AND): PDF∧key∧proxy — p01-runner.js:457-463",
+        "청크 분석 루프(AND, 4행 병합): 호출대상 AND/OR(492-495,519-522) · 다음라운드 AND(526-530) · fan-in AND(507-543) · 실패청크제외는 fan-in 완료 후 makeUnitMap",
+        "refine 검수 루프(OR 종료 + 내재 AND 2건): 종료판정 OR(594-645) · 자동수정호출 AND(616-628) · 수정안수용 AND(261-285,629-638)",
+        "질문 생성 루프(AND, 4행 병합): 호출대상 AND/OR(678-681,693-696) · 다음라운드 AND(700-704) · fan-in AND(683-711)",
+        "모든 라인번호는 docs/lab/p01-runner.js 기준(refine 종료 판정은 Python 원본 scripts/java_curriculum_nvidia_pipeline.py:800-825와 동일 로직)"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "원본(Codex 손제작, docs/lab/flow-diagrams/p01_flow_diagram.html) 대비 편집 요약",
+      "items": [
+        "archify workflow 레인은 컬럼당 1노드·인접 컬럼(1↔2, 3↔4) 동시사용 불가 — 17단계+10게이트를 4개 루프-게이트 노드로 압축",
+        "PDF파싱·청크분할·wave호출·상태기록·실패청크제외·buildGraph·질문취합은 게이트 노드 tag 또는 엣지 라벨로 흡수",
+        "AND/OR 논리게이트 SVG 도형은 archify 미지원(고정 사각형 7종만) — 렌더링 후 수작업으로 4곳에 주입"
+      ]
+    }
+  ]
+}

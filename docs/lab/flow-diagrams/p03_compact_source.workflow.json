@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "P03 소크라틱 검증 세션 파이프라인",
+    "subtitle": "사용자 / 브라우저 클라이언트 / NVIDIA LLM 3개 가로 스윔레인",
+    "output": "p03_base.html"
+  },
+  "lanes": [
+    { "id": "user", "label": "사용자" },
+    { "id": "browser", "label": "브라우저 클라이언트" },
+    { "id": "llm", "label": "NVIDIA LLM" },
+    { "id": "exceptions", "label": "예외/종료 경로", "variant": "exception" }
+  ],
+  "phases": [
+    { "id": "connect", "label": "연결 확인", "fromCol": 0, "toCol": 1 },
+    { "id": "start", "label": "세션 시작", "fromCol": 2, "toCol": 3 },
+    { "id": "interview", "label": "질문·답변", "fromCol": 4, "toCol": 4 },
+    { "id": "verdict", "label": "판정·채점", "fromCol": 5, "toCol": 5, "variant": "emphasis" }
+  ],
+  "groups": [
+    { "id": "turn_loop", "label": "반복 턴 루프 (L1→Reflection)", "lane": "browser", "fromCol": 4, "toCol": 5, "variant": "emphasis" }
+  ],
+  "mainPath": ["pick_finding", "fetch_finding", "gate_or_connect", "start_click", "gate_and_session", "session_ready", "ask_question", "submit_answer", "gate_and_reflection", "gate_or_loopexit", "grade_and_save", "end"],
+  "nodes": [
+    { "id": "pick_finding", "lane": "user", "col": 0, "type": "frontend", "width": 88, "label": "finding 선택", "sublabel": "0.1" },
+    { "id": "fetch_finding", "lane": "browser", "col": 0, "type": "backend", "width": 88, "label": "finding 확보", "sublabel": "0.2" },
+
+    { "id": "gate_or_connect", "lane": "browser", "col": 1, "type": "security", "width": 64, "label": "연결 OR", "sublabel": "1.1 basename 매치" },
+    { "id": "connect_fail", "lane": "exceptions", "col": 1, "type": "security", "width": 64, "label": "연결 불가", "sublabel": "1.2 종료" },
+
+    { "id": "start_click", "lane": "user", "col": 2, "type": "frontend", "width": 90, "label": "시작 클릭", "sublabel": "2.3" },
+    { "id": "gate_and_session", "lane": "browser", "col": 2, "type": "security", "width": 64, "label": "시작 AND", "sublabel": "2.1 key+URL" },
+    { "id": "session_fail", "lane": "exceptions", "col": 2, "type": "security", "width": 72, "label": "시작 불가", "sublabel": "2.2 오류/폴백" },
+
+    { "id": "session_ready", "lane": "browser", "col": 3, "type": "backend", "width": 100, "label": "준비완료", "sublabel": "2.4-3.1" },
+
+    { "id": "ask_question", "lane": "llm", "col": 4, "type": "cloud", "width": 100, "label": "질문 생성", "sublabel": "3.2 ask_question" },
+    { "id": "submit_answer", "lane": "user", "col": 4, "type": "frontend", "width": 100, "label": "답변 제출", "sublabel": "3.3-3.4" },
+
+    { "id": "gate_and_reflection", "lane": "browser", "col": 5, "type": "security", "width": 64, "height": 32, "yOffset": -21, "label": "반영 AND", "sublabel": "4.8" },
+    { "id": "gate_or_loopexit", "lane": "browser", "col": 5, "type": "security", "width": 64, "height": 32, "yOffset": 21, "label": "종료 OR", "sublabel": "5.3" },
+    { "id": "loop_exhausted", "lane": "exceptions", "col": 5, "type": "security", "width": 88, "label": "4턴 소진", "sublabel": "5.4" },
+    { "id": "grade_and_save", "lane": "llm", "col": 5, "type": "cloud", "width": 88, "label": "채점+저장", "sublabel": "6.1-6.3" },
+    { "id": "end", "lane": "user", "col": 5, "type": "frontend", "width": 72, "label": "종료" }
+  ],
+  "edges": [
+    { "from": "pick_finding", "to": "fetch_finding", "variant": "default", "fromSide": "bottom", "toSide": "top", "route": "drop" },
+    { "from": "fetch_finding", "to": "gate_or_connect", "variant": "default" },
+    { "from": "gate_or_connect", "to": "connect_fail", "variant": "security", "role": "error", "fromSide": "bottom", "toSide": "top", "route": "drop" },
+    { "from": "gate_or_connect", "to": "start_click", "variant": "emphasis", "fromSide": "top", "toSide": "bottom", "route": "drop" },
+    { "from": "start_click", "to": "gate_and_session", "variant": "default", "fromSide": "bottom", "toSide": "top", "route": "drop" },
+    { "from": "gate_and_session", "to": "session_fail", "variant": "security", "role": "error", "fromSide": "bottom", "toSide": "top", "route": "drop" },
+    { "from": "gate_and_session", "to": "session_ready", "variant": "emphasis" },
+    { "from": "session_ready", "to": "ask_question", "variant": "default", "fromSide": "bottom", "toSide": "top", "route": "drop" },
+    { "from": "ask_question", "to": "submit_answer", "variant": "default", "fromSide": "top", "toSide": "bottom", "route": "drop" },
+    { "from": "submit_answer", "to": "gate_and_reflection", "variant": "emphasis", "fromSide": "bottom", "toSide": "top", "route": "drop" },
+    { "from": "gate_and_reflection", "to": "gate_or_loopexit", "variant": "default", "route": "up-channel" },
+    { "from": "gate_or_loopexit", "to": "loop_exhausted", "variant": "security", "role": "error", "fromSide": "right", "toSide": "right", "route": "outside-right" },
+    { "from": "gate_or_loopexit", "to": "grade_and_save", "variant": "emphasis", "fromSide": "bottom", "toSide": "top", "route": "drop" },
+    { "from": "gate_or_loopexit", "to": "session_ready", "label": "다음 턴", "variant": "dashed", "role": "return", "fromSide": "left", "toSide": "left", "route": "return-left" },
+    { "from": "loop_exhausted", "to": "grade_and_save", "variant": "dashed", "route": "outside-right" },
+    { "from": "grade_and_save", "to": "end", "variant": "default", "fromSide": "right", "toSide": "right", "route": "outside-right" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "AND/OR 게이트 근거 (파일:라인)",
+      "items": [
+        "1.1 연결가능 OR — basename 직접매치 OR 텍스트 언급 (docs/lab/p02-engine.js:120-146)",
+        "2.1 세션시작 AND — finding/submission AND key AND proxy URL (docs/lab/trainee/session.html:209-218, docs/lab/p03-engine.js:281-290)",
+        "4.8 Reflection AND — required_ok AND optional_matches≥min (feedback/reflection_signal.py:46-48, feedback/turn_engine.py:100-107, docs/lab/p03-engine.js:151-159)",
+        "5.3 루프종료 OR — verdict===defended OR 4턴 모두 소진 (feedback/turn_engine.py:233-253, docs/lab/p03-engine.js:312-334)"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "이 다이어그램에서 압축한 부분",
+      "items": [
+        "1.3/1.4(codeContexts 생성+sessionStorage 저장)는 '연결 OR'게이트→'시작 클릭' 엣지 설명으로 접음",
+        "4.1-4.7(카테고리 분기/개수임계값 판정 체인)은 순수 임계값 비교이며 AND/OR 게이트가 아니므로 '답변제출→반영 AND게이트' 엣지 설명으로 접음",
+        "5.1/5.2(verdict 기록)는 AND게이트→OR게이트 엣지로 표현",
+        "6.1(채점전 traffic 임계값)은 6.2/6.3과 함께 '채점+저장' 노드로 병합",
+        "전체 단계별 세부 근거는 docs/lab/flow-diagrams/p03_flow_diagram.html(Codex 손제작본)에 원본 그대로 보존됨"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "게이트 도형 표기",
+      "items": [
+        "AND/OR 노드는 archify 렌더 이후 표준 디지털 로직게이트 SVG(AND=D자형, OR=방패형)로 수작업 치환됨 — archify workflow 렌더러 자체는 사각형 7종만 지원",
+        "단순 임계값/카운트 비교(traffic≥30, 개수 0/1/2+)는 게이트가 아니므로 archify 기본 사각형 노드 그대로 유지"
+      ]
+    }
+  ]
+}

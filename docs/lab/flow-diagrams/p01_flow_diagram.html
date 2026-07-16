@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>P01 교안/커리큘럼 분석 서비스 플로우</title>
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #5f6b7a;
+      --line: #7a8699;
+      --grid: #d8dde6;
+      --paper: #ffffff;
+      --page: #f4f6f9;
+      --blue: #1f5eff;
+      --blue-soft: #eaf0ff;
+      --green: #0f8a63;
+      --green-soft: #e8f6f1;
+      --orange: #b56200;
+      --orange-soft: #fff2df;
+      --red: #b42318;
+      --red-soft: #fff0ee;
+      --violet: #6548c8;
+      --violet-soft: #f0edff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+      font-family: Arial, "Noto Sans KR", sans-serif;
+      line-height: 1.45;
+    }
+
+    .document {
+      max-width: 2760px;
+      margin: 24px auto;
+      padding: 0 18px 40px;
+    }
+
+    .header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: center;
+      background: var(--paper);
+      border: 2px solid #1b2a4a;
+      border-top: 8px solid #1f5eff;
+      padding: 18px 22px;
+      box-shadow: 0 8px 22px rgba(23, 32, 51, 0.08);
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: 0;
+    }
+
+    .header .meta {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .badge {
+      border: 1px solid #b9c3d4;
+      background: #f8faff;
+      padding: 10px 14px;
+      font-weight: 700;
+      font-size: 13px;
+      color: #1b2a4a;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .section-title {
+      margin: 26px 0 10px;
+      font-size: 17px;
+      font-weight: 800;
+      color: #1b2a4a;
+    }
+
+    .canvas {
+      background: var(--paper);
+      border: 1px solid #c7cfdd;
+      overflow-x: auto;
+      box-shadow: 0 8px 22px rgba(23, 32, 51, 0.06);
+    }
+
+    svg {
+      display: block;
+      min-width: 2700px;
+      width: 2700px;
+      height: 980px;
+    }
+
+    .lane-label-bg { fill: #f0f4fb; }
+    .lane-user { fill: #f9fbff; }
+    .lane-client { fill: #ffffff; }
+    .lane-llm { fill: #f8fbfa; }
+    .lane-line { stroke: #98a2b3; stroke-width: 1.5; stroke-dasharray: 8 6; }
+    .lane-label {
+      font-size: 15px;
+      font-weight: 800;
+      fill: #1b2a4a;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+    }
+
+    .node {
+      fill: #ffffff;
+      stroke: #1b2a4a;
+      stroke-width: 1.6;
+    }
+
+    .process { fill: var(--blue-soft); stroke: var(--blue); }
+    .process-green { fill: var(--green-soft); stroke: var(--green); }
+    .process-orange { fill: var(--orange-soft); stroke: var(--orange); }
+    .process-violet { fill: var(--violet-soft); stroke: var(--violet); }
+    .process-red { fill: var(--red-soft); stroke: var(--red); }
+    .terminal { fill: #ffffff; stroke: #1b2a4a; stroke-width: 2; }
+    .diamond { fill: #fff8e8; stroke: #b56200; stroke-width: 1.7; }
+    .gate-and { fill: #eef7ff; stroke: #175cd3; stroke-width: 2; }
+    .gate-or { fill: #f4efff; stroke: #6548c8; stroke-width: 2; }
+    .note { fill: #ffffff; stroke: #667085; stroke-width: 1.4; stroke-dasharray: 6 5; }
+    .error { fill: var(--red-soft); stroke: var(--red); }
+
+    .text {
+      font-size: 13px;
+      fill: var(--ink);
+    }
+
+    .small {
+      font-size: 11px;
+      fill: var(--muted);
+    }
+
+    .tiny {
+      font-size: 10px;
+      fill: var(--muted);
+    }
+
+    .node-title {
+      font-size: 13px;
+      font-weight: 800;
+      fill: var(--ink);
+    }
+
+    .gate-label {
+      font-size: 11px;
+      font-weight: 700;
+      fill: #1b2a4a;
+    }
+
+    .arrow {
+      stroke: #344054;
+      stroke-width: 1.8;
+      fill: none;
+      marker-end: url(#arrow);
+    }
+
+    .arrow-soft {
+      stroke: #667085;
+      stroke-width: 1.4;
+      fill: none;
+      marker-end: url(#arrow-soft);
+    }
+
+    .arrow-dashed {
+      stroke: #667085;
+      stroke-width: 1.5;
+      fill: none;
+      stroke-dasharray: 6 5;
+      marker-end: url(#arrow-soft);
+    }
+
+    .return {
+      stroke: #b56200;
+      stroke-width: 1.8;
+      fill: none;
+      stroke-dasharray: 8 5;
+      marker-end: url(#arrow-warn);
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      align-items: center;
+      background: var(--paper);
+      border: 1px solid #c7cfdd;
+      border-top: 0;
+      padding: 12px 14px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .swatch {
+      width: 18px;
+      height: 12px;
+      border: 1.5px solid #1b2a4a;
+      background: #fff;
+      display: inline-block;
+    }
+
+    .swatch.process { border-color: var(--blue); background: var(--blue-soft); }
+    .swatch.gate { border-color: var(--violet); background: var(--violet-soft); }
+    .swatch.note { border-style: dashed; border-color: #667085; background: #fff; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--paper);
+      border: 1px solid #c7cfdd;
+      box-shadow: 0 8px 22px rgba(23, 32, 51, 0.05);
+    }
+
+    th, td {
+      border: 1px solid #d8dde6;
+      padding: 10px 12px;
+      vertical-align: top;
+      font-size: 13px;
+    }
+
+    th {
+      background: #eef3fb;
+      color: #1b2a4a;
+      text-align: left;
+      font-weight: 800;
+    }
+
+    td:nth-child(3) {
+      font-weight: 800;
+      white-space: nowrap;
+      color: #1b2a4a;
+    }
+
+    code {
+      font-family: Consolas, Monaco, monospace;
+      font-size: 12px;
+    }
+
+    @media print {
+      body { background: #fff; }
+      .document { max-width: none; margin: 0; padding: 0; }
+      .canvas { overflow: visible; box-shadow: none; }
+      svg { width: 2700px; height: 980px; }
+      table { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="document">
+    <header class="header">
+      <div>
+        <h1>프로세스번호: P01 · 프로세스명: 교안/커리큘럼 분석</h1>
+        <div class="meta">AIVLE EDU 기업표준 서비스플로우 문서 · 교안 PDF 분석, 유닛 정규화, 그래프 구성, 질문 생성</div>
+      </div>
+      <div class="badge">SERVICE FLOW<br>P01</div>
+    </header>
+
+    <div class="section-title">서비스 플로우 다이어그램</div>
+    <section class="canvas" aria-label="P01 교안/커리큘럼 분석 서비스 플로우 다이어그램">
+      <svg viewBox="0 0 2700 980" role="img" aria-labelledby="svg-title svg-desc">
+        <title id="svg-title">P01 교안/커리큘럼 분석 서비스 플로우</title>
+        <desc id="svg-desc">사용자, 브라우저 클라이언트, NVIDIA LLM 3개 스윔레인으로 구성된 P01 파이프라인 흐름과 AND OR 게이트 근거 다이어그램</desc>
+
+        <defs>
+          <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L9,3 L0,6 Z" fill="#344054"></path>
+          </marker>
+          <marker id="arrow-soft" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L9,3 L0,6 Z" fill="#667085"></path>
+          </marker>
+          <marker id="arrow-warn" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L9,3 L0,6 Z" fill="#b56200"></path>
+          </marker>
+
+          <g id="and-gate">
+            <path class="gate-and" d="M0 0 L36 0 C66 0 66 58 36 58 L0 58 Z"></path>
+          </g>
+
+          <g id="or-gate">
+            <path class="gate-or" d="M4 0 C24 10 35 20 42 29 C35 38 24 48 4 58 C19 39 19 19 4 0 Z"></path>
+            <path class="gate-or" d="M4 0 C42 0 66 18 78 29 C66 40 42 58 4 58 C19 39 19 19 4 0 Z"></path>
+          </g>
+        </defs>
+
+        <rect x="0" y="0" width="2700" height="980" fill="#ffffff"></rect>
+
+        <rect class="lane-label-bg" x="0" y="0" width="118" height="980"></rect>
+        <rect class="lane-user" x="118" y="0" width="2582" height="205"></rect>
+        <rect class="lane-client" x="118" y="205" width="2582" height="570"></rect>
+        <rect class="lane-llm" x="118" y="775" width="2582" height="205"></rect>
+
+        <line class="lane-line" x1="0" y1="205" x2="2700" y2="205"></line>
+        <line class="lane-line" x1="0" y1="775" x2="2700" y2="775"></line>
+        <line x1="118" y1="0" x2="118" y2="980" stroke="#c7cfdd" stroke-width="1.5"></line>
+
+        <text class="lane-label" x="58" y="68">사용자</text>
+        <text class="lane-label" x="58" y="342">브라우저 클라이언트(JS 엔진)</text>
+        <text class="lane-label" x="58" y="840">NVIDIA LLM</text>
+
+        <!-- 사용자 레인 -->
+        <circle class="terminal" cx="170" cy="103" r="27"></circle>
+        <text class="node-title" x="170" y="108" text-anchor="middle">시작</text>
+
+        <rect class="node process-green" x="225" y="65" width="170" height="76" rx="4"></rect>
+        <text class="node-title" x="310" y="91" text-anchor="middle">1. PDF 업로드</text>
+        <text class="small" x="310" y="112" text-anchor="middle">모델 / NVIDIA key</text>
+        <text class="small" x="310" y="128" text-anchor="middle">프록시 설정</text>
+
+        <rect class="node process-green" x="440" y="65" width="145" height="76" rx="4"></rect>
+        <text class="node-title" x="512" y="98" text-anchor="middle">2. 실행 요청</text>
+        <text class="small" x="512" y="119" text-anchor="middle">분석 시작</text>
+
+        <rect class="node process-green" x="2365" y="65" width="185" height="76" rx="4"></rect>
+        <text class="node-title" x="2458" y="91" text-anchor="middle">17. 결과 확인</text>
+        <text class="small" x="2458" y="112" text-anchor="middle">질문 / 그래프 /</text>
+        <text class="small" x="2458" y="128" text-anchor="middle">실패 청크 표시</text>
+
+        <circle class="terminal" cx="2608" cy="103" r="27"></circle>
+        <text class="node-title" x="2608" y="108" text-anchor="middle">종료</text>
+
+        <path class="arrow" d="M197 103 H225"></path>
+        <path class="arrow" d="M395 103 H440"></path>
+        <path class="arrow" d="M2550 103 H2581"></path>
+
+        <!-- 사용자 -> 브라우저 -->
+        <path class="arrow" d="M512 141 V248"></path>
+
+        <!-- 브라우저 레인: 실행 전제 -->
+        <use href="#and-gate" x="475" y="248"></use>
+        <text class="gate-label" x="508" y="237" text-anchor="middle">실행 전제 AND</text>
+        <text class="tiny" x="508" y="322" text-anchor="middle">PDF 있음 AND key 있음 AND proxy-url 있음</text>
+        <path class="arrow-soft" d="M450 262 H475"></path>
+        <path class="arrow-soft" d="M450 277 H475"></path>
+        <path class="arrow-soft" d="M450 292 H475"></path>
+
+        <rect class="node error" x="505" y="350" width="150" height="58" rx="4"></rect>
+        <text class="node-title" x="580" y="375" text-anchor="middle">NO: 오류 표시</text>
+        <text class="small" x="580" y="393" text-anchor="middle">실행 종료</text>
+        <path class="arrow-dashed" d="M508 306 V350"></path>
+
+        <rect class="node process" x="625" y="248" width="175" height="76" rx="4"></rect>
+        <text class="node-title" x="713" y="274" text-anchor="middle">3. PDF 텍스트 추출</text>
+        <text class="small" x="713" y="295" text-anchor="middle">pdf.js extractPages()</text>
+        <text class="tiny" x="713" y="311" text-anchor="middle">Python 원본: pdfinfo/pdftotext</text>
+
+        <rect class="node process" x="845" y="248" width="160" height="76" rx="4"></rect>
+        <text class="node-title" x="925" y="274" text-anchor="middle">4. 청크 생성</text>
+        <text class="small" x="925" y="295" text-anchor="middle">chunk_size 기준</text>
+        <text class="small" x="925" y="311" text-anchor="middle">buildChunks</text>
+
+        <rect class="node process" x="1050" y="248" width="165" height="76" rx="4"></rect>
+        <text class="node-title" x="1133" y="274" text-anchor="middle">5. chunkState 생성</text>
+        <text class="small" x="1133" y="295" text-anchor="middle">MAX_RETRY_ROUNDS=3</text>
+
+        <path class="arrow" d="M541 277 H625"></path>
+        <path class="arrow" d="M800 286 H845"></path>
+        <path class="arrow" d="M1005 286 H1050"></path>
+
+        <!-- 청크 처리 패턴 -->
+        <rect x="1240" y="220" width="650" height="210" fill="#f8fbff" stroke="#c7cfdd" stroke-width="1.2"></rect>
+        <text class="node-title" x="1260" y="244">청크 분석 재시도 패턴</text>
+        <text class="tiny" x="1420" y="244">질문 생성 구간과 동일한 선택-병렬호출-기록-재시도 구조</text>
+
+        <use href="#or-gate" x="1260" y="270"></use>
+        <text class="gate-label" x="1299" y="262" text-anchor="middle">호출 대상 AND/OR</text>
+        <text class="tiny" x="1299" y="346" text-anchor="middle">!result AND (round==1 OR retryable)</text>
+
+        <rect class="node process-violet" x="1390" y="262" width="170" height="76" rx="4"></rect>
+        <text class="node-title" x="1475" y="287" text-anchor="middle">6. wave 병렬 호출</text>
+        <text class="small" x="1475" y="308" text-anchor="middle">CHUNK_CONCURRENCY</text>
+        <text class="small" x="1475" y="324" text-anchor="middle">Promise.all</text>
+
+        <rect class="node process-violet" x="1600" y="262" width="150" height="76" rx="4"></rect>
+        <text class="node-title" x="1675" y="287" text-anchor="middle">7. 상태 기록</text>
+        <text class="small" x="1675" y="308" text-anchor="middle">result / err /</text>
+        <text class="small" x="1675" y="324" text-anchor="middle">retryable</text>
+
+        <path class="arrow" d="M1215 286 H1260"></path>
+        <path class="arrow" d="M1338 299 H1390"></path>
+        <path class="arrow" d="M1560 300 H1600"></path>
+
+        <use href="#and-gate" x="1788" y="270"></use>
+        <text class="gate-label" x="1821" y="262" text-anchor="middle">다음 라운드 AND</text>
+        <text class="tiny" x="1821" y="346" text-anchor="middle">stillRetryable&gt;0 AND round&lt;3</text>
+        <path class="arrow" d="M1750 300 H1788"></path>
+        <path class="return" d="M1821 270 V228 H1299 V270"></path>
+        <text class="tiny" x="1545" y="224" text-anchor="middle">YES: 60초 대기 후 재시도</text>
+
+        <use href="#and-gate" x="1815" y="365"></use>
+        <text class="gate-label" x="1848" y="455" text-anchor="middle">청크 fan-in AND-join</text>
+        <text class="tiny" x="1848" y="472" text-anchor="middle">wave 모두 settled AND 라운드 종료</text>
+        <path class="arrow-dashed" d="M1821 328 V365"></path>
+
+        <rect class="node process-orange" x="1935" y="350" width="210" height="82" rx="4"></rect>
+        <text class="node-title" x="2040" y="376" text-anchor="middle">8. 실패 청크 제외</text>
+        <text class="small" x="2040" y="397" text-anchor="middle">makeUnitMap + normalizeUnitMap</text>
+        <text class="tiny" x="2040" y="414" text-anchor="middle">모든 청크 성공 요구 없음</text>
+
+        <path class="arrow" d="M1881 394 H1935"></path>
+
+        <!-- LLM calls from chunk -->
+        <path class="arrow-soft" d="M1475 338 V812"></path>
+        <rect class="node process-green" x="1385" y="812" width="180" height="68" rx="4"></rect>
+        <text class="node-title" x="1475" y="840" text-anchor="middle">analyse_chunk</text>
+        <text class="small" x="1475" y="860" text-anchor="middle">호출 응답</text>
+        <path class="arrow-soft" d="M1565 846 H1675 V338"></path>
+
+        <!-- JSON fallback note -->
+        <rect class="note" x="1430" y="640" width="360" height="78" rx="4"></rect>
+        <text class="node-title" x="1610" y="665" text-anchor="middle">JSON 1차 파싱 실패 순차 폴백</text>
+        <text class="small" x="1610" y="687" text-anchor="middle">길이 문제: max_tokens doubling</text>
+        <text class="small" x="1610" y="704" text-anchor="middle">그 외: p01-json-repair 프롬프트 재시도</text>
+
+        <!-- Refine -->
+        <rect class="node process" x="2185" y="350" width="165" height="82" rx="4"></rect>
+        <text class="node-title" x="2268" y="378" text-anchor="middle">9. 쿨다운</text>
+        <text class="small" x="2268" y="399" text-anchor="middle">NVIDIA 부하 완화</text>
+
+        <rect class="node process" x="2385" y="350" width="185" height="82" rx="4"></rect>
+        <text class="node-title" x="2478" y="378" text-anchor="middle">10. refine 반복 시작</text>
+        <text class="small" x="2478" y="399" text-anchor="middle">NVIDIA LLM</text>
+        <text class="small" x="2478" y="416" text-anchor="middle">refine_once 호출</text>
+
+        <rect class="node process" x="2385" y="485" width="185" height="70" rx="4"></rect>
+        <text class="node-title" x="2478" y="514" text-anchor="middle">11. audits 누적</text>
+        <text class="small" x="2478" y="535" text-anchor="middle">감사 결과 축적</text>
+
+        <path class="arrow" d="M2145 391 H2185"></path>
+        <path class="arrow" d="M2350 391 H2385"></path>
+        <path class="arrow" d="M2478 432 V485"></path>
+
+        <path class="arrow-soft" d="M2478 432 V812"></path>
+        <rect class="node process-green" x="2388" y="812" width="180" height="68" rx="4"></rect>
+        <text class="node-title" x="2478" y="838" text-anchor="middle">refine_once</text>
+        <text class="small" x="2478" y="858" text-anchor="middle">감사 응답</text>
+        <path class="arrow-soft" d="M2568 846 H2595 V520 H2570"></path>
+
+        <use href="#or-gate" x="2190" y="500"></use>
+        <text class="gate-label" x="2229" y="492" text-anchor="middle">refine 종료 OR</text>
+        <text class="tiny" x="2229" y="576" text-anchor="middle">ready==true OR i==maxRefineIters</text>
+        <path class="arrow" d="M2385 520 H2268"></path>
+
+        <use href="#and-gate" x="1955" y="500"></use>
+        <text class="gate-label" x="1988" y="492" text-anchor="middle">자동수정 호출 AND</text>
+        <text class="tiny" x="1988" y="576" text-anchor="middle">actionableIssues&gt;0 AND i&lt;maxRefineIters</text>
+        <path class="arrow-dashed" d="M2190 529 H2021"></path>
+        <text class="tiny" x="2110" y="520" text-anchor="middle">NO</text>
+
+        <rect class="node process-violet" x="1745" y="492" width="170" height="76" rx="4"></rect>
+        <text class="node-title" x="1830" y="518" text-anchor="middle">refine fix 호출</text>
+        <text class="small" x="1830" y="539" text-anchor="middle">수정 제안 요청</text>
+        <path class="arrow" d="M1955 529 H1915"></path>
+
+        <path class="arrow-soft" d="M1830 568 V892 H2185 V846"></path>
+        <rect class="node process-green" x="2185" y="812" width="170" height="68" rx="4"></rect>
+        <text class="node-title" x="2270" y="838" text-anchor="middle">refine fix</text>
+        <text class="small" x="2270" y="858" text-anchor="middle">제안 응답</text>
+        <path class="arrow-soft" d="M2185 846 H1705 V620"></path>
+
+        <use href="#and-gate" x="1515" y="570"></use>
+        <text class="gate-label" x="1548" y="562" text-anchor="middle">수정안 수용 AND</text>
+        <text class="tiny" x="1548" y="646" text-anchor="middle">validation.ok의 모든 검증 통과</text>
+        <path class="arrow" d="M1745 530 H1548 V570"></path>
+
+        <rect class="node process-orange" x="1300" y="562" width="170" height="76" rx="4"></rect>
+        <text class="node-title" x="1385" y="588" text-anchor="middle">unitMap 교체</text>
+        <text class="small" x="1385" y="609" text-anchor="middle">YES: 수정안 수용</text>
+        <text class="small" x="1385" y="625" text-anchor="middle">NO: 기존 유지</text>
+        <path class="arrow" d="M1515 599 H1470"></path>
+        <path class="return" d="M1385 562 V455 H2478 V485"></path>
+        <text class="tiny" x="1815" y="451" text-anchor="middle">refine 반복 복귀</text>
+
+        <!-- Question preparation -->
+        <rect class="node process" x="2200" y="620" width="150" height="72" rx="4"></rect>
+        <text class="node-title" x="2275" y="648" text-anchor="middle">12. buildGraph()</text>
+        <text class="small" x="2275" y="669" text-anchor="middle">그래프 구성</text>
+
+        <rect class="node process" x="2390" y="620" width="165" height="72" rx="4"></rect>
+        <text class="node-title" x="2473" y="645" text-anchor="middle">13. 질문 상태 생성</text>
+        <text class="small" x="2473" y="666" text-anchor="middle">유닛별 unitQState</text>
+
+        <path class="arrow" d="M2268 529 H2275 V620"></path>
+        <path class="arrow" d="M2350 656 H2390"></path>
+
+        <!-- Question retry pattern aligned with chunk pattern -->
+        <rect x="1240" y="735" width="650" height="210" fill="#fbfaf7" stroke="#c7cfdd" stroke-width="1.2"></rect>
+        <text class="node-title" x="1260" y="759">질문 생성 재시도 패턴</text>
+        <text class="tiny" x="1420" y="759">청크 분석 구간과 동일한 선택-병렬호출-기록-재시도 구조</text>
+
+        <use href="#or-gate" x="1260" y="785"></use>
+        <text class="gate-label" x="1299" y="777" text-anchor="middle">호출 대상 AND/OR</text>
+        <text class="tiny" x="1299" y="861" text-anchor="middle">!result AND (round==1 OR retryable)</text>
+
+        <rect class="node process-violet" x="1390" y="777" width="170" height="76" rx="4"></rect>
+        <text class="node-title" x="1475" y="802" text-anchor="middle">14. 유닛 wave 호출</text>
+        <text class="small" x="1475" y="823" text-anchor="middle">NVIDIA LLM</text>
+        <text class="small" x="1475" y="839" text-anchor="middle">generate_questions</text>
+
+        <rect class="node process-violet" x="1600" y="777" width="150" height="76" rx="4"></rect>
+        <text class="node-title" x="1675" y="802" text-anchor="middle">15. 상태 기록</text>
+        <text class="small" x="1675" y="823" text-anchor="middle">result / err /</text>
+        <text class="small" x="1675" y="839" text-anchor="middle">retryable</text>
+
+        <path class="arrow" d="M2473 692 V815 H1260"></path>
+        <path class="arrow" d="M1338 814 H1390"></path>
+        <path class="arrow" d="M1560 815 H1600"></path>
+
+        <path class="arrow-soft" d="M1475 853 V908 H1595"></path>
+        <rect class="node process-green" x="1595" y="884" width="190" height="68" rx="4"></rect>
+        <text class="node-title" x="1690" y="910" text-anchor="middle">generate_questions</text>
+        <text class="small" x="1690" y="930" text-anchor="middle">응답</text>
+        <path class="arrow-soft" d="M1785 918 H1845 V815 H1750"></path>
+
+        <use href="#and-gate" x="1788" y="785"></use>
+        <text class="gate-label" x="1821" y="777" text-anchor="middle">다음 라운드 AND</text>
+        <text class="tiny" x="1821" y="861" text-anchor="middle">stillRetryable&gt;0 AND round&lt;3</text>
+        <path class="arrow" d="M1750 815 H1788"></path>
+        <path class="return" d="M1821 785 V743 H1299 V785"></path>
+        <text class="tiny" x="1545" y="739" text-anchor="middle">YES: 60초 대기 후 재시도</text>
+
+        <use href="#and-gate" x="1955" y="785"></use>
+        <text class="gate-label" x="1988" y="777" text-anchor="middle">질문 fan-in AND-join</text>
+        <text class="tiny" x="1988" y="861" text-anchor="middle">wave 모두 settled AND 라운드 종료</text>
+        <path class="arrow" d="M1854 814 H1955"></path>
+
+        <rect class="node process-orange" x="2070" y="777" width="195" height="76" rx="4"></rect>
+        <text class="node-title" x="2168" y="803" text-anchor="middle">16. 질문 취합</text>
+        <text class="small" x="2168" y="824" text-anchor="middle">renderResults</text>
+        <text class="small" x="2168" y="840" text-anchor="middle">maybeSaveRun</text>
+
+        <path class="arrow" d="M2021 814 H2070"></path>
+
+        <!-- 브라우저 -> 사용자 결과 -->
+        <path class="arrow" d="M2265 815 H2458 V141"></path>
+
+        <!-- 보조 기준선 -->
+        <line x1="1240" y1="482" x2="1890" y2="482" stroke="#c7cfdd" stroke-width="1" stroke-dasharray="4 5"></line>
+        <text class="tiny" x="1565" y="474" text-anchor="middle">동일 패턴 비교선</text>
+      </svg>
+    </section>
+
+    <div class="legend" aria-label="도형 범례">
+      <span><i class="swatch"></i> 원: 시작/종료</span>
+      <span><i class="swatch process"></i> 사각형: 처리 단계</span>
+      <span><i class="swatch gate"></i> 표준 논리 게이트: 실제 AND/OR 결합</span>
+      <span><i class="swatch note"></i> 점선 박스: JSON 파싱 순차 폴백 주석</span>
+    </div>
+
+    <div class="section-title">AND/OR 게이트 설명표</div>
+    <table>
+      <thead>
+        <tr>
+          <th>게이트 위치</th>
+          <th>결합되는 조건들</th>
+          <th>AND 또는 OR</th>
+          <th>근거(파일:라인 또는 함수명)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>실행 전제 충족</td>
+          <td>PDF가 로드되어 있고, NVIDIA key가 있으며, proxy-url이 있어야 실행 진행. 실패 조건은 <code>!pdfBytes</code> 또는 <code>!nvidia-key || !proxy-url</code></td>
+          <td>AND</td>
+          <td><code>docs/lab/p01-runner.js:457-463</code></td>
+        </tr>
+        <tr>
+          <td>청크 호출 대상 선택</td>
+          <td><code>!s.result</code> 이면서, 최초 라운드이거나 <code>s.retryable</code>이어야 대상</td>
+          <td>AND/OR</td>
+          <td><code>docs/lab/p01-runner.js:492-495, 519-522</code></td>
+        </tr>
+        <tr>
+          <td>다음 청크 라운드</td>
+          <td>아직 결과가 없고 retryable인 청크가 1개 이상 있으며, 현재 라운드가 <code>MAX_RETRY_ROUNDS</code> 미만이어야 대기 후 재시도</td>
+          <td>AND</td>
+          <td><code>docs/lab/p01-runner.js:526-530</code>; <code>MAX_RETRY_ROUNDS</code>는 3</td>
+        </tr>
+        <tr>
+          <td>청크 fan-in 완료</td>
+          <td>발송된 wave의 <code>Promise.all</code>이 모두 settled 되고, 청크 라운드 루프가 종료된 뒤 다음 단계로 진행(모든 청크 성공은 요구하지 않음, 실패 청크는 제외)</td>
+          <td>AND</td>
+          <td><code>docs/lab/p01-runner.js:507-532, 534-543</code></td>
+        </tr>
+        <tr>
+          <td>refine 종료</td>
+          <td><code>question_generation_ready===true</code>이면 즉시 종료하거나 최대 반복 수 도달 시 종료</td>
+          <td>OR</td>
+          <td><code>docs/lab/p01-runner.js:594-645</code>; Python 원본 <code>scripts/java_curriculum_nvidia_pipeline.py:800-825</code></td>
+        </tr>
+        <tr>
+          <td>refine 자동수정 호출</td>
+          <td>actionable issue가 1개 이상 있고, 다음 audit 라운드가 남아 있어야 refine fix 호출</td>
+          <td>AND</td>
+          <td><code>docs/lab/p01-runner.js:616-628</code></td>
+        </tr>
+        <tr>
+          <td>refine 수정안 수용</td>
+          <td>항목 수 급감 없음, 모든 항목에 source_pages 있음, 인용 페이지가 성공 분석 페이지 안에 있음, evidence 있음 — 하나라도 실패하면 거부</td>
+          <td>AND</td>
+          <td><code>docs/lab/p01-runner.js:261-285, 629-638</code></td>
+        </tr>
+        <tr>
+          <td>질문 호출 대상 선택</td>
+          <td><code>!s.result</code> 이면서, 최초 라운드이거나 <code>s.retryable</code>이어야 유닛 질문 생성 대상</td>
+          <td>AND/OR</td>
+          <td><code>docs/lab/p01-runner.js:678-681, 693-696</code></td>
+        </tr>
+        <tr>
+          <td>다음 질문 라운드</td>
+          <td>아직 결과가 없고 retryable인 유닛이 1개 이상 있으며, 현재 라운드가 <code>MAX_RETRY_ROUNDS</code> 미만이어야 재시도</td>
+          <td>AND</td>
+          <td><code>docs/lab/p01-runner.js:700-704</code>; <code>MAX_RETRY_ROUNDS</code>는 3</td>
+        </tr>
+        <tr>
+          <td>질문 fan-in 완료</td>
+          <td>유닛별 wave의 <code>Promise.all</code>이 모두 settled 되고, 질문 재시도 라운드가 종료된 뒤 결과를 취합</td>
+          <td>AND</td>
+          <td><code>docs/lab/p01-runner.js:683-711</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>
