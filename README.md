@@ -1458,7 +1458,7 @@ python3 pipeline/compare_methodologies.py
   - COST: findings 개수 × `MAX_CONNECT_FILES`에 비례해 sessionStorage 사용량 증가(기존엔 finding 1건분만 저장). 새 스캔을 제출하면 이전 basket을 통째로 덮어씀(병합 없음) — `SUBMISSION_KEY`가 이미 하던 것과 동일한 동작이라 새 트레이드오프는 아님.
   - EXIT: 브라우저 재시작 후에도 복원돼야 하면 `session-state.js`의 `safeSet`/`safeGet`이 쓰는 Storage 객체를 `sessionStorage`→`localStorage`로 교체(다른 로직 변경 불필요).
   - `Team-IZ/AI` 저장소의 동일 파일(`shared/session-state.js`, `trainee/submission.html`, `trainee/session.html`)에도 같은 수정 적용(diff로 `../shared/` 경로 접두사 외 100% 동일 확인).
-  - 커밋: 예정, push 예정(GitHub Pages 재배포로 라이브 반영).
+  - 커밋: `d79bf08`, push 예정(GitHub Pages 재배포로 라이브 반영).
 
 ## 다음 단계 (미해결)
 
