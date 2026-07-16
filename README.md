@@ -1447,7 +1447,7 @@ python3 pipeline/compare_methodologies.py
   - COST: 없음 — 없던 방어 로직을 추가한 게 아니라 이미 있던 지시문의 표현을 구체화한 것. 다만 "방어심층(defense-in-depth)"으로 제안된 `p03-engine.js` 내 near-duplicate 재생성 가드(3gram-Jaccard overlap 임계값 초과 시 재생성)는 프롬프트 수정만으로 실측 해소됐다고 판단해 **적용하지 않음**(과잉 엔지니어링 방지) — 11개 모델 전체에서 재발 시 재검토.
   - EXIT: 다른 모델/finding 조합에서 L3·reflection이 여전히 echo되면, 위 방어심층 가드(질문 생성 후 이전 턴들과 유사도 계산 → 임계값 초과 시 "이 질문 금지"를 명시해 1-2회 재생성)를 `generateQuestion()`에 추가.
   - `Team-IZ/AI` 저장소의 동일 파일(`prompt_manifest.json`)에도 같은 수정 적용.
-  - 커밋: 예정, push 예정(GitHub Pages 재배포로 라이브 반영).
+  - 커밋: `ad0ed75`, push 예정(GitHub Pages 재배포로 라이브 반영).
 
 ## 다음 단계 (미해결)
 
