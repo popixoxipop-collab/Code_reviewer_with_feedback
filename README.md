@@ -1483,6 +1483,17 @@ python3 pipeline/compare_methodologies.py
   - `Team-IZ/AI` 저장소의 동일 파일(`trainee/session.html`)에도 같은 수정 적용(diff로 `../shared/` 경로 접두사 외 100% 동일 확인).
   - 커밋: `46757f4`, push 예정(GitHub Pages 재배포로 라이브 반영).
 
+
+- **D192** ([`docs/lab/p02-engine.js`](./docs/lab/p02-engine.js), [`docs/lab/p02-runner.js`](./docs/lab/p02-runner.js)) — 사용자가 Supabase `runs` 테이블 스크린샷으로 에러 누적을 신고하며 Fable 에이전트로 디버깅 위임 요청. 이번엔 사용자가 Management API PAT을 다시 발급해 `.env`에 영구 저장+hook 경로기록까지 명시 요청(이전엔 세션마다 재요청, D177 참고) — `~/Desktop/Code_reviewer_with_feedback/.env`에 `SUPABASE_MANAGEMENT_PAT` 추가(`chmod 600`, `.gitignore` 확인됨), `~/.claude/hooks/scripts/nvidia-keypool-guard.py` docstring(이 repo의 기존 시크릿 위치 레지스트리)에 WHY/COST/EXIT로 기록.
+  - **조사**: anon key로 먼저 시도했으나 RLS가 막음(0 rows, 정상 보안 동작) → PAT으로 Management API 직접 SQL 조회. `runs.error` 그룹집계 결과 `파일 목록 조회 실패 (HTTP 403)`이 **87건, 전부 한 사용자(paul990129@gmail.com), 8분 새 87회**(약 5.5초 간격)로 압도적 1위. `p02-engine.js::fetchGithubRepo()`를 직접 읽어 **재시도 로직이 아예 없음**을 확인 — 87건은 코드의 자동 반복이 아니라 사용자의 수동 재제출. 추가 조회로 같은 시간대 **다른 사용자(vneed154@gmail.com)도 1분 새 6번** 같은 종류의 403을 맞은 것 확인 — GitHub REST API 비인증 한도(IP당 60회/시간, 팀 공유망이면 전원이 공유)를 실제로 소진시킨 정황과 일치(repo 하나 스캔에 blob마다 API 호출 1회씩 나가는 구조라 한도 소진이 빠름).
+  - **적용**: `githubRateLimitError(res, pat)` 헬퍼 신설 — GitHub의 공식 신호인 `x-ratelimit-remaining==0` 헤더로만 판별(상태코드 403/404만으로는 권한문제와 구분 불가). 감지 시 리셋 시각을 포함한 구체적 메시지("GitHub API 요청 한도 초과... {시각}까지는 재시도해도 계속 실패합니다. GitHub PAT을 입력하면 한도가 5,000회/시간으로 늘어나 바로 해결됩니다")로 교체, 아니면 기존 메시지 그대로 유지(byte-for-byte 보존). repo-info/tree/blob 세 호출 지점 전부 적용. blob 개별 파일 호출에서 rate-limit이면 즉시 중단하도록 신설(그 외 실패는 기존대로 해당 파일만 건너뜀) — 이전엔 스캔 중간에 한도 소진되면 나머지 파일이 전부 조용히 누락된 채 "성공"처럼 끝났을 것(D153/D162와 같은 조용한 truncation 패턴), 명시적 중단이 더 안전하다고 판단(레이트리밋은 한 번 걸리면 리셋 전까지 이후 요청도 전부 똑같이 실패하므로, 중단 안 해도 결과적으로 다 실패하는 건 같고 조용히 vs 명시적으로의 차이). 재시도 로직은 의도적으로 안 넣음(리셋 전엔 몇 번을 다시 보내도 실패, 87연속 실측이 그 증거).
+  - **검증**: Fable 에이전트가 (1) `node --check` 3개 파일 전부 통과, (2) GitHub `/search/repositories`의 분당 10회 한도를 실제로 소진시켜 **진짜 rate-limited 403**을 실측(비용 큰 시간당 60회 core 한도 대신 저비용 분당 한도 사용 — 실제 팀 사용에 지장 안 줌), `X-RateLimit-*` 헤더가 `Access-Control-Expose-Headers`에 포함돼 브라우저 `fetch()`에서 실제로 읽힘을 확인(이게 안 됐으면 이 수정 전체가 조용히 무효였을 핵심 리스크), (3) 실제 shipped 파일을 그대로 실행하는 모킹 테스트 41/41 통과. **코디네이터가 자기보고를 그대로 안 믿고 재검증**: git diff로 실제 변경 확인(스펙과 정확히 일치, 3개 파일 전부 동일 로직), `node --check` 재실행, Team-IZ-AI 미러 byte-identical 재확인, **직접 GitHub `/search/repositories`를 소진시켜 실제 rate-limited Response 객체를 shipped 함수에 그대로 먹여 종단 검증**(재구현 아님) — `remaining:0`이 찍힌 실제 응답(이번엔 상태코드가 200이었는데도 헤더로 정확히 감지 — 상태코드가 아니라 헤더 기반 판별이 옳은 설계였음을 실측으로 재확인)에서 정확한 안내 메시지+리셋 시각이 나오는 것 확인.
+  - WHY: 사용자가 실제 누적 에러를 신고, 근본원인을 코드가 아니라 프로덕션 데이터로 먼저 규명한 뒤 수정.
+  - COST: 없음 — 기존 실패 경로의 메시지만 더 구체화, 성공 경로/기존 404·권한-403 메시지는 완전히 보존.
+  - EXIT: PAT 사용자가 5,000회 한도까지 실제로 소진하는 사례가 관측되면 그때 배치 크기(현재 6-동시)나 파일 필터링 범위를 재검토.
+  - `Team-IZ/AI` 저장소의 동일 파일(`shared/p02-engine.js`)에도 같은 수정 적용(byte-identical 확인).
+  - 커밋: 예정, push 예정(GitHub Pages 재배포로 라이브 반영).
+
 ## 다음 단계 (미해결)
 
 1. ~~판단 블록에 "프레임워크 관용 패턴 목록" 대조 필터 추가~~ — D5~D7로 완료(javascript만 실증, 나머지 언어는 빈 상태)
