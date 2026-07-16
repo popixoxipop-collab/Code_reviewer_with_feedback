@@ -1449,6 +1449,17 @@ python3 pipeline/compare_methodologies.py
   - `Team-IZ/AI` 저장소의 동일 파일(`prompt_manifest.json`)에도 같은 수정 적용.
   - 커밋: `ad0ed75`, push 예정(GitHub Pages 재배포로 라이브 반영).
 
+
+- **D189** ([`docs/lab/session-state.js`](./docs/lab/session-state.js), [`docs/lab/trainee/submission.html`](./docs/lab/trainee/submission.html), [`docs/lab/trainee/session.html`](./docs/lab/trainee/session.html)) — 사용자가 전달받은 팀원 피드백: "검증 세션 시작한 이후에 나가기 버튼 하면 이전 여러 findings가 사라지고 zip을 다시 입력해야해서 뒤로가기 버튼을 만들어달라."
+  - **원인**: `session.html`의 "나가기" 버튼은 `submission.html`로 순수 `window.location.href` 이동만 함 — 페이지가 완전히 새로고침되며 P02 스캔 결과(`result`/`files`)는 애초에 `submit-btn` 클릭 핸들러 스코프의 지역 변수였을 뿐 어디에도 저장된 적이 없었음. `SessionState.SUBMISSION_KEY`는 사용자가 고른 finding 단 하나만 저장하는 설계(다른 findings는 대상 밖)라, "나가기" 후 `submission.html`이 다시 뜨면 업로드 폼만 보이고 findings 목록 자체가 사라짐 — 재업로드+재스캔이 유일한 경로였음.
+  - **수정**: `session-state.js`에 `FINDINGS_KEY`(`saveFindingsList`/`loadFindingsList`) 신설 — `SUBMISSION_KEY`가 이미 finding 1건에 대해 계산하던 것과 동일한 트림(`resolveConnectableFile`+`MAX_CONNECT_FILES`)을 스캔 직후 **모든** finding에 대해 한 번에 계산해 저장(전체 `files` 맵은 여전히 저장 안 함 — 이미 트림된 codeContexts만, D162/D153의 sessionStorage 교훈 유지). `submission.html`은 스캔 완료 시 이 basket을 저장하고, `DOMContentLoaded`에서 저장된 basket이 있으면 업로드 폼(`step-submit`)은 그대로 둔 채 findings 목록을 즉시 복원해서 보여줌(재스캔 없이) — 새 스캔을 제출하면 이전 basket을 자연스럽게 덮어쓰므로 "새로 시작하기" 경로도 그대로 살아있음. `session.html`의 "나가기" 버튼을 "← 뒤로가기"로 개명하고, "findings 전체가 사라진다"는 인상을 주던 confirm 경고 문구를 "지금 진행 중인 답변만 저장 안 됨"으로 정확히 좁힘.
+  - **검증**: 로컬 서버(`localhost:8712`)에서 Playwright로 실제 시나리오 재현 — 가짜 findings basket 2건(connectable 1건 + non-connectable 1건) 주입 → 새로고침 → 목록 정상 복원(카드 2개, 버튼 유무 정확) 확인 → connectable finding 클릭해 session.html 진입 → `SessionState.loadSubmission()`이 정확히 그 finding을 반환함 확인 → "뒤로가기" 클릭+confirm 수락 → submission.html로 복귀 후 **findings 목록 2건이 그대로 유지됨**(신고된 버그가 실제로 해소됐다는 직접 증거) 확인. 콘솔 에러는 로그인 미설정으로 인한 기존 무해한 auth 경고 6건뿐(이 변경과 무관, 실제 로그인 없이 테스트했기 때문).
+  - WHY: 사용자가 실제 팀원 피드백으로 전달한 재현 가능한 UX 결함 — findings 목록이 재업로드 없이는 복구 불가능했던 게 핵심 문제.
+  - COST: findings 개수 × `MAX_CONNECT_FILES`에 비례해 sessionStorage 사용량 증가(기존엔 finding 1건분만 저장). 새 스캔을 제출하면 이전 basket을 통째로 덮어씀(병합 없음) — `SUBMISSION_KEY`가 이미 하던 것과 동일한 동작이라 새 트레이드오프는 아님.
+  - EXIT: 브라우저 재시작 후에도 복원돼야 하면 `session-state.js`의 `safeSet`/`safeGet`이 쓰는 Storage 객체를 `sessionStorage`→`localStorage`로 교체(다른 로직 변경 불필요).
+  - `Team-IZ/AI` 저장소의 동일 파일(`shared/session-state.js`, `trainee/submission.html`, `trainee/session.html`)에도 같은 수정 적용(diff로 `../shared/` 경로 접두사 외 100% 동일 확인).
+  - 커밋: 예정, push 예정(GitHub Pages 재배포로 라이브 반영).
+
 ## 다음 단계 (미해결)
 
 1. ~~판단 블록에 "프레임워크 관용 패턴 목록" 대조 필터 추가~~ — D5~D7로 완료(javascript만 실증, 나머지 언어는 빈 상태)
