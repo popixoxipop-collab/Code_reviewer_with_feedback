@@ -459,6 +459,9 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     LabApp.startTimer(pipelineId);
     const sessionTimeoutMinutes = LabApp.resolveParam("p03", "p03-6", "session_timeout_minutes") || 0;
     initCountdown(sessionTimeoutMinutes);
+    // D193: declared *outside* the try block on purpose -- see p03-engine.js's identical
+    // comment (a `let` inside try isn't visible in that try's own catch).
+    let dbRun = null;
     try {
       LabApp.log(pipelineId, `모델: ${selectedModel}`);
       await ensureClassifiers((msg) => LabApp.log(pipelineId, msg));
@@ -484,6 +487,18 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
       const maxTurns = LabApp.resolveParam("p03", "p03-6", "max_turns") || 4;
       const totalTurns = Math.min(LEVELS.length, maxTurns);
 
+      // D193 (2026-07-16): open the DB-side run row *before* the turn loop instead of
+      // only at the very end -- see db.js's startRun()/logTurn() comment for the full
+      // WHY/COST/EXIT. Failure here is non-fatal -- same "DB 미설정" tone as
+      // maybeSaveRun below.
+      if (LabDB.isConfigured()) {
+        try {
+          dbRun = await LabDB.startRun({ pipeline: "p03", model: selectedModel, input_meta: { finding_id: selectedFinding.id }, overrides: {} });
+        } catch (e) {
+          LabApp.log(pipelineId, `DB 세션 시작 실패(턴별 저장 없이 진행): ${e.message}`);
+        }
+      }
+
       for (let i = 0; i < totalTurns; i++) {
         const level = LEVELS[i];
         document.getElementById("p03-progress").textContent = `질문 ${i + 1}/${totalTurns}`;
@@ -500,6 +515,14 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
         const classification = await classifyAnswer(category, answer, level);
         transcript.push({ level, question, answer, classification });
         appendTranscriptEntry(level, question, answer);
+        // D193: persist this turn immediately -- see p03-engine.js's identical comment.
+        if (dbRun) {
+          try {
+            await LabDB.logTurn({ run_id: dbRun.id, stage_id: level, seq: i, output: { level, question, answer, classification } });
+          } catch (e) {
+            LabApp.log(pipelineId, `턴 저장 실패(진행은 계속됨): ${e.message}`);
+          }
+        }
         if (classification.verdict === "defended") { verdict = "defended"; break; }
       }
 
@@ -514,14 +537,26 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
       LabApp.setStatus(pipelineId, "완료", "done");
       const result = { finding: selectedFinding, verdict, turns: transcript.length, transcript, grades, rubric_overridden };
       renderResults(result); // D184: shown immediately now, no separate "리포트 보기" click required -- see the module-level comment on why
-      await maybeSaveRun(result, startedAt, finishedAt);
+      await maybeSaveRun(result, startedAt, finishedAt, dbRun);
     } catch (err) {
       LabApp.stopTimer(pipelineId);
       stopCountdown();
       console.error(err);
       LabApp.setStatus(pipelineId, `오류: ${err.message}`, "error");
       LabApp.log(pipelineId, `오류: ${err.message}`);
-      await LabApp.saveFailedRun("p03", selectedModel, err, startedAt); // D182: record what was actually selected, not the shared default
+      // D193: finish (UPDATE) the already-opened run row when one exists, so turns
+      // already logged via logTurn() above survive -- see p03-engine.js's identical
+      // comment for the full reasoning. Falls back to the original fresh-insert path
+      // when dbRun was never obtained.
+      if (dbRun) {
+        try {
+          await LabDB.saveRun({ run_id: dbRun.id, status: "error", error: String((err && err.message) || err), finished_at: new Date().toISOString(), artifacts: [] });
+        } catch (saveErr) {
+          LabApp.log(pipelineId, `실패 기록 저장도 실패: ${saveErr.message}`);
+        }
+      } else {
+        await LabApp.saveFailedRun("p03", selectedModel, err, startedAt); // D182: record what was actually selected, not the shared default
+      }
     }
   }
 
@@ -536,13 +571,16 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     LabApp.showResults(html);
   }
 
-  async function maybeSaveRun(result, startedAt, finishedAt) {
+  // D193: `dbRun` param added (optional) -- see p03-engine.js's identical comment on its
+  // maybeSaveRun for the reasoning.
+  async function maybeSaveRun(result, startedAt, finishedAt, dbRun) {
     if (!LabDB.isConfigured()) {
       LabApp.log("p03", "Supabase 미설정 — 결과는 화면에만 표시됨");
       return;
     }
     try {
       await LabDB.saveRun({
+        run_id: dbRun ? dbRun.id : undefined,
         pipeline: "p03",
         model: selectedModel, // D182: was always the shared default regardless of what actually ran
         input_meta: { finding_id: result.finding.id },
@@ -550,6 +588,7 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
         rubric_overridden: result.rubric_overridden,
         artifacts: [{ kind: "transcript", content: result.transcript }, { kind: "grades", content: result.grades }],
         started_at: startedAt.toISOString(), finished_at: finishedAt.toISOString(),
+        status: "done",
       });
       LabApp.log("p03", `결과가 팀 DB에 저장됨 (소요시간 ${LabApp.formatElapsed(finishedAt - startedAt)})`);
     } catch (err) {
