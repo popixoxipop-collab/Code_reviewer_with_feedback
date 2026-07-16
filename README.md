@@ -1437,6 +1437,18 @@ python3 pipeline/compare_methodologies.py
   - `Team-IZ/AI` 브랜치의 동일 파일에도 같은 수정 적용.
   - 커밋: `5b10793`, push 예정(GitHub Pages 재배포로 라이브 반영).
 
+
+- **D188** ([`docs/lab/prompt_manifest.json`](./docs/lab/prompt_manifest.json), [`feedback/turn_engine.py`](./feedback/turn_engine.py)) — 사용자가 실제 라이브 P03 세션 스크린샷으로 치명적 버그 신고: "L1, L2가 사용자가 실제 답변했음에도 byte-identical한 질문을 던짐 — 답변이 후속 질문 생성에 반영 안 되는 것 아니냐". Opus `error-detective` 에이전트에 investigation-protocol(재현 우선 → 경쟁가설 5개 → 가설별 실측 증거 → 전체 인과사슬)로 조사 위임.
+  - **가설 5개 실측 검증**: A) transcript가 L2 프롬프트에 안 들어감 — 기각(런타임 프롬프트 덤프에 L1 Q+A 정상 주입 확인). B) L2 프롬프트 설계 자체가 약함 — **채택**(temp=0인데 byte-identical 재현, FIX 프롬프트로 교체 시 3gram overlap 0.92→0.22로 즉시 개선). C) 렌더링/훅 중복 표시 버그 — 기각(DOM 없는 순수 엔진 재현에서도 동일 발생, 엔진 자체가 중복 문자열 생성). D) LLM 프록시 캐싱 — 기각(캐시 없음, 프록시 우회 직접 API에서도 재현). E) L1/L2 프롬프트 문자열 혼선(override 버그) — 기각(두 프롬프트는 명백히 다른 문자열, override 딕셔너리 비어있음).
+  - **근본원인**: `prompt_manifest.json`의 `p03-2`(L2) 프롬프트 지시("이 학생이 놓친 트레이드오프를 정확히 짚어서... 반례 질문을 던지세요")가 너무 추상적 — 지시 준수력이 약한 모델이 거대한 finding+코드 헤더와 transcript 속 L1 질문에 anchor되어 새 질문을 합성하는 대신 L1을 그대로 echo. **하필 이 "약한 모델"이 D183에서 승격된 현재 기본 모델 `step-3.5-flash`**(`mistral-medium-3.5`는 동일 프롬프트로 재현 안 됨 — 모델 의존적 버그). 대조 증거: L3 템플릿("극단 시나리오를 제시해서...")은 이미 구체적 directive라 같은 모델로도 echo 안 함(overlap 0.06) — "면접관이 직접 구체적 상황/반례를 제시하라"는 구체성이 분기점. 원본 Python `feedback/turn_engine.py::_build_level_prompt` L2 분기도 문자 그대로 동일한 결함 보유 — JS 포팅이 만든 버그가 아니라 원본 설계 결함을 그대로 승계한 것.
+  - **적용**: p03-2(L2) 템플릿을 (1) transcript를 "이미 물어본 질문 — 반복하면 실패"로 명시적 라벨링, (2) "면접관이 먼저 구체적 반례/대안을 제시하고 학생이 방어하게 압박"으로 지시를 구체화, (3) 끝에 반복 금지를 재천명하는 구조로 전면 재작성(투자한 에이전트가 실측 검증한 FIX_A 그대로 적용). p03-3(L3)/p03-4(reflection)도 동일한 "이미 물어본 질문" 라벨 + 말미 반복금지 문구를 방어적으로 추가(현재는 우연히 안 깨지지만 명시적 가드가 없었음). `docs/lab/prompt_manifest.json`과 `Team-IZ/AI/prompt_manifest.json` 양쪽에 동일 적용(diff로 의도한 3곳 외 변경 없음 확인), 원본 `feedback/turn_engine.py`의 `_build_level_prompt` L2/L3/reflection 분기도 동기화.
+  - **검증**: 조사 에이전트가 쓴 재현 스크립트(`scratchpad/repro.py` — `docs/lab/prompt_manifest.json`을 매 실행 새로 읽어 실제 배포 파일을 그대로 테스트)를 수정 후 **재실행**(제안된 텍스트를 신뢰하지 않고 실제 수정된 파일로 재검증) — 기본 모델 `step-3.5-flash`, 실제 NVIDIA API, temp=0: (1) fresh L1→L2 전체 흐름 Q1==Q2 exact? **False**(수정 전 True였음), (2) 실제 신고된 Q1/A1을 그대로 쓴 사건-충실 재현에서도 reportedQ1==Q2 exact? **False**, Q2가 실제로 구체적 반례("openapi-fetch가 `{error:'Invalid token'}` 문자열을 반환하면 현재 필드 우선순위 로직이 이를 놓친다")를 제시하는 진짜 L2다운 질문으로 바뀜을 육안 확인.
+  - WHY: 사용자가 실제 세션에서 목격한 치명적 결함(교육 도구의 핵심 가치인 "답변을 반영한 심화 질문"이 깨짐)을 스크린샷으로 신고, 근본원인이 코드가 아니라 프롬프트 설계일 가능성까지 열어두고 Opus급 조사를 명시적으로 요청.
+  - COST: 없음 — 없던 방어 로직을 추가한 게 아니라 이미 있던 지시문의 표현을 구체화한 것. 다만 "방어심층(defense-in-depth)"으로 제안된 `p03-engine.js` 내 near-duplicate 재생성 가드(3gram-Jaccard overlap 임계값 초과 시 재생성)는 프롬프트 수정만으로 실측 해소됐다고 판단해 **적용하지 않음**(과잉 엔지니어링 방지) — 11개 모델 전체에서 재발 시 재검토.
+  - EXIT: 다른 모델/finding 조합에서 L3·reflection이 여전히 echo되면, 위 방어심층 가드(질문 생성 후 이전 턴들과 유사도 계산 → 임계값 초과 시 "이 질문 금지"를 명시해 1-2회 재생성)를 `generateQuestion()`에 추가.
+  - `Team-IZ/AI` 저장소의 동일 파일(`prompt_manifest.json`)에도 같은 수정 적용.
+  - 커밋: 예정, push 예정(GitHub Pages 재배포로 라이브 반영).
+
 ## 다음 단계 (미해결)
 
 1. ~~판단 블록에 "프레임워크 관용 패턴 목록" 대조 필터 추가~~ — D5~D7로 완료(javascript만 실증, 나머지 언어는 빈 상태)
