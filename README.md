@@ -1469,7 +1469,7 @@ python3 pipeline/compare_methodologies.py
   - COST: 중복 감지 시에만 API 호출 1~2회 추가(레이턴시+비용) — 정상 케이스는 실측상 추가 호출 0건. 임계값 0.5는 이번 사건+D188 데이터 총 4개 anchor point로 보정된 값이라 완전한 보장은 아님(EXIT 참고).
   - EXIT: 다른 모델/finding에서도 재발하면 임계값(0.5)이나 재시도 횟수(2)를 그 실측 데이터로 재보정. 특정 모델이 이 가드에 계속 걸리면 근본 해법은 여전히 프롬프트 강화(D188) 또는 그 모델을 P03 기본값에서 내리는 것 — 이 가드는 보험이지 근본수정의 대체가 아님.
   - `Team-IZ/AI` 저장소의 동일 파일(`shared/p03-engine.js`)에도 같은 수정 적용(diff로 100% 동일 확인). `Team-IZ/AI`에는 `p03-runner.js`/`turn_engine.py` 대응 파일이 없음(trainee 페이지 전용 미러라 원본 단일페이지 도구·Python 파이프라인은 이 미러 범위 밖).
-  - 커밋: 예정, push 예정(GitHub Pages 재배포로 라이브 반영).
+  - 커밋: `94c9bfd`, push 예정(GitHub Pages 재배포로 라이브 반영).
 
 ## 다음 단계 (미해결)
 
