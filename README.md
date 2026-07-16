@@ -1471,6 +1471,18 @@ python3 pipeline/compare_methodologies.py
   - `Team-IZ/AI` 저장소의 동일 파일(`shared/p03-engine.js`)에도 같은 수정 적용(diff로 100% 동일 확인). `Team-IZ/AI`에는 `p03-runner.js`/`turn_engine.py` 대응 파일이 없음(trainee 페이지 전용 미러라 원본 단일페이지 도구·Python 파이프라인은 이 미러 범위 밖).
   - 커밋: `94c9bfd`, push 예정(GitHub Pages 재배포로 라이브 반영).
 
+
+- **D191** ([`docs/lab/trainee/session.html`](./docs/lab/trainee/session.html)) — 사용자가 전달받은 피드백: "모델이 질문 생성 중일 때는 답변 생성 중임을 인지 가능하게 애니메이션으로 표기해달라". 이번 구현은 gemini에게 위임 요청받았으나 진행 중 발견한 계정/제품 문제로 실패, 사용자 승인 하에 `codex:codex-rescue`로 위임.
+  - **원인**: `hooks.onProgress(msg)`가 `console.log("[P03]", msg)`만 하고 화면엔 아무것도 안 그림 — L1 질문 생성 중(`"L1 질문 생성 중..."`)부터 D190의 재생성 재시도(`"⚠ ... 재생성 중..."`)까지 전부 콘솔에만 남고, 사용자에겐 답변 제출 후 다음 질문이 뜰 때까지 화면이 완전히 멈춘 것처럼 보임.
+  - **적용**: `showTypingIndicator()`/`removeTypingIndicator()` 신설, 기존 `.bubble.q` 스타일을 그대로 재사용한 `.bubble.typing`(좌측정렬, 점 3개)을 `#chat-body`에 추가. `onProgress`가 `/질문 생성|재생성/`에 매칭되는 메시지를 받으면 표시(이미 떠 있으면 중복 생성 안 함 — id 가드), `onQuestion`이 실제 질문 버블을 그리기 직전에 제거. 점 애니메이션은 `@media (prefers-reduced-motion: no-preference)`로 감싸 접근성 요구 준수(모션 최소화 사용자는 애니메이션 없는 정적 점 3개만 봄). 색상은 전부 기존 `var(--c-...)` 토큰 재사용(하드코딩 없음). 기존 `console.log` 라인은 그대로 유지(디버깅용, 대체 아니라 추가).
+  - **위임 경위**: 사용자가 처음 "gemini한테 부탁해봐"로 지정 → `gemini` CLI가 `IneligibleTierError`(free-tier Code Assist가 이 클라이언트에서 제품 자체 cutoff, Antigravity로 통합됐다는 안내)로 완전 실패 — OAuth 재로그인도 동일 에러(계정 문제가 아니라 클라이언트 자체 차단, `/auth`에 도달하기도 전에 실패). Antigravity.app(별도 GUI IDE, 이미 설치돼 있었음)도 헤드리스 CLI가 없어(`Contents/Resources/bin`엔 `language_server`/`webm_encoder`뿐) 대신 호출 불가 — 매 단계 AskUserQuestion으로 확인 후 `codex:codex-rescue`로 최종 위임.
+  - **검증**: Codex의 "썼다"는 자기보고(도구 호출 1회뿐이라는 이상 신호)를 그대로 믿지 않고 직접 재검증 — (1) `git diff`로 실제 변경 내용 확인(스펙과 정확히 일치: id 가드, aria-label, prefers-reduced-motion 등), (2) 실제 `session.html`을 로드해 `P03Engine.run`을 스크립트 시퀀스로 몽키패치(실제 페이지의 `hooks` 클로저를 그대로 통과시키는 방식, 재구현 아님)한 Playwright 테스트 — 인디케이터 표시(점 3개) 확인, t=0과 t=500ms 사이 opacity가 실제로 변함(진짜 애니메이션 확인, 정적 텍스트 아님), 재생성 경고 메시지 재수신에도 인디케이터 1개만 유지(중복 스택 없음), `onQuestion` 발생 시 인디케이터 제거+실제 질문 버블 교체 확인, `prefers-reduced-motion: reduce` 에뮬레이션 시 인디케이터는 그대로 보이되 `animation-name: none`(애니메이션만 꺼짐) 확인 — 전부 스크린샷으로 육안 재확인까지 완료.
+  - WHY: 사용자가 전달받은 실사용 피드백 — 질문 생성 대기 시간이 인지 불가능해 화면이 멈춘 것처럼 보임.
+  - COST: 없음 — 기존 `onProgress` 호출 위에 조건부 렌더링만 추가, 새 의존성·빌드스텝 없음.
+  - EXIT: 인디케이터를 없애려면 `showTypingIndicator`/`removeTypingIndicator` 호출 두 줄과 관련 CSS 블록만 제거하면 됨(로직 재구성 불필요).
+  - `Team-IZ/AI` 저장소의 동일 파일(`trainee/session.html`)에도 같은 수정 적용(diff로 `../shared/` 경로 접두사 외 100% 동일 확인).
+  - 커밋: 예정, push 예정(GitHub Pages 재배포로 라이브 반영).
+
 ## 다음 단계 (미해결)
 
 1. ~~판단 블록에 "프레임워크 관용 패턴 목록" 대조 필터 추가~~ — D5~D7로 완료(javascript만 실증, 나머지 언어는 빈 상태)
