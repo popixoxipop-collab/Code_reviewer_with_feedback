@@ -1527,7 +1527,7 @@ python3 pipeline/compare_methodologies.py
   - COST: 스킵 목록이 넓어진 만큼 진짜 소스 디렉터리를 오차단할 표면적도 늘었다(예: Maven/Rust 관례 밖에서 `target/`·`coverage/`를 실소스 디렉터리명으로 쓰는 repo는 스캔에서 빠짐 — 웹 랩 p02-1 파라미터로 즉시 되돌릴 수 있음). 동일 디렉터리 상수 사본이 2→3곳으로 늘어 drift 감시 대상 증가.
   - EXIT: bare `Debug`/`Release` 디렉터리명은 의도적으로 제외 — 빌드 산출물 이름으로도 쓰이지만 실소스 디렉터리명으로 너무 흔해 오차단 위험이 커서 보수적으로 뺐고(누락이 아니라 판단), 실제 leak 사례가 관측되면 그때 재검토. 세 사본이 어긋나기 시작하면 D13 EXIT와 같은 조건(3번째 필요 시점)으로 공용 constants 모듈 추출.
   - `Team-IZ/AI` 저장소의 `prompt_manifest.json`(repo 루트, `feature/verification-ui` 브랜치)에도 같은 manifest 수정 적용 — push 직전 main HEAD와 byte-identical임을 재확인 후 Contents API로 직접 커밋(`7b23213`), 반영 후 재fetch로 로컬 수정본과 byte-identical 재확인.
-  - 커밋: (예정), push 예정(GitHub Pages 재배포로 라이브 반영).
+  - 커밋: `adf17ae`(lab 배선+본 문서 — 스캔 3파일의 fix 본체는 워킹트리에서 별도 커밋으로 뒤따름), push 예정(GitHub Pages 재배포로 라이브 반영).
 
 ## 다음 단계 (미해결)
 
