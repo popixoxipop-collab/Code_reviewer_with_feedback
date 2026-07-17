@@ -138,9 +138,21 @@ def build_candidate_rules(findings, transcript_scores, unit_map, round_num, seq_
     candidates = []
     seq_by_axis = dict(seq_by_axis) if seq_by_axis else {}
 
-    # 코드 채널(P02): finding kind -> FR axis 매핑으로 후보 생성, priority가 높은 순
+    # 코드 채널(P02): finding kind -> FR axis 매핑으로 후보 생성, 중요도 높은 순
+    # D194: judgment/importance_rank.py가 붙이는 f["rank"](1=가장 중요)가 있으면 그걸로 정렬한다.
+    # 기존 priority_rank 딕셔너리는 findings["priority"] 문자열을 키로 썼는데,
+    # idiom_filter.apply_idiom_filter()가 강등 시 그 문자열에 " → 관용 패턴 필터 적용됨..."을
+    # 덧붙여(judgment/idiom_filter.py) 변형시키므로 이 딕셔너리 매치가 실패하고 조용히
+    # `.get(..., 9)` 최하위 폴백으로 떨어졌다 — examples/study_match/judgment_output.json에서
+    # 실제로 1건 재현 확인된 버그. rank 필드가 없는(D194 이전에 저장된) 구 artifacts만
+    # priority_rank로 폴백한다.
     priority_rank = {"최우선": 0, "Important(🔴)": 1, "질문 대상": 2, "검토 대상(자동 신뢰 금지)": 3}
-    sorted_findings = sorted(findings, key=lambda f: priority_rank.get(f.get("priority"), 9))
+
+    def _sort_key(f):
+        rank = f.get("rank")
+        return (0, rank) if rank is not None else (1, priority_rank.get(f.get("priority"), 9))
+
+    sorted_findings = sorted(findings, key=_sort_key)
     for f in sorted_findings:
         kind = f["id"].split(":")[0]
         axis = FINDING_KIND_TO_FR_AXIS.get(kind)

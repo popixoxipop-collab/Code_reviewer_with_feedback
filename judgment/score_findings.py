@@ -7,6 +7,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from idiom_filter import apply_idiom_filter, resolve_lang, _find_file_content  # noqa: E402
 from tier_b_suppression_filter import apply_tier_b_suppression  # noqa: E402
 from subrubric import apply_subrubric, idiom_evidence, rationale_signal  # noqa: E402
+from importance_rank import apply_rank  # noqa: E402
 
 # D13: 반복 패턴 탐지 대상 확장자를 인지 블록(cognition/two_tier_scan.py)의 SRC_EXTS와 동일하게 유지
 #   WHY: 인지 블록만 다국어로 확장하고 판단 블록이 JS/TS만 스캔하면 다시 불일치가 생김
@@ -491,6 +492,12 @@ def score(scan_result, repo_root):
 
     findings = apply_idiom_filter(findings, repo_root=repo_root)
     _tag_lang(findings, repo_root)
+    # D194 (findings_ranking_plan.md Phase 0): must run AFTER apply_idiom_filter so the ranker
+    # sees post-override subrubric.question_value (rank_evidence.idiom_gate_applied depends on
+    # finding["subrubric"]["question_value"]["overridden_by"] already being set). fan_in is the
+    # same Tier A dict already in scope above -- only used for the rank tie-break chain's 3rd
+    # step, never re-derived.
+    findings = apply_rank(findings, fan_in=fan_in)
     return {"hub": hub, "findings": findings}
 
 

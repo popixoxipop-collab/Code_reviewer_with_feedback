@@ -16,6 +16,8 @@ const P02Runner = (() => {
     "judgment/subrubric.py",
     "judgment/tier_b_hook.py",
     "judgment/subrubric_hook.py",
+    "judgment/importance_rank.py",
+    "judgment/rank_weights/rank_weights.json",
     "judgment/isolation_categories/role_separation/patterns.json",
     "judgment/isolation_categories/domain_irrelevance/patterns.json",
     "judgment/isolation_categories/alt_storage_or_scope/patterns.json",
@@ -378,8 +380,8 @@ shutil.rmtree("/target", ignore_errors=True)
   function collectOverrides() {
     const manifest = LabApp.getManifest();
     const stages = manifest.pipelines.p02.stages;
-    const overrides = { two_tier_scan: {}, score_findings: {} };
-    const moduleForStage = { "p02-1": "two_tier_scan", "p02-2": "two_tier_scan", "p02-3": "two_tier_scan", "p02-4": "score_findings" };
+    const overrides = { two_tier_scan: {}, score_findings: {}, importance_rank: {} };
+    const moduleForStage = { "p02-1": "two_tier_scan", "p02-2": "two_tier_scan", "p02-3": "two_tier_scan", "p02-4": "score_findings", "p02-5": "importance_rank" };
     for (const stage of stages) {
       const ov = LabApp.getOverride("p02", stage.id);
       if (ov && ov.params) {
@@ -478,8 +480,11 @@ _result = webtool_driver.run_scan("/target", overrides_json)
       } else {
         connectHtml = `<button class="secondary" data-interview-idx="${idx}" style="margin-top:8px; font-size:0.72rem;">인터뷰 시작 →</button>`;
       }
+      // D194: rank/rank_score from judgment/importance_rank.py -- always present on a fresh
+      // scan (this is same-session run_scan() output, never historical Supabase data).
+      const rankBadge = f.rank != null ? `#${f.rank} (${f.rank_score}점) · ` : "";
       html += `<div class="finding-card">
-        <div class="fid">${LabApp.escapeHtml(f.id)} · priority: ${LabApp.escapeHtml(f.priority || "")}</div>
+        <div class="fid">${LabApp.escapeHtml(rankBadge)}${LabApp.escapeHtml(f.id)} · priority: ${LabApp.escapeHtml(f.priority || "")}</div>
         <div>${LabApp.escapeHtml(f.finding || "")}</div>
         ${connectHtml}
       </div>`;
