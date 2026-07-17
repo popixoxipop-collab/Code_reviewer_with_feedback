@@ -1537,7 +1537,7 @@ python3 pipeline/compare_methodologies.py
   - WHY: 완주 못 한 세션의 턴 데이터는 이미 `stage_events`에 안전한데(D193), row 상태만 `running`에 갇혀 팀 대시보드에서 "이탈"과 "진행 중"을 구분 못 하는 게 남은 갭이었음.
   - COST: 전달 보장 없음(best-effort) — 브라우저가 강제종료되거나 오프라인이면 비콘 자체가 안 나감, access token은 arm 시점 것을 그대로 쓰므로 세션이 만료(기본 ~1h)되도록 오래 열려있으면 401.
   - EXIT: 확실한 정리가 필요하면 `running`에 TTL 이상 멈춘 row를 서버 사이드에서 쓸어가는 reaper로 교체 — 이 클라이언트 비콘은 그 전의 저비용 ~90%짜리 버전.
-  - 커밋: `8b3...`(예정), Team-IZ/AI 미러는 이번엔 생략(범위 밖).
+  - 커밋: `a4a7eeb`. Team-IZ/AI 미러는 이번엔 생략(범위 밖).
 
 ## 다음 단계 (미해결)
 
