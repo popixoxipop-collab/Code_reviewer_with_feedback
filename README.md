@@ -1517,7 +1517,7 @@ python3 pipeline/compare_methodologies.py
   - COST: rank_score/rank_evidence 필드 추가로 finding 스키마가 커짐(하위호환은 유지 — 기존 필드 무변경, `rank` 없는 구 Supabase artifacts는 표시 로직이 방어적으로 처리). 가중치가 아직 실측 보정 전이라 최종 순위의 신뢰도는 라벨 스프린트 완료 전까지 제한적.
   - EXIT: `judgment/rank_weights/rank_weights.json` 하나만 바꾸면 재보정(코드 변경 불필요). Phase 1(S1~S5)/Phase 2(가중치 실측)/Phase 3(재귀 피드백)는 각자의 전제 조건(근거 보강 로직 작성/라벨 50건 완료/P03 verdict 축적)이 충족되면 순서대로 착수.
   - `Team-IZ/AI` 저장소의 동일 파일(`shared/p02-engine.js`, `webtool_driver.py`, `prompt_manifest.json`, `trainee/submission.html`)에도 같은 수정 적용(각각 diff로 확인 후 동일 patch, `submission.html`은 경로 접두어 차이만 존재).
-  - 커밋: (예정), push 예정(GitHub Pages 재배포로 라이브 반영).
+  - 커밋: `618ac3f`, push 완료(GitHub Pages 재배포로 라이브 반영 예정).
 
 ## 다음 단계 (미해결)
 
