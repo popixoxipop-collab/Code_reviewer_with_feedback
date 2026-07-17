@@ -1528,6 +1528,16 @@ python3 pipeline/compare_methodologies.py
   - EXIT: bare `Debug`/`Release` 디렉터리명은 의도적으로 제외 — 빌드 산출물 이름으로도 쓰이지만 실소스 디렉터리명으로 너무 흔해 오차단 위험이 커서 보수적으로 뺐고(누락이 아니라 판단), 실제 leak 사례가 관측되면 그때 재검토. 세 사본이 어긋나기 시작하면 D13 EXIT와 같은 조건(3번째 필요 시점)으로 공용 constants 모듈 추출.
   - `Team-IZ/AI` 저장소의 `prompt_manifest.json`(repo 루트, `feature/verification-ui` 브랜치)에도 같은 manifest 수정 적용 — push 직전 main HEAD와 byte-identical임을 재확인 후 Contents API로 직접 커밋(`7b23213`), 반영 후 재fetch로 로컬 수정본과 byte-identical 재확인.
   - 커밋: fix `8ab0eea`(스캔 3파일 — `cognition/two_tier_scan.py`/`judgment/score_findings.py`/`judgment/idiom_filter.py`) + `adf17ae`(lab 배선+본 문서), push 예정(GitHub Pages 재배포로 라이브 반영).
+  - D195 후속(같은 세션): Fable 독립 리뷰에 검증+개선방향 요청 → 웹 랩 계층에서 실결함 2건 발견(JS 다운로드 필터가 예전 10개 목록을 별도로 하드코딩해 D195의 26개 갱신을 못 받음, `webtool_driver.py::apply_overrides`가 SKIP_DIRS류 수정을 3모듈 중 1개에만 반영) — 둘 다 직접 추적 재확인 후 즉시 수정. `isSkippedDir`/`isSkippedPath`를 `LabApp.resolveParam()` 기반으로 교체, `apply_overrides`에 `idiom_filter` 추가+`SHARED_SCAN_CONSTANTS` broadcast 신설, 신규 `judgment/smoke_test_scan_constants_sync.py`로 재발 방지. 커밋 과정에서 무관한 `db.js`/`p03-engine.js`(다른 세션이 만들던 미완성 기능)가 실수로 같이 커밋된 것을 push 전 발견 → `git reset --soft`로 안전 정정. 커밋 `8ab2519`.
+
+- **D196** ([`docs/lab/db.js`](./docs/lab/db.js), [`docs/lab/p03-engine.js`](./docs/lab/p03-engine.js), [`docs/lab/p03-runner.js`](./docs/lab/p03-runner.js)) — P03 세션 "이탈(abandoned)" 감지. D195 후속 작업 중 우연히 발견: 다른 세션이 이미 `db.js`/`p03-engine.js`에 이 기능을 작성 중이었으나(자체 주석엔 "D194"로 잘못 표기 — 그 번호는 이미 임포턴스 랭킹에 쓰였음, 이 항목 작성 시 D196으로 정정) 커밋 전 상태였고, 사용자가 "어디까지 진행됐더라?"라고 묻기에 직접 조사 후 보고.
+  - **문제**: `startRun()`이 row를 `status='running'`으로 열고 `logTurn()`이 턴마다 저장하지만(D193), 트레이니가 탭을 그냥 닫으면 성공 경로(`maybeSaveRun`)도 실패 경로(`saveRun status:'error'`)도 실행되지 않아 row가 `running`에 영원히 멈춤 — 정상 진행 중인 세션과 구분 불가.
+  - **적용**: `db.js::armAbandonBeacon(run_id)` — 세션의 access token을 미리 캡처해두고, `pagehide` 이벤트에서 `fetch(..., {keepalive:true})`로 `status:'abandoned'` PATCH를 보내는 클로저를 반환(`navigator.sendBeacon`은 POST 전용이라 UPDATE 불가라서 미사용). `p03-engine.js`/`p03-runner.js` 양쪽 모두 `dbRun` 생성 직후 `pagehide` 리스너를 등록(arm)하고, 정상 종료(채점 시작 직전)·에러 종료(catch 진입 직후) 양쪽 모두에서 실제 상태를 쓰기 전에 리스너부터 해제(disarm) — 완료된 세션이 뒤늦은 tab close로 `abandoned`에 덮어써지는 레이스 방지.
+  - **검증**: 실제 종료 상태 확인(Supabase Management API로 `runs.status` 컬럼에 CHECK 제약이 아예 없는 plain text임을 직접 조회 — 코드 자신의 COST 주석이 우려했던 "'abandoned' 값이 거부될 수 있음"은 기우였음). 로컬 정적서버(`python3 -m http.server`)로 두 페이지 흐름 모두에서 `LabDB.armAbandonBeacon()`을 직접 호출해 실제 PATCH 요청(URL/메서드/헤더/바디)이 올바르게 만들어지는지 network-intercept로 확인(Supabase 인증은 `window.supabase` 스텁으로 우회, 실제 DB 쓰기 없음), disarm 후엔 `pagehide`가 발생해도 요청이 0건임을, disarm 전엔 정확히 1건 발생함을 대조군까지 포함해 확인.
+  - WHY: 완주 못 한 세션의 턴 데이터는 이미 `stage_events`에 안전한데(D193), row 상태만 `running`에 갇혀 팀 대시보드에서 "이탈"과 "진행 중"을 구분 못 하는 게 남은 갭이었음.
+  - COST: 전달 보장 없음(best-effort) — 브라우저가 강제종료되거나 오프라인이면 비콘 자체가 안 나감, access token은 arm 시점 것을 그대로 쓰므로 세션이 만료(기본 ~1h)되도록 오래 열려있으면 401.
+  - EXIT: 확실한 정리가 필요하면 `running`에 TTL 이상 멈춘 row를 서버 사이드에서 쓸어가는 reaper로 교체 — 이 클라이언트 비콘은 그 전의 저비용 ~90%짜리 버전.
+  - 커밋: `8b3...`(예정), Team-IZ/AI 미러는 이번엔 생략(범위 밖).
 
 ## 다음 단계 (미해결)
 

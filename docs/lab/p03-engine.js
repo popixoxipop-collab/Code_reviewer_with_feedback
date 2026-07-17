@@ -361,6 +361,10 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     // read this too (to finish the same run row on failure), and a `let` declared inside
     // try is out of scope inside its own catch.
     let dbRun = null;
+    // D196 (2026-07-17): reassigned once the abandon guard is armed inside the try below.
+    // Declared out here for the same reason as dbRun -- the catch block must be able to
+    // disarm it before writing the run's real "error" status.
+    let disarmAbandon = () => {};
     try {
       hooks.onProgress(`모델: ${model}`);
       await ensureClassifiers((msg) => hooks.onProgress(msg));
@@ -394,6 +398,23 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
         }
       }
 
+      // D196 (2026-07-17): while the trainee is still answering, a tab close should finalize
+      // this run as "abandoned" instead of leaving it stranded at "running" (see db.js
+      // armAbandonBeacon for the full WHY/COST/EXIT). Scoped to `pagehide` ONLY -- not
+      // visibilitychange -- because switching tabs to look something up must not count as
+      // abandonment. Disarmed the instant we begin finalizing (loop done, or error) so it can
+      // never race or overwrite the real done/error status written below.
+      if (dbRun) {
+        try {
+          const sendAbandon = await LabDB.armAbandonBeacon(dbRun.id);
+          const onPageHide = () => { sendAbandon(); };
+          window.addEventListener("pagehide", onPageHide);
+          disarmAbandon = () => { window.removeEventListener("pagehide", onPageHide); };
+        } catch (e) {
+          hooks.onProgress(`이탈 감지 설정 실패(턴 저장은 정상 동작): ${e.message}`);
+        }
+      }
+
       for (let i = 0; i < totalTurns; i++) {
         const level = LEVELS[i];
         const prevClassification = transcript.length ? transcript[transcript.length - 1].classification : null;
@@ -423,6 +444,11 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
         if (classification.verdict === "defended") { verdict = "defended"; break; }
       }
 
+      // D196: answering is complete -- from here the run finalizes (grading -> done). Stop
+      // treating a tab close as abandonment; closing during the brief grading window reverts
+      // to the prior "row stays running" behavior, which is fine since the trainee already
+      // finished every answer. maybeSaveRun() below writes the real "done" status.
+      disarmAbandon();
       hooks.onProgress("5축 채점 중...");
       const last = transcript[transcript.length - 1];
       const gradeAttemptInfo = await resolveMaxAttempts();
@@ -442,6 +468,9 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
       console.error(err);
       hooks.onStatus(`오류: ${err.message}`, "error");
       hooks.onProgress(`오류: ${err.message}`);
+      // D196: this run is finalizing as "error" -- disarm the abandon guard first so a
+      // pagehide during error handling can't overwrite that with "abandoned".
+      disarmAbandon();
       // D193: if a DB run row was already opened, finish (UPDATE) that same row instead
       // of LabApp.saveFailedRun()'s fresh insert-with-artifacts:[] -- the whole point is
       // that any turns already logged via logTurn() above must survive this failure.

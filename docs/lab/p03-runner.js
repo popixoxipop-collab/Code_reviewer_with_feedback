@@ -462,6 +462,11 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     // D193: declared *outside* the try block on purpose -- see p03-engine.js's identical
     // comment (a `let` inside try isn't visible in that try's own catch).
     let dbRun = null;
+    // D196 (2026-07-17): reassigned once the abandon guard is armed inside the try below.
+    // Declared out here for the same reason as dbRun -- the catch block must be able to
+    // disarm it before writing the run's real "error" status. See p03-engine.js's
+    // identical comment and db.js's armAbandonBeacon for the full WHY/COST/EXIT.
+    let disarmAbandon = () => {};
     try {
       LabApp.log(pipelineId, `모델: ${selectedModel}`);
       await ensureClassifiers((msg) => LabApp.log(pipelineId, msg));
@@ -499,6 +504,24 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
         }
       }
 
+      // D196 (2026-07-17): while the trainee is still answering, a tab close should finalize
+      // this run as "abandoned" instead of leaving it stranded at "running" (see db.js
+      // armAbandonBeacon for the full WHY/COST/EXIT). Scoped to `pagehide` ONLY -- not
+      // visibilitychange -- because switching tabs to look something up must not count as
+      // abandonment. Disarmed the instant we begin finalizing (loop done, or error) so it can
+      // never race or overwrite the real done/error status written below. Identical to
+      // p03-engine.js's block.
+      if (dbRun) {
+        try {
+          const sendAbandon = await LabDB.armAbandonBeacon(dbRun.id);
+          const onPageHide = () => { sendAbandon(); };
+          window.addEventListener("pagehide", onPageHide);
+          disarmAbandon = () => { window.removeEventListener("pagehide", onPageHide); };
+        } catch (e) {
+          LabApp.log(pipelineId, `이탈 감지 설정 실패(턴 저장은 정상 동작): ${e.message}`);
+        }
+      }
+
       for (let i = 0; i < totalTurns; i++) {
         const level = LEVELS[i];
         document.getElementById("p03-progress").textContent = `질문 ${i + 1}/${totalTurns}`;
@@ -526,6 +549,11 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
         if (classification.verdict === "defended") { verdict = "defended"; break; }
       }
 
+      // D196: answering is complete -- from here the run finalizes (grading -> done). Stop
+      // treating a tab close as abandonment; closing during the brief grading window reverts
+      // to the prior "row stays running" behavior, which is fine since the trainee already
+      // finished every answer. maybeSaveRun() below writes the real "done" status.
+      disarmAbandon();
       LabApp.log(pipelineId, "5축 채점 중...");
       const last = transcript[transcript.length - 1];
       const gradeAttempts = await resolveMaxAttempts(pipelineId);
@@ -544,6 +572,9 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
       console.error(err);
       LabApp.setStatus(pipelineId, `오류: ${err.message}`, "error");
       LabApp.log(pipelineId, `오류: ${err.message}`);
+      // D196: this run is finalizing as "error" -- disarm the abandon guard first so a
+      // pagehide during error handling can't overwrite that with "abandoned".
+      disarmAbandon();
       // D193: finish (UPDATE) the already-opened run row when one exists, so turns
       // already logged via logTurn() above survive -- see p03-engine.js's identical
       // comment for the full reasoning. Falls back to the original fresh-insert path
