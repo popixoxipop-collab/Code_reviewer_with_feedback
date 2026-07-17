@@ -18,10 +18,40 @@ ALL_SRC_EXTS = (
     ".c", ".h", ".cpp", ".cc", ".cxx", ".hpp", ".swift",
 )
 # D76: cognition/two_tier_scan.py와 동일하게 static/vendor류 보강(D74/D75 실측 근거는 그쪽 파일 참고)
+# D195: 빌드 산출물 스킵 누락 보강 — cognition/two_tier_scan.py와 완전 동일 목록/로직 유지
+#   (D13/D76과 같은 이유의 의도적 중복)
+#   WHY: 실측 — 프론트엔드 번들(webpack/vite 컨텐츠해시 산출물)이 스킵 디렉터리 밖에 복사돼
+#        있으면 이름 고정 집합만으론 못 거름. 웹조사로 Java(Maven target/)/Python(.pytest_cache
+#        등)/C·C++(CLion cmake-build-*)에도 같은 누락 확인. cmake-build-<profile>류 가변
+#        디렉터리명과 <pkg>.egg-info류 접미어는 고정 집합으로 못 잡아 접두/접미어 매칭
+#        (_is_skip_dir)을, 스킵 디렉터리 밖의 minified/컨텐츠해시 번들/TS 선언파일은
+#        디렉터리명으로 못 잡아 파일명 정규식(GENERATED_FILENAME_RE)을 함께 추가.
+#   COST: MSVC Debug/Release는 흔한 영단어라 실제 소스 디렉터리와 겹칠 위험이 있어 의도적으로
+#        제외 — MSVC 산출물 트리는 여전히 못 거름. 디렉터리 판정이 집합 멤버십에서 함수 호출로
+#        바뀌어 walk당 미미한 오버헤드 추가.
+#   EXIT: MSVC류 누락이 실측되면 "루트 직하 + .sln/.vcxproj 동반" 같은 문맥 조건부 판정으로
+#        확장. SKIP_DIRS 사용처가 더 늘거나 목록 갱신이 잦아지면 공용 constants 모듈로 추출.
 SKIP_DIRS = {
     "node_modules", ".git", "dist", "build", "__pycache__", ".venv", "venv",
     "static", "vendor", "vendored",
+    "target",
+    ".pytest_cache", ".mypy_cache", ".tox", ".eggs",
+    ".next", ".nuxt", ".output", ".nitro", ".svelte-kit", ".turbo", ".parcel-cache",
+    "coverage", "storybook-static",
+    ".vs",
+    "DerivedData",
 }
+SKIP_DIR_PREFIXES = ("cmake-build-",)
+SKIP_DIR_SUFFIXES = (".egg-info",)
+
+
+def _is_skip_dir(name):
+    return name in SKIP_DIRS or name.startswith(SKIP_DIR_PREFIXES) or name.endswith(SKIP_DIR_SUFFIXES)
+
+
+# D195: 스킵 디렉터리 밖으로 나온 산출물 파일 필터(minified/컨텐츠해시 번들/TS 선언파일) —
+#   근거/비용/출구는 위 D195 주석 참고
+GENERATED_FILENAME_RE = re.compile(r"\.min\.jsx?$|\.[0-9a-f]{8,20}\.jsx?$|\.d\.ts$", re.I)
 
 # D3: 판단 블록 = 규칙 기반 정성 채점(상/중/하), ML 아님
 #   WHY: 사례가 적고(4건) 기준이 명확해 규칙 기반이 더 투명하고 디버깅 가능 —
@@ -116,11 +146,13 @@ def find_duplicate_definitions(repo_root, min_files=REPEATED_PATTERN_MIN_FILES):
     {name: [file1, file2, ...]} 형태, dunder/짧은 이름/테스트 이름은 제외."""
     name_to_files = {}
     for root, dirs, fnames in os.walk(repo_root):
-        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
+        dirs[:] = [d for d in dirs if not _is_skip_dir(d)]
         for fn in fnames:
             ext = os.path.splitext(fn)[1]
             pattern = DEFINITION_RE_BY_EXT.get(ext)
             if pattern is None:
+                continue
+            if GENERATED_FILENAME_RE.search(fn):  # D195: 스킵 디렉터리 밖 산출물 파일 제외
                 continue
             text = open(os.path.join(root, fn), encoding="utf-8", errors="ignore").read()
             for m in pattern.finditer(text):
@@ -206,7 +238,7 @@ def find_architecture_diffusion_point(fan_in, hub, repo_root):
 
     pattern_key = None
     for root, dirs, fnames in os.walk(repo_root):
-        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
+        dirs[:] = [d for d in dirs if not _is_skip_dir(d)]
         for fn in fnames:
             if fn == top_file:
                 text = open(os.path.join(root, fn), encoding="utf-8", errors="ignore").read()
@@ -229,9 +261,11 @@ def find_architecture_diffusion_point(fan_in, hub, repo_root):
 def find_repeated_pattern_files(repo_root, pattern, min_hits):
     hits = {}
     for root, dirs, fnames in os.walk(repo_root):
-        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
+        dirs[:] = [d for d in dirs if not _is_skip_dir(d)]
         for fn in fnames:
             if not fn.endswith(ALL_SRC_EXTS):
+                continue
+            if GENERATED_FILENAME_RE.search(fn):  # D195: 스킵 디렉터리 밖 산출물 파일 제외
                 continue
             text = open(os.path.join(root, fn), encoding="utf-8", errors="ignore").read()
             c = len(re.findall(re.escape(pattern), text))

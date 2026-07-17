@@ -38,6 +38,25 @@ import json
 #   EXIT: 이 휴리스틱이 실제 소스를 잘못 스킵하는 사례가 나오면 SKIP_DIRS에서 해당 이름 제거.
 #        더 정교하게 하려면 디렉터리명 대신 파일명 패턴(`*.min.js`)으로 판정하는 방식도 검토 가능
 #        (단, 비-minified 서드파티 자산은 여전히 못 잡음 — 근본 해법은 아님).
+#
+# D195: 빌드 산출물 3중 필터 — SKIP_DIRS 확장 + 접두/접미어 패턴 + 파일명 패턴 (D76 EXIT 실행)
+#   WHY: 사용자가 frontend repo에서 실제 발견 — webpack/vite의 컨텐츠해시 번들(main.a1b2c3d4.js류)이
+#        dist/build "밖"(public/, 프로젝트 루트 바로 아래)에 있으면 디렉터리 이름 완전일치만으로는
+#        걸러낼 방법이 전혀 없었음. 웹조사로 타 언어에도 같은 종류의 누락 확인: Java는 Maven
+#        `target/`(generated-sources 포함), Python은 `.pytest_cache`/`.mypy_cache`/`.tox`/`.eggs`/
+#        `*.egg-info`, C/C++은 CLion `cmake-build-debug`/`cmake-build-release`, JS 프레임워크는
+#        `.next`/`.nuxt`/`.output`/`.svelte-kit`/`.turbo` 등. 그래서 3중 방어로 보강:
+#        (1) SKIP_DIRS 정확일치 확장, (2) 가변 이름은 접두어(`cmake-build-*`)/접미어(`*.egg-info`)
+#        패턴(_is_skip_dir), (3) 스킵 디렉터리 밖에 있는 산출물은 파일명 패턴(GENERATED_FILENAME_RE:
+#        `.min.js(x)` 명시적 압축 표기 / 8~20자리 hex contenthash 조각 / `.d.ts` 자동생성 타입 선언)
+#        으로 차단 — D76 EXIT가 예견해둔 "디렉터리명 대신 파일명 패턴(`*.min.js`) 판정"을 실행한 것.
+#   COST: hex-hash 패턴은 오탐/누락 가능성이 있는 근사치 — 사람이 직접 지은 파일명 조각이 우연히
+#        8~20자리 [0-9a-f]면(예: `page.deadbeefcafe.js`) 실제 소스가 스킵되고, 해시가 21자리 이상이거나
+#        base62 등 hex 밖 문자를 쓰는 빌드 설정이면 여전히 누락. MSVC의 `Debug`/`Release`는 흔한
+#        영단어라 실제 소스 디렉터리명과 겹칠 위험이 있어 의도적으로 SKIP_DIRS에서 제외(그쪽 빌드
+#        산출물은 이 필터로는 못 거름). 손으로 작성한 `.d.ts`(타입 선언 전용 코드)도 스캔에서 빠짐.
+#   EXIT: 오검출(실제 소스가 잘못 스킵되는) 사례가 나오면 SKIP_DIRS/SKIP_DIR_PREFIXES/
+#        SKIP_DIR_SUFFIXES/GENERATED_FILENAME_RE에서 해당 항목을 조정.
 
 SRC_EXTS = (
     ".ts", ".tsx", ".js", ".jsx",
@@ -49,7 +68,23 @@ SRC_EXTS = (
 SKIP_DIRS = {
     "node_modules", ".git", "dist", "build", "__pycache__", ".venv", "venv",
     "static", "vendor", "vendored",
+    "target",
+    ".pytest_cache", ".mypy_cache", ".tox", ".eggs",
+    ".next", ".nuxt", ".output", ".nitro", ".svelte-kit", ".turbo", ".parcel-cache",
+    "coverage", "storybook-static",
+    ".vs",
+    "DerivedData",
 }
+
+SKIP_DIR_PREFIXES = ("cmake-build-",)
+SKIP_DIR_SUFFIXES = (".egg-info",)
+
+
+def _is_skip_dir(name):
+    return name in SKIP_DIRS or name.startswith(SKIP_DIR_PREFIXES) or name.endswith(SKIP_DIR_SUFFIXES)
+
+
+GENERATED_FILENAME_RE = re.compile(r"\.min\.jsx?$|\.[0-9a-f]{8,20}\.jsx?$|\.d\.ts$", re.I)
 
 JS_EXTS = (".ts", ".tsx", ".js", ".jsx")
 C_LIKE_EXTS = (".c", ".h", ".cpp", ".cc", ".cxx", ".hpp")
@@ -84,9 +119,9 @@ SECRET_RE = re.compile(
 def find_src_files(repo_root):
     files = []
     for root, dirs, fnames in os.walk(repo_root):
-        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
+        dirs[:] = [d for d in dirs if not _is_skip_dir(d)]
         for f in fnames:
-            if f.endswith(SRC_EXTS):
+            if f.endswith(SRC_EXTS) and not GENERATED_FILENAME_RE.search(f):
                 files.append(os.path.join(root, f))
     return files
 

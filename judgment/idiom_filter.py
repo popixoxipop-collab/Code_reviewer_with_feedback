@@ -60,9 +60,39 @@ def resolve_lang(filename, content=None):
     return LANG_EXT_MAP.get(ext)
 
 
+# D195: _find_file_content가 갖고 있던 자체 하드코딩 스킵셋이 score_findings.py/
+#   cognition/two_tier_scan.py의 SKIP_DIRS보다 훨씬 짧아(.venv/venv/static/vendor/vendored조차
+#   없음) 같은 개념의 세 번째 불일치 지점이었음 — 전체 목록+접두/접미어 매칭으로 정렬.
+#   WHY: 스킵셋이 파일마다 다르면 같은 파이프라인 안에서 "score_findings가 무시한 산출물을
+#        .h c/cpp 재판정(D15)은 읽어버리는" 비대칭이 생김. 빌드 산출물 스킵 누락 보강(D195,
+#        score_findings.py의 같은 번호 주석 참고)과 같은 라운드에 세 곳을 동일 목록으로 맞춘다.
+#   COST: score_findings.py와 동일 상수의 의도적 중복 — `from score_findings import SKIP_DIRS,
+#        _is_skip_dir`는 score_findings.py:7이 이미 이 파일을 import하므로 순환 import가 되어
+#        불가(실측: 양방향 모두 "partially initialized module" ImportError). D13/D76이 같은
+#        이유로 상수 중복을 유지해온 이 저장소의 기존 컨벤션을 따른다.
+#   EXIT: 사용처가 더 늘거나 목록 갱신이 잦아져 세 사본이 어긋나기 시작하면 공용 constants
+#        모듈로 추출(D13 EXIT와 동일 조건).
+SKIP_DIRS = {
+    "node_modules", ".git", "dist", "build", "__pycache__", ".venv", "venv",
+    "static", "vendor", "vendored",
+    "target",
+    ".pytest_cache", ".mypy_cache", ".tox", ".eggs",
+    ".next", ".nuxt", ".output", ".nitro", ".svelte-kit", ".turbo", ".parcel-cache",
+    "coverage", "storybook-static",
+    ".vs",
+    "DerivedData",
+}
+SKIP_DIR_PREFIXES = ("cmake-build-",)
+SKIP_DIR_SUFFIXES = (".egg-info",)
+
+
+def _is_skip_dir(name):
+    return name in SKIP_DIRS or name.startswith(SKIP_DIR_PREFIXES) or name.endswith(SKIP_DIR_SUFFIXES)
+
+
 def _find_file_content(repo_root, filename):
     for root, dirs, fnames in os.walk(repo_root):
-        dirs[:] = [d for d in dirs if d not in {"node_modules", ".git", "dist", "build", "__pycache__"}]
+        dirs[:] = [d for d in dirs if not _is_skip_dir(d)]
         if filename in fnames:
             return open(os.path.join(root, filename), encoding="utf-8", errors="ignore").read()
     return None
