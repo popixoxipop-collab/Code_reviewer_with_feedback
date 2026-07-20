@@ -130,6 +130,9 @@
   .fld .fl{font-size:var(--fs-xs);font-weight:600;color:var(--c-text-2);margin-bottom:5px;display:block}
   .fld .fl .opt{color:var(--c-text-3);font-weight:400}
   .fld .inp{border:1px solid var(--c-border-strong);border-radius:var(--r-md);padding:9px 12px;font-size:var(--fs-sm);color:var(--c-text);background:#fff;width:100%}
+  .fld .inp:focus{outline:none;border-color:var(--c-primary)}
+  .formwrap{max-width:620px;margin:0 auto}
+  .fbar{display:flex;gap:var(--sp-2);align-items:center;margin-top:var(--sp-5);padding-top:var(--sp-4);border-top:1px solid var(--c-border)}
 
   /* 연결 설정 (trainee/submission.html과 동일 패턴 -- 같은 --c-* 변수라 그대로 호환) */
   .settings{background:var(--c-surface-2);border:1px solid var(--c-border);border-radius:var(--r-lg);margin-bottom:var(--sp-4)}
@@ -199,14 +202,23 @@
         </div>
       </div>
 
-      <!-- ============ 등록 · 분석 ============ -->
+      <!-- ============ 등록 ============ -->
       <div class="rpage" id="page-upload">
-        <div class="phead"><div class="crumb"><span class="back" data-nav="list">← 교안 목록</span></div><h2>교안 등록 · 분석</h2></div>
-        <div class="card" style="max-width:620px; padding:var(--sp-5);">
+        <div class="phead"><div class="crumb"><span class="back" data-nav="list">← 교안 목록</span></div><h2>교안 등록</h2></div>
+        <div class="formwrap">
           <div id="p01-input-container"></div>
+
+          <div class="fld" style="margin-top:var(--sp-4);">
+            <label class="fl">교안명 <span class="opt">· 선택, 비우면 파일명 사용</span></label>
+            <input class="inp" type="text" id="curriculum-title-input" placeholder="예: Kubernetes와 CICD">
+          </div>
+
           <div id="upload-error" class="warnbar hidden"></div>
-          <div style="display:flex; align-items:center; gap:10px; margin-top:14px;">
+          <div class="fnote">ℹ 실행하면 교안 분석(P01)이 바로 시작됩니다.</div>
+
+          <div class="fbar">
             <button class="btn" id="run-p01-btn">분석 실행</button>
+            <button class="btn ghost" data-nav="list">취소</button>
             <span id="status-p01" class="run-status"></span>
             <span id="timer-p01" class="run-timer"></span>
           </div>
@@ -444,9 +456,10 @@
           showUploadError(`교안 분석 실패: ${st.text || "알 수 없는 오류"}`);
           return;
         }
+        const typedTitle = document.getElementById("curriculum-title-input").value.trim();
         const entry = {
           id: String(state.nextId++),
-          title: lastPdfName ? lastPdfName.replace(/\.pdf$/i, "") : `교안 #${state.nextId - 1}`,
+          title: typedTitle || (lastPdfName ? lastPdfName.replace(/\.pdf$/i, "") : `교안 #${state.nextId - 1}`),
           result,
           analyzedAt: new Date(),
         };
