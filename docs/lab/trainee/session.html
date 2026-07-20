@@ -53,8 +53,11 @@
   .codetabs button { font-size: 11px; padding: 3px 8px; border-radius: 4px 4px 0 0; border: 0; background: var(--c-code-2); color: #9aa2bd; cursor: pointer; }
   .codetabs button.active { background: #3a4166; color: #e2e6f2; }
   .codebody { flex: 1; overflow: auto; padding: var(--sp-4); font-family: var(--mono); font-size: var(--fs-xs); line-height: 1.7; }
-  .codebody .ln { display: flex; gap: var(--sp-4); white-space: pre-wrap; word-break: break-all; }
-  .codebody .num { color: #565d78; user-select: none; width: 32px; text-align: right; flex: 0 0 auto; }
+  /* D198: 좌우 스크롤 지원 -- 이전엔 white-space:pre-wrap+word-break:break-all로 긴 줄을
+     강제로 줄바꿈해서 가로 스크롤이 발생할 여지 자체가 없었다. white-space:pre로 줄바꿈을
+     끄면 .codebody의 overflow:auto가 실제로 가로 스크롤바를 만든다. */
+  .codebody .ln { display: flex; gap: var(--sp-4); white-space: pre; }
+  .codebody .num { color: #565d78; user-select: none; width: 32px; text-align: right; flex: 0 0 auto; position: sticky; left: 0; background: var(--c-code); }
   .req { padding: var(--sp-3) var(--sp-4); border-top: 1px solid var(--c-code-2); font-family: var(--font); font-size: var(--fs-xs); color: #9aa2bd; }
   .req b { color: #c8cde0; }
 
@@ -145,7 +148,7 @@
         </div>
       </div>
       <div class="composer">
-        <textarea class="ta" id="answer-input" placeholder="답변을 입력하세요..." disabled></textarea>
+        <textarea class="ta" id="answer-input" placeholder="답변을 입력하세요... (Enter 제출 / Shift+Enter 줄바꿈)" disabled></textarea>
         <button class="send" id="send-btn" disabled>제출</button>
       </div>
       <div class="privacy">🔒 답변에 대한 평가·점수는 이 화면에 표시되지 않습니다. 세션 종료 후 결과 리포트에서 바로 확인할 수 있어요.</div>
@@ -309,13 +312,22 @@
     let pendingAnswerResolve = null;
     const answerInput = document.getElementById("answer-input");
     const sendBtn = document.getElementById("send-btn");
-    sendBtn.addEventListener("click", () => {
+    function submitAnswer() {
       const val = answerInput.value.trim();
       if (!val || !pendingAnswerResolve) return;
       answerInput.disabled = true; sendBtn.disabled = true;
       const resolve = pendingAnswerResolve;
       pendingAnswerResolve = null;
       resolve(val);
+    }
+    sendBtn.addEventListener("click", submitAnswer);
+    // D198: Enter 제출 / Shift+Enter 줄바꿈. e.isComposing으로 한글 등 IME 조합 중
+    // Enter(조합 확정용)를 답변 제출로 오인하지 않도록 함.
+    answerInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey && !e.isComposing) {
+        e.preventDefault();
+        submitAnswer();
+      }
     });
 
     const hooks = {

@@ -34,6 +34,18 @@
 
   .fallback { max-width: 480px; margin: var(--sp-8) auto; text-align: center; }
   .fallback .cta { display: inline-block; background: var(--c-primary); color: #fff; border-radius: var(--r-md); padding: 10px 20px; font-weight: 600; margin-top: var(--sp-4); }
+
+  /* D198: 문답 원문 보기 -- 기본적으로 닫혀있는 <details> (open 속성 없음). */
+  #transcript-card summary { cursor: pointer; list-style: none; }
+  #transcript-card summary::-webkit-details-marker { display: none; }
+  #transcript-card summary .lbl { margin-bottom: 0; }
+  #transcript-card summary .lbl::after { content: "▸"; margin-left: auto; color: var(--c-text-3); font-size: 11px; }
+  #transcript-card[open] summary .lbl::after { content: "▾"; }
+  #transcript-card .tturn { padding: var(--sp-3) 0; border-top: 1px solid var(--c-border); }
+  #transcript-card .tturn:first-child { border-top: none; padding-top: var(--sp-3); }
+  #transcript-card .tmeta { font-size: 11px; font-weight: 700; color: var(--c-text-3); margin-bottom: 4px; text-transform: uppercase; letter-spacing: .03em; }
+  #transcript-card .tq { font-size: var(--fs-sm); font-weight: 600; color: var(--c-text); white-space: pre-wrap; }
+  #transcript-card .tans { font-size: var(--fs-sm); color: var(--c-text-2); white-space: pre-wrap; margin-top: 4px; }
 </style>
 </head>
 <body>
@@ -74,6 +86,11 @@
       <div id="untested-axes"></div>
     </div>
 
+    <details class="rcard" id="transcript-card">
+      <summary><div class="lbl">문답 원문 보기</div></summary>
+      <div id="transcript-turns" style="margin-top:var(--sp-3);"></div>
+    </details>
+
     <div class="privacy" id="rubric-note"></div>
     <div class="privacy">🔒 실시간 세션 중에는 이 점수가 표시되지 않았습니다 -- 팀 테스트 목적상 채점 완료 직후에만 공개됩니다.</div>
     <div class="actions"><a href="submission.html">새 코드 제출하기</a></div>
@@ -88,6 +105,28 @@
   // teammates verifying the pipeline itself works correctly, not trainees being graded,
   // so immediate score visibility is the real requirement here (explicit user request).
   const GOOD_THRESHOLD = 4;
+  const LEVEL_LABEL = { l1: "L1", l2: "L2", l3: "L3", reflection: "Reflection" };
+  const VERDICT_LABEL = { surface: "표면", partial: "부분", defended: "방어" };
+
+  // D198: 문답 원문 -- session.html에서 진행된 턴 전체(transcript)를 <details>로 접어서
+  // 기본 닫힘 상태로 제공. result.transcript는 p03-engine.js의 run() 반환값에 이미
+  // 그대로 들어있고 session-state.js가 필드를 걸러내지 않으므로 그대로 렌더한다.
+  function renderTranscript(transcript) {
+    const container = document.getElementById("transcript-turns");
+    container.innerHTML = "";
+    (transcript || []).forEach((t, i) => {
+      const turn = document.createElement("div");
+      turn.className = "tturn";
+      const meta = document.createElement("div");
+      meta.className = "tmeta";
+      const verdict = t.classification && t.classification.verdict;
+      meta.textContent = `${i + 1}턴 · ${LEVEL_LABEL[t.level] || t.level}${verdict ? ` · 판정: ${VERDICT_LABEL[verdict] || verdict}` : ""}`;
+      const q = document.createElement("p"); q.className = "tq"; q.textContent = `Q. ${t.question}`;
+      const a = document.createElement("p"); a.className = "tans"; a.textContent = `A. ${t.answer}`;
+      turn.appendChild(meta); turn.appendChild(q); turn.appendChild(a);
+      container.appendChild(turn);
+    });
+  }
 
   function axisBlock(axis, grade) {
     const div = document.createElement("div");
@@ -149,6 +188,8 @@
 
     document.getElementById("rubric-note").textContent =
       `5축 루브릭 · FR-04-01${result.rubric_overridden ? " · 이 세션은 오버라이드된 루브릭으로 채점됨" : ""}`;
+
+    renderTranscript(result.transcript);
   }
 
   document.addEventListener("DOMContentLoaded", () => {
