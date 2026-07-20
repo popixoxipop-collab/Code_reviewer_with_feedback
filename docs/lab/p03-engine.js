@@ -215,7 +215,10 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     return { start, resume, pause, stop };
   }
 
-  function buildLevelPrompt(level, finding, codeContext, transcript, classification, extraBanned) {
+  // D199: `classification` param dropped -- verdict_note is now the FULL turn-by-turn
+  // trail (buildVerdictTrail(transcript)), not just the immediately preceding turn's
+  // verdict. See buildVerdictTrail()'s comment for why.
+  function buildLevelPrompt(level, finding, codeContext, transcript, extraBanned) {
     const codeBlock = codeContext ? `\n## 실제 코드\n\`\`\`\n${codeContext}\n\`\`\`\n` : "";
     const headerStage = LabApp.getStage("p03", "p03-1");
     const header = LabApp.fillTemplate(headerStage.shared_header, { finding_text: finding.finding || "", finding_file: finding.file || "", code_block: codeBlock });
@@ -223,7 +226,7 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     if (level === "l1") return header + LabApp.resolveTemplate("p03", "p03-1", "level_template");
 
     const transcriptText = transcript.map((t) => `[${t.level.toUpperCase()}] 질문: ${t.question}\n[${t.level.toUpperCase()}] 학생 답변: ${t.answer}`).join("\n");
-    const verdictNote = { surface: "표면적(근거·구체성 부족)", partial: "부분적(일부 근거는 있으나 아직 충분히 깊지 않음)" }[classification.verdict] || classification.verdict;
+    const verdictNote = buildVerdictTrail(transcript);
     const stageId = { l2: "p03-2", l3: "p03-3", reflection: "p03-4" }[level];
     let prompt = header + LabApp.fillTemplate(LabApp.resolveTemplate("p03", stageId, "level_template"), { transcript: transcriptText, verdict_note: verdictNote });
     // D190: only non-empty on a dedup-triggered retry within the SAME level (see
@@ -277,10 +280,70 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     return union === 0 ? 0 : intersection / union;
   }
 
+  // D199: trainee가 실제 세션에서 목격한 재발(스크린샷) -- L1 질문 전체(전제 설명+실제
+  // 질문 문장) 대비 L2 질문이 L1의 "질문:" 이후 문장을 글자 그대로 반복. 실측 결과
+  // ngramJaccard(L1,L2) = 0.4556로 DEDUP_JACCARD_THRESHOLD(0.5) 바로 아래라 D190의
+  // 가드가 아예 재시도를 시도하지도 않았음(콘솔에도 경고 없음, 무한루프 방지 로직이
+  // 작동한 게 아니라 애초에 "겹침"으로 감지가 안 된 것).
+  //   WHY: 근본 원인은 union 기반 Jaccard가 두 문자열 길이가 크게 다를 때(이번 케이스
+  //   L2가 L1의 39% 길이) 완전 포함 관계여도 union이 커져 비율이 희석됨 -- 실측
+  //   normalizeForDedup(L1).includes(normalizeForDedup(L2)) === true (L2가 L1의 완전한
+  //   부분문자열)인데 Jaccard는 0.4556. Overlap coefficient(교집합/min(|A|,|B|))는 정확히
+  //   이런 "포함 관계" 중복을 길이 비대칭과 무관하게 잡도록 설계된 지표 -- 같은 쌍에서
+  //   1.0000 측정. D190의 기존 anchor(진짜중복 0.92/1.0, 정상 0.06~0.22)는 "비슷한
+  //   길이의 거의 동일한 문장" 패턴만 다뤘고, "짧은 질문이 긴 질문의 부분집합" 패턴은
+  //   D190 실측 범위 밖이었다 -- 이번 재발은 D190을 뒤집는 게 아니라 D190이 안 보던
+  //   실패모드를 새로 커버하는 것.
+  //   COST: OVERLAP_COEFFICIENT_THRESHOLD(0.8)는 이번 재발 케이스(1.0)만 실측 anchor로
+  //   보정된 값 -- D188/D190처럼 "정상 케이스"의 overlap coefficient 실측 anchor는 아직
+  //   없음(unmeasured/provisional, CLAUDE.md 데이터우선주의 명시 위반 방지 차원에서
+  //   일부러 매우 보수적으로 0.8로 잡음 -- 완전 포함에 가까운 경우만 잡고, 단순히 같은
+  //   finding/파일명을 반복 언급하는 정상적인 후속 질문까지 오탐할 가능성은 낮지만
+  //   보장은 안 됨). 오탐 시 재생성 API 호출 추가(레이턴시+비용).
+  //   EXIT: 정상 케이스에서 오탐이 재현되면 이 세션 로그에서 실측 anchor를 뽑아
+  //   OVERLAP_COEFFICIENT_THRESHOLD를 재보정. 근본 원인(모델이 지시 무시하고 이전
+  //   질문의 핵심 문장을 그대로 재사용)은 여전히 프롬프트 차원 해법(D188)이 1차 방어,
+  //   이 가드는 2차 방어(defense-in-depth)일 뿐.
+  const OVERLAP_COEFFICIENT_THRESHOLD = 0.8;
+
+  // intersection / min(|A|,|B|) -- union 대신 더 작은 쪽 크기로 나눠서, 짧은 문자열이
+  // 긴 문자열에 완전히 포함되는 경우 길이 차이와 무관하게 1.0에 가깝게 나오도록 함.
+  function ngramOverlapCoefficient(a, b, n = 3) {
+    const na = normalizeForDedup(a), nb = normalizeForDedup(b);
+    if (na.length < n || nb.length < n) return na === nb ? 1 : 0;
+    const gramsA = new Set(); for (let i = 0; i <= na.length - n; i++) gramsA.add(na.slice(i, i + n));
+    const gramsB = new Set(); for (let i = 0; i <= nb.length - n; i++) gramsB.add(nb.slice(i, i + n));
+    let intersection = 0;
+    for (const g of gramsA) if (gramsB.has(g)) intersection++;
+    const minSize = Math.min(gramsA.size, gramsB.size);
+    return minSize === 0 ? 0 : intersection / minSize;
+  }
+
+  function isDuplicateQuestion(candidate, prior) {
+    return ngramJaccard(candidate, prior) >= DEDUP_JACCARD_THRESHOLD
+      || ngramOverlapCoefficient(candidate, prior) >= OVERLAP_COEFFICIENT_THRESHOLD;
+  }
+
+  // D199: 매 턴 질문 생성 시 그 시점까지 실제로 쌓인 transcript 전체(각 턴의 level +
+  // classification.verdict)에서 직접 파생 -- 예전엔 run()이 "바로 직전 턴 하나"의
+  // classification만 별도 파라미터로 넘겨받아 verdict_note를 만들었는데, transcript
+  // 자체가 이미 모든 턴의 classification을 갖고 있으므로 그 정보가 중복 전달되고
+  // 있었을 뿐이었다. L3/Reflection 생성 시점에 "L1은 부분적, L2는 표면적"처럼 지금까지의
+  // 판정 흐름 전체를 프롬프트에 보여주면, 모델이 "이미 이 각도로 찔러봤다"는 걸 판정
+  // 이력만으로도 더 명확히 인지해서 같은 각도의 질문을 반복할 유인이 준다(요청自
+  // 근거: 중복 질문 완화 목적).
+  function buildVerdictTrail(transcript) {
+    const LABEL = { surface: "표면적(근거·구체성 부족)", partial: "부분적(일부 근거는 있으나 아직 충분히 깊지 않음)", defended: "방어됨" };
+    return transcript.map((t) => `${t.level.toUpperCase()}=${LABEL[t.classification.verdict] || t.classification.verdict}`).join(", ");
+  }
+
   // Change #1: takes `model` explicitly (was module-level selectedModel fallback).
   // D190: adds `onProgress` (optional) to surface dedup-retry warnings the same way other
   // unusual-but-handled conditions already do (e.g. the elevated-traffic warning in run()).
-  async function generateQuestion(level, finding, codeContext, transcript, classification, maxAttempts, model, onProgress) {
+  // D199: dropped the separate `classification` param -- buildLevelPrompt() now derives the
+  // cumulative verdict trail from `transcript` itself (which already carries every turn's
+  // classification), so passing "just the last one" separately was redundant duplication.
+  async function generateQuestion(level, finding, codeContext, transcript, maxAttempts, model, onProgress) {
     // D182: falls through to the top-level toggle (model) -- p03-1 has no manifest `model`
     // param at all (never did), so this was already effectively "shared default only"
     // before; now it's "toggle" instead.
@@ -289,10 +352,10 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     const priorQuestions = transcript.map((t) => t.question);
     const rejected = [];
     for (let attempt = 0; attempt <= DEDUP_MAX_RETRIES; attempt++) {
-      const prompt = buildLevelPrompt(level, finding, codeContext, transcript, classification, rejected);
+      const prompt = buildLevelPrompt(level, finding, codeContext, transcript, rejected);
       const result = await LabLLM.chatTool({ model: resolvedModel, messages: [{ role: "user", content: prompt }], tool, maxTokens: 2048, maxAttempts });
       const candidate = result.question;
-      const dupOf = priorQuestions.find((q) => ngramJaccard(candidate, q) >= DEDUP_JACCARD_THRESHOLD);
+      const dupOf = priorQuestions.find((q) => isDuplicateQuestion(candidate, q));
       if (!dupOf) return candidate;
       if (attempt === DEDUP_MAX_RETRIES) {
         if (onProgress) onProgress(`⚠ ${level.toUpperCase()} 질문이 이전 질문과 유사해 보이지만 재생성 한도(${DEDUP_MAX_RETRIES}회) 소진 — 그대로 진행`);
@@ -413,9 +476,11 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
   }
 
   // Change #1/#2/#3/#4/#6/#7/#8 -- see file header for the full mapping. Turn-loop
-  // sequencing itself (prevClassification feeding the next question, the verdict sentinel
-  // defaulting to "exhausted_at_cap" and only flipping on an in-loop break, `last` always
-  // being whichever turn the loop actually stopped on) is untouched.
+  // sequencing itself (the verdict sentinel defaulting to "exhausted_at_cap" and only
+  // flipping on an in-loop break) is untouched. D199 removed the old prevClassification
+  // hand-off to generateQuestion() -- transcript already carries every turn's
+  // classification, so that separate variable was redundant (see generateQuestion()'s
+  // D199 comment).
   //
   // input: { finding, codeContexts, model }
   // hooks: { onStatus(text,kind), onProgress(msg), onRunStart(), onRunEnd(elapsedMs),
@@ -499,11 +564,12 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
 
       for (let i = 0; i < totalTurns; i++) {
         const level = LEVELS[i];
-        const prevClassification = transcript.length ? transcript[transcript.length - 1].classification : null;
         const genAttemptInfo = await resolveMaxAttempts();
         if (genAttemptInfo.elevated) hooks.onProgress(`⚠ 현재 트래픽 ${genAttemptInfo.count}/${genAttemptInfo.threshold}${genAttemptInfo.scopeNote} -- 재시도 여유를 ${ELEVATED_MAX_ATTEMPTS}회로 늘려서 요청`);
         hooks.onProgress(`${level.toUpperCase()} 질문 생성 중...`);
-        const question = await generateQuestion(level, finding, codeContext, transcript, prevClassification, genAttemptInfo.maxAttempts, model, hooks.onProgress);
+        // D199: transcript already carries every turn's classification -- generateQuestion()
+        // derives the cumulative verdict trail from it directly, no separate param needed.
+        const question = await generateQuestion(level, finding, codeContext, transcript, genAttemptInfo.maxAttempts, model, hooks.onProgress);
         hooks.onQuestion({ level, question, turnIndex: i, totalTurns });
         hooks.onProgress("답변 대기 중...");
         hooks.countdown.resume(); // D182: only start ticking once the human can actually see+answer this question

@@ -349,7 +349,10 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     if (el) { el.textContent = ""; el.classList.remove("p03-countdown-over"); }
   }
 
-  function buildLevelPrompt(level, finding, codeContext, transcript, classification, extraBanned) {
+  // D199 (mirrors p03-engine.js): `classification` param dropped -- verdict_note is now
+  // the full turn-by-turn trail (buildVerdictTrail(transcript)), not just the immediately
+  // preceding turn's verdict.
+  function buildLevelPrompt(level, finding, codeContext, transcript, extraBanned) {
     const codeBlock = codeContext ? `\n## 실제 코드\n\`\`\`\n${codeContext}\n\`\`\`\n` : "";
     const headerStage = LabApp.getStage("p03", "p03-1");
     const header = LabApp.fillTemplate(headerStage.shared_header, { finding_text: finding.finding || "", finding_file: finding.file || "", code_block: codeBlock });
@@ -357,7 +360,7 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     if (level === "l1") return header + LabApp.resolveTemplate("p03", "p03-1", "level_template");
 
     const transcriptText = transcript.map((t) => `[${t.level.toUpperCase()}] 질문: ${t.question}\n[${t.level.toUpperCase()}] 학생 답변: ${t.answer}`).join("\n");
-    const verdictNote = { surface: "표면적(근거·구체성 부족)", partial: "부분적(일부 근거는 있으나 아직 충분히 깊지 않음)" }[classification.verdict] || classification.verdict;
+    const verdictNote = buildVerdictTrail(transcript);
     const stageId = { l2: "p03-2", l3: "p03-3", reflection: "p03-4" }[level];
     let prompt = header + LabApp.fillTemplate(LabApp.resolveTemplate("p03", stageId, "level_template"), { transcript: transcriptText, verdict_note: verdictNote });
     // D190 (see p03-engine.js for the full WHY/COST/EXIT -- same fix, mirrored here):
@@ -391,7 +394,44 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     return union === 0 ? 0 : intersection / union;
   }
 
-  async function generateQuestion(level, finding, codeContext, transcript, classification, maxAttempts) {
+  // D199 (mirrors p03-engine.js -- see its comment for the full measured WHY/COST/EXIT):
+  // union-based Jaccard dilutes toward 0 when a duplicate question is a shorter, near-total
+  // subset of a longer prior one (a real trainee session hit exactly this: Jaccard=0.4556,
+  // just under the 0.5 threshold, for a pair where the shorter question was a literal
+  // substring of the longer one). Overlap coefficient (intersection/min instead of union)
+  // catches full-containment duplicates regardless of length asymmetry (measured 1.0 on
+  // that same pair). OVERLAP_COEFFICIENT_THRESHOLD=0.8 is unmeasured/provisional beyond
+  // that one anchor point -- deliberately conservative to avoid false-positiving on
+  // legitimately different follow-up questions that happen to share boilerplate phrasing.
+  const OVERLAP_COEFFICIENT_THRESHOLD = 0.8;
+
+  function ngramOverlapCoefficient(a, b, n = 3) {
+    const na = normalizeForDedup(a), nb = normalizeForDedup(b);
+    if (na.length < n || nb.length < n) return na === nb ? 1 : 0;
+    const gramsA = new Set(); for (let i = 0; i <= na.length - n; i++) gramsA.add(na.slice(i, i + n));
+    const gramsB = new Set(); for (let i = 0; i <= nb.length - n; i++) gramsB.add(nb.slice(i, i + n));
+    let intersection = 0;
+    for (const g of gramsA) if (gramsB.has(g)) intersection++;
+    const minSize = Math.min(gramsA.size, gramsB.size);
+    return minSize === 0 ? 0 : intersection / minSize;
+  }
+
+  function isDuplicateQuestion(candidate, prior) {
+    return ngramJaccard(candidate, prior) >= DEDUP_JACCARD_THRESHOLD
+      || ngramOverlapCoefficient(candidate, prior) >= OVERLAP_COEFFICIENT_THRESHOLD;
+  }
+
+  // D199 (mirrors p03-engine.js): derives the cumulative verdict trail directly from
+  // `transcript` (every turn's level + classification.verdict so far), replacing the old
+  // single "last turn only" classification param that used to be threaded through
+  // generateQuestion()/buildLevelPrompt() separately.
+  function buildVerdictTrail(transcript) {
+    const LABEL = { surface: "표면적(근거·구체성 부족)", partial: "부분적(일부 근거는 있으나 아직 충분히 깊지 않음)", defended: "방어됨" };
+    return transcript.map((t) => `${t.level.toUpperCase()}=${LABEL[t.classification.verdict] || t.classification.verdict}`).join(", ");
+  }
+
+  // D199: dropped the separate `classification` param -- see buildVerdictTrail() above.
+  async function generateQuestion(level, finding, codeContext, transcript, maxAttempts) {
     // D182: falls through to the top-level toggle (selectedModel) now, same precedence as
     // P01's model resolution -- p03-1 has no manifest `model` param at all (never did), so
     // this was already effectively "shared default only" before; now it's "toggle" instead.
@@ -400,10 +440,10 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     const priorQuestions = transcript.map((t) => t.question);
     const rejected = [];
     for (let attempt = 0; attempt <= DEDUP_MAX_RETRIES; attempt++) {
-      const prompt = buildLevelPrompt(level, finding, codeContext, transcript, classification, rejected);
+      const prompt = buildLevelPrompt(level, finding, codeContext, transcript, rejected);
       const result = await LabLLM.chatTool({ model, messages: [{ role: "user", content: prompt }], tool, maxTokens: 2048, maxAttempts });
       const candidate = result.question;
-      const dupOf = priorQuestions.find((q) => ngramJaccard(candidate, q) >= DEDUP_JACCARD_THRESHOLD);
+      const dupOf = priorQuestions.find((q) => isDuplicateQuestion(candidate, q));
       if (!dupOf) return candidate;
       if (attempt === DEDUP_MAX_RETRIES) {
         LabApp.log("p03", `⚠ ${level.toUpperCase()} 질문이 이전 질문과 유사해 보이지만 재생성 한도(${DEDUP_MAX_RETRIES}회) 소진 — 그대로 진행`);
@@ -583,10 +623,11 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
       for (let i = 0; i < totalTurns; i++) {
         const level = LEVELS[i];
         document.getElementById("p03-progress").textContent = `질문 ${i + 1}/${totalTurns}`;
-        const prevClassification = transcript.length ? transcript[transcript.length - 1].classification : null;
         const genAttempts = await resolveMaxAttempts(pipelineId);
         LabApp.log(pipelineId, `${level.toUpperCase()} 질문 생성 중...`);
-        const question = await generateQuestion(level, selectedFinding, codeContext, transcript, prevClassification, genAttempts);
+        // D199 (mirrors p03-engine.js): transcript already carries every turn's
+        // classification -- generateQuestion() derives the cumulative verdict trail from it.
+        const question = await generateQuestion(level, selectedFinding, codeContext, transcript, genAttempts);
         appendTranscriptEntry(level, question, null);
         LabApp.log(pipelineId, "답변 대기 중...");
         resumeCountdown(); // D182: only start ticking once the human can actually see+answer this question

@@ -337,6 +337,11 @@
       onProgress(msg) {
         console.log("[P03]", msg);
         if (/질문 생성|재생성/.test(msg)) showTypingIndicator();
+        // D199: dedup-retry / elevated-traffic warnings were only ever console.log'd --
+        // invisible to a trainee not watching devtools, even when the guard actually did
+        // fire and retry. "⚠" already marks exactly these "you should know about this"
+        // messages elsewhere in the engine (same prefix convention), so surface them here.
+        if (msg.startsWith("⚠")) appendBubble("sys", msg);
       },
       onRunStart() {
         document.getElementById("model-bar").classList.add("locked");
