@@ -143,6 +143,10 @@
   .auth-status{font-size:var(--fs-xs);color:var(--c-text-3);margin-left:auto}
   .auth-status.ok{color:var(--c-success)}
   .remember{display:flex;align-items:center;gap:var(--sp-2);font-size:var(--fs-xs);color:var(--c-text-2)}
+  .login-row{display:flex;align-items:center;gap:var(--sp-2)}
+  .login-btn,.logout-btn{border:1px solid var(--c-border-strong);background:#fff;color:var(--c-text-2);border-radius:var(--r-md);padding:7px 12px;font-size:var(--fs-xs);cursor:pointer}
+  .login-btn.hidden,.logout-btn.hidden{display:none}
+  .login-status{font-size:var(--fs-xs);color:var(--c-text-3)}
 
   /* 실행 상태 / 모델 토글 / 로그 -- Team-IZ 원본엔 없는, 이 페이지 고유의 실행 UI */
   .run-status{font-size:var(--fs-xs);color:var(--c-text-3)}
@@ -178,6 +182,12 @@
           <div class="fld"><label class="fl">NVIDIA API 키 <span class="opt">· P01(교안 분석) 실행에 필요</span></label><input class="inp" type="password" id="nvidia-key" placeholder="nvapi-..."></div>
           <div class="fld"><label class="fl">프록시 URL</label><input class="inp" type="text" id="proxy-url"></div>
           <label class="remember"><input type="checkbox" id="remember-session" checked> 이 탭에서 기억하기</label>
+          <div class="login-row">
+            <button class="login-btn hidden" id="google-login-btn" type="button">Google로 로그인</button>
+            <button class="logout-btn hidden" id="logout-btn" type="button">로그아웃</button>
+            <span class="login-status" id="login-status"></span>
+          </div>
+          <div class="fnote" style="margin:0;">ℹ 로그인하면 완료된 교안 분석이 팀 DB에 저장되고, 새로고침·다른 기기·다른 팀원 화면에서도 이어서 볼 수 있습니다. 로그인 없이도 분석 자체는 그대로 실행되고, 이 브라우저 탭에서만 유지됩니다.</div>
         </div>
       </details>
 
@@ -307,6 +317,57 @@
       state.nextId = parsed.nextId || (state.curricula.length + 1);
     } catch (err) {
       console.warn("교안 세션 복원 실패:", err);
+    }
+  }
+
+  // p01-runner.js's own maybeSaveRun() (unmodified, called inside P01Runner.run()) already
+  // writes unit_map/graph/questions to the shared team DB whenever LabDB is configured
+  // (always true -- config.js hardcodes the team project) AND the user is logged in. RLS
+  // (experiments/web_lab/supabase_schema.sql: "runs read all"/"artifacts read all") lets
+  // any authenticated team member read every p01 run, not just their own -- so once logged
+  // in, this reconstructs state.curricula from the DB instead of just this tab's memory.
+  // Reassembles the shape P01Runner.run() itself builds (see its result literal) from the
+  // separate artifacts rows + input_meta columns saveRun() split them into.
+  function rowToEntry(row) {
+    const byKind = {};
+    for (const a of row.artifacts || []) byKind[a.kind] = a.content;
+    const meta = row.input_meta || {};
+    const failedCount = meta.failed_chunk_count || 0;
+    return {
+      id: row.id,
+      title: meta.source_filename ? String(meta.source_filename).replace(/\.pdf$/i, "") : `교안 (${String(row.id).slice(0, 8)})`,
+      result: {
+        unit_map: byKind.unit_map || {},
+        graph: byKind.graph || null,
+        graph_generated: Boolean(meta.graph_generated),
+        questions: byKind.questions || { questions: [] },
+        chunk_count: meta.chunk_count || 0,
+        extractor: meta.extractor || "pdfjs",
+        // Only the count is stored in input_meta (no failed_chunks artifact) -- synthesize
+        // placeholders so the existing render code's `.length` checks still work; nothing
+        // reads individual entries of this array for DB-sourced rows.
+        failed_chunks: Array.from({ length: failedCount }, () => ({})),
+      },
+      analyzedAt: new Date(row.started_at),
+    };
+  }
+
+  async function refreshFromDB() {
+    if (!window.LabDB || !LabDB.isConfigured()) return;
+    const user = await LabDB.currentMemberOrNull().catch(() => null);
+    if (!user) return;
+    try {
+      const c = await LabDB.ensureClient();
+      const { data, error } = await c
+        .from("runs").select("*, artifacts(kind, content, truncated)")
+        .eq("pipeline", "p01").order("started_at", { ascending: false }).limit(50);
+      if (error) throw error;
+      state.curricula = (data || []).map(rowToEntry);
+      if (state.selectedId && !state.curricula.some((c) => c.id === state.selectedId)) state.selectedId = null;
+      persistSession();
+      route(); // re-render whichever tab is currently on screen with the DB-backed list
+    } catch (err) {
+      console.warn("DB에서 교안 목록 불러오기 실패(로컬 캐시 유지):", err);
     }
   }
 
@@ -500,6 +561,11 @@
         state.selectedUnitId = null;
         persistSession();
         location.hash = "structure";
+        // p01-runner.js's own run() already awaited its internal maybeSaveRun() before
+        // resolving -- if logged in, the DB row (with its real UUID) already exists by
+        // now, so this supersedes the local temp `entry` above with the DB-backed list.
+        // If not logged in, refreshFromDB() is a no-op and the local entry stands alone.
+        refreshFromDB();
       } finally {
         btn.disabled = false;
       }
@@ -511,6 +577,7 @@
     await LabApp.loadManifest();
     wireP01Upload();
     route();
+    refreshFromDB();
   });
 })();
 </script>
