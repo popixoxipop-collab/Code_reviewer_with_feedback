@@ -235,11 +235,18 @@
           "title": "5축 채점",
           "kind": "prompt",
           "function": "build_grading_prompt() + _rubric_block()",
-          "user_template": "다음은 코드리뷰 인터뷰의 한 Decision Point에 대한 학생 답변이다. 아래 5축 루브릭의 레벨 설명을 근거로 삼아 답변을 채점하라. 루브릭에 없는 기준을 새로 만들지 말고, 반드시 아래 레벨 설명과 답변 내용을 직접 대조해서 근거를 남겨라. 답변이 질문과 무관하거나 텅 비어 있으면 해당 축은 1점을 주고 그 사실을 근거에 그대로 적어라.\n\n{rubric_block}\n\nfinding: {finding_text}\nfile: {finding_file}\n질문: {question}\n학생 답변: {answer}",
-          "required_placeholders": ["rubric_block", "finding_text", "question", "answer"],
+          "user_template": "다음은 코드리뷰 인터뷰에서 실제로 진행된 턴들의 전체 기록이다 (레벨별 목적: L1=설계 의도, L2=트레이드오프 반례, L3=극단 시나리오, REFLECTION=자기 수정). 아래 5축 루브릭의 레벨 설명을 근거로 삼아 채점하라. 각 축 제목 옆에 표시된 '근거 턴'에 해당하는 레벨의 턴만 그 축의 근거로 사용하고, 다른 레벨의 내용을 그 축의 근거로 삼지 마라. 루브릭에 없는 기준을 새로 만들지 말고, 반드시 레벨 설명과 답변 내용을 직접 대조해서 근거를 남겨라. 근거 턴에서 답변이 질문과 무관하거나 텅 비어 있으면 해당 축은 1점을 주고 그 사실을 근거에 그대로 적어라.\n\n{rubric_block}\n\n{axis_guidance_block}\n\nfinding: {finding_text}\nfile: {finding_file}\n\n## 진행된 턴 전체 기록\n{transcript_block}",
+          "required_placeholders": ["rubric_block", "axis_guidance_block", "finding_text", "transcript_block"],
           "optional_placeholders": ["finding_file"],
-          "note": "rubric_block은 아래 rubric 5축×5레벨 텍스트에서 렌더링됨. 편집 시 run 기록에 rubric_overridden=true로 표시되어, 다른 회차/팀원과의 비교가 자동으로는 섞이지 않게 함.",
+          "note": "rubric_block은 아래 rubric 5축×5레벨 텍스트에서, 이번 세션에 실제로 도달한 레벨(axis_level_map 기준)에 해당하는 축만 필터링되어 렌더링됨. axis_guidance_block은 어떤 축이 이번 세션에서 채점 대상인지/제외됐는지를 명시. 편집 시 run 기록에 rubric_overridden=true로 표시되어, 다른 회차/팀원과의 비교가 자동으로는 섞이지 않게 함.",
           "rubric_overridable": true,
+          "axis_level_map": {
+            "코드_이해": ["l1"],
+            "반례_대응": ["l2", "l3"],
+            "대안_비교": ["l2", "l3"],
+            "설계_논리": ["l1"],
+            "자기_수정": ["reflection"]
+          },
           "rubric": {
             "코드_이해": {
               "5": "구성 요소 간 관계와 데이터 흐름을 정확히 설명",

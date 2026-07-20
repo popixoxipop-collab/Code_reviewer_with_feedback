@@ -16,6 +16,10 @@
   .rcard .lbl .dot { width: 8px; height: 8px; border-radius: 50%; }
   .rcard.good .lbl { color: var(--c-success); } .rcard.good .lbl .dot { background: var(--c-success); }
   .rcard.weak .lbl { color: var(--c-warning); } .rcard.weak .lbl .dot { background: var(--c-warning); }
+  /* D197: axes whose mapped level was never reached (e.g. an early `defended` at L1 skips
+     L2/L3/Reflection entirely) -- distinct from "weak" so an early successful defense
+     doesn't visually read as rubric failure. See p03-engine.js's D197 comment. */
+  .rcard.untested .lbl { color: var(--c-text-3); } .rcard.untested .lbl .dot { background: var(--c-text-3); }
   .axisblock { margin-bottom: var(--sp-3); }
   .axisblock:last-child { margin-bottom: 0; }
   .rcard .axis { display: inline-block; font-size: 11px; font-weight: 600; background: var(--c-surface-2); border: 1px solid var(--c-border); border-radius: 20px; padding: 2px 10px; margin: 2px 6px 4px 0; color: var(--c-text-2); }
@@ -65,6 +69,11 @@
       <div id="weak-axes"></div>
     </div>
 
+    <div class="rcard untested hidden" id="untested-card">
+      <div class="lbl"><span class="dot"></span>미검증 (해당 레벨까지 도달하지 않음)</div>
+      <div id="untested-axes"></div>
+    </div>
+
     <div class="privacy" id="rubric-note"></div>
     <div class="privacy">🔒 실시간 세션 중에는 이 점수가 표시되지 않았습니다 -- 팀 테스트 목적상 채점 완료 직후에만 공개됩니다.</div>
     <div class="actions"><a href="submission.html">새 코드 제출하기</a></div>
@@ -84,7 +93,10 @@
     const div = document.createElement("div");
     div.className = "axisblock";
     const chip = document.createElement("span"); chip.className = "axis"; chip.textContent = axis;
-    const score = document.createElement("span"); score.className = "score"; score.textContent = `${grade.score}점`;
+    const score = document.createElement("span"); score.className = "score";
+    // D197: `tested === false` marks axes whose mapped level never ran this session
+    // (deterministic placeholder from gradeAnswer(), not an LLM score).
+    score.textContent = grade.tested === false ? "미검증" : `${grade.score}점`;
     div.appendChild(chip); div.appendChild(score);
     const p = document.createElement("p"); p.textContent = grade.evidence || "";
     div.appendChild(p);
@@ -121,13 +133,19 @@
 
     const goodEl = document.getElementById("good-axes");
     const weakEl = document.getElementById("weak-axes");
-    let hasGood = false, hasWeak = false;
+    const untestedEl = document.getElementById("untested-axes");
+    let hasGood = false, hasWeak = false, hasUntested = false;
+    // D197: `tested === false` (new placeholder shape) must be checked first -- legacy
+    // rows saved before this fix never set `tested`, so `undefined !== false` and they
+    // fall through to the existing good/weak logic unchanged (no migration needed).
     Object.entries(result.grades).forEach(([axis, grade]) => {
-      if (grade.score >= GOOD_THRESHOLD) { goodEl.appendChild(axisBlock(axis, grade)); hasGood = true; }
+      if (grade.tested === false) { untestedEl.appendChild(axisBlock(axis, grade)); hasUntested = true; }
+      else if (grade.score >= GOOD_THRESHOLD) { goodEl.appendChild(axisBlock(axis, grade)); hasGood = true; }
       else { weakEl.appendChild(axisBlock(axis, grade)); hasWeak = true; }
     });
     document.getElementById("good-card").classList.toggle("hidden", !hasGood);
     document.getElementById("weak-card").classList.toggle("hidden", !hasWeak);
+    document.getElementById("untested-card").classList.toggle("hidden", !hasUntested);
 
     document.getElementById("rubric-note").textContent =
       `5축 루브릭 · FR-04-01${result.rubric_overridden ? " · 이 세션은 오버라이드된 루브릭으로 채점됨" : ""}`;

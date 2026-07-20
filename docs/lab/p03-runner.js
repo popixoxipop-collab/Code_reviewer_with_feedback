@@ -414,30 +414,88 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     }
   }
 
-  async function gradeAnswer(finding, question, answer, maxAttempts) {
+  // D197 (mirrors p03-engine.js): fixes "grading only sees the single turn the loop
+  // happened to stop on" -- gradeAnswer() used to take (question, answer) for just
+  // transcript[transcript.length-1] and score ALL 5 rubric axes off that one exchange,
+  // even when most axes' questions were never asked (early `defended` break) or when the
+  // real grade-worthy answers were earlier turns the LLM never saw (a late "모르겠습니다"
+  // zeroed out everything). See p03-engine.js's D197 comment for the full WHY/COST/EXIT --
+  // this file mirrors that fix exactly (uses prompt_manifest.json's shared p03-7 stage +
+  // its new axis_level_map, so both consumers of that stage stay in sync).
+  function testedLevelsOf(transcript) {
+    return new Set(transcript.map((t) => t.level));
+  }
+
+  function gradableAxes(axisLevelMap, axes, testedLevels) {
+    return axes.filter((axis) => {
+      const levels = axisLevelMap[axis];
+      if (!levels || !levels.length) return true;
+      return levels.some((lvl) => testedLevels.has(lvl));
+    });
+  }
+
+  function buildTranscriptBlock(transcript) {
+    return transcript.map((t) => `[${t.level.toUpperCase()}] 질문: ${t.question}\n[${t.level.toUpperCase()}] 학생 답변: ${t.answer}`).join("\n\n");
+  }
+
+  function buildAxisGuidanceBlock(axisLevelMap, axes, gradable, testedLevels) {
+    const levelsLabel = (axis) => (axisLevelMap[axis] || []).map((l) => l.toUpperCase()).join("/") || "전체";
+    let block = `이번 세션에서 진행된 레벨: ${[...testedLevels].map((l) => l.toUpperCase()).join(", ")}.\n`;
+    block += `아래 축은 실제로 진행된 레벨의 턴을 근거로 채점 대상입니다:\n${gradable.map((a) => `- ${a}: 근거 턴 = ${levelsLabel(a)}`).join("\n")}`;
+    const untested = axes.filter((a) => !gradable.includes(a));
+    if (untested.length) {
+      block += `\n\n다음 축은 이 세션에서 해당 레벨까지 도달하지 않아 채점 대상에서 제외됩니다 (코드로 고정 처리됨, 응답에 포함하지 마세요): ${untested.join(", ")}`;
+    }
+    return block;
+  }
+
+  function notTestedEvidence(axis, axisLevelMap) {
+    const levelsLabel = (axisLevelMap[axis] || []).map((l) => l.toUpperCase()).join("/");
+    return `이 세션은 ${levelsLabel} 레벨까지 진행되지 않아 채점하지 않았습니다 (조기 방어 성공했거나, 세션이 그 전에 종료됨).`;
+  }
+
+  // D197: takes the full `transcript` instead of a single (question, answer) pair.
+  async function gradeAnswer(finding, transcript, maxAttempts) {
     const stage = LabApp.getStage("p03", "p03-7");
-    const rubric = (LabApp.getOverride("p03", "p03-7") || {}).rubric || stage.rubric;
-    const rubricOverridden = Boolean((LabApp.getOverride("p03", "p03-7") || {}).rubric_overridden);
+    const override = LabApp.getOverride("p03", "p03-7") || {};
+    const rubric = override.rubric || stage.rubric;
+    const rubricOverridden = Boolean(override.rubric_overridden);
+    const axisLevelMap = override.axis_level_map || stage.axis_level_map || {};
+    const axes = Object.keys(rubric);
+    const testedLevels = testedLevelsOf(transcript);
+    const gradable = gradableAxes(axisLevelMap, axes, testedLevels);
+
     let rubricBlock = "";
-    for (const [axis, levels] of Object.entries(rubric)) {
-      rubricBlock += `### ${axis}\n`;
+    for (const axis of gradable) {
+      const levels = rubric[axis];
+      rubricBlock += `### ${axis} (근거 턴: ${(axisLevelMap[axis] || []).map((l) => l.toUpperCase()).join("/") || "전체"})\n`;
       for (const score of ["5", "4", "3", "2", "1"]) rubricBlock += `  ${score}점: ${levels[score]}\n`;
     }
     const userMsg = LabApp.fillTemplate(LabApp.resolveTemplate("p03", "p03-7", "user_template"), {
-      rubric_block: rubricBlock, finding_text: finding.finding || "", finding_file: finding.file || "", question, answer,
+      rubric_block: rubricBlock,
+      axis_guidance_block: buildAxisGuidanceBlock(axisLevelMap, axes, gradable, testedLevels),
+      finding_text: finding.finding || "", finding_file: finding.file || "",
+      transcript_block: buildTranscriptBlock(transcript),
     });
-    const axes = Object.keys(rubric);
     const tool = {
       name: "grade_interview_answer",
-      description: "학생 답변을 FR-04-01 5축 루브릭으로 채점한다.",
-      input_schema: { type: "object", properties: Object.fromEntries(axes.map((a) => [a, { type: "object", properties: { score: { type: "integer" }, evidence: { type: "string" } }, required: ["score", "evidence"] }])), required: axes },
+      description: "학생 답변을 FR-04-01 5축 루브릭으로 채점한다 (이번 세션에서 실제로 진행된 레벨에 해당하는 축만).",
+      input_schema: { type: "object", properties: Object.fromEntries(gradable.map((a) => [a, { type: "object", properties: { score: { type: "integer" }, evidence: { type: "string" } }, required: ["score", "evidence"] }])), required: gradable },
     };
     // D182: p03-7's manifest `model` param was removed (see prompt_manifest.json) so this
     // falls through to the top-level toggle -- previously the manifest's fixed default would
     // have won here every time via resolveParam's precedence, making a toggle pointless
     // (same lesson D154 already applied to P01's stage-level model param).
     const model = LabApp.resolveParam("p03", "p03-7", "model") || selectedModel;
-    const grades = await LabLLM.chatTool({ model, messages: [{ role: "user", content: userMsg }], tool, maxTokens: 2048, maxAttempts });
+    const llmGrades = gradable.length
+      ? await LabLLM.chatTool({ model, messages: [{ role: "user", content: userMsg }], tool, maxTokens: 2048, maxAttempts })
+      : {};
+    const grades = {};
+    for (const axis of axes) {
+      grades[axis] = gradable.includes(axis)
+        ? { ...llmGrades[axis], tested: true }
+        : { score: null, evidence: notTestedEvidence(axis, axisLevelMap), tested: false };
+    }
     return { grades, rubric_overridden: rubricOverridden };
   }
 
@@ -555,9 +613,9 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
       // finished every answer. maybeSaveRun() below writes the real "done" status.
       disarmAbandon();
       LabApp.log(pipelineId, "5축 채점 중...");
-      const last = transcript[transcript.length - 1];
       const gradeAttempts = await resolveMaxAttempts(pipelineId);
-      const { grades, rubric_overridden } = await gradeAnswer(selectedFinding, last.question, last.answer, gradeAttempts);
+      // D197 (mirrors p03-engine.js): full transcript, not just the last turn.
+      const { grades, rubric_overridden } = await gradeAnswer(selectedFinding, transcript, gradeAttempts);
 
       const finishedAt = new Date();
       LabApp.stopTimer(pipelineId);
@@ -595,7 +653,9 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     let html = `<p>verdict: <b>${LabApp.escapeHtml(result.verdict)}</b> · ${result.turns}턴${result.rubric_overridden ? ' · <span style="color:var(--status-blocked);">rubric_overridden</span>' : ""}</p>`;
     html += `<div class="param-grid">`;
     for (const [axis, g] of Object.entries(result.grades)) {
-      html += `<div class="finding-card"><div class="fid">${LabApp.escapeHtml(axis)}: ${LabApp.escapeHtml(String(g.score))}점</div><div>${LabApp.escapeHtml(g.evidence || "")}</div></div>`;
+      // D197: legacy rows without a `tested` field (pre-fix runs) are treated as tested.
+      const scoreLabel = g.tested === false ? "미검증" : `${g.score}점`;
+      html += `<div class="finding-card"><div class="fid">${LabApp.escapeHtml(axis)}: ${LabApp.escapeHtml(scoreLabel)}</div><div>${LabApp.escapeHtml(g.evidence || "")}</div></div>`;
     }
     html += `</div>`;
     html += LabApp.jsonResultBlock("원본 JSON", result, "p03-result.json");
