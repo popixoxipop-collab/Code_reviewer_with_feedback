@@ -158,7 +158,7 @@
 <div class="app">
   <div class="topbar">
     <div class="brand"><span class="mk">◆</span>IZ-Get · 교안 매니저</div>
-    <div class="me">Pipeline Lab 연동 목업 · P01 교안분석 + P02 코드분석</div>
+    <div class="me">Pipeline Lab 연동 목업 · P01 교안분석</div>
   </div>
   <div class="body">
     <div class="nav">
@@ -174,7 +174,6 @@
         <div class="body">
           <div class="fld"><label class="fl">NVIDIA API 키 <span class="opt">· P01(교안 분석) 실행에 필요</span></label><input class="inp" type="password" id="nvidia-key" placeholder="nvapi-..."></div>
           <div class="fld"><label class="fl">프록시 URL</label><input class="inp" type="text" id="proxy-url"></div>
-          <div class="fld"><label class="fl">GitHub PAT <span class="opt">· 비공개 저장소만 필요, P02는 기본적으로 키 불필요</span></label><input class="inp" type="password" id="github-pat" placeholder="ghp_..."></div>
           <label class="remember"><input type="checkbox" id="remember-session" checked> 이 탭에서 기억하기</label>
         </div>
       </details>
@@ -203,32 +202,15 @@
       <!-- ============ 등록 · 분석 ============ -->
       <div class="rpage" id="page-upload">
         <div class="phead"><div class="crumb"><span class="back" data-nav="list">← 교안 목록</span></div><h2>교안 등록 · 분석</h2></div>
-        <div style="display:flex; gap:var(--sp-4); align-items:flex-start; flex-wrap:wrap;">
-          <div class="card" style="flex:1 1 380px; padding:var(--sp-5);">
-            <div style="font-weight:700; margin-bottom:10px;">1 · 교안 PDF 분석 (P01)</div>
-            <div id="p01-input-container"></div>
-            <div id="upload-error" class="warnbar hidden"></div>
-            <div style="display:flex; align-items:center; gap:10px; margin-top:14px;">
-              <button class="btn" id="run-p01-btn">분석 실행</button>
-              <span id="status-p01" class="run-status"></span>
-              <span id="timer-p01" class="run-timer"></span>
-            </div>
-            <div id="log-p01" class="progress-log hidden"></div>
+        <div class="card" style="max-width:620px; padding:var(--sp-5);">
+          <div id="p01-input-container"></div>
+          <div id="upload-error" class="warnbar hidden"></div>
+          <div style="display:flex; align-items:center; gap:10px; margin-top:14px;">
+            <button class="btn" id="run-p01-btn">분석 실행</button>
+            <span id="status-p01" class="run-status"></span>
+            <span id="timer-p01" class="run-timer"></span>
           </div>
-          <div class="card" style="flex:1 1 380px; padding:var(--sp-5);">
-            <div style="font-weight:700; margin-bottom:10px;">2 · 코드 zip 분석 (P02 · 선택)</div>
-            <div class="dropzone" id="p02-dropzone">
-              <div class="ic">⬆</div>
-              <div class="t">.zip을 끌어다 놓거나 클릭해 선택</div>
-              <div class="s" id="p02-zip-status">API 키 불필요 · 원본 파이프라인 코드 그대로 실행(Pyodide)</div>
-            </div>
-            <input type="file" id="p02-zip-input" accept=".zip" class="hidden">
-            <div style="display:flex; align-items:center; gap:10px; margin-top:14px;">
-              <button class="btn ghost" id="run-p02-btn">코드 분석 실행</button>
-              <span id="status-p02" class="run-status"></span>
-            </div>
-            <div id="log-p02" class="progress-log hidden"></div>
-          </div>
+          <div id="log-p01" class="progress-log hidden"></div>
         </div>
       </div>
 
@@ -262,10 +244,6 @@
           <div class="ftlist" id="mapping-ftlist"><div class="pnone">선택된 교안이 없습니다.</div></div>
           <div class="recopane" id="mapping-recopane"></div>
         </div>
-        <div class="card" id="mapping-p02-card" style="margin-top:var(--sp-5); padding:var(--sp-4) var(--sp-5); display:none;">
-          <div style="font-weight:700; margin-bottom:8px;">코드 분석 결과 (P02 · 이번 세션)</div>
-          <div id="mapping-p02-list"></div>
-        </div>
       </div>
 
     </div>
@@ -275,9 +253,6 @@
 <script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"
   integrity="sha384-tVslJOEkg7nVRW3Y3/ReGX0NnonNrbcmt1R5qFbQXQdGa2chRkoJYHAjAsv3zoTq"
   crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"
-  integrity="sha384-+mbV2IY1Zk/X1p/nWllGySJSUN8uMs+gUAN10Or95UBH0fpj6GfKgPmgC5EXieXG"
-  crossorigin="anonymous"></script>
 <script src="../config.js"></script>
 <script src="../db.js"></script>
 <script src="../lab-core.js"></script>
@@ -286,10 +261,9 @@
 <script src="../pyodide-shared.js"></script>
 <script src="../pdfjs-loader.js"></script>
 <script src="../p01-runner.js"></script>
-<script src="../p02-engine.js"></script>
 <script>
 (function () {
-  const state = { curricula: [], selectedId: null, p02: null, nextId: 1 };
+  const state = { curricula: [], selectedId: null, nextId: 1 };
   let lastPdfName = "";
 
   // ---- hash routing (same PAGE table as Team-IZ curriculum.html) ----
@@ -403,7 +377,6 @@
       document.getElementById("mapping-meta").textContent = "";
       ftlist.innerHTML = `<div class="pnone">선택된 교안이 없습니다.</div>`;
       recopane.innerHTML = "";
-      renderMappingP02();
       return;
     }
     const r = c.result;
@@ -416,7 +389,6 @@
     if (!units.length) {
       ftlist.innerHTML = `<div class="pnone">섹션이 없습니다.</div>`;
       recopane.innerHTML = "";
-      renderMappingP02();
       return;
     }
     if (!state.selectedUnitId || !r.unit_map[state.selectedUnitId]) state.selectedUnitId = units[0][0];
@@ -449,89 +421,6 @@
       + (group("개념 (teaches)", unit.concepts) || `<div class="pnone">연결된 개념 없음</div>`)
       + group("코드 예시 (shows_code)", unit.code_examples)
       + group("주의사항 (warns)", unit.cautions);
-
-    renderMappingP02();
-  }
-
-  function renderMappingP02() {
-    const card = document.getElementById("mapping-p02-card");
-    const list = document.getElementById("mapping-p02-list");
-    if (!state.p02) { card.style.display = "none"; return; }
-    card.style.display = "";
-    const findings = (state.p02.judgment && state.p02.judgment.findings) || [];
-    if (!findings.length) {
-      list.innerHTML = `<div class="pnone">finding이 산출되지 않았습니다.</div>`;
-      return;
-    }
-    list.innerHTML = findings.slice(0, 20).map((f) => `<div class="recocard">
-      <div class="rmod">${LabApp.escapeHtml(f.id || "")}<span class="rpg">${LabApp.escapeHtml(f.priority || "")}</span></div>
-      <div class="rsum">${LabApp.escapeHtml(f.finding || "")}${f.file ? ` <span class="pnone">· ${LabApp.escapeHtml(f.file)}</span>` : ""}</div>
-    </div>`).join("");
-  }
-
-  // ---- P02 zip upload (docs/lab/trainee/submission.html과 동일 패턴 재사용) ----
-  let zipFiles = null;
-  function wireP02Upload() {
-    const dropzone = document.getElementById("p02-dropzone");
-    const zipInput = document.getElementById("p02-zip-input");
-    const zipStatus = document.getElementById("p02-zip-status");
-    dropzone.addEventListener("click", () => zipInput.click());
-    dropzone.addEventListener("dragover", (e) => { e.preventDefault(); dropzone.classList.add("drag-over"); });
-    dropzone.addEventListener("dragleave", () => dropzone.classList.remove("drag-over"));
-    dropzone.addEventListener("drop", async (e) => {
-      e.preventDefault();
-      dropzone.classList.remove("drag-over");
-      if (e.dataTransfer.files[0]) await handleZip(e.dataTransfer.files[0]);
-    });
-    zipInput.addEventListener("change", async () => {
-      if (zipInput.files[0]) await handleZip(zipInput.files[0]);
-    });
-    async function handleZip(file) {
-      zipStatus.textContent = `압축 해제 중: ${file.name}...`;
-      try {
-        const parsed = await P02Engine.parseZipFile(file);
-        zipFiles = parsed.files;
-        zipStatus.textContent = P02Engine.formatZipStatus(parsed, file.name);
-      } catch (err) {
-        zipStatus.textContent = `압축 해제 실패: ${err.message}`;
-        zipFiles = null;
-      }
-    }
-
-    const logEl = document.getElementById("log-p02");
-    const statusEl = document.getElementById("status-p02");
-    function logP02(msg) {
-      logEl.classList.remove("hidden");
-      const line = document.createElement("div");
-      line.textContent = `[${new Date().toISOString().slice(11, 19)}] ${msg}`;
-      logEl.appendChild(line);
-      logEl.scrollTop = logEl.scrollHeight;
-    }
-    function statusP02(text, kind) {
-      statusEl.textContent = text;
-      statusEl.className = "run-status" + (kind ? ` ${kind}` : "");
-    }
-
-    document.getElementById("run-p02-btn").addEventListener("click", async () => {
-      const btn = document.getElementById("run-p02-btn");
-      if (!zipFiles) { statusP02("ZIP 파일을 먼저 선택하세요", "error"); return; }
-      btn.disabled = true;
-      const hooks = {
-        onStatus: statusP02,
-        onProgress: logP02,
-        onRunStart() {},
-        onRunEnd() {},
-      };
-      try {
-        const { result } = await P02Engine.run({ method: "zip", zipFiles }, hooks);
-        state.p02 = result;
-        if (document.getElementById("page-mapping").classList.contains("on")) renderMappingP02();
-      } catch (err) {
-        console.error(err);
-      } finally {
-        btn.disabled = false;
-      }
-    });
   }
 
   // ---- P01 PDF upload + run ----
@@ -574,7 +463,6 @@
   document.addEventListener("DOMContentLoaded", async () => {
     await LabApp.loadManifest();
     wireP01Upload();
-    wireP02Upload();
     route();
   });
 })();
