@@ -39,7 +39,7 @@
   .topbar .me{font-size:var(--fs-sm);color:var(--c-text-3)}
   .body{display:flex;flex:1}
   .nav{width:184px;background:var(--c-nav);padding:var(--sp-4) var(--sp-3);flex:0 0 184px}
-  .nav .item{display:flex;align-items:center;gap:var(--sp-2);padding:9px var(--sp-3);border-radius:var(--r-md);color:var(--c-nav-text);font-size:var(--fs-sm);margin-bottom:2px}
+  .nav .item{display:flex;align-items:center;gap:var(--sp-2);padding:9px var(--sp-3);border-radius:var(--r-md);color:var(--c-nav-text);font-size:var(--fs-sm);margin-bottom:2px;text-decoration:none;cursor:pointer}
   .nav .item.on{background:var(--c-nav-2);color:#fff;font-weight:600}
   .nav .item .ic{width:15px;text-align:center;opacity:.85;font-size:12px}
   .content{flex:1;background:var(--c-bg);padding:var(--sp-6);min-width:0;max-width:1180px}
@@ -162,10 +162,10 @@
   </div>
   <div class="body">
     <div class="nav">
-      <div class="item on"><span class="ic">▧</span>교안</div>
-      <div class="item"><span class="ic">▦</span>대시보드</div>
-      <div class="item"><span class="ic">▤</span>프로젝트</div>
-      <div class="item"><span class="ic">▥</span>리포트</div>
+      <a class="item" href="dashboard.html"><span class="ic">▦</span>대시보드</a>
+      <a class="item on" href="index.html"><span class="ic">▧</span>교안</a>
+      <a class="item" href="projects.html"><span class="ic">▤</span>프로젝트</a>
+      <a class="item" href="report.html"><span class="ic">▥</span>리포트</a>
     </div>
     <div class="content">
 
@@ -298,7 +298,6 @@
     const h = (location.hash || "").slice(1) || "list";
     const id = PAGE[h] || "page-list";
     document.querySelectorAll(".rpage").forEach((p) => p.classList.toggle("on", p.id === id));
-    document.querySelectorAll(".nav .item").forEach((n) => n.classList.toggle("on", n === document.querySelector(".nav .item")));
     document.querySelectorAll(".tabs .t[data-nav]").forEach((t) => t.classList.toggle("on", t.dataset.nav === h));
     if (id === "page-list") renderListTab();
     if (id === "page-structure") renderStructureTab();
