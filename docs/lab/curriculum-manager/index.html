@@ -278,6 +278,38 @@
   const state = { curricula: [], selectedId: null, nextId: 1 };
   let lastPdfName = "";
 
+  // A P01 run takes minutes (60s cooldown + refine loop + question-gen) and only lives in
+  // this tab's JS memory -- a refresh used to silently wipe out an already-finished
+  // analysis (state.curricula started empty again every reload). sessionStorage (not
+  // localStorage) is enough to survive a refresh without also resurrecting stale runs
+  // days later in a fresh tab -- matches config.js's own choice for "remember this tab".
+  const SESSION_KEY = "iz-curriculum-manager:session";
+  function persistSession() {
+    try {
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify({
+        curricula: state.curricula.map((c) => ({ ...c, analyzedAt: c.analyzedAt.toISOString() })),
+        selectedId: state.selectedId,
+        selectedUnitId: state.selectedUnitId,
+        nextId: state.nextId,
+      }));
+    } catch (err) {
+      console.warn("교안 세션 저장 실패(용량 초과 가능, 새로고침 시 유실됨):", err);
+    }
+  }
+  function restoreSession() {
+    try {
+      const raw = sessionStorage.getItem(SESSION_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      state.curricula = (parsed.curricula || []).map((c) => ({ ...c, analyzedAt: new Date(c.analyzedAt) }));
+      state.selectedId = parsed.selectedId || null;
+      state.selectedUnitId = parsed.selectedUnitId || null;
+      state.nextId = parsed.nextId || (state.curricula.length + 1);
+    } catch (err) {
+      console.warn("교안 세션 복원 실패:", err);
+    }
+  }
+
   // ---- hash routing (same PAGE table as Team-IZ curriculum.html) ----
   const PAGE = { list: "page-list", upload: "page-upload", structure: "page-structure", mapping: "page-mapping" };
   function route() {
@@ -294,7 +326,7 @@
 
   document.addEventListener("click", (e) => {
     const row = e.target.closest("#list-tbody tr[data-id]");
-    if (row) { state.selectedId = row.dataset.id; location.hash = "structure"; return; }
+    if (row) { state.selectedId = row.dataset.id; persistSession(); location.hash = "structure"; return; }
     const nv = e.target.closest("[data-nav]");
     if (nv) { location.hash = nv.getAttribute("data-nav"); return; }
   });
@@ -413,7 +445,7 @@
       </div>`;
     }).join("");
     ftlist.querySelectorAll(".ftitem").forEach((el) => {
-      el.addEventListener("click", () => { state.selectedUnitId = el.dataset.unit; renderMappingTab(); });
+      el.addEventListener("click", () => { state.selectedUnitId = el.dataset.unit; persistSession(); renderMappingTab(); });
     });
 
     const unit = r.unit_map[state.selectedUnitId] || {};
@@ -466,6 +498,7 @@
         state.curricula.unshift(entry);
         state.selectedId = entry.id;
         state.selectedUnitId = null;
+        persistSession();
         location.hash = "structure";
       } finally {
         btn.disabled = false;
@@ -474,6 +507,7 @@
   }
 
   document.addEventListener("DOMContentLoaded", async () => {
+    restoreSession();
     await LabApp.loadManifest();
     wireP01Upload();
     route();
