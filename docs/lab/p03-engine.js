@@ -238,8 +238,15 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     // the "이미 물어본 질문"(D188) section, but a rejected same-level attempt never gets
     // pushed to `transcript` (that only happens after the turn's answer comes back), so it
     // has to be listed separately here.
+    // D206: user-observed gap -- merely SAYING "겹침 감지됨" without quoting which prior
+    // question it matched let the model rationalize the rejected candidate was "different
+    // enough" and often regenerate something just as similar. Now each entry pairs the
+    // rejected candidate with the SPECIFIC prior question isDuplicateQuestion() actually
+    // matched it against (`extraBanned[i].dupOf`), both quoted verbatim side by side --
+    // showing the overlap directly instead of only asserting it exists.
     if (extraBanned && extraBanned.length) {
-      prompt += `\n\n## 방금 생성했으나 반려된 질문 (이전 질문과 겹침 감지됨) — 이것과도 겹치면 안 됩니다\n` + extraBanned.map((q, i) => `${i + 1}. ${q}`).join("\n");
+      prompt += `\n\n## 방금 생성했으나 반려된 질문 (아래 [생성한 질문]과 [겹치는 이전 질문]을 직접 비교해보면 겹침이 보일 것입니다) — 이것과도 겹치면 안 됩니다\n`
+        + extraBanned.map((r, i) => `${i + 1}. [생성한 질문] ${r.candidate}\n   [겹치는 이전 질문] ${r.dupOf}`).join("\n");
     }
     if (factCheckAvailable) {
       const hint = LabApp.resolveTemplate("p03", stageId, "fact_check_hint");
@@ -424,6 +431,32 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
   // D200: new trailing `repoRef` ({owner,repo,branch} or null for ZIP uploads) -- enables
   // the live fact-check tool-loop above for L2/L3/Reflection. `repoRef` absent/null is an
   // undetectable no-op (ZIP path keeps behaving exactly as before D200).
+  // D204: user-observed gap -- D200's fact-check was only ever probabilistic
+  // (tool_choice:"auto" let the model skip straight to ask_question) AND dedup retries
+  // (attempt>0) never fact-checked at all, silently falling back to the static-snippet
+  // path exactly when a question was being regenerated. Fixed by:
+  //   WHY: (a) force >=1 real list_files/read_file call via chatToolLoop's new
+  //   minNonTerminalRounds on the FIRST attempt only -- the model can no longer skip
+  //   grounding entirely; (b) share ONE `messages` array across every dedup attempt for
+  //   this turn, so a rejected/regenerated question continues the SAME conversation that
+  //   already contains the real tool-call/tool-result exchange -- retries stay grounded in
+  //   what was actually fetched instead of reverting to the pre-D200 snippet-only prompt.
+  //   COST: worst-case LLM round trips unchanged from D200 (FACT_CHECK_MAX_ROUNDS+1 for the
+  //   fact-checked path + DEDUP_MAX_RETRIES for regeneration) -- GitHub API calls actually
+  //   go DOWN versus a naive "fact-check every retry too" design, since retries reuse
+  //   already-fetched file contents rather than re-querying. If `chatToolLoop` throws at any
+  //   point (rate limit, etc.), `factCheckBroken` latches true and every remaining attempt
+  //   (this one and further retries) falls back to the plain snippet-only path for the rest
+  //   of this call -- one warning, not one per attempt.
+  //   EXIT: if a future model needs to re-verify facts on every retry (not just reuse them),
+  //   drop the shared-`messages` reuse and re-run the full fact-check loop per attempt --
+  //   revert to passing `minNonTerminalRounds: 1` on every attempt instead of only attempt 0.
+  // D206: user-observed gap on top of D204 -- telling the model "this overlaps with a prior
+  // question" without quoting WHICH prior question let it rationalize the rejected candidate
+  // was different enough and regenerate something just as similar. `rejected` below now
+  // stores {candidate, dupOf} pairs -- both texts quoted verbatim, side by side, in both the
+  // shared-messages retry note and buildLevelPrompt()'s extraBanned block -- showing the
+  // overlap directly instead of only asserting it exists.
   async function generateQuestion(level, finding, codeContext, transcript, maxAttempts, model, onProgress, repoRef) {
     // D182: falls through to the top-level toggle (model) -- p03-1 has no manifest `model`
     // param at all (never did), so this was already effectively "shared default only"
@@ -433,18 +466,23 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     const priorQuestions = transcript.map((t) => t.question);
     const rejected = [];
     const pat = LabConfig.get("github-pat");
+    const factCheckable = level !== "l1" && repoRef && repoRef.owner && repoRef.repo;
+
+    // D204: shared across every dedup attempt for THIS turn -- see comment above. `null`
+    // when fact-check was never possible to begin with (L1, or no repo identity).
+    let messages = factCheckable
+      ? [{ role: "user", content: buildLevelPrompt(level, finding, codeContext, transcript, [], true) }]
+      : null;
+    let factCheckBroken = !factCheckable;
 
     for (let attempt = 0; attempt <= DEDUP_MAX_RETRIES; attempt++) {
-      // D200: fact-check only on the first attempt, only past L1, only with a real repo.
-      const useFactCheck = attempt === 0 && level !== "l1" && repoRef && repoRef.owner && repoRef.repo;
       let candidate;
 
-      if (useFactCheck) {
-        const prompt = buildLevelPrompt(level, finding, codeContext, transcript, rejected, true);
+      if (!factCheckBroken) {
         try {
           const result = await LabLLM.chatToolLoop({
             model: resolvedModel,
-            messages: [{ role: "user", content: prompt }],
+            messages,
             tools: [LIST_FILES_TOOL, READ_FILE_TOOL, askQuestionTool],
             executors: {
               list_files: async () => toolListFiles(repoRef, pat),
@@ -452,22 +490,26 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
             },
             terminalToolName: "ask_question",
             maxRounds: FACT_CHECK_MAX_ROUNDS,
+            // D204: only the FIRST attempt must actually touch GitHub -- retries reuse the
+            // tool-call/tool-result messages chatToolLoop already appended to `messages` in
+            // place (same array reference), so they stay fact-grounded without a second
+            // live round trip.
+            minNonTerminalRounds: attempt === 0 ? 1 : 0,
             maxTokens: 2048, maxAttempts, onProgress,
           });
           candidate = result.question;
         } catch (err) {
-          // D200: graceful degrade -- rate-limit mid-loop or any other tool-loop failure
-          // falls back to today's plain single-shot path (hint-stripped, since the model
-          // wasn't actually given tools this time). Interview must never stop for this.
-          if (onProgress) onProgress(`⚠ 실시간 코드 재확인을 건너뜁니다 (${err.message}) — 저장된 코드 스니펫만으로 질문을 생성합니다`);
-          const fallbackPrompt = buildLevelPrompt(level, finding, codeContext, transcript, rejected, false);
-          const fallback = await LabLLM.chatTool({ model: resolvedModel, messages: [{ role: "user", content: fallbackPrompt }], tool: askQuestionTool, maxTokens: 2048, maxAttempts });
-          candidate = fallback.question;
+          // D200/D204: graceful degrade -- rate-limit mid-loop or any other tool-loop
+          // failure falls back to the plain single-shot path for THIS and every remaining
+          // attempt (not just this one). Interview must never stop for this.
+          if (onProgress) onProgress(`⚠ 실시간 코드 재확인을 건너뜁니다 (${err.message}) — 이후 이 턴은 저장된 코드 스니펫만으로 질문을 생성합니다`);
+          factCheckBroken = true;
         }
-      } else {
+      }
+      if (factCheckBroken) {
         const prompt = buildLevelPrompt(level, finding, codeContext, transcript, rejected, false);
-        const result = await LabLLM.chatTool({ model: resolvedModel, messages: [{ role: "user", content: prompt }], tool: askQuestionTool, maxTokens: 2048, maxAttempts });
-        candidate = result.question;
+        const fallback = await LabLLM.chatTool({ model: resolvedModel, messages: [{ role: "user", content: prompt }], tool: askQuestionTool, maxTokens: 2048, maxAttempts });
+        candidate = fallback.question;
       }
 
       const dupOf = priorQuestions.find((q) => isDuplicateQuestion(candidate, q));
@@ -477,7 +519,21 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
         return candidate;
       }
       if (onProgress) onProgress(`⚠ ${level.toUpperCase()} 질문이 이전 질문과 겹쳐 재생성 중 (${attempt + 1}/${DEDUP_MAX_RETRIES})...`);
-      rejected.push(candidate);
+      // D206: store the SPECIFIC prior question this candidate matched (`dupOf`) alongside
+      // it, not just the candidate -- see buildLevelPrompt()'s D206 comment for the WHY.
+      rejected.push({ candidate, dupOf });
+      // D204/D206: keep the fact-check conversation thread informed of the rejection too, so
+      // a reused-messages retry knows not to repeat it (mirrors buildLevelPrompt's own
+      // extraBanned section for the non-fact-check path) -- and, per D206, quotes both the
+      // rejected candidate AND the specific prior question it duplicated side by side rather
+      // than only asserting an overlap exists.
+      if (messages) {
+        messages.push({
+          role: "user",
+          content: `방금 생성한 질문이 이전 질문과 겹칩니다. 아래 [생성한 질문]과 [겹치는 이전 질문]을 직접 비교해보면 겹침이 보일 것입니다 — 이미 확인한 실제 파일 내용을 참고해 완전히 다른 각도로 다시 질문하세요. 아래 항목들과도 겹치면 안 됩니다:\n\n`
+            + rejected.map((r, i) => `${i + 1}. [생성한 질문] ${r.candidate}\n   [겹치는 이전 질문] ${r.dupOf}`).join("\n"),
+        });
+      }
     }
   }
 
@@ -643,6 +699,16 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
       hooks.onProgress(codeContext
         ? `코드 컨텍스트 포함 (${codeContexts.length}개 파일, 총 ${codeContext.length}자)`
         : "코드 컨텍스트 없음 -- 질문이 파일 내용 없이 생성됨");
+      // D205: `repoRef` missing (ZIP upload, or a session scanned before D200 shipped) used
+      // to silently skip the whole fact-check mechanism with zero visible trace -- not even
+      // a console.log. Surfaced once per run, not per turn, via the same `⚠`-prefixed
+      // onProgress convention D199 already uses to promote console-only warnings into a
+      // trainee-visible chat bubble (session.html's existing `msg.startsWith("⚠")` handler
+      // needs no change). No message when repoRef IS present -- this is a "tell me when a
+      // capability is silently absent" warning, not routine noise on the normal path.
+      if (!(repoRef && repoRef.owner && repoRef.repo)) {
+        hooks.onProgress("⚠ 저장소 식별 정보 없음(ZIP 업로드이거나 이전 버전에서 스캔한 세션) — 이번 인터뷰는 실시간 코드 재확인 없이 저장된 스니펫만으로 진행됩니다");
+      }
 
       const transcript = [];
       let verdict = "exhausted_at_cap";

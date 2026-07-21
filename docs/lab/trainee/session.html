@@ -417,6 +417,12 @@
         // fire and retry. "⚠" already marks exactly these "you should know about this"
         // messages elsewhere in the engine (same prefix convention), so surface them here.
         if (msg.startsWith("⚠")) appendBubble("sys", msg);
+        // D204/D205: real GitHub fact-check calls (llm.js's chatToolLoop, "⚙ list_files/
+        // read_file 호출 중...") were console-only too, even though this is now a mandatory,
+        // load-bearing part of every L2+ question. Surface it the same way so the trainee
+        // can see "a real repo check is happening right now", not just infer it after the
+        // fact from a file:line citation in the question text.
+        if (msg.startsWith("⚙")) appendBubble("sys", msg);
         // D203: "5축 채점 중..." (p03-engine.js run()) is the one onProgress message that
         // marks "answering is done, moving on to the next task" -- show a full spinner
         // overlay so this transition reads as "working", not "frozen".
