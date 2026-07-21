@@ -105,6 +105,19 @@
   .confirm-btn.proceed { background: var(--c-primary); border: 0; color: #fff; }
   .confirm-btn.proceed:hover { background: var(--c-primary-hover); }
 
+  /* D203: 채점/리포트 생성 중 오버레이 -- WHY: 마지막 턴 제출 후 5축 채점(gradeAnswer,
+     실제 LLM 호출이라 수초~수십초 소요) -> result.html 이동 사이에 화면상 아무 표시가
+     없었다(onProgress의 타이핑 인디케이터는 "질문 생성|재생성" 패턴만 매칭 -- "채점"은
+     안 걸림). 다음 화면으로 정말 넘어가고 있다는 걸 직관적으로 보여주기 위해 스피너
+     오버레이 추가. COST: 이 구간에서 다른 조작(뒤로가기 등) 불가 인상을 줌 -- 실제로도
+     이 시점엔 답변 제출이 끝나 되돌릴 액션이 없으므로 의도된 동작. EXIT: 다시 없애려면
+     onProgress의 이 매칭 블록만 제거. */
+  .grading-box { display: flex; flex-direction: column; align-items: center; gap: var(--sp-4); }
+  .grading-box p { margin-bottom: 0; }
+  .spinner { width: 36px; height: 36px; border: 3px solid var(--c-border); border-top-color: var(--c-primary); border-radius: 50%; }
+  @media (prefers-reduced-motion: no-preference) { .spinner { animation: spin .8s linear infinite; } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
   /* D187: WHY -- P03Engine.run() locks the model at hooks.onRunStart() and previously
      that fired the instant the page finished loading (D178's "one click, no extra
      confirm" auto-run, re-expressed as "auto-run on page load"), so a teammate who
@@ -179,6 +192,13 @@
       <button class="confirm-btn cancel" id="confirm-cancel-btn" type="button">취소</button>
       <button class="confirm-btn proceed" id="confirm-proceed-btn" type="button">진행</button>
     </div>
+  </div>
+</div>
+
+<div id="grading-overlay" class="confirm-overlay hidden">
+  <div class="confirm-box grading-box">
+    <div class="spinner"></div>
+    <p id="grading-overlay-text">5축 채점 및 리포트 생성 중...</p>
   </div>
 </div>
 
@@ -397,6 +417,13 @@
         // fire and retry. "⚠" already marks exactly these "you should know about this"
         // messages elsewhere in the engine (same prefix convention), so surface them here.
         if (msg.startsWith("⚠")) appendBubble("sys", msg);
+        // D203: "5축 채점 중..." (p03-engine.js run()) is the one onProgress message that
+        // marks "answering is done, moving on to the next task" -- show a full spinner
+        // overlay so this transition reads as "working", not "frozen".
+        if (/채점/.test(msg)) {
+          document.getElementById("grading-overlay-text").textContent = msg;
+          document.getElementById("grading-overlay").classList.remove("hidden");
+        }
       },
       onRunStart() {
         document.getElementById("model-bar").classList.add("locked");
@@ -449,11 +476,13 @@
         // live progress log / run-timer DOM, which doesn't exist on a separate results page).
         const saved = SessionState.saveInterviewResult({ ...result, model: selectedModel, finishedAt: new Date().toISOString() });
         if (!saved.ok) {
+          document.getElementById("grading-overlay").classList.add("hidden"); // D203: don't leave the spinner stuck when we're NOT navigating away
           appendBubble("sys", `결과 저장 실패: ${saved.error.message} -- 새로고침하면 결과를 잃습니다.`);
           return;
         }
         window.location.href = "result.html";
       } catch (err) {
+        document.getElementById("grading-overlay").classList.add("hidden"); // D203: same -- a failed run must not leave the overlay covering the error bubble below
         console.error(err);
         appendBubble("sys", `세션이 오류로 종료됐습니다: ${err.message}`);
       }
