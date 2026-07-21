@@ -291,17 +291,30 @@ def analyse_chunk(
     json_mode: bool = True,
     course_label: str = "Java",
 ) -> dict[str, Any]:
+    # D1/D2 (2026-07-21, ported from docs/lab/prompt_manifest.json's p01-2 fix): a real
+    # 251-page run had nearly every concept land in one giant "Overview" unit spanning
+    # p.1-251. Root cause: (a) concepts had no unit_id so make_unit_map() below couldn't
+    # tell which of a chunk's units a concept belonged to, and (b) this prompt's own
+    # example showed a literal "unit_id":"01","unit_title":"Overview" that an ambiguous
+    # chunk could easily echo verbatim -- with 26+ independent chunk calls sharing no
+    # context, that made unrelated chunks collide under the same unit_id at merge time.
+    #   WHY: give the model a way to say which unit each concept belongs to, and replace
+    #     the literal example with a <placeholder> plus an explicit anti-genericness rule.
+    #   COST: response schema changed -- only affects new runs, not past saved output.
+    #   EXIT: if cross-chunk id collisions persist even with specific titles, escalate to
+    #     a code-level fix (salt/namespace unit_id at collection time).
     prompt = f"""
 KT AIVLE School {course_label} curriculum PDF page range: {chunk.range}.
 
 Return ONLY valid JSON with this exact shape:
 {{
   "chunk_range": "{chunk.range}",
-  "units": [{{"unit_id": "01", "unit_title": "Overview", "source_pages": [1, 2]}}],
+  "units": [{{"unit_id": "02", "unit_title": "<specific topic on these pages, e.g. Variables and Data Types>", "source_pages": [4, 5]}}],
   "concepts": [
     {{
       "name": "short concept name",
       "kind": "concept|code_example|caution",
+      "unit_id": "<must match one of the unit_id values in units above>",
       "summary": "one sentence grounded in the slides",
       "source_pages": [1],
       "evidence": "short paraphrase of the page evidence"
@@ -310,6 +323,9 @@ Return ONLY valid JSON with this exact shape:
 }}
 
 Rules:
+- unit_title must name the actual topic on these pages (e.g. "Variables and Data Types", "Loops", "Exception Handling") -- never a generic label like "Overview", "Introduction", or "Chapter N" unless these exact pages are a title/table-of-contents slide with no substantive teaching content.
+- If this chunk covers more than one distinct topic, list each as its own entry in units, and set each concept's unit_id to whichever unit it actually belongs to.
+- Every concept's unit_id must exactly match one of the unit_id values listed in units above.
 - Every concept must have at least one concrete page number from {chunk.start}..{chunk.end}.
 - Do not invent content outside the given pages.
 - If a page is just title/table-of-contents, preserve it only if it affects unit mapping.
@@ -366,7 +382,8 @@ def make_unit_map(chunks: list[dict[str, Any]]) -> dict[str, Any]:
     unit_map: dict[str, Any] = {}
     for chunk in chunks:
         chunk_range = chunk.get("chunk_range", "")
-        for unit in chunk.get("units", []) or []:
+        units = chunk.get("units", []) or []
+        for unit in units:
             unit_id = str(unit.get("unit_id") or "unknown")
             if unit_id not in unit_map:
                 unit_map[unit_id] = {
@@ -378,21 +395,34 @@ def make_unit_map(chunks: list[dict[str, Any]]) -> dict[str, Any]:
                     "cautions": [],
                 }
             unit_map[unit_id]["source_pages"].extend(normalize_pages(unit.get("source_pages")))
-            for concept in chunk.get("concepts", []) or []:
-                item = {
-                    "name": concept.get("name") or "unnamed",
-                    "summary": concept.get("summary") or "",
-                    "evidence": concept.get("evidence") or "",
-                    "source_pages": normalize_pages(concept.get("source_pages")),
-                    "chunk_range": chunk_range,
-                }
-                kind = concept.get("kind") or "concept"
-                if kind == "code_example":
-                    unit_map[unit_id]["code_examples"].append(item)
-                elif kind == "caution":
-                    unit_map[unit_id]["cautions"].append(item)
-                else:
-                    unit_map[unit_id]["concepts"].append(item)
+
+        # D1 (2026-07-21): route each concept to its OWN declared unit_id instead of the
+        # old placement (this loop used to live INSIDE the `for unit in units` loop above,
+        # so a chunk with 2+ units re-ran the full concepts list once per unit -- every
+        # concept got duplicated into every unit the chunk declared, not attributed to the
+        # one it actually belongs to). Falls back to this chunk's first unit only when the
+        # model didn't supply a valid unit_id (defensive, not the expected path).
+        chunk_unit_ids = {str(u.get("unit_id") or "unknown") for u in units}
+        fallback_unit_id = str(units[0].get("unit_id") or "unknown") if units else "unknown"
+        for concept in chunk.get("concepts", []) or []:
+            declared = concept.get("unit_id")
+            target_unit_id = str(declared) if declared is not None and str(declared) in chunk_unit_ids else fallback_unit_id
+            if target_unit_id not in unit_map:
+                continue
+            item = {
+                "name": concept.get("name") or "unnamed",
+                "summary": concept.get("summary") or "",
+                "evidence": concept.get("evidence") or "",
+                "source_pages": normalize_pages(concept.get("source_pages")),
+                "chunk_range": chunk_range,
+            }
+            kind = concept.get("kind") or "concept"
+            if kind == "code_example":
+                unit_map[target_unit_id]["code_examples"].append(item)
+            elif kind == "caution":
+                unit_map[target_unit_id]["cautions"].append(item)
+            else:
+                unit_map[target_unit_id]["concepts"].append(item)
     for unit in unit_map.values():
         unit["source_pages"] = sorted(set(unit["source_pages"]))
     return dict(sorted(unit_map.items()))
