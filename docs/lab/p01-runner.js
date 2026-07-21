@@ -179,8 +179,16 @@ const P01Runner = (() => {
         }
         unitMap[unitId].source_pages.push(...(unit.source_pages || []));
       }
+      // D1 (2026-07-21): concept.unit_id added to the p01-2 schema specifically so a
+      // chunk spanning multiple units routes each concept to the right one -- previously
+      // EVERY concept in a chunk was forced onto chunk.units[0] regardless of which unit
+      // it actually described. Falls back to that same chunk.units[0] behavior only when
+      // the model didn't supply a valid unit_id (defensive, not the expected path).
+      const chunkUnitIds = new Set((chunk.units || []).map((u) => String(u.unit_id || "unknown")));
+      const fallbackUnit = (chunk.units && chunk.units[0] && String(chunk.units[0].unit_id)) || "unknown";
       for (const concept of chunk.concepts || []) {
-        const targetUnit = (chunk.units && chunk.units[0] && String(chunk.units[0].unit_id)) || "unknown";
+        const declaredUnit = concept.unit_id !== undefined && concept.unit_id !== null ? String(concept.unit_id) : null;
+        const targetUnit = declaredUnit && chunkUnitIds.has(declaredUnit) ? declaredUnit : fallbackUnit;
         if (!unitMap[targetUnit]) continue;
         const item = { name: concept.name || "unnamed", summary: concept.summary || "", evidence: concept.evidence || "", source_pages: concept.source_pages || [], chunk_range: chunk.chunk_range };
         const kind = concept.kind || "concept";
