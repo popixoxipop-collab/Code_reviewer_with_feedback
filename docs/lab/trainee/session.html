@@ -166,6 +166,9 @@
 <script src="../pyodide-shared.js"></script>
 <script src="../traffic-rate.js"></script>
 <script src="../session-state.js"></script>
+<!-- D200: P03's live fact-check tools reuse P02Engine.githubRateLimitError -- loading this
+     is side-effect-free (Pyodide/DOM only touched by explicitly-called functions). -->
+<script src="../p02-engine.js"></script>
 <script src="../p03-engine.js"></script>
 <script>
 (function () {
@@ -385,7 +388,7 @@
       document.getElementById("start-gate").remove();
       try {
         const result = await P03Engine.run(
-          { finding: submission.finding, codeContexts: submission.codeContexts, model: selectedModel },
+          { finding: submission.finding, codeContexts: submission.codeContexts, model: selectedModel, repoRef: submission.repoRef },
           hooks
         );
         // Page-level enrichment for result.html's display only -- P03Engine.run()'s return

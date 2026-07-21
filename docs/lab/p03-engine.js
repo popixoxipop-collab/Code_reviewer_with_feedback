@@ -218,7 +218,11 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
   // D199: `classification` param dropped -- verdict_note is now the FULL turn-by-turn
   // trail (buildVerdictTrail(transcript)), not just the immediately preceding turn's
   // verdict. See buildVerdictTrail()'s comment for why.
-  function buildLevelPrompt(level, finding, codeContext, transcript, extraBanned) {
+  // D200: new trailing `factCheckAvailable` -- when true (repo identity known AND this is
+  // the first dedup attempt, see generateQuestion()), appends the manifest's per-stage
+  // fact_check_hint telling the model it may call list_files/read_file before answering.
+  // Never appended for l1 (no prior claim exists yet to fact-check).
+  function buildLevelPrompt(level, finding, codeContext, transcript, extraBanned, factCheckAvailable) {
     const codeBlock = codeContext ? `\n## 실제 코드\n\`\`\`\n${codeContext}\n\`\`\`\n` : "";
     const headerStage = LabApp.getStage("p03", "p03-1");
     const header = LabApp.fillTemplate(headerStage.shared_header, { finding_text: finding.finding || "", finding_file: finding.file || "", code_block: codeBlock });
@@ -236,6 +240,10 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     // has to be listed separately here.
     if (extraBanned && extraBanned.length) {
       prompt += `\n\n## 방금 생성했으나 반려된 질문 (이전 질문과 겹침 감지됨) — 이것과도 겹치면 안 됩니다\n` + extraBanned.map((q, i) => `${i + 1}. ${q}`).join("\n");
+    }
+    if (factCheckAvailable) {
+      const hint = LabApp.resolveTemplate("p03", stageId, "fact_check_hint");
+      if (hint) prompt += `\n\n## 실시간 재확인 안내\n${hint}`;
     }
     return prompt;
   }
@@ -337,24 +345,131 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
     return transcript.map((t) => `${t.level.toUpperCase()}=${LABEL[t.classification.verdict] || t.classification.verdict}`).join(", ");
   }
 
+  // D200: live fact-check tools for L2/L3/Reflection question generation -- gives the model
+  // real GitHub access to re-verify the trainee's last answer instead of only ever seeing a
+  // static snippet chosen once at session start. See run()'s D200 comment and llm.js's
+  // chatToolLoop() for the WHY/COST/EXIT of the overall mechanism; this block is just the
+  // GitHub-specific tool schemas + executors.
+  const LIST_FILES_TOOL = {
+    name: "list_files",
+    description: "저장소의 실제 파일 목록을 가져온다 (GitHub API git tree, 현재 브랜치 기준). 전달받은 코드 스니펫이 아니라 실제 저장소 구조를 확인할 때 사용.",
+    input_schema: { type: "object", properties: {}, required: [] },
+  };
+  const READ_FILE_TOOL = {
+    name: "read_file",
+    description: "저장소의 특정 파일 하나의 실제 최신 내용을 가져온다 (GitHub API contents). 학생 답변에서 언급된 구체적 파일/함수를 재확인할 때 사용. path는 list_files로 얻은 경로여야 한다.",
+    input_schema: { type: "object", properties: { path: { type: "string", description: "저장소 루트 기준 상대 경로" } }, required: ["path"] },
+  };
+  // v2 확장 지점: git_log(path) -- GET /repos/{owner}/{repo}/commits?path=...&sha={branch},
+  // 같은 executors 패턴으로 추가 가능. 이번엔 같은 라운드 예산을 list_files/read_file과
+  // 나눠 써야 하는 문제 + 커밋 이력 요약/절단 로직이 별도로 필요해 보류.
+  const LIST_FILES_MAX_ENTRIES = 300; // unmeasured/provisional -- P02Engine.MAX_CONNECT_FILES 관례를 따름
+  const READ_FILE_CHAR_CAP = 8000; // p03-1.truncation.code_context 관례를 따름(재확인 1회가 원본 스니펫 예산을 과도하게 넘지 않도록)
+
+  function githubHeaders(pat) {
+    const headers = { accept: "application/vnd.github+json" };
+    if (pat) headers.authorization = `Bearer ${pat}`;
+    return headers;
+  }
+
+  // D200: P02Engine.fetchGithubRepo()를 재사용하지 않음 -- 그건 스캔 시점에 저장소
+  // 전체를 벌크로 가져오는 함수라, 세션 도중 파일 하나만 가볍게 재조회하는 이 용도엔
+  // 맞지 않음. 안전에 직결되는 부분(D192 레이트리밋 탐지)만 P02Engine.githubRateLimitError로
+  // 재사용하고, 나머지 헤더/요청 구성은 가볍게 미러링(이 코드베이스에서 이미 p03-runner.js가
+  // 쓰는 것과 같은 관례 -- 작고 안정적인 스니펫은 크로스 파일 결합보다 가벼운 중복을 선호).
+  async function toolListFiles(repoRef, pat) {
+    const { owner, repo, branch } = repoRef;
+    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/trees/${encodeURIComponent(branch)}?recursive=1`, { headers: githubHeaders(pat) });
+    if (!res.ok) throw (P02Engine.githubRateLimitError(res, pat) || new Error(`list_files 실패 (HTTP ${res.status})`));
+    const tree = await res.json();
+    const paths = (tree.tree || []).filter((t) => t.type === "blob").map((t) => t.path);
+    return { paths: paths.slice(0, LIST_FILES_MAX_ENTRIES), truncated: paths.length > LIST_FILES_MAX_ENTRIES, total: paths.length };
+  }
+
+  async function toolReadFile(repoRef, pat, path) {
+    const { owner, repo, branch } = repoRef;
+    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}?ref=${encodeURIComponent(branch)}`, { headers: githubHeaders(pat) });
+    if (!res.ok) throw (P02Engine.githubRateLimitError(res, pat) || new Error(`read_file 실패 (${path}, HTTP ${res.status})`));
+    const data = await res.json();
+    if (Array.isArray(data) || data.type !== "file" || !data.content) throw new Error(`read_file: ${path}는 파일이 아니거나 내용 없음`);
+    const content = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ""))));
+    return {
+      path,
+      content: content.length > READ_FILE_CHAR_CAP ? content.slice(0, READ_FILE_CHAR_CAP) + "\n...[생략]" : content,
+      truncated: content.length > READ_FILE_CHAR_CAP,
+    };
+  }
+
+  // D200: WHY -- L2/L3/Reflection follow-ups used to invent a hypothetical counter-example
+  // against a STATIC snippet, never re-verified (the gap a reference "grounded fact-check"
+  // interview transcript exposed; user directed adopting the high-cost structural fix: give
+  // the question-generator genuine live tool access, not just a better prompt).
+  //   COST: up to FACT_CHECK_MAX_ROUNDS+1 LLM round-trips for the fact-checked attempt
+  //   instead of 1, each a real job-queue submit+poll cycle (not instant). Only attempted on
+  //   attempt===0 of the dedup loop below -- dedup retries are about textual novelty, not
+  //   re-verifying facts already checked once, so re-fact-checking on retry would burn GitHub
+  //   rate-limit budget for no benefit. Worst case total LLM calls for one question:
+  //   (FACT_CHECK_MAX_ROUNDS+1) + DEDUP_MAX_RETRIES = 3 + 2 = 5 at current constants.
+  //   EXIT: if 2 rounds proves too tight (model wants list_files + 2x read_file), raise to 3
+  //   -- start conservative given each round stacks real job-queue latency on top of the
+  //   trainee's session_timeout_minutes countdown, not a cheap in-memory retry.
+  const FACT_CHECK_MAX_ROUNDS = 2;
+
   // Change #1: takes `model` explicitly (was module-level selectedModel fallback).
   // D190: adds `onProgress` (optional) to surface dedup-retry warnings the same way other
   // unusual-but-handled conditions already do (e.g. the elevated-traffic warning in run()).
   // D199: dropped the separate `classification` param -- buildLevelPrompt() now derives the
   // cumulative verdict trail from `transcript` itself (which already carries every turn's
   // classification), so passing "just the last one" separately was redundant duplication.
-  async function generateQuestion(level, finding, codeContext, transcript, maxAttempts, model, onProgress) {
+  // D200: new trailing `repoRef` ({owner,repo,branch} or null for ZIP uploads) -- enables
+  // the live fact-check tool-loop above for L2/L3/Reflection. `repoRef` absent/null is an
+  // undetectable no-op (ZIP path keeps behaving exactly as before D200).
+  async function generateQuestion(level, finding, codeContext, transcript, maxAttempts, model, onProgress, repoRef) {
     // D182: falls through to the top-level toggle (model) -- p03-1 has no manifest `model`
     // param at all (never did), so this was already effectively "shared default only"
     // before; now it's "toggle" instead.
     const resolvedModel = LabApp.resolveParam("p03", "p03-1", "model") || model;
-    const tool = { name: "ask_question", description: "학생에게 던질 질문 하나를 생성한다.", input_schema: { type: "object", properties: { question: { type: "string" } }, required: ["question"] } };
+    const askQuestionTool = { name: "ask_question", description: "학생에게 던질 질문 하나를 생성한다.", input_schema: { type: "object", properties: { question: { type: "string" } }, required: ["question"] } };
     const priorQuestions = transcript.map((t) => t.question);
     const rejected = [];
+    const pat = LabConfig.get("github-pat");
+
     for (let attempt = 0; attempt <= DEDUP_MAX_RETRIES; attempt++) {
-      const prompt = buildLevelPrompt(level, finding, codeContext, transcript, rejected);
-      const result = await LabLLM.chatTool({ model: resolvedModel, messages: [{ role: "user", content: prompt }], tool, maxTokens: 2048, maxAttempts });
-      const candidate = result.question;
+      // D200: fact-check only on the first attempt, only past L1, only with a real repo.
+      const useFactCheck = attempt === 0 && level !== "l1" && repoRef && repoRef.owner && repoRef.repo;
+      let candidate;
+
+      if (useFactCheck) {
+        const prompt = buildLevelPrompt(level, finding, codeContext, transcript, rejected, true);
+        try {
+          const result = await LabLLM.chatToolLoop({
+            model: resolvedModel,
+            messages: [{ role: "user", content: prompt }],
+            tools: [LIST_FILES_TOOL, READ_FILE_TOOL, askQuestionTool],
+            executors: {
+              list_files: async () => toolListFiles(repoRef, pat),
+              read_file: async (args) => toolReadFile(repoRef, pat, args.path),
+            },
+            terminalToolName: "ask_question",
+            maxRounds: FACT_CHECK_MAX_ROUNDS,
+            maxTokens: 2048, maxAttempts, onProgress,
+          });
+          candidate = result.question;
+        } catch (err) {
+          // D200: graceful degrade -- rate-limit mid-loop or any other tool-loop failure
+          // falls back to today's plain single-shot path (hint-stripped, since the model
+          // wasn't actually given tools this time). Interview must never stop for this.
+          if (onProgress) onProgress(`⚠ 실시간 코드 재확인을 건너뜁니다 (${err.message}) — 저장된 코드 스니펫만으로 질문을 생성합니다`);
+          const fallbackPrompt = buildLevelPrompt(level, finding, codeContext, transcript, rejected, false);
+          const fallback = await LabLLM.chatTool({ model: resolvedModel, messages: [{ role: "user", content: fallbackPrompt }], tool: askQuestionTool, maxTokens: 2048, maxAttempts });
+          candidate = fallback.question;
+        }
+      } else {
+        const prompt = buildLevelPrompt(level, finding, codeContext, transcript, rejected, false);
+        const result = await LabLLM.chatTool({ model: resolvedModel, messages: [{ role: "user", content: prompt }], tool: askQuestionTool, maxTokens: 2048, maxAttempts });
+        candidate = result.question;
+      }
+
       const dupOf = priorQuestions.find((q) => isDuplicateQuestion(candidate, q));
       if (!dupOf) return candidate;
       if (attempt === DEDUP_MAX_RETRIES) {
@@ -489,7 +604,9 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
   //          onAnswerRecorded({level,question,answer,classification}),
   //          countdown: {start(totalMinutes), resume(), pause(), stop()} }
   async function run(input, hooks) {
-    const { finding, codeContexts, model } = input;
+    // D200: repoRef ({owner,repo,branch} or null for ZIP uploads) enables the live
+    // fact-check tool-loop in generateQuestion() -- see its D200 comment.
+    const { finding, codeContexts, model, repoRef } = input;
     if (!finding) {
       hooks.onStatus("먼저 finding을 불러오고 선택하세요", "error");
       throw new Error("먼저 finding을 불러오고 선택하세요");
@@ -569,7 +686,8 @@ _classify_result = json.dumps({"verdict": _verdict, "raw": _r})
         hooks.onProgress(`${level.toUpperCase()} 질문 생성 중...`);
         // D199: transcript already carries every turn's classification -- generateQuestion()
         // derives the cumulative verdict trail from it directly, no separate param needed.
-        const question = await generateQuestion(level, finding, codeContext, transcript, genAttemptInfo.maxAttempts, model, hooks.onProgress);
+        // D200: repoRef enables live fact-checking for L2/L3/Reflection (null/no-op for ZIP).
+        const question = await generateQuestion(level, finding, codeContext, transcript, genAttemptInfo.maxAttempts, model, hooks.onProgress, repoRef);
         hooks.onQuestion({ level, question, turnIndex: i, totalTurns });
         hooks.onProgress("답변 대기 중...");
         hooks.countdown.resume(); // D182: only start ticking once the human can actually see+answer this question

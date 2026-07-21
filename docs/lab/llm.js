@@ -154,6 +154,83 @@ const LabLLM = (() => {
     return JSON.parse(call.function.arguments);
   }
 
+  // D200: P03's L2/L3/Reflection follow-up questions used to be pure completions against a
+  // static code snippet chosen once at session start -- never re-verified against the real
+  // repo mid-interview (the gap exposed by comparing against a reference "grounded
+  // fact-check" interview transcript; user directed adopting the high-cost structural fix).
+  // chatTool() above is a genuine dead end for this: it forces `tool_choice` to exactly one
+  // function and returns after a single round trip, so a model that needs to read a file
+  // before it can ask a grounded question has nowhere to put that request. This is the
+  // first multi-turn tool-calling primitive in this codebase.
+  //   WHY: send ALL candidate tools with `tool_choice: "auto"` so the model can choose
+  //   between calling a non-terminal tool (executed locally, result fed back into
+  //   `messages` per the OpenAI tool-calling message convention: the assistant's
+  //   tool-call message followed by a role:"tool" message carrying that call's id) or
+  //   calling `terminalToolName` to finish -- exactly mirroring chatTool()'s return shape
+  //   once it does.
+  //   COST: up to maxRounds+1 full submitAndPoll round trips (each a real job-queue
+  //   submit+poll cycle, not instant) instead of chatTool()'s always-1. Callers must budget
+  //   for this explicitly (see p03-engine.js's FACT_CHECK_MAX_ROUNDS comment for how P03
+  //   bounds it: fact-check only on the first dedup attempt, not every retry).
+  //   EXIT: if a model ever returns >1 tool_calls in one round, only the first is acted on
+  //   (documented v1 scope limit, not a bug) -- if that turns out to matter, execute all
+  //   calls in the response and push one role:"tool" message per call before re-polling.
+  async function chatToolLoop({ model, messages, tools, executors, terminalToolName,
+                                 maxRounds = 2, maxTokens, temperature = 0.0, maxAttempts, onProgress }) {
+    const proxyUrl = LabConfig.get("proxy-url");
+    const apiKey = LabConfig.get("nvidia-key");
+    if (!proxyUrl || !apiKey) {
+      throw new Error("NVIDIA API 키와 프록시 URL을 먼저 입력하세요 (상단 연결 설정).");
+    }
+    const toolDefs = tools.map((t) => ({ type: "function", function: { name: t.name, description: t.description, parameters: t.input_schema } }));
+    const terminalDef = toolDefs.find((t) => t.function.name === terminalToolName);
+    if (!terminalDef) throw new Error(`chatToolLoop: terminalToolName "${terminalToolName}"이 tools 목록에 없음`);
+
+    let round = 0;
+    while (true) {
+      // D200: once `round >= maxRounds`, force tool_choice back to ONLY the terminal tool --
+      // guarantees the loop terminates within a bounded number of round trips regardless of
+      // model behavior, reusing chatTool()'s exact forced-single-tool shape as the fallback.
+      const forced = round >= maxRounds;
+      const body = {
+        model, messages, max_tokens: maxTokens, temperature,
+        tools: forced ? [terminalDef] : toolDefs,
+        tool_choice: forced ? { type: "function", function: { name: terminalToolName } } : "auto",
+      };
+      const data = await submitAndPoll(proxyUrl, apiKey, body, { maxAttempts });
+      const choice = data.choices && data.choices[0] && data.choices[0].message;
+      const calls = (choice && choice.tool_calls) || [];
+
+      if (!calls.length) {
+        if (forced) throw new Error(`chatToolLoop: 강제 종료 라운드에서도 tool_calls 없음: ${JSON.stringify(data).slice(0, 300)}`);
+        // Model responded with plain text instead of calling any tool under "auto" -- not
+        // expected, but not fatal: record what it said and force terminal-only on the next
+        // round instead of throwing (guaranteed termination still holds).
+        messages.push({ role: "assistant", content: choice ? (choice.content || "") : "" });
+        round = maxRounds;
+        continue;
+      }
+
+      const call = calls[0]; // v1 scope: acts on the first tool_call only, see file header
+      if (call.function.name === terminalToolName) {
+        return JSON.parse(call.function.arguments);
+      }
+
+      const executor = executors[call.function.name];
+      if (!executor) throw new Error(`chatToolLoop: executor 없음: ${call.function.name}`);
+      if (onProgress) onProgress(`⚙ ${call.function.name} 호출 중...`);
+      // Deliberately not caught here -- a tool executor throwing (e.g. a GitHub rate-limit
+      // error) is the caller's decision to handle (fall back, warn, etc.), not this generic
+      // primitive's. See p03-engine.js's generateQuestion() for the fallback this enables.
+      const args = JSON.parse(call.function.arguments);
+      const toolResult = await executor(args);
+
+      messages.push({ role: "assistant", content: choice.content || null, tool_calls: [call] });
+      messages.push({ role: "tool", tool_call_id: call.id, content: JSON.stringify(toolResult) });
+      round += 1;
+    }
+  }
+
   function extractJsonObject(text) {
     let cleaned = (text || "").trim();
     cleaned = cleaned.replace(/^```(?:json)?\s*/, "").replace(/\s*```$/, "");
@@ -166,5 +243,5 @@ const LabLLM = (() => {
     }
   }
 
-  return { chatJSON, chatTool, extractJsonObject, getRequestLog };
+  return { chatJSON, chatTool, chatToolLoop, extractJsonObject, getRequestLog };
 })();
