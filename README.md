@@ -1578,6 +1578,15 @@ python3 pipeline/compare_methodologies.py
   - COST: step-3.5-flash 단종 시한(사용자 보고 기준 7일)까지 진짜 대체 모델을 아직 못 찾음 — 이번에 확인한 실패 조건(trivial-프롬프트 검증만으로는 불충분)을 통과할 후보를 다시 찾아야 함.
   - EXIT: 향후 대체 후보는 반드시 이번 3단계(trivial 응답형태 → 실제 max_tokens/JSON모드 프롬프트 → JSON모드 유무 대조) 전부를 기본값 스왑 **전에** 통과해야 함 — trivial 프롬프트 하나만 확인하고 스왑하지 않는다.
 
+- **D218** ([`docs/lab/app.js`](./docs/lab/app.js), [`docs/lab/lab-core.js`](./docs/lab/lab-core.js), [`docs/lab/prompt_manifest.json`](./docs/lab/prompt_manifest.json)) — 기본 모델을 `stepfun-ai/step-3.5-flash` → `qwen/qwen3-next-80b-a3b-instruct`로 교체. 사용자가 "단순 증감이 판단 기준이 되어도 될까? 정성적 평가 자료 가져와"라고 지적해서, 개수 비교만으로 내렸던 D183/D216류 판단을 실제 항목 텍스트 대조로 다시 검증한 결과에 근거.
+  - **정성 대조 방법**: refine 전/후 unitMap의 concepts/code_examples/cautions을 이름 기준으로 매칭(중복 이름은 개수까지 맞춰 1:1 소비 — 첫 버전은 Set 기반이라 중복 이름 버그가 있어 재작성함), "사라짐"(대응 없음)/"생김"(대응 없음, 새로 등장)을 실제 요약 문장까지 읽어 판정.
+  - **결과**: step-3.5-flash(iter0→1)는 "Kubernetes Definition"(K8s란 무엇인가), "CICD Definition"(CICD란 무엇인가), "Agile Development", "DevOps" 등 **정의급 개념 10건이 대체 없이 소실**(생긴 건 무관한 code_example 1건뿐). nemotron-3-ultra-550b(iter2→3)는 더 나빠서 15건 소실에 대체 0건(Service 타입 다이어그램 code_example 2건까지 포함). **qwen3-next-80b(iter0→1)만 정반대**: 사라진 것 0건, 생긴 것 4건 중 3건이 실제 빈 구멍(이전엔 "CI/CD 컴포넌트"로 뭉뚱그려져 있었을 뿐 Continuous Integration 자체를 정의한 항목이 없었음)을 이전에 인용된 적 없는 페이지 근거로 채운 정당한 보강.
+  - **알려진 리스크(명시적으로 감수)**: 같은 날 D216 직전에 사용자가 보여준 실사용 로그가 하필 qwen3-next-80b였고, 그 로그에서 이 모델은 NVIDIA HTTP 524로 재시도 3라운드까지 전부 실패하며 약 1시간 동안 문서 하나를 못 끝냈음. 반면 이번 스크립트 실행(같은 날, 다른 시점)은 8/8 정상. AskUserQuestion으로 이 모순을 명시적으로 알리고 "품질 우선, 524 리스크 감수"로 확인받은 뒤 진행 — D215(불충분한 사전검증)와 동일한 실수를 반복하지 않기 위해 이번엔 알려진 리스크를 숨기지 않고 사용자 확인을 거침.
+  - **적용**: `qwen/qwen3-next-80b-a3b-instruct`를 `MODEL_CHOICES[0]`/`tier:"good"`/기본값으로, `stepfun-ai/step-3.5-flash`는 목록에 남기되 "기본값" 표기만 제거(여전히 `tier:"good"`, 빠르고 안정적인 대안으로 유지).
+  - WHY: 정성 대조까지 마친 상태에서, refine이 콘텐츠를 깎아먹는 모델을 계속 기본값으로 둘 근거가 없어짐.
+  - COST: 524로 인한 간헐적 전체 실패 위험을 기본값 차원에서 받아들임 — 실패 시 사용자가 재시도해야 함(파이프라인 자체 재시도 로직은 이미 있음, 그걸로 못 넘는 지속적 과부하 구간엔 여전히 취약).
+  - EXIT: 524 실패가 실사용에서 자주 재현되면 D217과 같은 방식(EXIT 조항이 미리 있으니 재검증 없이 되돌릴 수 있음)으로 step-3.5-flash로 재원복.
+
 ## 다음 단계 (미해결)
 
 1. ~~판단 블록에 "프레임워크 관용 패턴 목록" 대조 필터 추가~~ — D5~D7로 완료(javascript만 실증, 나머지 언어는 빈 상태)

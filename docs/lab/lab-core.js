@@ -149,19 +149,19 @@ const LabApp = (() => {
   // Promoted to shared.default_model for both P01 and P03 on this evidence, not
   // speculation.
   const MODEL_CHOICES = [
-    // D217 (2026-07-22): reverted step-3.7-flash -> step-3.5-flash, mirrored from
-    // app.js's own MODEL_CHOICES -- see app.js's D217 comment for the full WHY/COST/EXIT.
-    // step-3.7-flash turned out to be a reasoning model that hangs/never answers on
-    // realistic max_tokens=3600 JSON-mode prompts (confirmed direct to NVIDIA, not our
-    // worker's fault).
+    // D218 (2026-07-22), mirrored from app.js -- see app.js's D218 comment for the full
+    // WHY/COST/EXIT. Promoted on qualitative (item-level, not just count) refine
+    // evidence: qwen3-next-80b was the only model whose refine pass didn't drop distinct
+    // grounded content. Known cost: this exact model failed hard (524, ~1hr) in real
+    // production the same day -- reliability is inconsistent day-to-day, accepted anyway.
+    { id: "qwen/qwen3-next-80b-a3b-instruct", label: "qwen3-next-80b", tier: "good",
+      note: "기본값(D218, 2026-07-22: refine이 콘텐츠를 깎지 않고 실제 빈 구멍을 채운 유일한 모델 -- item-level 정성 대조로 확인, 아래 step-3.5-flash 항목 참고). P01-T1 실측 96% 성공(D120, 표본 50). ⚠ D183/D218: step-3.5-flash 대비 20-50배 느림, 같은 날 실사용에서 524로 1시간 실패 이력 있음(이번 스크립트 실행은 8/8 정상) -- 품질은 낫지만 가용성은 날마다 다를 수 있음." },
     { id: "stepfun-ai/step-3.5-flash", label: "step-3.5-flash", tier: "good",
-      note: "기본값(D217, 2026-07-22: step-3.7-flash가 실제 p01-2 규모 JSON모드 프롬프트에서 응답 불가로 확인되어 원복 -- 아래 step-3.7-flash 항목 참고). D120의 '0/50'은 구파이프라인 reasoning_content 버그로 확정(D-G 이론을 실측 확인) · 재검증: P03 tool_calls 1.5-3.9s 3/3, P01 JSON모드 4.1-5.3s 3/3(reasoning_content 경유, 폴백 정상 동작)." },
+      note: "D218(2026-07-22): 기본값을 qwen3-next-80b로 넘김(위 항목 참고, refine이 콘텐츠를 깎지 않는 쪽을 우선) -- 이 모델은 빠르고 안정적이지만 refine 정성 대조에서 정의급 개념이 대체 없이 소실되는 게 확인됨. 속도/안정성이 급하면 여전히 이 모델. D217: step-3.7-flash가 실제 p01-2 규모 JSON모드 프롬프트에서 응답 불가로 확인되어 이 모델로 잠시 원복했던 이력. D120의 '0/50'은 구파이프라인 reasoning_content 버그로 확정 · 재검증: P03 tool_calls 1.5-3.9s 3/3, P01 JSON모드 4.1-5.3s 3/3(reasoning_content 경유, 폴백 정상 동작)." },
     { id: "stepfun-ai/step-3.7-flash", label: "step-3.7-flash", tier: "bad",
       note: "D217(2026-07-22): 잠시 기본값이었으나 원복 -- reasoning 모델로 확인됨. 실제 p01-2 규모 JSON모드 요청은 NVIDIA에 직접 호출해도 180초간 응답 자체가 없음(HTTP_CODE 000) -- 우리 워커 문제 아님. 실제 파이프라인 실험도 8청크 전부 90분간 하나도 안 끝남." },
     { id: "mistralai/mistral-medium-3.5-128b", label: "mistral-medium-3.5", tier: "unverified",
       note: "P01 기준 미검증 · P03 종합 2위(0.749) · D183 부수측정: 동일 4000자 프롬프트 13.2-17.3s(qwen 대비 5-6배 빠름, qwen과의 상대비교로만 측정, 단독 신뢰도 검증은 아직 부족)." },
-    { id: "qwen/qwen3-next-80b-a3b-instruct", label: "qwen3-next-80b", tier: "unverified",
-      note: "P01-T1 실측 96% 성공(D120, 표본 50). D183: 동일 프롬프트에서 step-3.5-flash 대비 20-50배 느림(75.9-95.9s, 이전 회차엔 3회 중 1회 524도 있었음) -- 더는 기본값 아님, 느림/간헐적 524(D142/D144/D145 기존 이력)로 tier 재평가." },
     { id: "nvidia/nemotron-3-super-120b-a12b", label: "nemotron-3-super-120b", tier: "unverified",
       note: "P01 기준 미검증 · P03에서 범위 밖 점수 출력 결함 이력." },
     { id: "qwen/qwen3.5-122b-a10b", label: "qwen3.5-122b", tier: "unverified",
