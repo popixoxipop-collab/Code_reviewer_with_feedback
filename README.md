@@ -1539,6 +1539,14 @@ python3 pipeline/compare_methodologies.py
   - EXIT: 확실한 정리가 필요하면 `running`에 TTL 이상 멈춘 row를 서버 사이드에서 쓸어가는 reaper로 교체 — 이 클라이언트 비콘은 그 전의 저비용 ~90%짜리 버전.
   - 커밋: `a4a7eeb`. Team-IZ/AI 미러는 이번엔 생략(범위 밖).
 
+- **D197** ([`experiments/web_lab/pdf_analysis_schema.sql`](./experiments/web_lab/pdf_analysis_schema.sql), Supabase DB, repo 파일도 함께 변경) — 사용자가 `pdf_analysis.runs`/`artifacts`(curriculum-manager 도구용, D-Team-IZ 세션에서 신설된 스키마)의 원본 JSON을 Table Editor에서 훑어보기 힘들다며 "unit_map 등 커리큘럼 관련 항목만 모아서, `p03_turns_view`처럼" 요청.
+  - **적용**: `public.pdf_analysis_units_view` 신설 — `pdf_analysis.runs`/`artifacts`(kind='unit_map')를 `public.members`와 조인하고 `jsonb_each`로 unit_map 객체를 유닛 단위 행으로 펼침(run 단위가 아니라 **유닛 단위 1행**, `p01_questions_view`의 run-단위 집계가 아니라 `p03_turns_view`의 턴-단위 펼침 방식을 그대로 따름 — 사용자가 명시적으로 지목한 선례). 컬럼: run_id/email/display_name/source_material/model/status/started_at/unit_id/unit_title/page_start/page_end/concept_count/code_example_count/caution_count/concept_names. 소스 테이블은 `pdf_analysis` 스키마지만 뷰 자체는 (다른 뷰들과 나란히 스키마 전환 없이 보이도록) `public`에 생성.
+  - **검증**: 합성 run+unit_map(유닛 2개 — 하나는 페이지/개념 있음, 하나는 완전히 빈 유닛)을 Management API로 직접 insert → 뷰 조회 결과에서 채워진 유닛은 `page_start=3/page_end=5/concept_count=2`, 빈 유닛은 `page_start/end=NULL, count=0`으로 정확히 나옴을 확인 → 테스트 행 즉시 delete로 정리(팀 DB에 잔존 없음). 실제 REST API(`/rest/v1/pdf_analysis_units_view`)로도 200 응답 확인(현재 `pdf_analysis.runs`가 0행이라 빈 배열 — 뷰 정의 자체의 정상 동작).
+  - WHY: `public.artifacts`는 P01/P02/P03 콘텐츠가 전부 섞여 있고 `content` 컬럼은 JSON 미리보기라 훑어보기 어려움 — D175/D177이 P01 질문 리스트용으로 풀었던 것과 같은 문제를 curriculum-manager 스키마에도 적용.
+  - COST: 뷰가 `security_invoker` 없이 소유자(뷰 생성자) 권한으로 도니, 이론상 RLS 우회 가능성이 있으나 `pdf_analysis.runs`/`artifacts`의 SELECT 정책이 이미 "read all"(로그인한 팀원 전체 공개)이라 실질적 차이 없음.
+  - EXIT: curriculum-manager가 `graph`/`refine_fixes` 아티팩트도 훑어볼 필요가 생기면 같은 패턴(유닛/노드 단위로 펼치는 별도 뷰)으로 확장.
+  - Supabase Management API로 직접 생성(라이브 반영 완료), repo에는 재현용 SQL만 커밋. `Team-IZ/AI` 미러도 동일 SQL로 동기화(같은 프로젝트를 공유하므로 뷰 자체는 이미 그쪽 배포에서도 조회 가능 — 파일만 맞춰둠).
+
 ## 다음 단계 (미해결)
 
 1. ~~판단 블록에 "프레임워크 관용 패턴 목록" 대조 필터 추가~~ — D5~D7로 완료(javascript만 실증, 나머지 언어는 빈 상태)
