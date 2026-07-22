@@ -1554,6 +1554,18 @@ python3 pipeline/compare_methodologies.py
   - WHY: 사용자가 원한 건 애초에 "커리큘럼 관련 항목 전부를 한곳에서" 였지 "curriculum-manager가 새로 만든 것만"이 아니었음 — 요청을 좁게 해석한 내 실수.
   - EXIT: `pdf_analysis` 쪽에 실제 로그인 상태로 저장된 run이 쌓이기 시작하면(현재 0건) 두 소스 모두 자연스럽게 이 뷰에 함께 나타남.
 
+- **D216** ([`worker/nvidia-proxy.js`](./worker/nvidia-proxy.js), [`worker/wrangler.toml`](./worker/wrangler.toml), Cloudflare 계정 설정) — 번호 메모: README의 마지막 항목은 D198이지만 이 시점에 코드/커밋에는 이미 D199~D215가 동시 진행 세션들이 붙인 채로 존재(app.js의 step-3.5→3.7-flash 전환 커밋 `c634c97`이 자체적으로 "D215"라 표기) — D196과 같은 종류의 번호 드리프트. README 자체 순번(D199) 대신 저장소 전체에서 실제 사용된 최댓값(215) 다음 번호를 확인 후 사용.
+  - **발단**: step-3.7-flash·deepseek-v4-pro 모델 품질 비교 실험 중 두 모델 다 8청크 전부 65초 만에 "Failed to fetch"로 즉사 — 같은 방법으로 성공한 다른 모델들과 패턴이 달라 모델 문제가 아니라고 판단.
+  - **조사**: `wrangler tail`로 실시간 로그 확인 → `Error: KV put() limit exceeded for the day` (nvidia-proxy.js:90). Cloudflare Workers KV Free 플랜의 "하루 1,000 writes" 한도가 **계정 전체 단위**(네임스페이스별이 아님— 공식 문서로 재확인)라, 이 계정에 KV 네임스페이스가 이미 3개(`nvidia_jobs`/`NVIDIA_JOBS`/`team_iz_code_qna_nvidia_jobs`) 있어도 전부 같은 한도를 공유. 오늘 하루 이 세션에서만 8청크×여러 모델×refine 반복 실험을 반복한 데다, 요청마다 job 상태 write + traffic-sample write가 겹쳐 소진된 것으로 판단. 이 순간 curriculum-manager/P01/P02/P03 전체가 실제 사용자에게도 장애 상태였음.
+  - **기각한 대안**:
+    - **다중 무료 계정으로 워커 풀링(사용자 제안)**: 기술적으로는 가능(Cloudflare Queues도 Free에서 됨, KV 한도가 정말 계정 단위라 계정 N개 = N배 한도) — 하지만 "요청마다 proxy 주소만 바꿔치기"가 아니라 계정 N개 가입+KV/Queue/Worker 배포+(현재 코드베이스에 전혀 없는) 클라이언트 쪽 라우팅 로직 신규 작성이 필요. 게다가 무료 한도 우회 목적의 다중 계정 생성은 Cloudflare ToS 위반 소지가 있어 계정 정지라는 더 나쁜 결과로 이어질 수 있음 — 기각.
+    - **Supabase Edge Functions로 이전**: Edge Function 자체 타임아웃이 Free 150초/Paid 400초로 Cloudflare Workers 무료 티어(~100-125초)와 같은 계열의 제약이라, 지금과 동일한 submit/poll job-queue 구조를 Supabase Postgres+Edge Function으로 다시 짜야 하는 것과 다름없음 — 근본 원인(느린 응답 vs 짧은 동기 타임아웃) 자체가 해결 안 됨. 기각.
+    - **Google Cloud Run으로 이전**: 요청 타임아웃이 최대 60분까지 설정 가능해 NVIDIA 응답을 그냥 동기로 기다렸다가 반환하는 구조로 job_id/폴링/KV 상태머신 전체를 걷어낼 수 있는 진짜 구조적 단순화 — 다만 이건 오늘의 장애를 막는 대응이 아니라 별도의 리라이트/마이그레이션 프로젝트라 보류.
+  - **적용**: 사용자가 Cloudflare Workers Paid 플랜($5/월) 구독. 업그레이드 후 `wrangler tail` + 직접 테스트 호출로 실시간 검증 — KV 에러 없이 정상 `job_id` 반환 + Queue consumer가 정상적으로 메시지 처리("Ok") 확인.
+  - WHY: 오늘 당장의 장애(테스트뿐 아니라 실사용자 전체 차단)를 코드 변경 없이 즉시 해결. Supabase/멀티계정 대안은 근본 문제를 안 고치거나 새 리스크를 만들고, GCP 이전은 맞는 방향이지만 마이그레이션 규모가 있어 오늘 문제 해결과는 별개.
+  - COST: KV 쓰기가 "무제한"이 된 건 하드 한도(하루 1,000건 초과 시 완전 차단)가 사라졌다는 뜻이지, 완전 무료라는 뜻은 아님 — Paid 플랜의 "Included features"엔 KV 별도 무료 할당량이 명시돼 있지 않고 "Overage rates"에 KV operations $0.50/million만 있음(즉 사실상 처음부터 종량 과금, 다만 $5 base fee에 다른 항목들의 대규모 무료 할당량이 포함됨). 매달 $5 고정비 + 소액의 종량과금이 새로 발생.
+  - EXIT: 비용이 예상보다 커지면 (1) 매 요청마다 찍는 traffic-sample KV write(관측용, 핵심기능 아님)의 샘플링 비율을 낮춰 쓰기량 자체를 줄이거나, (2) 보류해둔 GCP Cloud Run 이전(job-queue/폴링 구조 전체 제거)을 진행.
+
 ## 다음 단계 (미해결)
 
 1. ~~판단 블록에 "프레임워크 관용 패턴 목록" 대조 필터 추가~~ — D5~D7로 완료(javascript만 실증, 나머지 언어는 빈 상태)
