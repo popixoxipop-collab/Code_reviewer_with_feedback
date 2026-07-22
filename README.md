@@ -1566,6 +1566,18 @@ python3 pipeline/compare_methodologies.py
   - COST: KV 쓰기가 "무제한"이 된 건 하드 한도(하루 1,000건 초과 시 완전 차단)가 사라졌다는 뜻이지, 완전 무료라는 뜻은 아님 — Paid 플랜의 "Included features"엔 KV 별도 무료 할당량이 명시돼 있지 않고 "Overage rates"에 KV operations $0.50/million만 있음(즉 사실상 처음부터 종량 과금, 다만 $5 base fee에 다른 항목들의 대규모 무료 할당량이 포함됨). 매달 $5 고정비 + 소액의 종량과금이 새로 발생.
   - EXIT: 비용이 예상보다 커지면 (1) 매 요청마다 찍는 traffic-sample KV write(관측용, 핵심기능 아님)의 샘플링 비율을 낮춰 쓰기량 자체를 줄이거나, (2) 보류해둔 GCP Cloud Run 이전(job-queue/폴링 구조 전체 제거)을 진행.
 
+- **D217** ([`docs/lab/app.js`](./docs/lab/app.js), [`docs/lab/lab-core.js`](./docs/lab/lab-core.js), [`docs/lab/prompt_manifest.json`](./docs/lab/prompt_manifest.json)) — step-3.7-flash 기본값을 D215 당일에 다시 step-3.5-flash로 원복. D215 자신의 EXIT 조항이 정확히 이 상황을 미리 승인해둠: "3.7이 실전에서 underperform하면 id/label을 3.5로 되돌리고 D183 방식의 direct-curl로 재검증".
+  - **발단**: D216 KV 장애 해소 후 재개한 step-3.7-flash 실험이 **90분 타임아웃까지 8청크 중 단 하나도 완료 못 함**(스크립트 자체가 `NoneType` 크래시로 종료) — 같은 세션에서 실제 production으로 처리된 step-3.5-flash(131p/14청크, 1분50초 완료)와 극명하게 대비.
+  - **조사**(D183 방식 direct-curl 재현, 3단계):
+    1. trivial "Say OK" 프롬프트(max_tokens=50, JSON모드 아님) → HTTP 200으로 응답은 오지만 `content:null, finish_reason:"length"`, `reasoning` 필드만 가득 참 — **step-3.7-flash 자체가 reasoning 모델**이었음(D215 스왑 당시엔 확인 안 된 사실). 50토큰 예산 전부를 답변 전 사고 과정에 소진.
+    2. 실제 p01-2 규모 프롬프트(진짜 PDF 10p 청크, max_tokens=3600, JSON모드) → NVIDIA에 직접(우리 워커 경유 안 함) curl, **180초간 HTTP_CODE 000**(응답 자체가 없음, 에러조차 아님).
+    3. 같은 프롬프트에서 JSON모드만 뺀 버전 → 역시 **90초간 HTTP_CODE 000**. JSON모드 여부와 무관하게 프롬프트가 복잡해지면 응답이 아예 안 옴 — 우리 워커/큐 문제가 아니라 NVIDIA 서빙 쪽에서 이 모델이 못 버티는 것으로 확정(우리 Worker를 완전히 건너뛴 직접 호출로도 재현됐으므로).
+  - D215의 사전검증이 부족했던 지점: trivial 프롬프트의 응답 "형식"(reasoning_content 폴백)만 확인했지, 실제 max_tokens=3600 JSON모드 하에서 reasoning이 답변 전 예산을 다 태울 위험은 검증하지 않았음 — nemotron-3-ultra-550b(D216 이전 별도 조사)에서 이미 경고했던 것과 같은 종류의 리스크가 하필 "안전한 후속 모델"로 골랐던 3.7에도 있었음.
+  - **적용**: `stepfun-ai/step-3.5-flash`를 다시 `MODEL_CHOICES[0]`/기본값으로, `step-3.7-flash`는 목록에 남기되 `tier: "bad"`로 강등(렌더링 코드에 이미 `tier==="bad"` → `.warn` 스타일이 있었지만 지금까지 쓰인 적 없었음 — 새 값 도입 아니라 기존 미사용 값을 처음 실사용).
+  - WHY: 응답이 아예 안 오는 기본 모델은 곧 단종될 예정이지만 지금 당장은 멀쩡히 도는 3.5보다 훨씬 나쁨.
+  - COST: step-3.5-flash 단종 시한(사용자 보고 기준 7일)까지 진짜 대체 모델을 아직 못 찾음 — 이번에 확인한 실패 조건(trivial-프롬프트 검증만으로는 불충분)을 통과할 후보를 다시 찾아야 함.
+  - EXIT: 향후 대체 후보는 반드시 이번 3단계(trivial 응답형태 → 실제 max_tokens/JSON모드 프롬프트 → JSON모드 유무 대조) 전부를 기본값 스왑 **전에** 통과해야 함 — trivial 프롬프트 하나만 확인하고 스왑하지 않는다.
+
 ## 다음 단계 (미해결)
 
 1. ~~판단 블록에 "프레임워크 관용 패턴 목록" 대조 필터 추가~~ — D5~D7로 완료(javascript만 실증, 나머지 언어는 빈 상태)

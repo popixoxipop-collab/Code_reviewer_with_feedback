@@ -38,21 +38,30 @@ const LabApp = (() => {
   // measuring the OLD pipeline's missing fallback, not a real model failure. Promoted to
   // shared.default_model for both P01 and P03 on this evidence, not speculation.
   const MODEL_CHOICES = [
-    // D215 (2026-07-22): step-3.5-flash -> step-3.7-flash. step-3.5-flash is scheduled
-    // for deprecation by the provider (user-reported); NVIDIA's own /v1/models catalog
-    // confirms step-3.7-flash is already live (verified with a real API call before this
-    // change, not assumed from the naming pattern alone).
-    //   WHY: same provider/family, most likely successor -- avoids the tool silently
-    //   breaking once 3.5 is actually pulled from NVIDIA's catalog.
-    //   COST: none of D183's own measurements (P03 tool_calls 1.5-3.9s, P01 JSON-mode
-    //   4.1-5.3s, reasoning_content fallback behavior) have been re-verified against
-    //   3.7 -- this swap carries that evidence forward unverified, not re-measured.
-    //   EXIT: if 3.7 underperforms in practice, swap this id/label back to
-    //   stepfun-ai/step-3.5-flash (still in NVIDIA's catalog as of this change) while a
-    //   real replacement is found -- re-verify with the same D183-style direct-curl
-    //   methodology before trusting either model's numbers again.
-    { id: "stepfun-ai/step-3.7-flash", label: "step-3.7-flash", tier: "good",
-      note: "기본값(D215, 2026-07-22: step-3.5-flash가 provider deprecation 예정이라 교체 -- 3.7 자체 성능/재현성은 아직 재검증 안 됨, D183의 3.5 실측치를 그대로 승계한 상태). D120의 '0/50'은 구파이프라인 reasoning_content 버그로 확정(D-G 이론을 실측 확인) · 3.5 재검증 당시: P03 tool_calls 1.5-3.9s 3/3, P01 JSON모드 4.1-5.3s 3/3(reasoning_content 경유, 폴백 정상 동작)." },
+    // D217 (2026-07-22): reverted step-3.7-flash -> step-3.5-flash as default. D215's own
+    // EXIT clause pre-authorized exactly this: "if 3.7 underperforms in practice, swap
+    // this id/label back to step-3.5-flash... re-verify with the same D183-style
+    // direct-curl methodology". Did that: a realistic p01-2-shaped JSON-mode call (real
+    // 10-page PDF chunk, max_tokens=3600) hung -- HTTP_CODE 000, curl itself never got a
+    // response after 180s, called direct to NVIDIA (bypassing our own worker entirely,
+    // so not a Cloudflare-side issue). A trivial "Say OK" call (max_tokens=50) revealed
+    // why: step-3.7-flash is ITSELF a reasoning model (not established before this) --
+    // it returned content:null, finish_reason:"length", its entire 50-token budget
+    // burned on `reasoning`/`reasoning_content` before ever reaching an answer. D215's
+    // own pre-swap verification only tested a trivial prompt's basic response shape, not
+    // real max_tokens=3600 JSON-mode behavior -- that gap is exactly what surfaced this.
+    // Meanwhile step-3.5-flash confirmed still working fine in real production use today
+    // (131p/14-chunk real run, done in 1:50) -- no urgency forcing 3.7 forward.
+    //   WHY: a hanging default model is worse than a soon-to-deprecate-but-working one.
+    //   COST: back to depending on step-3.5-flash until NVIDIA actually pulls it or a
+    //   properly max_tokens=3600-JSON-mode-verified replacement is found.
+    //   EXIT: re-run this same direct-curl methodology (trivial prompt + realistic
+    //   p01-2-shaped JSON-mode prompt) against any future replacement candidate BEFORE
+    //   swapping the default -- a trivial-prompt-only check isn't sufficient evidence.
+    { id: "stepfun-ai/step-3.5-flash", label: "step-3.5-flash", tier: "good",
+      note: "기본값(D217, 2026-07-22: step-3.7-flash가 실제 p01-2 규모 JSON모드 프롬프트에서 응답 불가로 확인되어 원복 -- 아래 step-3.7-flash 항목 참고). D120의 '0/50'은 구파이프라인 reasoning_content 버그로 확정(D-G 이론을 실측 확인) · 재검증: P03 tool_calls 1.5-3.9s 3/3, P01 JSON모드 4.1-5.3s 3/3(reasoning_content 경유, 폴백 정상 동작)." },
+    { id: "stepfun-ai/step-3.7-flash", label: "step-3.7-flash", tier: "bad",
+      note: "D217(2026-07-22): 잠시 기본값이었으나 원복 -- reasoning 모델로 확인됨(trivial 프롬프트도 max_tokens=50에서 content:null/finish_reason:length, reasoning만 채움). 실제 p01-2 규모 JSON모드 요청(max_tokens=3600, 실PDF 10p 청크)은 NVIDIA에 직접 호출해도 180초간 응답 자체가 없음(HTTP_CODE 000) -- 우리 워커/큐 문제 아님, NVIDIA 서빙 쪽. 실제 파이프라인 실험도 8청크 전부 90분간 하나도 안 끝남." },
     { id: "mistralai/mistral-medium-3.5-128b", label: "mistral-medium-3.5", tier: "unverified",
       note: "P01 기준 미검증 · P03 종합 2위(0.749) · D183 부수측정: 동일 4000자 프롬프트 13.2-17.3s(qwen 대비 5-6배 빠름, qwen과의 상대비교로만 측정, 단독 신뢰도 검증은 아직 부족)." },
     { id: "qwen/qwen3-next-80b-a3b-instruct", label: "qwen3-next-80b", tier: "unverified",
