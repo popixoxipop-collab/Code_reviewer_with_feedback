@@ -24,3 +24,6 @@ hookfile/db/*.db
 # D-I -- `wrangler dev` local KV/Queue emulation state (Miniflare sqlite files). Purely
 # local dev cache, regenerated on demand, never meant to be shared or committed.
 worker/.wrangler/
+
+# D218 -- local-only session hand-off doc, not meant to be pushed
+CODE_QNA_D204_D218_HANDOFF.md
