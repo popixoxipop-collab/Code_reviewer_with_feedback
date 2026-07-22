@@ -1587,6 +1587,17 @@ python3 pipeline/compare_methodologies.py
   - COST: 524로 인한 간헐적 전체 실패 위험을 기본값 차원에서 받아들임 — 실패 시 사용자가 재시도해야 함(파이프라인 자체 재시도 로직은 이미 있음, 그걸로 못 넘는 지속적 과부하 구간엔 여전히 취약).
   - EXIT: 524 실패가 실사용에서 자주 재현되면 D217과 같은 방식(EXIT 조항이 미리 있으니 재검증 없이 되돌릴 수 있음)으로 step-3.5-flash로 재원복.
 
+- **D219** ([`docs/lab/llm.js`](./docs/lab/llm.js)) — ★번호 메모: 이 항목은 이 세션(P02/P03 code-qna fact-check 강화 트랙)에서 커밋 메시지에 "D217"로 표기했던 작업이다. 같은 날 위 D217(모델 기본값 원복)을 붙인 완전히 다른 동시 세션과 번호가 겹쳤음(D216이 이미 경고한 것과 같은 드리프트) — 저장소 전체 최대값(D218) 다음 번호로 README에는 D219로 정정해 기록한다. 커밋 메시지 자체는 히스토리 재작성 금지 원칙에 따라 그대로 둠(`0926af8`).
+  - `reasoning_effort` 파라미터를 모델별 조건부로 추가. step-3.7-flash(당시 이 트랙에서 쓰던 기본값)가 실사용 태스크에서 느리고(최대 40s+) 답변이 `reasoning_content`에만 담겨 `max_tokens`에 잘려 파싱 실패하는 사례를 실측 확인. `reasoning_effort:"low"`가 이를 완화한다는 게 StepFun 문서로 확인됐으나, 실측 결과 Mistral 모델에 이 파라미터를 보내면 **하드 HTTP 400**("Supported values: ['none','high']")이 나 전역 적용 불가.
+  - `llm.js`에 `REASONING_EFFORT_BY_MODEL = {"stepfun-ai/step-3.7-flash":"low"}` + `reasoningEffortFor(model)` 헬퍼 추가, `chatJSON`/`chatTool`/`chatToolLoop` 3개 호출부 모두 조건부 주입. `p01-runner.js`/`p03-engine.js` 등 호출부는 무변경.
+  - 검증: Node 단위테스트(3개 함수 × step-3.7-flash 포함/타 모델 미포함, 6케이스) 전부 PASS + 실측 API 비교(effort 없음/medium/low, n=6): low가 평균 50.2s로 medium(64.5s)·기본값(103.1s, 504 타임아웃 1건 포함)보다 확실히 빠름.
+  - EXIT: 위 D217/D218로 기본 모델이 qwen3-next-80b로 바뀌어 step-3.7-flash는 더 이상 기본값이 아님(목록엔 `tier:"bad"`로 남아있어 수동 선택 시엔 여전히 적용됨).
+
+- **D220** ([`docs/lab/p03-engine.js`](./docs/lab/p03-engine.js)) — ★같은 번호드리프트로 이 세션에선 커밋 메시지에 "D218"로 표기(`c572562`), README에는 D220으로 정정 기록.
+  - 실사용자가 P03 채점 단계에서 세션이 통째로 종료되는 에러("Unterminated string in JSON") 겪음 → `llm.js`의 무보호 `JSON.parse(call.function.arguments)`가 발생지로 추적. 프로덕션 p03-7 채점(5축 루브릭) 프롬프트 그대로 재현 → step-3.7-flash `max_tokens=2048`에서 **6번 중 3번(50%) 재현**(전부 `finish_reason:"length"`, evidence 문자열 중간 절단). 가벼운 1-필드 tool call(질문생성)은 문제없었음 — 무거운 5축 스키마에서만 reasoning 토큰이 예산을 잠식.
+  - `max_tokens=4096`으로 동일 조건 10회 재측정 → **10/10 성공**. `gradeAnswer()` 해당 호출부만 국소 수정(다른 tool call 자리는 안 건드림), 모델 무관 무조건 적용(3.5/qwen 등에도 안전 — 더 큰 상한일 뿐 소비량은 그대로).
+  - EXIT: 향후 다른 tool call 자리(질문생성용 등)도 스키마가 무거워지면 같은 재현 스크립트 패턴으로 먼저 확인 후 조치.
+
 ## 다음 단계 (미해결)
 
 1. ~~판단 블록에 "프레임워크 관용 패턴 목록" 대조 필터 추가~~ — D5~D7로 완료(javascript만 실증, 나머지 언어는 빈 상태)
