@@ -175,6 +175,9 @@ const LabApp = (() => {
       note: "P01 기준 미검증 · P03에서 쿼타 소진 이력." },
     { id: "minimaxai/minimax-m3", label: "minimax-m3", tier: "unverified",
       note: "P01 기준 미검증 · P03에서 100회 반복 중 DEGRADED 재발 이력." },
+    // D216 (2026-07-22), mirrored from app.js -- see app.js's D216 comment for full context.
+    { id: "nvidia/nemotron-3-ultra-550b-a55b", label: "nemotron-3-ultra-550b", tier: "unverified",
+      note: "P01 기준 미검증(2026-07-22 추가) · reasoning 모델 -- llm.js가 stream/chat_template_kwargs/reasoning_budget 미지원이지만 직접 curl 실측 결과 이 옵션들 없이도 content 필드 정상 반환 확인(짧은 프롬프트 기준). 실제 파이프라인의 max_tokens=3600에서 긴 추론 트레이스가 답변 전에 예산을 소진할 위험은 미검증." },
   ];
 
   return {

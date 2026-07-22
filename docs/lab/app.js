@@ -73,6 +73,13 @@ const LabApp = (() => {
       note: "P01 기준 미검증 · P03에서 쿼타 소진 이력." },
     { id: "minimaxai/minimax-m3", label: "minimax-m3", tier: "unverified",
       note: "P01 기준 미검증 · P03에서 100회 반복 중 DEGRADED 재발 이력." },
+    // D216 (2026-07-22): reasoning 모델. llm.js의 chatJSON()은 stream/chat_template_kwargs/
+    // reasoning_budget을 지원 안 하지만, 직접 curl로 실측한 결과 이 옵션들 없이도 content
+    // 필드가 정상 반환됨(reasoning_content로만 채워지는 게 아님 -- D131 폴백이 필요 없는 경우도
+    // 있다는 뜻). 단 이건 "Say OK" 수준의 짧은 프롬프트 기준이고, 실제 p01-3b 호출은
+    // max_tokens=3600이라 긴 추론 트레이스가 답변 전에 예산을 다 쓸 위험은 미검증.
+    { id: "nvidia/nemotron-3-ultra-550b-a55b", label: "nemotron-3-ultra-550b", tier: "unverified",
+      note: "P01 기준 미검증(2026-07-22 추가) · reasoning 모델 -- llm.js가 stream/chat_template_kwargs/reasoning_budget 미지원이지만 직접 curl 실측 결과 이 옵션들 없이도 content 필드 정상 반환 확인(짧은 프롬프트 기준). 실제 파이프라인의 max_tokens=3600에서 긴 추론 트레이스가 답변 전에 예산을 소진할 위험은 미검증." },
   ];
 
   // D182: shared model-toggle chip renderer -- P01 had this exact logic (chips, active
