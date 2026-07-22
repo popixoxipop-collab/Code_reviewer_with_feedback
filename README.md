@@ -1547,6 +1547,13 @@ python3 pipeline/compare_methodologies.py
   - EXIT: curriculum-manager가 `graph`/`refine_fixes` 아티팩트도 훑어볼 필요가 생기면 같은 패턴(유닛/노드 단위로 펼치는 별도 뷰)으로 확장.
   - Supabase Management API로 직접 생성(라이브 반영 완료), repo에는 재현용 SQL만 커밋. `Team-IZ/AI` 미러도 동일 SQL로 동기화(같은 프로젝트를 공유하므로 뷰 자체는 이미 그쪽 배포에서도 조회 가능 — 파일만 맞춰둠).
 
+- **D198** ([`experiments/web_lab/pdf_analysis_schema.sql`](./experiments/web_lab/pdf_analysis_schema.sql), Supabase DB) — D197 직후 뷰가 비어보여서 "지금까지 만들어진 unit_map들 넣으라고" 요청. 처음엔 내가 로컬에 갖고 있던 실험 결과 1건(76p 실제 PDF 분석, refine 실측 실험의 최종 unit_map)을 `pdf_analysis.runs`에 수동 insert했으나, 사용자가 즉시 정정: "니가 갖고 있는 데이터 말고 DB에 이미 저장된 칼럼 내 값" — 즉 원하는 건 내 로컬 실험 데이터 백필이 아니라, **DB에 이미 존재하는 진짜 데이터**를 보여주는 것.
+  - **조사**: `public.artifacts`를 직접 조회해보니 실제로 `kind='unit_map'`인 행이 **이미 12건** 있었음 — 팀원 3명(`popixoxipop`/`dkepffk10`/`aoaagent`)이 2026-07-15~07-21 사이 원본 Pipeline Lab의 P01 탭으로 실제 분석한 교안들(AI_FrontEnd, AI_JAVA, AI_Kubernetes와 CICD, AI_클라우드 현대화 등, 유닛 합계 122개). D197의 뷰는 `pdf_analysis` 스키마만 봐서 이걸 전혀 못 보고 있었음 — curriculum-manager가 이 데이터 모양(unit_map)의 유일한 생산자가 아니었다는 걸 놓친 설계 실수.
+  - **수정**: 내가 넣었던 실험 백필 행은 삭제(`delete ... where input_meta->>'backfilled_from_experiment'='true'`)하고, 뷰를 `pdf_analysis.runs/artifacts` **UNION ALL** `public.runs/artifacts`로 재구성 — `source_tool` 컬럼으로 어느 도구가 만든 데이터인지 구분. 기존 컬럼 순서 중간에 새 컬럼이 끼어들어 `CREATE OR REPLACE VIEW`가 거부됨(D177과 같은 제약) → `DROP VIEW` 후 재생성.
+  - **검증**: 재생성 직후 `select source_tool, count(distinct run_id), count(*) group by source_tool`로 실제 12개 문서/122개 유닛 행이 정확히 잡히는 것을 라이브로 확인.
+  - WHY: 사용자가 원한 건 애초에 "커리큘럼 관련 항목 전부를 한곳에서" 였지 "curriculum-manager가 새로 만든 것만"이 아니었음 — 요청을 좁게 해석한 내 실수.
+  - EXIT: `pdf_analysis` 쪽에 실제 로그인 상태로 저장된 run이 쌓이기 시작하면(현재 0건) 두 소스 모두 자연스럽게 이 뷰에 함께 나타남.
+
 ## 다음 단계 (미해결)
 
 1. ~~판단 블록에 "프레임워크 관용 패턴 목록" 대조 필터 추가~~ — D5~D7로 완료(javascript만 실증, 나머지 언어는 빈 상태)
